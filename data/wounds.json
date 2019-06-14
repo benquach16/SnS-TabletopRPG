@@ -1,0 +1,42 @@
+{
+	"blunt": {
+		"crown": {
+			"1": {
+				"impact": "1",
+				"BTN": "3",
+				"text": "Glancing blow."
+			}
+			"2": {
+				"impact": "2",
+				"BTN": "3",
+				"text": "Solid blow, causing momentary dizziness",
+			}
+			"3": {
+				"impact": "3",
+				"BTN": "4",
+				"text": " Mild concussion. Ears ringing, bad headache and dizziness. Some blood in the hair."
+				"effects": "KO2",
+			}
+			"4": ""
+			"5": ""
+		}
+		"face": {
+			"1": ""
+			"2": ""
+			"3": ""
+			"4": ""
+			"5": ""
+		}
+		"neck": {
+		}
+		"shoulder": {
+			
+		}
+		"upper arm": {
+		}
+	},
+	"piercing": {
+	},
+	"cutting": {
+	}
+}
