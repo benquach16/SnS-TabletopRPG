@@ -14,3 +14,17 @@ enum eDamageTypes {
 	Piercing,
 	Cutting
 };
+
+enum eWeaponProperties {
+	Crushing,
+	Hook,
+	MaillePiercing,
+	PlatePiercing
+};
+
+enum eManuevers {
+	Swing,
+	Thrust,
+	Parry,
+	Dodge
+};
