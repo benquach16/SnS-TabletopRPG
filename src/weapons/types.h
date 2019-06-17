@@ -2,7 +2,8 @@
 
 enum eWeaponTypes {
 	Brawling,
-	Bladed,
+	Swords,
+	Longswords,
 	Mass,
 	Polearms,
 	Bows,
