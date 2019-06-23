@@ -1,5 +1,4 @@
 #pragma once
-
 #include "component.h"
 #include <vector>
 #include <string>
@@ -13,6 +12,10 @@ public:
 	std::string getName() { return m_name; }
 	eLength getLength() { return m_length; }
 	eWeaponTypes getType() { return m_type; }
+
+	//convinence functions
+	Component getBestThrust();
+	Component getBestSwing();
 private:
 	Weapon();
 	std::string m_name;
@@ -38,6 +41,7 @@ private:
 	eWeaponTypes convertTypeFromStr(const std::string& str);
 	eWeaponProperties convertPropertiesFromStr(const std::string& str);
 	eDamageTypes convertDamageFromStr(const std::string& str);
+	eAttacks convertAttackFromStr(const std::string& str);
 	
 	static WeaponTable* singleton;
 

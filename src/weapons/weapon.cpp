@@ -17,6 +17,13 @@ Weapon::Weapon(std::string name, eLength length, std::vector<Component> componen
 	
 }
 
+Component Weapon::getBestThrust()
+{
+	
+}
+
+
+
 WeaponTable::WeaponTable()
 {
 	ifstream file(filepath);
@@ -26,24 +33,36 @@ WeaponTable::WeaponTable()
 	file >> parsedWeapons;
 
 	int size = parsedWeapons.size();
-	cout << size << endl;
 
 	for(auto &iter : parsedWeapons.items()) {
 		//cout << i.key() << " : " << i.value() << endl;
 		int id = std::stoi(iter.key());
 		auto values = iter.value();
 
+		auto components = values["components"];
+		
+		//assert valid json
+		assert(values["name"].is_null() == false);
+		assert(values["length"].is_null() == false);
+		assert(values["type"].is_null() == false);
+		assert(components.size() > 0);
+
 		string weaponName = values["name"];
 		eLength length = convertLengthFromStr(values["length"]);
 		eWeaponTypes weaponType = convertTypeFromStr(values["type"]);
 		vector<Component> weaponComponents;
-		
-		auto components = values["components"];
+
 		for(int i = 0; i < components.size(); ++i) {
 			//cout << components[i] << endl;
+			assert(components[i]["name"].is_null() == false);
+			assert(components[i]["damage"].is_null() == false);
+			assert(components[i]["type"].is_null() == false);
+			assert(components[i]["attack"].is_null() == false);
+			
 			string componentName = components[i]["name"];
 			int damage = components[i]["damage"];
 			eDamageTypes damageType = convertDamageFromStr(components[i]["type"]);
+			eAttacks attack = convertAttackFromStr(components[i]["attack"]);
 			std::set<eWeaponProperties> properties;
 
 			//check for null here
@@ -55,7 +74,7 @@ WeaponTable::WeaponTable()
 				}
 			}
 
-			Component component(componentName, damage, damageType, properties);
+			Component component(componentName, damage, damageType, attack, properties);
 		}
 
 		Weapon* weapon = new Weapon(weaponName, length, weaponComponents, weaponType);
@@ -132,6 +151,14 @@ eDamageTypes WeaponTable::convertDamageFromStr(const std::string& str)
 		return eDamageTypes::Piercing;
 	}
 	return eDamageTypes::Cutting;
+}
+
+eAttacks WeaponTable::convertAttackFromStr(const std::string& str)
+{
+	if(str == "thrust") {
+		return eAttacks::Thrust;
+	}
+	return eAttacks::Swing;
 }
 
 Weapon::Weapon()

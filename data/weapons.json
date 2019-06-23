@@ -1,6 +1,5 @@
 {
 	
-	
 	"40": {
 		"name": "Pollaxe",
 		"length": "extended",
@@ -10,18 +9,27 @@
 				"name": "Spike",
 				"damage": 2,
 				"type": "piercing",
+				"attack": "thrust",
 				"properties": [ "maillepiercing" ]
 			},
 			{
-				"name": "Axe head",
+				"name": "Axe",
 				"damage": 3,
+				"attack": "swing",
 				"type": "piercing"
 			},
 			{
-				"name": "Hammer head",
+				"name": "Hammer",
 				"damage": 2,
 				"type": "blunt",
+				"attack": "swing",
 				"properties": [ "crushing" ]
+			},
+			{
+				"name": "Buttspike",
+				"damage": 1,
+				"type": "piercing",
+				"attack": "thrust"
 			}
 		]
 	},
@@ -32,10 +40,17 @@
 		"type": "sword",
 		"components": [
 			{
-				"name": "Blade",
+				"name": "Blade - Swing",
 				"damage": 1,
-				"type": "cutting"
+				"type": "cutting",
+				"attack": "swing"
+			},
+			{
+				"name": "Blade - Thrust",
+				"damage": 1,
+				"type": "piercing",
+				"attack": "thrust"
 			}
-			]
+		]
 	}
 }

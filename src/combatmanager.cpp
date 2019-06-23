@@ -1,5 +1,6 @@
 #include <iostream>
-#include "utils.h"
+#include "creatures/utils.h"
+#include "weapons/utils.h"
 #include "combatmanager.h"
 
 using namespace std;
@@ -19,12 +20,12 @@ void CombatManager::run()
 	Creature* attacker = nullptr;
 	Creature* defender = nullptr;
 	if(m_initiative == 0) {
-		Creature* attacker = m_side1;
-		Creature* defender = m_side2;
+		attacker = m_side1;
+		defender = m_side2;
 	}
 	else if(m_initiative == 1) {
-		Creature* attacker = m_side2;
-		Creature* defender = m_side1;
+		attacker = m_side2;
+		defender = m_side1;
 	}
 
 	Weapon* offenseWeapon = attacker->getPrimaryWeapon();
@@ -35,10 +36,14 @@ void CombatManager::run()
 
 	attacker->doOffense(defender, offenseCombatPool, offense, offenseDice, target);
 
+	cout << "attacker attacks with " << offenseWeapon->getName() << " using " << offenseDice << " dice" << endl;
+
 	eDefensiveManuevers defense = eDefensiveManuevers::Parry;
-	int defenseDice = 7;
+	int defenseDice = 6;
 	Weapon* defenseWeapon = defender->getPrimaryWeapon();
 	int defenseCombatPool = defender->getProficiency(defenseWeapon->getType()) + defender->getReflex();
+
+	cout << "defender defends with " << defenseWeapon->getName() << " using " << defenseDice << " dice" << endl;
 
 	int offenseSuccesses = DiceRoller::rollGetSuccess(attacker->getBTN(), offenseDice);
 	int defenseSuccesses = DiceRoller::rollGetSuccess(defender->getBTN(), defenseDice);
@@ -48,7 +53,9 @@ void CombatManager::run()
 	if(MoS > 0) {
 		cout << "got " << MoS << " net successes on attack" << endl;
 		eBodyParts bodyPart = WoundTable::getSingleton()->getThrust(target);
-		cout << bodyPartToString(bodyPart) << endl;
+
+		int finalDamage = MoS;
+		cout << "inflicted level " << finalDamage << " wound to " << bodyPartToString(bodyPart) << endl;
 	}
 	else if (defense != eDefensiveManuevers::Dodge) {
 		cout << "attack deflected" << endl;

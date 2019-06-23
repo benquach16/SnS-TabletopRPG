@@ -23,6 +23,11 @@ enum class eWeaponProperties {
 	PlatePiercing
 };
 
+enum class eAttacks {
+	Thrust,
+	Swing,
+};
+
 
 enum class eOffensiveManuevers : unsigned {
 	Swing,
