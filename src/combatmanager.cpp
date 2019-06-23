@@ -29,9 +29,11 @@ void CombatManager::run()
 
 	Weapon* offenseWeapon = attacker->getPrimaryWeapon();
 	int offenseCombatPool = attacker->getProficiency(offenseWeapon->getType()) + attacker->getReflex();
-	eOffensiveManuevers offense = eOffensiveManuevers::Thrust;
-	int offenseDice = 7;
-	eHitLocations target = eHitLocations::Head;
+	eOffensiveManuevers offense;
+	int offenseDice;
+	eHitLocations target;
+
+	attacker->doOffense(defender, offenseCombatPool, offense, offenseDice, target);
 
 	eDefensiveManuevers defense = eDefensiveManuevers::Parry;
 	int defenseDice = 7;

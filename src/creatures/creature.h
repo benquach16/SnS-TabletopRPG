@@ -34,6 +34,9 @@ public:
 
 	int getProficiency(eWeaponTypes type) { return m_proficiencies[type]; }
 
+	// AI functions
+	void doOffense(Creature* target, int diceLeft,
+				   eOffensiveManuevers& outOffense, int& outDice, eHitLocations& outLocation);
 protected:
 	std::vector<eHitLocations> m_hitLocations;
 	std::map<eBodyParts, int> m_armor;
