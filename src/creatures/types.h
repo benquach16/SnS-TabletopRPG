@@ -2,7 +2,8 @@
 
 #include <map>
 
-enum class eHitLocations : unsigned { 
+enum class eHitLocations : unsigned
+{	
 	Head,
 	Chest,
 	Arm,
@@ -13,7 +14,8 @@ enum class eHitLocations : unsigned {
 	Tail
 };
 
-enum class eBodyParts : unsigned {
+enum class eBodyParts : unsigned
+{
 	Crown = 0,
 	Face = 1,
 	Neck = 2,

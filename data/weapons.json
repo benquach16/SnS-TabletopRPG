@@ -1,7 +1,41 @@
 {
-	"pollaxe": {
+	
+	
+	"40": {
+		"name": "Pollaxe",
 		"length": "extended",
-		"proficiency": "polearms",
-		
+		"type": "polearm",
+		"components": [
+			{
+				"name": "Spike",
+				"damage": 2,
+				"type": "piercing",
+				"properties": [ "maillepiercing" ]
+			},
+			{
+				"name": "Axe head",
+				"damage": 3,
+				"type": "piercing"
+			},
+			{
+				"name": "Hammer head",
+				"damage": 2,
+				"type": "blunt",
+				"properties": [ "crushing" ]
+			}
+		]
+	},
+
+	"41": {
+		"name": "Arming Sword",
+		"length": "medium",
+		"type": "sword",
+		"components": [
+			{
+				"name": "Blade",
+				"damage": 1,
+				"type": "cutting"
+			}
+			]
 	}
 }

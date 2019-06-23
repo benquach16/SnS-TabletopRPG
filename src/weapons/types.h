@@ -1,6 +1,6 @@
 #pragma once
 
-enum eWeaponTypes {
+enum class eWeaponTypes : unsigned {
 	Brawling,
 	Swords,
 	Longswords,
@@ -10,22 +10,42 @@ enum eWeaponTypes {
 	Crossbows
 };
 
-enum eDamageTypes {
+enum class eDamageTypes {
 	Blunt,
 	Piercing,
 	Cutting
 };
 
-enum eWeaponProperties {
+enum class eWeaponProperties {
 	Crushing,
 	Hook,
 	MaillePiercing,
 	PlatePiercing
 };
 
-enum eManuevers {
+
+enum class eOffensiveManuevers : unsigned {
 	Swing,
-	Thrust,
+	Thrust
+};
+
+enum class eDefensiveManuevers : unsigned {
 	Parry,
-	Dodge
+	Dodge	
+};
+
+enum class eLength : unsigned
+{
+	Hand = 0,
+	Short = 1,
+	Medium = 2,
+	Long = 3,
+	Extended = 4,
+	Extreme = 5,
+	Ludicrous = 6
+};
+
+enum class eMaterials : unsigned
+{
+	Iron		
 };

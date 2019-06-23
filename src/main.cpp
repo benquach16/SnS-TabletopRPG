@@ -1,9 +1,12 @@
 #include <iostream>
 #include <time.h>
 #include "creatures/wound.h"
+#include "combatmanager.h"
+#include "weapons/weapon.h"
 
 int main()
 {
 	srand (time(NULL));
-	std::cout << (int)WoundTable::getSingleton()->getSwing(eHitLocations::Head) << std::endl;
+	//WeaponTable table;
+	CombatManager manager;
 }
