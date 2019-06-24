@@ -12,10 +12,19 @@ Weapon* Creature::getPrimaryWeapon()
 }
 
 void Creature::doOffense(Creature* target, int diceLeft,
-						 eOffensiveManuevers& outOffense, int& outDice, eHitLocations& outLocation)
+						 eOffensiveManuevers& outOffense, int& outDice,
+						 eHitLocations& outLocation, Component*& outComponent)
 {
+	Weapon* weapon = getPrimaryWeapon();
+
+	outComponent = weapon->getBestAttack();	
 	outOffense = eOffensiveManuevers::Thrust;
+
+	if(outComponent->getAttack() == eAttacks::Swing) {
+		outOffense = eOffensiveManuevers::Swing;
+	}
 	outDice = diceLeft;
-	outLocation = eHitLocations::Head;
+	outLocation = eHitLocations::Chest;
+
 }
 							 

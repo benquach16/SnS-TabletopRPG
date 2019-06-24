@@ -11,18 +11,33 @@ using namespace std;
 
 const string filepath = "data/weapons.json";
 
-Weapon::Weapon(std::string name, eLength length, std::vector<Component> components, eWeaponTypes type) :
+Weapon::Weapon(std::string name, eLength length, std::vector<Component*> components, eWeaponTypes type) :
 	m_name(name), m_length(length), m_components(components), m_type(type)
 {
 	
 }
 
-Component Weapon::getBestThrust()
+Weapon::~Weapon()
 {
-	
+	for(int i = 0; i < m_components.size(); ++i) {
+		delete m_components[i];
+	}
+	m_components.clear();
 }
 
+Component* Weapon::getBestAttack()
+{
+	assert(m_components.size() > 0);
 
+	Component* ret = m_components[0];
+	for(int i = 1; i < m_components.size(); ++i) {
+		if(m_components[i]->getDamage() > ret->getDamage()) {
+			ret = m_components[i];
+		}
+	}
+
+	return ret;
+}
 
 WeaponTable::WeaponTable()
 {
@@ -50,7 +65,7 @@ WeaponTable::WeaponTable()
 		string weaponName = values["name"];
 		eLength length = convertLengthFromStr(values["length"]);
 		eWeaponTypes weaponType = convertTypeFromStr(values["type"]);
-		vector<Component> weaponComponents;
+		vector<Component*> weaponComponents;
 
 		for(int i = 0; i < components.size(); ++i) {
 			//cout << components[i] << endl;
@@ -65,7 +80,7 @@ WeaponTable::WeaponTable()
 			eAttacks attack = convertAttackFromStr(components[i]["attack"]);
 			std::set<eWeaponProperties> properties;
 
-			//check for null here
+			//check for component properties
 			if(components[i]["properties"].is_null() == false)	{
 				//is an array
 				auto properties = components[i]["properties"];
@@ -74,7 +89,9 @@ WeaponTable::WeaponTable()
 				}
 			}
 
-			Component component(componentName, damage, damageType, attack, properties);
+			Component* component = new Component(componentName, damage, damageType, attack, properties);
+
+			weaponComponents.push_back(component);
 		}
 
 		Weapon* weapon = new Weapon(weaponName, length, weaponComponents, weaponType);
@@ -85,6 +102,10 @@ WeaponTable::WeaponTable()
 
 WeaponTable::~WeaponTable()
 {
+	for(auto it : m_weaponsList) {
+		delete it.second;
+	}
+	m_weaponsList.clear();
 }
 
 Weapon* WeaponTable::get(int id)

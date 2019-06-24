@@ -13,13 +13,13 @@
 				"properties": [ "maillepiercing" ]
 			},
 			{
-				"name": "Axe",
+				"name": "Axe head",
 				"damage": 3,
 				"attack": "swing",
 				"type": "piercing"
 			},
 			{
-				"name": "Hammer",
+				"name": "Hammer head",
 				"damage": 2,
 				"type": "blunt",
 				"attack": "swing",

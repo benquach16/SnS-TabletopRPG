@@ -130,6 +130,6 @@ eBodyParts WoundTable::getThrust(eHitLocations location)
 {
 	//dice returns an actual dice roll 1-6, so we have to offset by 1
 	int roll = DiceRoller::roll() - 1;
-	return m_hitTable[location].m_swing[roll];
+	return m_hitTable[location].m_thrust[roll];
 }
 

@@ -3,6 +3,8 @@
 #include "weapons/utils.h"
 #include "combatmanager.h"
 
+#include <assert.h>
+
 using namespace std;
 
 CombatManager::CombatManager(): m_initiative(0), m_side1(nullptr), m_side2(nullptr), m_currentTempo(eTempo::First)
@@ -33,13 +35,17 @@ void CombatManager::run()
 	eOffensiveManuevers offense;
 	int offenseDice;
 	eHitLocations target;
+	Component* offenseComponent = nullptr;
 
-	attacker->doOffense(defender, offenseCombatPool, offense, offenseDice, target);
+	attacker->doOffense(defender, offenseCombatPool, offense, offenseDice, target, offenseComponent);
 
-	cout << "attacker attacks with " << offenseWeapon->getName() << " using " << offenseDice << " dice" << endl;
+	assert(offenseComponent != nullptr);
+
+	cout << "attacker attacks with " << offenseWeapon->getName() << " using "
+		 << offenseComponent->getName() << " with " << offenseDice << " dice" << endl;
 
 	eDefensiveManuevers defense = eDefensiveManuevers::Parry;
-	int defenseDice = 6;
+	int defenseDice = 1;
 	Weapon* defenseWeapon = defender->getPrimaryWeapon();
 	int defenseCombatPool = defender->getProficiency(defenseWeapon->getType()) + defender->getReflex();
 
@@ -52,9 +58,9 @@ void CombatManager::run()
 
 	if(MoS > 0) {
 		cout << "got " << MoS << " net successes on attack" << endl;
-		eBodyParts bodyPart = WoundTable::getSingleton()->getThrust(target);
+		eBodyParts bodyPart = WoundTable::getSingleton()->getSwing(target);
 
-		int finalDamage = MoS;
+		int finalDamage = MoS + offenseComponent->getDamage();
 		cout << "inflicted level " << finalDamage << " wound to " << bodyPartToString(bodyPart) << endl;
 	}
 	else if (defense != eDefensiveManuevers::Dodge) {

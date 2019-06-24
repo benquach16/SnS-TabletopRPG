@@ -36,7 +36,8 @@ public:
 
 	// AI functions
 	void doOffense(Creature* target, int diceLeft,
-				   eOffensiveManuevers& outOffense, int& outDice, eHitLocations& outLocation);
+				   eOffensiveManuevers& outOffense, int& outDice,
+				   eHitLocations& outLocation, Component*& outComponent);
 protected:
 	std::vector<eHitLocations> m_hitLocations;
 	std::map<eBodyParts, int> m_armor;

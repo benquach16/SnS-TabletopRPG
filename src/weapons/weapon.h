@@ -7,20 +7,19 @@
 class Weapon
 {
 public:
-	Weapon(std::string name, eLength length, std::vector<Component> components, eWeaponTypes type);
-
+	Weapon(std::string name, eLength length, std::vector<Component*> components, eWeaponTypes type);
+	~Weapon();
 	std::string getName() { return m_name; }
 	eLength getLength() { return m_length; }
 	eWeaponTypes getType() { return m_type; }
 
 	//convinence functions
-	Component getBestThrust();
-	Component getBestSwing();
+	Component* getBestAttack();
 private:
 	Weapon();
 	std::string m_name;
 	eLength m_length;
-	std::vector<Component> m_components;
+	std::vector<Component*> m_components;
 	eWeaponTypes m_type;
 };
 
