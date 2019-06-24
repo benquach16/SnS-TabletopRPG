@@ -16,7 +16,7 @@
 				"name": "Axe head",
 				"damage": 3,
 				"attack": "swing",
-				"type": "piercing"
+				"type": "cutting"
 			},
 			{
 				"name": "Hammer head",

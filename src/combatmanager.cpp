@@ -44,10 +44,12 @@ void CombatManager::run()
 	cout << "attacker attacks with " << offenseWeapon->getName() << " using "
 		 << offenseComponent->getName() << " with " << offenseDice << " dice" << endl;
 
-	eDefensiveManuevers defense = eDefensiveManuevers::Parry;
-	int defenseDice = 1;
+	eDefensiveManuevers defense;
+	int defenseDice;
 	Weapon* defenseWeapon = defender->getPrimaryWeapon();
 	int defenseCombatPool = defender->getProficiency(defenseWeapon->getType()) + defender->getReflex();
+
+	defender->doDefense(false, offenseDice, defenseCombatPool, defense, defenseDice);
 
 	cout << "defender defends with " << defenseWeapon->getName() << " using " << defenseDice << " dice" << endl;
 
@@ -61,7 +63,8 @@ void CombatManager::run()
 		eBodyParts bodyPart = WoundTable::getSingleton()->getSwing(target);
 
 		int finalDamage = MoS + offenseComponent->getDamage();
-		cout << "inflicted level " << finalDamage << " wound to " << bodyPartToString(bodyPart) << endl;
+		cout << "inflicted level " << finalDamage << " " << damageTypeToString(offenseComponent->getType())
+			 << " wound to " << bodyPartToString(bodyPart) << endl;
 	}
 	else if (defense != eDefensiveManuevers::Dodge) {
 		cout << "attack deflected" << endl;

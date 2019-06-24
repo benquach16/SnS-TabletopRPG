@@ -38,6 +38,8 @@ public:
 	void doOffense(Creature* target, int diceLeft,
 				   eOffensiveManuevers& outOffense, int& outDice,
 				   eHitLocations& outLocation, Component*& outComponent);
+
+	void doDefense(bool isLastTempo, int diceAllocated, int diceLeft, eDefensiveManuevers& outDefense, int& outDice);
 protected:
 	std::vector<eHitLocations> m_hitLocations;
 	std::map<eBodyParts, int> m_armor;

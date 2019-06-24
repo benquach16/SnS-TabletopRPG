@@ -23,8 +23,17 @@ void Creature::doOffense(Creature* target, int diceLeft,
 	if(outComponent->getAttack() == eAttacks::Swing) {
 		outOffense = eOffensiveManuevers::Swing;
 	}
-	outDice = diceLeft;
+	outDice = diceLeft / 2;
 	outLocation = eHitLocations::Chest;
+}
 
+void Creature::doDefense(bool isLastTempo, int diceAllocated, int diceLeft, eDefensiveManuevers& outDefense, int& outDice)
+{
+	outDefense = eDefensiveManuevers::Parry;
+	if(isLastTempo == true) {
+		//use all dice because we're going to refresh anyway
+		outDice = diceLeft;
+	}
+	outDice = std::min(diceAllocated + 1, diceLeft);
 }
 							 

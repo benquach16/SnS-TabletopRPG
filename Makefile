@@ -10,7 +10,7 @@ DEPS := $(OBJS:.o=.d)
 INC_DIRS := $(shell find $(SRC_DIRS) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
-CPPFLAGS ?= $(INC_FLAGS) -MMD -MP -lSDL2 -g -std=c++14
+CPPFLAGS ?= $(INC_FLAGS) -MMD -MP -lsfml-graphics -lsfml-window -lsfml-system -g -std=c++14
 
 $(TARGET_EXEC): $(OBJS)
 	$(CXX) $(CPPFLAGS) $(OBJS) -o $@ $(LDFLAGS) 
