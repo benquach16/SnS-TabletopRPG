@@ -3,6 +3,7 @@
 #include "../dice.h"
 
 #include <fstream>
+#include <iostream>
 #include <assert.h>
 
 using namespace std;
@@ -19,6 +20,26 @@ WoundTable::WoundTable()
 	
 	file >> parsedWounds;
 
+	auto bluntJson = parsedWounds["blunt"];
+	auto piercingJson = parsedWounds["piercing"];
+	auto cuttingJson = parsedWounds["cutting"];
+
+	for(auto &iter : bluntJson.items()) {
+		string key = iter.key();
+		
+		//ignore BTN and impact tables
+		if(key == "BTN" || key == "impact") continue;
+
+		auto values = iter.value();
+		cout << values << endl;
+		
+	}
+	
+	initHitLocationTable();
+}
+
+void WoundTable::initHitLocationTable()
+{
 	//Head
 	m_hitTable[eHitLocations::Head].m_swing[0] = eBodyParts::Crown;
 	m_hitTable[eHitLocations::Head].m_swing[1] = eBodyParts::Crown;
@@ -107,7 +128,7 @@ WoundTable::WoundTable()
 	m_hitTable[eHitLocations::Shin].m_thrust[2] = eBodyParts::Shin;
 	m_hitTable[eHitLocations::Shin].m_thrust[3] = eBodyParts::Shin;
 	m_hitTable[eHitLocations::Shin].m_thrust[4] = eBodyParts::Shin;
-	m_hitTable[eHitLocations::Shin].m_thrust[5] = eBodyParts::Foot;
+	m_hitTable[eHitLocations::Shin].m_thrust[5] = eBodyParts::Foot;	
 }
 
 eBodyParts WoundTable::getSwing(eHitLocations location)

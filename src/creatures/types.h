@@ -42,3 +42,13 @@ enum class eBodyParts : unsigned
 	SecondLocationArm
 };
 
+enum class eEffects
+{
+	KO1,
+	KO2,
+	KO3,
+	BL1,
+	BL2,
+	BL3,
+	Death,
+};

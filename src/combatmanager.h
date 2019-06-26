@@ -22,6 +22,8 @@ public:
 private:
 	eTempo m_currentTempo;
 	int m_initiative;
+	int m_side1CombatPool;
+	int m_side2CombatPool;
 	Creature* m_side1;
 	Creature* m_side2;
 };

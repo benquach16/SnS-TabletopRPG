@@ -54,36 +54,36 @@ WeaponTable::WeaponTable()
 		int id = std::stoi(iter.key());
 		auto values = iter.value();
 
-		auto components = values["components"];
+		auto componentJson = values["components"];
 		
 		//assert valid json
 		assert(values["name"].is_null() == false);
 		assert(values["length"].is_null() == false);
 		assert(values["type"].is_null() == false);
-		assert(components.size() > 0);
+		assert(componentJson.size() > 0);
 
 		string weaponName = values["name"];
 		eLength length = convertLengthFromStr(values["length"]);
 		eWeaponTypes weaponType = convertTypeFromStr(values["type"]);
 		vector<Component*> weaponComponents;
 
-		for(int i = 0; i < components.size(); ++i) {
+		for(int i = 0; i < componentJson.size(); ++i) {
 			//cout << components[i] << endl;
-			assert(components[i]["name"].is_null() == false);
-			assert(components[i]["damage"].is_null() == false);
-			assert(components[i]["type"].is_null() == false);
-			assert(components[i]["attack"].is_null() == false);
+			assert(componentJson[i]["name"].is_null() == false);
+			assert(componentJson[i]["damage"].is_null() == false);
+			assert(componentJson[i]["type"].is_null() == false);
+			assert(componentJson[i]["attack"].is_null() == false);
 			
-			string componentName = components[i]["name"];
-			int damage = components[i]["damage"];
-			eDamageTypes damageType = convertDamageFromStr(components[i]["type"]);
-			eAttacks attack = convertAttackFromStr(components[i]["attack"]);
+			string componentName = componentJson[i]["name"];
+			int damage = componentJson[i]["damage"];
+			eDamageTypes damageType = convertDamageFromStr(componentJson[i]["type"]);
+			eAttacks attack = convertAttackFromStr(componentJson[i]["attack"]);
 			std::set<eWeaponProperties> properties;
 
 			//check for component properties
-			if(components[i]["properties"].is_null() == false)	{
+			if(componentJson[i]["properties"].is_null() == false)	{
 				//is an array
-				auto properties = components[i]["properties"];
+				auto properties = componentJson[i]["properties"];
 				for(int j = 0; j < properties.size(); ++j) {
 					eWeaponProperties property = convertPropertiesFromStr(properties[j]);
 				}

@@ -32,10 +32,18 @@ public:
 	Weapon* getPrimaryWeapon();
 	void setWeapon(int id) { m_primaryWeaponId = id; }
 
+	void setName(const std::string& name) { m_name = name; }
+	std::string getName() { return m_name; }
+
 	int getProficiency(eWeaponTypes type) { return m_proficiencies[type]; }
 
+	// for current weapon
+	int getCombatPool() { return m_combatPool; }
+	void resetCombatPool();
+	void reduceCombatPool(int num) { m_combatPool -= num; }
+
 	// AI functions
-	void doOffense(Creature* target, int diceLeft,
+	void doOffense(Creature* target, int diceLeft, int reachCost,
 				   eOffensiveManuevers& outOffense, int& outDice,
 				   eHitLocations& outLocation, Component*& outComponent);
 
@@ -44,6 +52,8 @@ protected:
 	std::vector<eHitLocations> m_hitLocations;
 	std::map<eBodyParts, int> m_armor;
 	std::vector<Wound> m_wounds;
+
+	std::string m_name;
 
 	//index
 	int m_primaryWeaponId;
@@ -59,6 +69,8 @@ protected:
 	int m_cunning;
 	int m_perception;
 	int m_will;
+
+	int m_combatPool;
 
 	std::map<eWeaponTypes, int> m_proficiencies;
 	

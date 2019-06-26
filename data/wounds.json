@@ -1,60 +1,102 @@
 {
 	"blunt": {
+		"BTN": [3, 3, 4, 5, 6],
+		"impact": [1, 2, 3, 4, 5],
 		"crown": {
 			"1": {
-				"impact": "1",
-				"BTN": "3",
-				"text": "Glancing blow.",
-				"effects": ""
+				"text": ["Glancing blow."]
 			},
 			"2": {
-				"impact": "2",
-				"BTN": "3",
-				"text": "Solid blow, causing momentary dizziness",
-				"effects": ""
+				"text": ["Solid blow, causing momentary dizziness"]
 			},
 			"3": {
-				"impact": "3",
-				"BTN": "4",
-				"text": " Mild concussion. Ears ringing, bad headache and dizziness. Some blood in the hair.",
-				"effects": "KO2"
+				"text": ["Mild concussion. Ears ringing, bad headache and dizziness. Some blood in the hair."],
+				"effects": ["KO2"]
 			},
 			"4": {
-				"impact": "4",
-				"BTN": "5",
-				"text": ""
+				"text": ["Cracked skull. Severe concussion. Wound starts bleeding immediately.", "Cracked skull. Brain damage. Wound starts bleeding immediately.", "Cracked skull. Ear trauma. Wound starts bleeidng immediately."],
+				"effects": ["KO3", "BL1"]
 			},
 			"5": {
-				
+				"text": "The skull shatters like a ripe melon. Really messy. Instant death.",
+				"effects": ["Death"]
 			}
 		},
 		"face": {
 			"1": {
+				"text": ["Slight bump. Won't even leave a shiner."]
 			},
 			"2": {
+				"text": ["Solid blow. Will leave a shiner.","Solid blow. Split a lip.","Solid blow. Caused a nosebleed."]
 			},
 			"3": {
+				"text": ["Blunt eye trauma.", "Broken nose.", "Dislocated jaw.", "Split lip with lost teeth."],
+				"effects": ["KO1"]
 			},
 			"4": {
+				"text": ["Face mangled. Shattered jaw.", "Face mangled. Shattered cheekbone.", "Face mangled. Eye damaged."],
+				"effects": ["KO2", "BL1"]
 			},
 			"5": {
+				"text": "Face caves in from a massive blow. Death is almost instantaneous",
+				"effects": ["Death"]
 			}
 		},
 		"neck": {
-			
+			"1": {
+				
+			},
+			"2": {
+			}
 		},
 		"shoulder": {
-			
+			"1": {
+			}
 		},
 		"upper arm": {
+		},
+		"elbow": {
+		},
+		"forearm": {
+		},
+		"hand": {
+		},
+		"armpit": {
+		},
+		"ribs": {
+		},
+		"abs": {
 		}
 	},
 	"piercing": {
+		"BTN": [3, 4, 5, 6, 6],
+		"impact": [1, 1, 2, 2, 3],
 		"crown": {
 		}
 	},
 	"cutting": {
+		"BTN": [3, 4, 5, 6, 6],
+		"impact": [1, 2, 3, 4, 5],
 		"crown": {
+			"1": {
+				"text":["A graze, but nothing serious. Some blood in the hair.'"]
+			},
+			"2": {
+				"text":["Small cut, hair thick with blood. Itches like hell."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Flap of loose scalp. Dizziness and bleeding.", "Deep cut with skull intact. Dizziness and bleeding."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Cracked skull and a lot of blood. Severe concusson.", "Cracked skull and a lot of blood. Brain damage.", "Cracked skull and a lot of blood. Ear trauma."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":["The skull cracks open like an egg, blood spurting high in the air. Instant death."],
+				"effects":["Death"]
+			}
 		}
 	}
 }
