@@ -1,5 +1,5 @@
 #include "wound.h"
-#include "../3rdparty/json.hpp"
+
 #include "../dice.h"
 
 #include <fstream>
@@ -11,6 +11,13 @@ using namespace std;
 const string filepath = "data/wounds.json";
 
 WoundTable *WoundTable::singleton = nullptr;
+
+constexpr int woundLevels = 5;
+
+Wound::Wound(eBodyParts location, std::vector<std::string> text, int level, int btn, int impact, std::set<eEffects> effects) :
+	m_location(location), m_text(text), m_level(level), m_btn(btn), m_impact(impact), m_effects(effects)
+{
+}
 
 WoundTable::WoundTable()
 {
@@ -24,18 +31,51 @@ WoundTable::WoundTable()
 	auto piercingJson = parsedWounds["piercing"];
 	auto cuttingJson = parsedWounds["cutting"];
 
-	for(auto &iter : bluntJson.items()) {
+	vector<int> bluntBtn = bluntJson["BTN"];
+	vector<int> bluntImpact = bluntJson["impact"];
+	m_btnTable[eDamageTypes::Blunt] = bluntBtn;
+	m_impactTable[eDamageTypes::Blunt] = bluntImpact;
+	vector<int> piercingBtn = piercingJson["BTN"];
+	vector<int> piercingImpact = bluntJson["impact"];
+	m_btnTable[eDamageTypes::Piercing] = piercingBtn;
+	m_impactTable[eDamageTypes::Piercing] = piercingImpact;
+	vector<int> cuttingBtn = cuttingJson["BTN"];
+	vector<int> cuttingImpact = bluntJson["impact"];
+	m_btnTable[eDamageTypes::Cutting] = cuttingBtn;
+	m_impactTable[eDamageTypes::Cutting] = cuttingImpact;
+	initWoundTable(eDamageTypes::Blunt, bluntJson);
+	initWoundTable(eDamageTypes::Piercing, piercingJson);
+	initWoundTable(eDamageTypes::Cutting, cuttingJson);
+	initHitLocationTable();
+}
+
+WoundTable::~WoundTable()
+{
+	for(auto it : m_woundTable) {
+		
+	}
+}
+
+void WoundTable::initWoundTable(eDamageTypes type, nlohmann::json woundJson)
+{
+	for(auto &iter : woundJson.items()) {
 		string key = iter.key();
 		
 		//ignore BTN and impact tables
 		if(key == "BTN" || key == "impact") continue;
-
+		eBodyParts bodyPart = stringToBodyPart(key);
 		auto values = iter.value();
-		cout << values << endl;
-		
+		for(int i = 1; i <= woundLevels; ++i) {
+			std::string index = std::to_string(i);
+			auto woundJson = values[index];
+
+			set<eEffects> effects;
+			Wound* wound = new Wound(bodyPart, woundJson["text"], i, m_btnTable[type][i-1],
+									 m_impactTable[type][i-1], effects);
+
+			m_woundTable[type][bodyPart][i] = wound;
+		}
 	}
-	
-	initHitLocationTable();
 }
 
 void WoundTable::initHitLocationTable()
@@ -131,6 +171,46 @@ void WoundTable::initHitLocationTable()
 	m_hitTable[eHitLocations::Shin].m_thrust[5] = eBodyParts::Foot;	
 }
 
+eBodyParts WoundTable::stringToBodyPart(const std::string& str)
+{
+	if(str == "crown") {
+		return eBodyParts::Crown;
+	} else if(str == "face") {
+		return eBodyParts::Face;
+	} else if(str == "neck") {
+		return eBodyParts::Neck;
+	} else if(str == "shoulder") {
+		return eBodyParts::Shoulder;
+	} else if(str == "upperarm") {
+		return eBodyParts::UpperArm;
+	} else if(str == "elbow") {
+		return eBodyParts::Elbow;
+	} else if(str == "forearm") {
+		return eBodyParts::Forearm;
+	} else if(str == "hand") {
+		return eBodyParts::Hand;
+	} else if(str == "armpit") {
+		return eBodyParts::Armpit;
+	} else if(str == "ribs") {
+		return eBodyParts::Ribs;
+	} else if(str == "abs") {
+		return eBodyParts::Abs;
+	} else if(str == "hip") {
+		return eBodyParts::Hip;
+	} else if(str == "groin") {
+		return eBodyParts::Groin;
+	} else if(str == "thigh") {
+		return eBodyParts::Thigh;
+	} else if(str == "knee") {
+		return eBodyParts::Knee;
+	} else if(str == "shin") {
+		return eBodyParts::Shin;
+	} else if(str == "foot") {
+		return eBodyParts::Foot;
+	}
+	return eBodyParts::Tail;
+}
+
 eBodyParts WoundTable::getSwing(eHitLocations location)
 {
 	//dice returns an actual dice roll 1-6, so we have to offset by 1
@@ -152,5 +232,13 @@ eBodyParts WoundTable::getThrust(eHitLocations location)
 	//dice returns an actual dice roll 1-6, so we have to offset by 1
 	int roll = DiceRoller::roll() - 1;
 	return m_hitTable[location].m_thrust[roll];
+}
+
+Wound* WoundTable::getWound(eDamageTypes type, eBodyParts part, int level)
+{
+	level = min(level, 5);
+	Wound* ret = m_woundTable[type][part][level];
+	assert(ret != nullptr);
+	return ret;
 }
 

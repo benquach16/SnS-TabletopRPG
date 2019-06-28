@@ -37,6 +37,8 @@ public:
 
 	int getProficiency(eWeaponTypes type) { return m_proficiencies[type]; }
 
+	void inflictWound(Wound* wound);
+
 	// for current weapon
 	int getCombatPool() { return m_combatPool; }
 	void resetCombatPool();
@@ -48,10 +50,12 @@ public:
 				   eHitLocations& outLocation, Component*& outComponent);
 
 	void doDefense(bool isLastTempo, int diceAllocated, int diceLeft, eDefensiveManuevers& outDefense, int& outDice);
+
+	
 protected:
 	std::vector<eHitLocations> m_hitLocations;
 	std::map<eBodyParts, int> m_armor;
-	std::vector<Wound> m_wounds;
+	std::vector<Wound*> m_wounds;
 
 	std::string m_name;
 

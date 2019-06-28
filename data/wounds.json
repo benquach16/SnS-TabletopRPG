@@ -18,7 +18,7 @@
 				"effects": ["KO3", "BL1"]
 			},
 			"5": {
-				"text": "The skull shatters like a ripe melon. Really messy. Instant death.",
+				"text": ["The skull shatters like a ripe melon. Really messy. Instant death."],
 				"effects": ["Death"]
 			}
 		},
@@ -38,40 +38,232 @@
 				"effects": ["KO2", "BL1"]
 			},
 			"5": {
-				"text": "Face caves in from a massive blow. Death is almost instantaneous",
+				"text": ["Face caves in from a massive blow. Death is almost instantaneous"],
 				"effects": ["Death"]
 			}
 		},
 		"neck": {
 			"1": {
-				
+				"text": [""],
+				"effects": []
 			},
 			"2": {
+				"text": [""],
+				"effects": []
+			},
+			"3": {
+				"text": [""],
+				"effects": []
+			},
+			"4": {
+				"text": [""],
+				"effects": []
+			},
+			"5": {
+				"text": [""],
+				"effects": []
 			}
 		},
 		"shoulder": {
 			"1": {
+				"text": [""],
+				"effects": []
+			},
+			"2": {
+				"text": [""],
+				"effects": []
+			},
+			"3": {
+				"text": [""],
+				"effects": []
+			},
+			"4": {
+				"text": [""],
+				"effects": []
+			},
+			"5": {
+				"text": [""],
+				"effects": []
 			}
 		},
-		"upper arm": {
+		"upperarm": {
+			"1": {
+				"text": [""],
+				"effects": []
+			},
+			"2": {
+				"text": [""],
+				"effects": []
+			},
+			"3": {
+				"text": [""],
+				"effects": []
+			},
+			"4": {
+				"text": [""],
+				"effects": []
+			},
+			"5": {
+				"text": [""],
+				"effects": []
+			}
 		},
 		"elbow": {
+			"1": {
+				"text": [""],
+				"effects": []
+			},
+			"2": {
+				"text": [""],
+				"effects": []
+			},
+			"3": {
+				"text": [""],
+				"effects": []
+			},
+			"4": {
+				"text": [""],
+				"effects": []
+			},
+			"5": {
+				"text": [""],
+				"effects": []
+			}
 		},
 		"forearm": {
+			"1": {
+				"text": [""],
+				"effects": []
+			},
+			"2": {
+				"text": [""],
+				"effects": []
+			},
+			"3": {
+				"text": [""],
+				"effects": []
+			},
+			"4": {
+				"text": [""],
+				"effects": []
+			},
+			"5": {
+				"text": [""],
+				"effects": []
+			}
 		},
 		"hand": {
+			"1": {
+				"text": [""],
+				"effects": []
+			},
+			"2": {
+				"text": [""],
+				"effects": []
+			},
+			"3": {
+				"text": [""],
+				"effects": []
+			},
+			"4": {
+				"text": [""],
+				"effects": []
+			},
+			"5": {
+				"text": [""],
+				"effects": []
+			}
 		},
 		"armpit": {
+			"1": {
+				"text": [""],
+				"effects": []
+			},
+			"2": {
+				"text": [""],
+				"effects": []
+			},
+			"3": {
+				"text": [""],
+				"effects": []
+			},
+			"4": {
+				"text": [""],
+				"effects": []
+			},
+			"5": {
+				"text": [""],
+				"effects": []
+			}
 		},
 		"ribs": {
+			"1": {
+				"text": [""],
+				"effects": []
+			},
+			"2": {
+				"text": [""],
+				"effects": []
+			},
+			"3": {
+				"text": [""],
+				"effects": []
+			},
+			"4": {
+				"text": [""],
+				"effects": []
+			},
+			"5": {
+				"text": [""],
+				"effects": []
+			}
 		},
 		"abs": {
+			"1": {
+				"text": [""],
+				"effects": []
+			},
+			"2": {
+				"text": [""],
+				"effects": []
+			},
+			"3": {
+				"text": [""],
+				"effects": []
+			},
+			"4": {
+				"text": [""],
+				"effects": []
+			},
+			"5": {
+				"text": [""],
+				"effects": []
+			}
 		}
 	},
 	"piercing": {
 		"BTN": [3, 4, 5, 6, 6],
 		"impact": [1, 1, 2, 2, 3],
 		"crown": {
+			"1": {
+				"text":["Some torn skin, a ittle blood"]
+			},
+			"2": {
+				"text":[" Grazed scalp or temple. Surprising amount of blood."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Long graze along the skull. Serious bleeding."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Skull is pierced. Brain damaged."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":[""],
+				"effects":["Death"]
+			}
 		}
 	},
 	"cutting": {
@@ -79,7 +271,7 @@
 		"impact": [1, 2, 3, 4, 5],
 		"crown": {
 			"1": {
-				"text":["A graze, but nothing serious. Some blood in the hair.'"]
+				"text":["A graze, but nothing serious. Some blood in the hair."]
 			},
 			"2": {
 				"text":["Small cut, hair thick with blood. Itches like hell."],
@@ -97,6 +289,222 @@
 				"text":["The skull cracks open like an egg, blood spurting high in the air. Instant death."],
 				"effects":["Death"]
 			}
-		}
+		},
+		"face": {
+			"1": {
+				"text":["Small cut on cheek, some blood."]
+			},
+			"2": {
+				"text":["Handsome scar on cheek, some blood."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Ugly scar on forehead."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Face mangled. Shattered jaw."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":[" Cerebellum destroyed in a fountain of blood. Instant death."],
+				"effects":["Death"]
+			}
+		},
+		"neck": {
+			"1": {
+				"text":["Just a scratch"]
+			},
+			"2": {
+				"text":["A close shave. Trickle of blood."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Lacerates throat. Eerie sucking noise and difficult to breathe."],
+				"effects":["BL2"]
+			},
+			"4": {
+				"text":["Jugular vein cut. Lots of blood."],
+				"effects":["BL3"]
+			},
+			"5": {
+				"text":["Total or near-total decapitation in a fountain of blood. Instant death."],
+				"effects":["Death"]
+			}
+		},
+		"shoulder": {
+			"1": {
+				"text":["Shaves off some skin."]
+			},
+			"2": {
+				"text":[" Nasty cut scrapes on the shoulder bones."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Deeper flesh wound on the outer arm."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Blade cuts to the bone. Lots of blood."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":["Arm severed clean at the shoulder in a spray of blood. Barely a stump remains."],
+				"effects":["Death"]
+			}
+		},		
+		"upperarm": {
+			"1": {
+				"text":["Shaves off some skin."]
+			},
+			"2": {
+				"text":["Long gash by the elbow."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Deeper flesh wound on the outer arm."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Blade bites through the muscle and reached bone on the outer arm."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":["Arm severed above the elbow in a shower of blood."],
+				"effects":["Death"]
+			}
+		},
+		"elbow": {
+			"1": {
+				"text": ["Glancing blow."],
+				"effects": []
+			},
+			"2": {
+				"text": ["Small cut, but funny bone effect."],
+				"effects": []
+			},
+			"3": {
+				"text": [" Solid blow hits the bone. Fingers are numb for a while."],
+				"effects": []
+			},
+			"4": {
+				"text": ["Mangled elbow renders arm useless with pain extending to the fingers. Drop item."],
+				"effects": []
+			},
+			"5": {
+				"text": ["Arm severed at the elbow in a spray of blood."],
+				"effects": []
+			}
+		},
+		"forearm": {
+			"1": {
+				"text": ["Light slash along the forearm. Some blood."],
+				"effects": []
+			},
+			"2": {
+				"text": ["Long but shallow gash. Bleeds a lot."],
+				"effects": []
+			},
+			"3": {
+				"text": ["Nasty cut damages ulnar nerve. Fingers are numb."],
+				"effects": []
+			},
+			"4": {
+				"text": ["Arm broken with a lot of blood."],
+				"effects": []
+			},
+			"5": {
+				"text": ["Forearm completely mangled"],
+				"effects": []
+			}
+		},
+		"hand": {
+			"1": {
+				"text": ["Grazed hand."],
+				"effects": []
+			},
+			"2": {
+				"text": ["Small cut, but hand flinches from the pain."],
+				"effects": []
+			},
+			"3": {
+				"text": ["Deep, bleeding cut on hand."],
+				"effects": []
+			},
+			"4": {
+				"text": [""],
+				"effects": []
+			},
+			"5": {
+				"text": [""],
+				"effects": []
+			}
+		},
+		"armpit": {
+			"1": {
+				"text": [""],
+				"effects": []
+			},
+			"2": {
+				"text": [""],
+				"effects": []
+			},
+			"3": {
+				"text": [""],
+				"effects": []
+			},
+			"4": {
+				"text": [""],
+				"effects": []
+			},
+			"5": {
+				"text": [""],
+				"effects": []
+			}
+		},
+		"ribs": {
+			"1": {
+				"text": [""],
+				"effects": []
+			},
+			"2": {
+				"text": [""],
+				"effects": []
+			},
+			"3": {
+				"text": [""],
+				"effects": []
+			},
+			"4": {
+				"text": [""],
+				"effects": []
+			},
+			"5": {
+				"text": [""],
+				"effects": []
+			}
+		},
+		"abs": {
+			"1": {
+				"text": [""],
+				"effects": []
+			},
+			"2": {
+				"text": [""],
+				"effects": []
+			},
+			"3": {
+				"text": [""],
+				"effects": []
+			},
+			"4": {
+				"text": [""],
+				"effects": []
+			},
+			"5": {
+				"text": [""],
+				"effects": []
+			}
+		} 
 	}
 }

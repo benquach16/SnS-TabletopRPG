@@ -61,7 +61,7 @@ void CombatManager::run()
 	int defenseDice;
 
 	int defenseCombatPool = defender->getProficiency(defenseWeapon->getType()) + defender->getReflex();
-	defender->doDefense(false, offenseDice, defenseCombatPool, defense, defenseDice);
+	defender->doDefense(m_currentTempo == eTempo::Second, offenseDice, defenseCombatPool, defense, defenseDice);
 	assert(defenseDice <= defenseCombatPool);
 	defender->reduceCombatPool(defenseDice);
 	
@@ -77,11 +77,20 @@ void CombatManager::run()
 		eBodyParts bodyPart = WoundTable::getSingleton()->getSwing(target);
 
 		int finalDamage = MoS + offenseComponent->getDamage();
+
+		
 		cout << "inflicted level " << finalDamage << " " << damageTypeToString(offenseComponent->getType())
 			 << " wound to " << bodyPartToString(bodyPart) << endl;
+		Wound* wound = WoundTable::getSingleton()->getWound(offenseComponent->getType(), bodyPart, finalDamage);
+		cout << wound->getText() << endl;
+		defender->inflictWound(wound);
+	}
+	else if (MoS == 0) {
+		//nothing happens
+		cout << "no net successes!" << endl;
 	}
 	else if (defense != eDefensiveManuevers::Dodge) {
-		cout << "attack deflected" << endl;
+		cout << "attack deflected with " << -MoS <<  endl;
 		cout << defender->getName() << " now has initiative, becoming attacker" << endl;
 		m_initiative = 1;
 	}
