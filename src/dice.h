@@ -1,12 +1,17 @@
 #pragma once
 
 #include <stdlib.h>
+#include <random>
 #include <vector>
+
+#include "3rdparty/random.hpp"
 
 namespace DiceRoller {
 	constexpr int cDiceSides = 6;
 
-	inline int roll() { return rand()%cDiceSides + 1; }
+	inline int roll() {
+		return effolkronium::random_static::get(1,6);
+	}
 	//bool rollGetSuccess(int BTN) { return roll() >= BTN; }
 
 	std::vector<int> roll(int number);

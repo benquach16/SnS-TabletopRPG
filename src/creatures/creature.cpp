@@ -1,4 +1,5 @@
 #include "creature.h"
+#include "../3rdparty/random.hpp"
 
 using namespace std;
 
@@ -31,6 +32,7 @@ void Creature::doOffense(Creature* target, int diceLeft, int reachCost,
 						 eHitLocations& outLocation, Component*& outComponent)
 {
 	Weapon* weapon = getPrimaryWeapon();
+	//we shouldn't be able to pgo below 0 with this
 	m_combatPool -= reachCost;
 	outComponent = weapon->getBestAttack();	
 	outOffense = eOffensiveManuevers::Thrust;
