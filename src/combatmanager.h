@@ -61,7 +61,7 @@ private:
 	eCombatState m_currentState;
 	
 	eTempo m_currentTempo;
-	int m_initiative;
+	eInitiative m_initiative;
 
 	Creature* m_side1;
 	Creature* m_side2;

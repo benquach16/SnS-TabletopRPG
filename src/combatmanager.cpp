@@ -8,8 +8,8 @@
 
 using namespace std;
 
-CombatManager::CombatManager(): m_initiative(0), m_side1(nullptr), m_side2(nullptr), m_currentTempo(eTempo::First),
-								m_currentState(eCombatState::Uninitialized)
+CombatManager::CombatManager(): m_initiative(eInitiative::Side1), m_side1(nullptr), m_side2(nullptr),
+								m_currentTempo(eTempo::First), m_currentState(eCombatState::Uninitialized)
 {
 }
 
@@ -37,9 +37,8 @@ void CombatManager::initCombat(Creature* side1, Creature* side2)
 	m_side2->resetCombatPool();
 
 	m_currentTempo = eTempo::First;
-	m_initiative = 0;
+	m_initiative = eInitiative::Side1;
 	m_currentState = eCombatState::Initialized;
-	
 }
 
 void CombatManager::doInitialization()
@@ -47,6 +46,9 @@ void CombatManager::doInitialization()
 	assert(m_side1 != nullptr);
 	assert(m_side2 != nullptr);
 	assert(m_currentState == eCombatState::Initialized);
+	Log::push("Combat between " + m_side1->getName() + " and " + m_side2->getName(), Log::eMessageTypes::Announcement);
+	Log::push(m_side1->getName() + " is using " + m_side1->getPrimaryWeapon()->getName() + " and " +
+			  m_side2->getName() + " is using " + m_side2->getPrimaryWeapon()->getName());
 	m_currentState = eCombatState::Offense;
 }
 
@@ -57,11 +59,11 @@ void CombatManager::doOffense()
 	//then resolve		
 	Creature* attacker = nullptr;
 	Creature* defender = nullptr;
-	if(m_initiative == 0) {
+	if(m_initiative == eInitiative::Side1) {
 		attacker = m_side1;
 		defender = m_side2;
 	}
-	else if(m_initiative == 1) {
+	else if(m_initiative == eInitiative::Side2) {
 		attacker = m_side2;
 		defender = m_side1;
 	}
@@ -93,11 +95,11 @@ void CombatManager::doDefense()
 {
 	Creature* attacker = nullptr;
 	Creature* defender = nullptr;
-	if(m_initiative == 0) {
+	if(m_initiative == eInitiative::Side1) {
 		attacker = m_side1;
 		defender = m_side2;
 	}
-	else if(m_initiative == 1) {
+	else if(m_initiative == eInitiative::Side2) {
 		attacker = m_side2;
 		defender = m_side1;
 	}
@@ -109,7 +111,6 @@ void CombatManager::doDefense()
 	assert(m_defense.defenseDice <= defenseCombatPool);
 	defender->reduceCombatPool(m_defense.defenseDice);
 	
-	cout << defender->getName() << " defends with " << defenseWeapon->getName() << " using " << m_defense.defenseDice << " dice" << endl;
 	Log::push(defender->getName() + " defends with " + defenseWeapon->getName() + " using " + to_string(m_defense.defenseDice) + " dice");
 	
 	m_currentState = eCombatState::Resolution;
@@ -119,11 +120,11 @@ void CombatManager::doResolution()
 {
 	Creature* attacker = nullptr;
 	Creature* defender = nullptr;
-	if(m_initiative == 0) {
+	if(m_initiative == eInitiative::Side1) {
 		attacker = m_side1;
 		defender = m_side2;
 	}
-	else if(m_initiative == 1) {
+	else if(m_initiative == eInitiative::Side2) {
 		attacker = m_side2;
 		defender = m_side1;
 	}
@@ -135,7 +136,6 @@ void CombatManager::doResolution()
 	int MoS = offenseSuccesses - defenseSuccesses;
 
 	if(MoS > 0) {
-		cout << "got " << MoS << " net successes on attack" << endl;
 		eBodyParts bodyPart = WoundTable::getSingleton()->getSwing(m_offense.target);
 
 		int finalDamage = MoS + m_offense.offenseComponent->getDamage();
@@ -144,27 +144,24 @@ void CombatManager::doResolution()
 			 << " wound to " << bodyPartToString(bodyPart) << endl;
 		Log::push("inflicted level " + to_string(finalDamage) + " wound to " + bodyPartToString(bodyPart));
 		Wound* wound = WoundTable::getSingleton()->getWound(m_offense.offenseComponent->getType(), bodyPart, finalDamage);
-		Log::push(wound->getText());
+		Log::push(wound->getText(), Log::eMessageTypes::Damage);
 		cout << wound->getText() << endl;
 		defender->inflictWound(wound);
 	}
 	else if (MoS == 0) {
 		//nothing happens
-		cout << "no net successes!" << endl;
 		Log::push("no net successes");
 	}
 	else if (m_defense.defense != eDefensiveManuevers::Dodge) {
-		cout << "attack deflected with " << -MoS <<  endl;
 		Log::push("attack deflected with " + to_string(-MoS));
-		cout << defender->getName() << " now has initiative, becoming attacker" << endl;
+		Log::push(defender->getName() + " now has initative, becoming attacker");
 		
-		m_initiative = m_initiative == 0 ? 1 : 0;
+		m_initiative = m_initiative == eInitiative::Side1 ? eInitiative::Side2 : eInitiative::Side1;
 	}	
 	if(m_currentTempo == eTempo::First) {
 		m_currentTempo = eTempo::Second;
 	} else {
 		// reset combat pools
-		cout << "Combat pools have reset" << endl;
 		Log::push("Exchange has ended, combat pools have reset");
 		m_currentTempo = eTempo::First;
 		m_side1->resetCombatPool();
