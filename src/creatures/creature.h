@@ -45,11 +45,11 @@ public:
 	void reduceCombatPool(int num) { m_combatPool -= num; }
 
 	// AI functions
-	void doOffense(Creature* target, int diceLeft, int reachCost,
+	void doOffense(Creature* target, int reachCost,
 				   eOffensiveManuevers& outOffense, int& outDice,
 				   eHitLocations& outLocation, Component*& outComponent);
 
-	void doDefense(bool isLastTempo, int diceAllocated, int diceLeft, eDefensiveManuevers& outDefense, int& outDice);
+	void doDefense(bool isLastTempo, int diceAllocated, eDefensiveManuevers& outDefense, int& outDice);
 
 	
 protected:

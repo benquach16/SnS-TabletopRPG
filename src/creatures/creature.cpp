@@ -27,7 +27,7 @@ void Creature::resetCombatPool()
 	m_combatPool = getProficiency(weapon->getType()) + getReflex();
 }
 
-void Creature::doOffense(Creature* target, int diceLeft, int reachCost,
+void Creature::doOffense(Creature* target, int reachCost,
 						 eOffensiveManuevers& outOffense, int& outDice,
 						 eHitLocations& outLocation, Component*& outComponent)
 {
@@ -45,7 +45,7 @@ void Creature::doOffense(Creature* target, int diceLeft, int reachCost,
 }
 
 
-void Creature::doDefense(bool isLastTempo, int diceAllocated, int diceLeft, eDefensiveManuevers& outDefense, int& outDice)
+void Creature::doDefense(bool isLastTempo, int diceAllocated, eDefensiveManuevers& outDefense, int& outDice)
 {
 	outDefense = eDefensiveManuevers::Parry;
 	if(isLastTempo == true) {
@@ -53,6 +53,6 @@ void Creature::doDefense(bool isLastTempo, int diceAllocated, int diceLeft, eDef
 		outDice = m_combatPool;
 		return;
 	}
-	outDice = std::min(diceAllocated + 1, diceLeft);
+	outDice = std::min(diceAllocated + 1, m_combatPool);
 }
 							 
