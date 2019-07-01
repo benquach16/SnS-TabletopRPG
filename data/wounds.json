@@ -19,7 +19,7 @@
 			},
 			"5": {
 				"text": ["The skull shatters like a ripe melon. Really messy. Instant death."],
-				"effects": ["Death"]
+				"effects": ["death"]
 			}
 		},
 		"face": {
@@ -39,7 +39,7 @@
 			},
 			"5": {
 				"text": ["Face caves in from a massive blow. Death is almost instantaneous"],
-				"effects": ["Death"]
+				"effects": ["death"]
 			}
 		},
 		"neck": {
@@ -262,7 +262,49 @@
 			},
 			"5": {
 				"text":[""],
-				"effects":["Death"]
+				"effects":["death"]
+			}
+		},
+		"face": {
+			"1": {
+				"text":["Some torn skin, a ittle blood"]
+			},
+			"2": {
+				"text":[" Grazed scalp or temple. Surprising amount of blood."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Long graze along the skull. Serious bleeding."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Skull is pierced. Brain damaged."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":[""],
+				"effects":["death"]
+			}
+		},
+		"neck": {
+			"1": {
+				"text":["Some torn skin, a ittle blood"]
+			},
+			"2": {
+				"text":["Grazed scalp or temple. Surprising amount of blood."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Long graze along the skull. Serious bleeding."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Skull is pierced. Brain damaged."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":[""],
+				"effects":["death"]
 			}
 		}
 	},
@@ -282,12 +324,12 @@
 				"effects":["BL1", "KO1"]
 			},
 			"4": {
-				"text":["Cracked skull and a lot of blood. Severe concusson.", "Cracked skull and a lot of blood. Brain damage.", "Cracked skull and a lot of blood. Ear trauma."],
+				"text":["Cracked skull and a lot of blood. Severe concussion.", "Cracked skull and a lot of blood. Brain damage.", "Cracked skull and a lot of blood. Ear trauma."],
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
 				"text":["The skull cracks open like an egg, blood spurting high in the air. Instant death."],
-				"effects":["Death"]
+				"effects":["death"]
 			}
 		},
 		"face": {
@@ -307,8 +349,8 @@
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":[" Cerebellum destroyed in a fountain of blood. Instant death."],
-				"effects":["Death"]
+				"text":["Cerebellum destroyed in a fountain of blood. Instant death."],
+				"effects":["death"]
 			}
 		},
 		"neck": {
@@ -329,7 +371,7 @@
 			},
 			"5": {
 				"text":["Total or near-total decapitation in a fountain of blood. Instant death."],
-				"effects":["Death"]
+				"effects":["death"]
 			}
 		},
 		"shoulder": {
@@ -337,7 +379,7 @@
 				"text":["Shaves off some skin."]
 			},
 			"2": {
-				"text":[" Nasty cut scrapes on the shoulder bones."],
+				"text":["Nasty cut scrapes on the shoulder bones."],
 				"effects": ["BL1"]
 			},
 			"3": {
@@ -350,7 +392,7 @@
 			},
 			"5": {
 				"text":["Arm severed clean at the shoulder in a spray of blood. Barely a stump remains."],
-				"effects":["Death"]
+				"effects":["death"]
 			}
 		},		
 		"upperarm": {
@@ -371,7 +413,7 @@
 			},
 			"5": {
 				"text":["Arm severed above the elbow in a shower of blood."],
-				"effects":["Death"]
+				"effects":["death"]
 			}
 		},
 		"elbow": {
@@ -384,7 +426,7 @@
 				"effects": []
 			},
 			"3": {
-				"text": [" Solid blow hits the bone. Fingers are numb for a while."],
+				"text": ["Solid blow hits the bone. Fingers are numb for a while."],
 				"effects": []
 			},
 			"4": {
@@ -432,43 +474,43 @@
 				"effects": []
 			},
 			"4": {
-				"text": [""],
+				"text": ["Some fingers lost."],
 				"effects": []
 			},
 			"5": {
-				"text": [""],
+				"text": ["Hand completely mangled."],
 				"effects": []
 			}
 		},
 		"armpit": {
 			"1": {
-				"text": [""],
+				"text": ["Minor slash. Some torn skin."],
 				"effects": []
 			},
 			"2": {
-				"text": [""],
+				"text": ["Nasty cut scrapes on the ribs, but does little damage."],
 				"effects": []
 			},
 			"3": {
-				"text": [""],
+				"text": ["Deep gash with enough force to fracture ribs and knock the wind out of you."],
 				"effects": []
 			},
 			"4": {
-				"text": [""],
+				"text": ["Cleaves through the flesh and reaches bone."],
 				"effects": []
 			},
 			"5": {
-				"text": [""],
+				"text": ["Arm severed at a shoulder in a spray of blood."],
 				"effects": []
 			}
 		},
 		"ribs": {
 			"1": {
-				"text": [""],
+				"text": ["Minor slash. Some torn skin."],
 				"effects": []
 			},
 			"2": {
-				"text": [""],
+				"text": ["Nasty cut scrapes on the ribs, but does little damage."],
 				"effects": []
 			},
 			"3": {
@@ -485,6 +527,28 @@
 			}
 		},
 		"abs": {
+			"1": {
+				"text": [""],
+				"effects": []
+			},
+			"2": {
+				"text": [""],
+				"effects": []
+			},
+			"3": {
+				"text": [""],
+				"effects": []
+			},
+			"4": {
+				"text": [""],
+				"effects": []
+			},
+			"5": {
+				"text": [""],
+				"effects": []
+			}
+		},
+		"hip": {
 			"1": {
 				"text": [""],
 				"effects": []

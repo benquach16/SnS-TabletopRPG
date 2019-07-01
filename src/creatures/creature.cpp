@@ -19,12 +19,16 @@ void Creature::inflictWound(Wound* wound)
 	m_BTN = max(m_BTN, wound->getBTN());
 	m_combatPool -= wound->getImpact();
 	m_wounds.push_back(wound);
+	m_bloodLoss;
 }
 
 void Creature::resetCombatPool()
 {
+	//carryover impact damage across tempos
 	Weapon* weapon = getPrimaryWeapon();
-	m_combatPool = getProficiency(weapon->getType()) + getReflex();
+	int carry = m_combatPool;
+	carry = min(0, carry);
+	m_combatPool = getProficiency(weapon->getType()) + getReflex() + carry;
 }
 
 void Creature::doOffense(Creature* target, int reachCost,

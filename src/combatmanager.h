@@ -2,6 +2,7 @@
 
 #include "creatures/creature.h"
 #include "weapons/types.h"
+#include "log.h"
 #include "dice.h"
 
 enum class eTempo : unsigned
@@ -37,11 +38,15 @@ public:
 	void initCombat(Creature* side1, Creature* side2);
 	void doInitialization();
 	void doOffense();
+	void doOffensePlayer();
 	void doDefense();
+	void doDefensePlayer();
 	void doResolution();
+	void doEndCombat();
 	void setSide1(Creature* creature);
 	void setSide2(Creature* creature);
-	void resetSides() { m_side1 = nullptr; m_side2 = nullptr; }
+
+	void writeMessage(const std::string& str, Log::eMessageTypes type = Log::eMessageTypes::Standard);
 private:
 	struct offense {
 		eOffensiveManuevers offense;

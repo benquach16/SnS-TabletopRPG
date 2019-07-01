@@ -10,6 +10,7 @@ std::deque<Log::message> Log::m_queue = std::deque<Log::message>();
 constexpr unsigned cCharSize = 14;
 constexpr unsigned cLinesDisplayed = 12;
 constexpr unsigned cMaxHistory = 50;
+constexpr unsigned cBorder = 5;
 
 void Log::push(const std::string &str, eMessageTypes type)
 {
@@ -18,8 +19,12 @@ void Log::push(const std::string &str, eMessageTypes type)
 
 void Log::run()
 {
-	sf::RectangleShape rectangle(sf::Vector2f(800, 200));
+	auto windowSize = Game::getWindow().getSize();
 
+	unsigned rectHeight = cCharSize * (cLinesDisplayed+1);
+	sf::RectangleShape rectangle(sf::Vector2f(windowSize.x - 6, rectHeight - 3));
+	rectangle.setPosition(3, windowSize.y - rectHeight);
+	
 	if(m_queue.size() > cMaxHistory) {
 		unsigned difference = m_queue.size() - cLinesDisplayed;
 		for(unsigned i = 0; i < difference; ++i) {
@@ -27,7 +32,13 @@ void Log::run()
 		}
 
 	}
-
+	rectangle.setFillColor(sf::Color(12, 12, 23));
+	rectangle.setOutlineThickness(3);
+	rectangle.setOutlineColor(sf::Color(22, 22, 33));
+	Game::getWindow().draw(rectangle);
+	
+	
+	//only display last cLinesDisplayed elements of m_queue
 	int size = min(static_cast<unsigned>(m_queue.size()), cLinesDisplayed);
 	for(int i = 0; i < size; ++i)
 	{
@@ -47,7 +58,8 @@ void Log::run()
 		}
 		text.setCharacterSize(cCharSize);
 		text.setFont(Game::getDefaultFont());
-		text.setPosition(0, Game::getWindow().getSize().y - ((cCharSize * (cLinesDisplayed + 1)) - i * cCharSize));
+		//i needs to be from 0 - cLinesDisplayed to format properly
+		text.setPosition(cBorder, windowSize.y - ((cCharSize * (cLinesDisplayed + 1)) - i * cCharSize));
 		Game::getWindow().draw(text);		
 	}
 }

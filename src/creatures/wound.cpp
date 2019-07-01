@@ -19,6 +19,12 @@ Wound::Wound(eBodyParts location, std::vector<std::string> text, int level, int 
 {
 }
 
+bool Wound::causesDeath()
+{
+	auto it = m_effects.find(eEffects::Death);
+	return (it != m_effects.end());
+}
+
 WoundTable::WoundTable()
 {
 	ifstream file(filepath);
@@ -70,6 +76,12 @@ void WoundTable::initWoundTable(eDamageTypes type, nlohmann::json woundJson)
 			auto woundJson = values[index];
 
 			set<eEffects> effects;
+			if(woundJson["effects"].is_null() == false) {
+				for(int j = 0; j < woundJson["effects"].size(); ++j) {	
+					eEffects effect = stringToEffect(woundJson["effects"][j]);
+					effects.insert(effect);
+				}
+			}
 			Wound* wound = new Wound(bodyPart, woundJson["text"], i, m_btnTable[type][i-1],
 									 m_impactTable[type][i-1], effects);
 
@@ -209,6 +221,25 @@ eBodyParts WoundTable::stringToBodyPart(const std::string& str)
 		return eBodyParts::Foot;
 	}
 	return eBodyParts::Tail;
+}
+
+eEffects WoundTable::stringToEffect(const std::string& str)
+{
+	if(str == "KO1") {
+		return eEffects::KO1;
+	} else if(str == "KO2") {
+		return eEffects::KO2;
+	} else if(str == "KO3") {
+		return eEffects::KO3;
+	} else if(str == "BL1") {
+		return eEffects::KO2;
+	} else if(str == "BL2") {
+		return eEffects::KO2;
+	} else if(str == "BL3") {
+		return eEffects::KO2;
+	}
+	
+	return eEffects::Death;
 }
 
 eBodyParts WoundTable::getSwing(eHitLocations location)

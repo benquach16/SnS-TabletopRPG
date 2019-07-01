@@ -18,6 +18,7 @@ public:
 	std::string getText() { return m_text[0]; }
 	int getBTN() { return m_btn; }
 	int getImpact() { return m_impact; }
+	bool causesDeath();
 private:
 	eBodyParts m_location;
 	std::vector<std::string> m_text;
@@ -56,6 +57,7 @@ private:
 	void initHitLocationTable();
 	void initWoundTable(eDamageTypes type, nlohmann::json woundJson);
 	eBodyParts stringToBodyPart(const std::string& str);
+	eEffects stringToEffect(const std::string& str);
 	
 	static WoundTable *singleton;
 	
