@@ -85,7 +85,7 @@ void CombatManager::doOffense()
 	
 	writeMessage(attacker->getName() + " attacks with " + offenseWeapon->getName() + " using " +
 			  m_offense.offenseComponent->getName()
-			  + " with " + to_string(m_offense.offenseDice) + " dice");
+			  + " with " + to_string(m_offense.offenseDice) + " action points");
 	
 	m_currentState = eCombatState::Defense;
 }
@@ -116,9 +116,15 @@ void CombatManager::doDefense()
 	assert(m_defense.defenseDice <= defenseCombatPool);
 	defender->reduceCombatPool(m_defense.defenseDice);
 	
-	writeMessage(defender->getName() + " defends with " + defenseWeapon->getName() + " using " + to_string(m_defense.defenseDice) + " dice");
+	writeMessage(defender->getName() + " defends with " + defenseWeapon->getName() +
+				 " using " + to_string(m_defense.defenseDice) + " action points");
 	
 	m_currentState = eCombatState::Resolution;
+}
+
+void CombatManager::doDefensePlayer()
+{
+	
 }
 
 void CombatManager::doResolution()
@@ -144,13 +150,14 @@ void CombatManager::doResolution()
 		eBodyParts bodyPart = WoundTable::getSingleton()->getSwing(m_offense.target);
 
 		int finalDamage = MoS + m_offense.offenseComponent->getDamage();
-		
-		cout << "inflicted level " << finalDamage << " " << damageTypeToString(m_offense.offenseComponent->getType())
-			 << " wound to " << bodyPartToString(bodyPart) << endl;
+
 		writeMessage("inflicted level " + to_string(finalDamage) + " wound to " + bodyPartToString(bodyPart));
 		Wound* wound = WoundTable::getSingleton()->getWound(m_offense.offenseComponent->getType(), bodyPart, finalDamage);
 		writeMessage(wound->getText(), Log::eMessageTypes::Damage);
-		cout << wound->getText() << endl;
+		if(wound->getBTN() > defender->getBTN())
+		{
+			writeMessage(defender->getName() + " begins to struggle from the pain", Log::eMessageTypes::Alert);
+		}
 		defender->inflictWound(wound);
 
 		if(wound->causesDeath() == true) {
@@ -159,13 +166,17 @@ void CombatManager::doResolution()
 			m_currentState = eCombatState::FinishedCombat;
 			return;
 		}
+
+		writeMessage("Wound impact causes " + defender->getName() + " to lose " +
+					 to_string(wound->getImpact()) + " action points!", Log::eMessageTypes::Alert);
+
 	}
 	else if (MoS == 0) {
 		//nothing happens
 		writeMessage("no net successes");
 	}
 	else if (m_defense.defense != eDefensiveManuevers::Dodge) {
-		writeMessage("attack deflected with " + to_string(-MoS));
+		writeMessage("attack deflected with " + to_string(-MoS) + " successes");
 		writeMessage(defender->getName() + " now has initative, becoming attacker");
 		
 		m_initiative = m_initiative == eInitiative::Side1 ? eInitiative::Side2 : eInitiative::Side1;

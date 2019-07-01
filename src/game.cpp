@@ -14,7 +14,7 @@ Game::Game()
 
 void Game::initialize()
 {
-	m_window.create(sf::VideoMode(800, 600), "window");
+	m_window.create(sf::VideoMode(1600, 900), "window");
 	m_defaultFont.loadFromFile("data/fonts/Consolas.ttf");
 }
 
@@ -49,8 +49,10 @@ void Game::run()
 		while (m_window.pollEvent(event))
 		{
 			// "close requested" event: we close the window
-			if (event.type == sf::Event::Closed)
+			if (event.type == sf::Event::Closed) {
 				m_window.close();
+			}
+
 		}
 		Log::run();
 

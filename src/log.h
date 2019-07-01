@@ -10,6 +10,7 @@ public:
 	enum eMessageTypes {
 		Announcement,
 		Standard,
+		Alert,
 		Damage,
 	};
 	struct message {
@@ -19,5 +20,8 @@ public:
 	static void push(const std::string& str, eMessageTypes type = eMessageTypes::Standard);
 	static void run();
 private:
+
+	//helper funcs
+	static sf::Text createLogText(const std::string& str, eMessageTypes type);
 	static std::deque<message> m_queue;
 };
