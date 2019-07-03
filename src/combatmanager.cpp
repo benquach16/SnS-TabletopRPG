@@ -53,7 +53,7 @@ void CombatManager::doInitialization()
 	writeMessage(m_side1->getName() + " is using " + m_side1->getPrimaryWeapon()->getName() + " and " +
 			  m_side2->getName() + " is using " + m_side2->getPrimaryWeapon()->getName());
 
-	m_currentState = eCombatState::Offense;
+	m_currentState = eCombatState::RollInitiative;
 }
 
 void CombatManager::doRollInitiative()
@@ -63,16 +63,16 @@ void CombatManager::doRollInitiative()
 	eInitiativeRoll side2 = m_side2->doInitiative();
 	if(side1 == eInitiativeRoll::Defend && side2 == eInitiativeRoll::Defend) {
 		//repeat
-		writeMessage("Both sides chose to defend, rolling for initiative again");
+		writeMessage("Both sides chose to defend, deciding initiative again");
 		m_currentState = eCombatState::RollInitiative;
 		return;
 	} else if(side1 == eInitiativeRoll::Attack && side2 == eInitiativeRoll::Defend) {
-		writeMessage(m_side1->getName() + " has initiative");
+		writeMessage(m_side1->getName() + " chose to attack and " + m_side2->getName() + " is defending");
 		m_initiative = eInitiative::Side1;
 		m_currentState = eCombatState::Offense;
 		return;
 	} else if(side1 == eInitiativeRoll::Defend && side2 == eInitiativeRoll::Attack) {
-		writeMessage(m_side2->getName() + " has initiative");
+		writeMessage(m_side2->getName() + " chose to attack and " + m_side1->getName() + " is defending");
 		m_initiative = eInitiative::Side2;
 		m_currentState = eCombatState::Offense;		
 		return;
@@ -84,7 +84,8 @@ void CombatManager::doRollInitiative()
 		int side1Successes = DiceRoller::rollGetSuccess(m_side1->getBTN(), m_side1->getSpeed());
 		int side2Successes = DiceRoller::rollGetSuccess(m_side2->getBTN(), m_side2->getSpeed());
 
-		m_initiative = side1Successes > side2Successes ? eInitiative::Side1 : eInitiative::Side2;
+		m_initiative = side1Successes < side2Successes ? eInitiative::Side1 : eInitiative::Side2;
+		m_currentState = eCombatState::DualOffense;
 		return;
 	}
 
@@ -143,6 +144,15 @@ void CombatManager::doOffense()
 void CombatManager::doDualOffense()
 {
 	//both sides rolled red
+	Creature* attacker = nullptr;
+	Creature* defender = nullptr;
+	setSides(attacker, defender);
+	//person who rolled better on speed goes second
+	doOffense();
+	switchInitiative();
+	doOffense();
+	
+	m_currentState = eCombatState::DualOffenseResolve;
 }
 
 void CombatManager::doOffensePlayer()
@@ -196,29 +206,7 @@ void CombatManager::doResolution()
 	int MoS = offenseSuccesses - defenseSuccesses;
 
 	if(MoS > 0) {
-		eBodyParts bodyPart = WoundTable::getSingleton()->getSwing(attack.target);
-
-		int finalDamage = MoS + attack.component->getDamage();
-
-		writeMessage("inflicted level " + to_string(finalDamage) + " wound to " + bodyPartToString(bodyPart));
-		Wound* wound = WoundTable::getSingleton()->getWound(attack.component->getType(), bodyPart, finalDamage);
-		writeMessage(wound->getText(), Log::eMessageTypes::Damage);
-		if(wound->getBTN() > defender->getBTN())
-		{
-			writeMessage(defender->getName() + " begins to struggle from the pain", Log::eMessageTypes::Alert);
-		}
-		defender->inflictWound(wound);
-
-		if(wound->causesDeath() == true) {
-			//end combat
-			writeMessage(defender->getName() + " has been killed", Log::eMessageTypes::Announcement);
-			m_currentState = eCombatState::FinishedCombat;
-			return;
-		}
-
-		writeMessage("Wound impact causes " + defender->getName() + " to lose " +
-					 to_string(wound->getImpact()) + " action points!", Log::eMessageTypes::Alert);
-
+		inflictWound(MoS, attack, defender);
 	}
 	else if (MoS == 0) {
 		//nothing happens
@@ -241,12 +229,75 @@ void CombatManager::doResolution()
 	m_currentState = eCombatState::Offense;
 }
 
+void CombatManager::doDualOffenseResolve()
+{
+	//dual aggression
+	Creature::Offense attack = m_side1->getQueuedOffense();
+	Creature::Offense attack2 = m_side2->getQueuedOffense();
+
+	int MoS = DiceRoller::rollGetSuccess(m_side1->getBTN(), attack.dice);
+	int MoS2 = DiceRoller::rollGetSuccess(m_side2->getBTN(), attack2.dice);
+
+	//resolve both
+	bool death = false;
+	if(MoS > 0) {
+		if(inflictWound(MoS, attack, m_side2) == true) {
+			death = true;
+		}
+	}
+	if(MoS2 > 0) {
+		if(inflictWound(MoS2, attack2, m_side1) == true) {
+			death = true;
+		}
+	}
+
+	//intiative goes to whoever got more hits
+	m_currentState = eCombatState::Offense;
+	if(MoS > MoS2) {
+		m_initiative = eInitiative::Side1;
+		return;
+	} else if (MoS < MoS2) {
+		m_initiative = eInitiative::Side2;
+		return;
+	} else {
+		//reroll if no one died
+		m_currentState = death == true ? eCombatState::FinishedCombat : eCombatState::RollInitiative;
+	}
+}
+
 void CombatManager::doEndCombat()
 {
 	writeMessage("Combat has ended", Log::eMessageTypes::Announcement);
 	m_side1 = nullptr;
 	m_side2 = nullptr;
 	m_currentState = eCombatState::Uninitialized;
+}
+
+bool CombatManager::inflictWound(int MoS, Creature::Offense attack, Creature* target)
+{
+	eBodyParts bodyPart = WoundTable::getSingleton()->getSwing(attack.target);
+
+	int finalDamage = MoS + attack.component->getDamage();
+
+	writeMessage("inflicted level " + to_string(finalDamage) + " wound to " + bodyPartToString(bodyPart));
+	Wound* wound = WoundTable::getSingleton()->getWound(attack.component->getType(), bodyPart, finalDamage);
+	writeMessage(wound->getText(), Log::eMessageTypes::Damage);
+	if(wound->getBTN() > target->getBTN())
+	{
+		writeMessage(target->getName() + " begins to struggle from the pain", Log::eMessageTypes::Alert);
+	}
+	target->inflictWound(wound);
+
+	if(wound->causesDeath() == true) {
+		//end combat
+		writeMessage(target->getName() + " has been killed", Log::eMessageTypes::Announcement);
+		m_currentState = eCombatState::FinishedCombat;
+		return true;
+	}
+
+	writeMessage("Wound impact causes " + target->getName() + " to lose " +
+				 to_string(wound->getImpact()) + " action points!", Log::eMessageTypes::Alert);
+	return false;
 }
 
 void CombatManager::run()
@@ -265,11 +316,17 @@ void CombatManager::run()
 	case eCombatState::Offense:
 		doOffense();
 		break;
+	case eCombatState::DualOffense:
+		doDualOffense();
+		break;
 	case eCombatState::Defense:
 		doDefense();
 		break;
 	case eCombatState::Resolution:
 		doResolution();
+		break;
+	case eCombatState::DualOffenseResolve:
+		doDualOffenseResolve();
 		break;
 	case eCombatState::FinishedCombat:
 		doEndCombat();
