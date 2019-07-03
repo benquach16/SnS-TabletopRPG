@@ -45,12 +45,27 @@ public:
 	void reduceCombatPool(int num) { m_combatPool -= num; }
 
 	// AI functions
-	void doOffense(Creature* target, int reachCost,
-				   eOffensiveManuevers& outOffense, int& outDice,
-				   eHitLocations& outLocation, Component*& outComponent);
+	virtual bool isPlayer() { return false; }
+	void doOffense(Creature* target, int reachCost);
 
-	void doDefense(bool isLastTempo, int diceAllocated, eDefensiveManuevers& outDefense, int& outDice);
+	void doDefense(bool isLastTempo, int diceAllocated);
 
+	eInitiativeRoll doInitiative();
+
+	struct Offense {
+		eOffensiveManuevers manuever;
+		int dice;
+		eHitLocations target;
+		Component* component = nullptr;
+	};
+
+	struct Defense {
+		eDefensiveManuevers manuever;
+		int dice;
+	};
+
+	Offense getQueuedOffense() { return m_currentOffense; }
+	Defense getQueuedDefense() { return m_currentDefense; }
 	
 protected:
 	std::vector<eHitLocations> m_hitLocations;
@@ -58,6 +73,9 @@ protected:
 	std::vector<Wound*> m_wounds;
 
 	std::string m_name;
+
+	Offense m_currentOffense;
+	Defense m_currentDefense;
 
 	//index
 	int m_primaryWeaponId;

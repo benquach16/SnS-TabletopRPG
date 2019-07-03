@@ -50,6 +50,12 @@ enum class eLength : unsigned
 	Ludicrous = 6
 };
 
+enum class eInitiativeRoll : unsigned
+{
+	Attack,
+	Defend,
+};
+
 enum class eMaterials : unsigned
 {
 	Iron		

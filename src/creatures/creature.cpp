@@ -31,32 +31,50 @@ void Creature::resetCombatPool()
 	m_combatPool = getProficiency(weapon->getType()) + getReflex() + carry;
 }
 
-void Creature::doOffense(Creature* target, int reachCost,
-						 eOffensiveManuevers& outOffense, int& outDice,
-						 eHitLocations& outLocation, Component*& outComponent)
+void Creature::doOffense(Creature* target, int reachCost)
 {
 	Weapon* weapon = getPrimaryWeapon();
 	//we shouldn't be able to pgo below 0 with this
 	m_combatPool -= reachCost;
-	outComponent = weapon->getBestAttack();	
-	outOffense = eOffensiveManuevers::Thrust;
 
-	if(outComponent->getAttack() == eAttacks::Swing) {
-		outOffense = eOffensiveManuevers::Swing;
+	m_currentOffense.manuever = eOffensiveManuevers::Thrust;
+	m_currentOffense.component = weapon->getBestAttack();
+	if(m_currentOffense.component->getAttack() == eAttacks::Swing) {
+		m_currentOffense.manuever = eOffensiveManuevers::Swing;
 	}
-	outDice = m_combatPool / 2;
-	outLocation = eHitLocations::Head;
+	m_currentOffense.target = eHitLocations::Head;
+	int dice = m_combatPool / 2 + effolkronium::random_static::get(0, m_combatPool/3)
+		- effolkronium::random_static::get(0, m_combatPool/3);
+
+	//bound
+	dice = max(0, dice);
+	dice = min(dice, m_combatPool);
+	m_currentOffense.dice = dice;
 }
 
 
-void Creature::doDefense(bool isLastTempo, int diceAllocated, eDefensiveManuevers& outDefense, int& outDice)
+void Creature::doDefense(bool isLastTempo, int diceAllocated)
 {
-	outDefense = eDefensiveManuevers::Parry;
+	m_currentDefense.manuever = eDefensiveManuevers::Parry;
 	if(isLastTempo == true) {
 		//use all dice because we're going to refresh anyway
-		outDice = m_combatPool;
+		m_currentDefense.dice = m_combatPool;
 		return;
 	}
-	outDice = std::min(diceAllocated + 1, m_combatPool);
+	int dice = std::min(diceAllocated + effolkronium::random_static::get(0, m_combatPool/3)
+					   - effolkronium::random_static::get(0, m_combatPool/3)
+					   , m_combatPool);
+	dice = max(0, dice);
+	m_currentDefense.dice = dice;
+}
+
+eInitiativeRoll Creature::doInitiative()
+{
+	//do random for now
+	//this should be based on other creatures weapon length and armor and stuff
+	if(effolkronium::random_static::get(0, 1) == 1){
+		return eInitiativeRoll::Attack;
+	}
+	return eInitiativeRoll::Defend;
 }
 							 

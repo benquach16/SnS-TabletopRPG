@@ -29,7 +29,7 @@ void Log::run()
 	logBkgrnd.setPosition(3, windowSize.y - rectHeight);
 	
 	if(m_queue.size() > cMaxHistory) {
-		unsigned difference = m_queue.size() - cLinesDisplayed;
+		unsigned difference = m_queue.size() - cMaxHistory;
 		for(unsigned i = 0; i < difference; ++i) {
 			m_queue.pop_front();
 		}

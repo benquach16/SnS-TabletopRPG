@@ -20,7 +20,8 @@ std::string defensiveManueverToString(eDefensiveManuevers manuever)
 	switch(manuever) {
 	case eDefensiveManuevers::Parry:
 		return "Parry";
-		
+	case eDefensiveManuevers::Dodge:
+		return "Dodge";
 	}
 	return "";
 }

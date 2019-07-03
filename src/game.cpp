@@ -38,7 +38,7 @@ void Game::run()
 
 		sf::Time elapsedTime = clock.getElapsedTime();
 		tick += elapsedTime.asSeconds();
-
+		Log::run();
 		if(tick > 2.0) {
 			manager.run();
 			tick = 0;
@@ -54,7 +54,6 @@ void Game::run()
 			}
 
 		}
-		Log::run();
 
 		m_window.display();
 	}
