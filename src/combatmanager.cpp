@@ -217,15 +217,7 @@ void CombatManager::doResolution()
 		writeMessage(defender->getName() + " now has initative, becoming attacker");
 		switchInitiative();
 	}	
-	if(m_currentTempo == eTempo::First) {
-		m_currentTempo = eTempo::Second;
-	} else {
-		// reset combat pools
-		writeMessage("Exchange has ended, combat pools have reset");
-		m_currentTempo = eTempo::First;
-		m_side1->resetCombatPool();
-		m_side2->resetCombatPool();
-	}	
+	switchTempo();
 	m_currentState = eCombatState::Offense;
 }
 
@@ -251,18 +243,19 @@ void CombatManager::doDualOffenseResolve()
 		}
 	}
 
+	switchTempo();
+	
 	//intiative goes to whoever got more hits
 	m_currentState = eCombatState::Offense;
 	if(MoS > MoS2) {
 		m_initiative = eInitiative::Side1;
-		return;
 	} else if (MoS < MoS2) {
 		m_initiative = eInitiative::Side2;
-		return;
 	} else {
 		//reroll if no one died
-		m_currentState = death == true ? eCombatState::FinishedCombat : eCombatState::RollInitiative;
+		m_currentState = eCombatState::RollInitiative;
 	}
+	m_currentState = death == true ? eCombatState::FinishedCombat : m_currentState;
 }
 
 void CombatManager::doEndCombat()
@@ -298,6 +291,19 @@ bool CombatManager::inflictWound(int MoS, Creature::Offense attack, Creature* ta
 	writeMessage("Wound impact causes " + target->getName() + " to lose " +
 				 to_string(wound->getImpact()) + " action points!", Log::eMessageTypes::Alert);
 	return false;
+}
+
+void CombatManager::switchTempo()
+{
+	if(m_currentTempo == eTempo::First) {
+		m_currentTempo = eTempo::Second;
+	} else {
+		// reset combat pools
+		writeMessage("Exchange has ended, combat pools have reset");
+		m_currentTempo = eTempo::First;
+		m_side1->resetCombatPool();
+		m_side2->resetCombatPool();
+	}
 }
 
 void CombatManager::run()

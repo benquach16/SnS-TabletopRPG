@@ -56,6 +56,7 @@ public:
 	void setSides(Creature*& attacker, Creature*& defender);
 
 	void switchInitiative() { m_initiative = m_initiative == eInitiative::Side1 ? eInitiative::Side2 : eInitiative::Side1; }
+	void switchTempo();
 
 	bool inflictWound(int MoS, Creature::Offense attack, Creature* target);
 	void writeMessage(const std::string& str, Log::eMessageTypes type = Log::eMessageTypes::Standard);
