@@ -4,6 +4,7 @@
 #include "combatmanager.h"
 #include "weapons/weapon.h"
 #include "creatures/human.h"
+#include "ui/combatui.h"
 
 sf::RenderWindow Game::m_window;
 sf::Font Game::m_defaultFont;
@@ -39,6 +40,7 @@ void Game::run()
 		sf::Time elapsedTime = clock.getElapsedTime();
 		tick += elapsedTime.asSeconds();
 		Log::run();
+		CombatUI::run(&manager);
 		if(tick > 2.0) {
 			manager.run();
 			tick = 0;

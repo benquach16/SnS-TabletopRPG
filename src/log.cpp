@@ -1,18 +1,12 @@
 #include <algorithm>
 #include <iostream>
 #include "log.h"
+#include "ui/types.h"
 #include "game.h"
 
 using namespace std;
 
 std::deque<Log::message> Log::m_queue = std::deque<Log::message>();
-
-constexpr unsigned cCharSize = 14;
-constexpr unsigned cLinesDisplayed = 12;
-constexpr unsigned cMaxHistory = 50;
-constexpr unsigned cBorder = 5;
-
-
 
 void Log::push(const std::string &str, eMessageTypes type)
 {
@@ -25,9 +19,9 @@ void Log::run()
 
 	unsigned rectHeight = cCharSize * (cLinesDisplayed+1);
 	//magic numbers
-	sf::RectangleShape logBkgrnd(sf::Vector2f(windowSize.x - 6, rectHeight - 3));
-	logBkgrnd.setPosition(3, windowSize.y - rectHeight);
-	
+	sf::RectangleShape logBkg(sf::Vector2f(windowSize.x - 6, rectHeight - 3));
+	logBkg.setPosition(3, windowSize.y - rectHeight);
+
 	if(m_queue.size() > cMaxHistory) {
 		unsigned difference = m_queue.size() - cMaxHistory;
 		for(unsigned i = 0; i < difference; ++i) {
@@ -36,11 +30,11 @@ void Log::run()
 
 	}
 	
-	logBkgrnd.setFillColor(sf::Color(12, 12, 23));
-	logBkgrnd.setOutlineThickness(3);
-	logBkgrnd.setOutlineColor(sf::Color(22, 22, 33));
-	Game::getWindow().draw(logBkgrnd);
-	
+	logBkg.setFillColor(sf::Color(12, 12, 23));
+	logBkg.setOutlineThickness(3);
+	logBkg.setOutlineColor(sf::Color(22, 22, 33));
+
+	Game::getWindow().draw(logBkg);
 	
 	//only display last cLinesDisplayed elements of m_queue
 	int size = min(static_cast<unsigned>(m_queue.size()), cLinesDisplayed);
@@ -57,13 +51,13 @@ void Log::run()
 
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
 		//lots of magic numbers
-		sf::RectangleShape historyBkgrnd(sf::Vector2f(windowSize.x - 100, windowSize.y - 100));
-		historyBkgrnd.setPosition(50, 50);
-		historyBkgrnd.setFillColor(sf::Color(12,12,23));
-		historyBkgrnd.setOutlineThickness(3);
-		historyBkgrnd.setOutlineColor(sf::Color(22, 22, 33));
+		sf::RectangleShape historyBkg(sf::Vector2f(windowSize.x - 100, windowSize.y - 100));
+		historyBkg.setPosition(50, 50);
+		historyBkg.setFillColor(sf::Color(12,12,23));
+		historyBkg.setOutlineThickness(3);
+		historyBkg.setOutlineColor(sf::Color(22, 22, 33));
 		
-		Game::getWindow().draw(historyBkgrnd);
+		Game::getWindow().draw(historyBkg);
 
 		for(int i = 0; i < m_queue.size(); ++i) {
 			sf::Text text = createLogText(m_queue[i].text, m_queue[i].type);

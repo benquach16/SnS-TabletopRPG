@@ -206,7 +206,10 @@ void CombatManager::doResolution()
 	int MoS = offenseSuccesses - defenseSuccesses;
 
 	if(MoS > 0) {
-		inflictWound(MoS, attack, defender);
+		if(inflictWound(MoS, attack, defender) == true) {
+			m_currentState = eCombatState::FinishedCombat;
+			return;
+		}
 	}
 	else if (MoS == 0) {
 		//nothing happens
