@@ -12,7 +12,9 @@ public:
 	std::string getName() { return m_name; }
 	eLength getLength() { return m_length; }
 	eWeaponTypes getType() { return m_type; }
-
+	std::vector<Component*> getComponents() { return m_components; }
+	std::vector<Component*> getThrustComponents() { return m_thrustComponents; }
+	std::vector<Component*> getSwingComponents() { return m_swingComponents; }
 	//convinence functions
 	Component* getBestAttack();
 private:
@@ -20,6 +22,8 @@ private:
 	std::string m_name;
 	eLength m_length;
 	std::vector<Component*> m_components;
+	std::vector<Component*> m_thrustComponents;
+	std::vector<Component*> m_swingComponents;
 	eWeaponTypes m_type;
 };
 

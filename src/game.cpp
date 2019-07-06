@@ -4,7 +4,8 @@
 #include "combatmanager.h"
 #include "weapons/weapon.h"
 #include "creatures/human.h"
-#include "ui/combatui.h"
+#include "creatures/player.h"
+#include "ui/gameui.h"
 
 sf::RenderWindow Game::m_window;
 sf::Font Game::m_defaultFont;
@@ -22,7 +23,7 @@ void Game::initialize()
 void Game::run()
 {
 	CombatManager manager;
-	Human* c1 = new Human;
+	Player* c1 = new Player;
 	Human* c2 = new Human;
 	c1->setWeapon(40); //pollax
 	c2->setWeapon(41); //arming sword
@@ -33,20 +34,13 @@ void Game::run()
 	sf::Clock clock;
 	//main game loop
 	float tick = 0;
+
+	GameUI ui;
+	ui.initializeCombatUI(&manager);
 	while(m_window.isOpen())
 	{
 		m_window.clear();
-
-		sf::Time elapsedTime = clock.getElapsedTime();
-		tick += elapsedTime.asSeconds();
-		Log::run();
-		CombatUI::run(&manager);
-		if(tick > 2.0) {
-			manager.run();
-			tick = 0;
-		}
 		
-		clock.restart();
 		sf::Event event;
 		while (m_window.pollEvent(event))
 		{
@@ -56,6 +50,19 @@ void Game::run()
 			}
 
 		}
+		
+		sf::Time elapsedTime = clock.getElapsedTime();
+		tick += elapsedTime.asSeconds();
+		ui.run(event);
+		Log::run();
+
+		if(tick > 1.0) {
+			manager.run();
+			tick = 0;
+		}
+		
+		clock.restart();
+
 
 		m_window.display();
 	}

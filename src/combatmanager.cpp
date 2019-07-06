@@ -3,6 +3,7 @@
 #include "weapons/utils.h"
 #include "combatmanager.h"
 #include "game.h"
+#include "creatures/player.h"
 
 #include <assert.h>
 
@@ -58,9 +59,23 @@ void CombatManager::doInitialization()
 
 void CombatManager::doRollInitiative()
 {
+	if(m_side1->isPlayer() == true) {
+		Player* player = static_cast<Player*>(m_side1);
+		if(player->pollForInitiative() == false) {
+			m_currentState = eCombatState::RollInitiative;
+			return;			
+		}
+		
+	}
+	
 	//get initiative rolls from both sides to determine roles.
 	eInitiativeRoll side1 = m_side1->doInitiative();
 	eInitiativeRoll side2 = m_side2->doInitiative();
+	if(m_side1->isPlayer() == true) {
+		Player* player = static_cast<Player*>(m_side1);
+		side1 = player->getInitiative();
+	}
+	
 	if(side1 == eInitiativeRoll::Defend && side2 == eInitiativeRoll::Defend) {
 		//repeat
 		writeMessage("Both sides chose to defend, deciding initiative again");
@@ -85,6 +100,11 @@ void CombatManager::doRollInitiative()
 		int side2Successes = DiceRoller::rollGetSuccess(m_side2->getBTN(), m_side2->getSpeed());
 
 		m_initiative = side1Successes < side2Successes ? eInitiative::Side1 : eInitiative::Side2;
+		if(m_initiative == eInitiative::Side1) {
+			writeMessage(m_side1->getName() + " declares their attack first");
+		} else {
+			writeMessage(m_side2->getName() + " declares their attack first");
+		}
 		m_currentState = eCombatState::DualOffense;
 		return;
 	}
@@ -92,7 +112,7 @@ void CombatManager::doRollInitiative()
 	m_currentState = eCombatState::RollInitiative;
 }
 
-void CombatManager::doOffense()
+bool CombatManager::doOffense()
 {
 	//get offensive manuever and dice from side 1
 	//then get defensive manuever and dice from side 2
@@ -105,17 +125,13 @@ void CombatManager::doOffense()
 	{
 		//wait until we get input from player
 		m_currentState = eCombatState::Offense;
+		return false;
 	}
 	
 	if(attacker->getCombatPool() <= 0 && defender->getCombatPool() > 0) {
 		writeMessage(attacker->getName() + " has no more action points! Initiative swaps to defender");
 		switchInitiative();
 		setSides(attacker, defender);
-	}
-   
-	if(attacker->isPlayer() == true) {
-		doOffensePlayer();
-		return;
 	}
 	
 	Weapon* offenseWeapon = attacker->getPrimaryWeapon();
@@ -139,6 +155,7 @@ void CombatManager::doOffense()
 				 to_string(attack.dice) + " action points");
 	
 	m_currentState = eCombatState::Defense;
+	return true;
 }
 
 void CombatManager::doDualOffense()
@@ -148,17 +165,18 @@ void CombatManager::doDualOffense()
 	Creature* defender = nullptr;
 	setSides(attacker, defender);
 	//person who rolled better on speed goes second
-	doOffense();
+
+	if(doOffense() == false) {
+		m_currentState = eCombatState::DualOffense;
+		return;
+	}
 	switchInitiative();
-	doOffense();
+	if(doOffense() == false) {
+		m_currentState = eCombatState::DualOffense;
+		return;
+	}
 	
 	m_currentState = eCombatState::DualOffenseResolve;
-}
-
-void CombatManager::doOffensePlayer()
-{
-	//in this case, we wait for player input before switching states
-	m_currentState = eCombatState::Offense;
 }
 
 void CombatManager::doDefense()
@@ -170,6 +188,7 @@ void CombatManager::doDefense()
 	if(defender->isPlayer() == true) {
 		//wait until player inputs
 		m_currentState = eCombatState::Defense;
+		return;
 	}
 	Weapon* defenseWeapon = defender->getPrimaryWeapon();
 

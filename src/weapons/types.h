@@ -28,11 +28,14 @@ enum class eAttacks {
 	Swing,
 };
 
-
 enum class eOffensiveManuevers : unsigned {
 	Swing,
 	Thrust
 };
+
+static int offenseManueverCost(eOffensiveManuevers manuever) {
+	return 0;
+}
 
 enum class eDefensiveManuevers : unsigned {
 	//special manuevers used to tell combatmanager about special events
@@ -43,15 +46,20 @@ enum class eDefensiveManuevers : unsigned {
 	Dodge	
 };
 
+static int defenseManueverCost(eDefensiveManuevers manuever) {
+	return 0;
+}
+
 enum class eLength : unsigned
 {
 	Hand = 0,
 	Short = 1,
 	Medium = 2,
 	Long = 3,
-	Extended = 4,
-	Extreme = 5,
-	Ludicrous = 6
+	VeryLong = 4,
+	Extended = 5,
+	Extreme = 6,
+	Ludicrous = 7
 };
 
 enum class eInitiativeRoll : unsigned

@@ -12,6 +12,15 @@ public:
 	void setInitiative(eInitiativeRoll initiative);
 	eInitiativeRoll getInitiative() { return m_initiative; }
 
+	//players make their offence piecemeal
+	void setOffenseManuever(eOffensiveManuevers manuever) { m_currentOffense.manuever = manuever; }
+	void setOffenseDice(int dice) { m_currentOffense.dice = dice; }
+	void setOffenseComponent(Component* component) { m_currentOffense.component = component; }
+	void setOffenseTarget(eHitLocations location) { m_currentOffense.target = location; }
+
+	void setDefenseManuever(eDefensiveManuevers manuever) { m_currentDefense.manuever = manuever; }
+	void setDefenseDice(int dice) { m_currentDefense.dice = dice; }
+
 	bool pollForOffense();
 	bool pollForDefense();
 private:

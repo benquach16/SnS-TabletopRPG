@@ -45,8 +45,8 @@ public:
 	void doRollInitiative();
 	void doDualOffense();
 	void doStolenOffense();
-	void doOffense();
-	void doOffensePlayer();
+	//doOffense has a return type to poll player input for dual offense
+	bool doOffense();
 	void doDefense();
 	void doDefensePlayer();
 	void doResolution();
