@@ -22,7 +22,10 @@ public:
 	void setDefenseDice(int dice) { m_currentDefense.dice = dice; }
 
 	bool pollForOffense();
+	void setOffenseReady() { m_flagOffense = true; }
 	bool pollForDefense();
+	void setDefenseReady() { m_flagDefense = true; }
+	
 private:
 	eInitiativeRoll m_initiative;
 

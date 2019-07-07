@@ -27,3 +27,12 @@ bool Player::pollForOffense()
 	}
 	return ret;
 }
+
+bool Player::pollForDefense()
+{
+	bool ret = m_flagDefense;
+	if(ret == true) {
+		m_flagDefense = false;
+	}
+	return ret;
+}

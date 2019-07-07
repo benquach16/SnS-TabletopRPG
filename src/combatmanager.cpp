@@ -79,7 +79,7 @@ void CombatManager::doRollInitiative()
 	if(side1 == eInitiativeRoll::Defend && side2 == eInitiativeRoll::Defend) {
 		//repeat
 		writeMessage("Both sides chose to defend, deciding initiative again");
-		m_currentState = eCombatState::RollInitiative;
+		m_currentState = eCombatState::ResetState;
 		return;
 	} else if(side1 == eInitiativeRoll::Attack && side2 == eInitiativeRoll::Defend) {
 		writeMessage(m_side1->getName() + " chose to attack and " + m_side2->getName() + " is defending");
@@ -112,6 +112,11 @@ void CombatManager::doRollInitiative()
 	m_currentState = eCombatState::RollInitiative;
 }
 
+void CombatManager::doResetState()
+{
+	m_currentState = eCombatState::RollInitiative;
+}
+
 bool CombatManager::doOffense()
 {
 	//get offensive manuever and dice from side 1
@@ -120,13 +125,6 @@ bool CombatManager::doOffense()
 	Creature* attacker = nullptr;
 	Creature* defender = nullptr;
 	setSides(attacker, defender);
-
-	if(attacker->isPlayer() == true)
-	{
-		//wait until we get input from player
-		m_currentState = eCombatState::Offense;
-		return false;
-	}
 	
 	if(attacker->getCombatPool() <= 0 && defender->getCombatPool() > 0) {
 		writeMessage(attacker->getName() + " has no more action points! Initiative swaps to defender");
@@ -140,9 +138,19 @@ bool CombatManager::doOffense()
 	int offenseCombatPool = attacker->getCombatPool();
 
 	int reachCost = static_cast<int>(defenseWeapon->getLength()) - static_cast<int>(offenseWeapon->getLength());
-
+	if(attacker->isPlayer() == true)
+	{
+		//wait until we get input from player
+		Player* player = static_cast<Player*>(attacker);
+		if(player->pollForOffense() == false) {
+			m_currentState = eCombatState::Offense;
+			return false;
+		} 
+	}
+	else {
+		attacker->doOffense(defender, reachCost);		
+	}
 	reachCost = std::max(0, reachCost);
-	attacker->doOffense(defender, reachCost);
 	Creature::Offense attack = attacker->getQueuedOffense();
 	
 	assert(attack.component != nullptr);
@@ -185,15 +193,22 @@ void CombatManager::doDefense()
 	Creature* defender = nullptr;
 	setSides(attacker, defender);
 
-	if(defender->isPlayer() == true) {
-		//wait until player inputs
-		m_currentState = eCombatState::Defense;
-		return;
-	}
 	Weapon* defenseWeapon = defender->getPrimaryWeapon();
 
 	int defenseCombatPool = defender->getProficiency(defenseWeapon->getType()) + defender->getReflex();
-	defender->doDefense(m_currentTempo == eTempo::Second, attacker->getQueuedOffense().dice);
+	if(defender->isPlayer() == true) {
+		cout << "polling"  << endl;
+		//wait until player inputs
+		Player* player = static_cast<Player*>(defender);
+		if(player->pollForDefense() == false) {
+			m_currentState = eCombatState::Defense;
+			return;
+		}
+
+	}
+	else {
+		defender->doDefense(m_currentTempo == eTempo::Second, attacker->getQueuedOffense().dice);		
+	}
 	Creature::Defense defend = defender->getQueuedDefense();
 	assert(defend.dice <= defenseCombatPool);
 	defender->reduceCombatPool(defend.dice);
@@ -204,10 +219,6 @@ void CombatManager::doDefense()
 	m_currentState = eCombatState::Resolution;
 }
 
-void CombatManager::doDefensePlayer()
-{
-	m_currentState = eCombatState::Defense;
-}
 
 void CombatManager::doResolution()
 {
@@ -328,6 +339,22 @@ void CombatManager::switchTempo()
 	}
 }
 
+bool CombatManager::isAttackerPlayer()
+{
+	Creature* attacker = nullptr;
+	Creature* defender = nullptr;
+	setSides(attacker, defender);
+	return attacker->isPlayer();
+}
+
+bool CombatManager::isDefenderPlayer()
+{
+	Creature* attacker = nullptr;
+	Creature* defender = nullptr;
+	setSides(attacker, defender);
+	return defender->isPlayer();
+}
+
 void CombatManager::run()
 {
 	switch(m_currentState)
@@ -340,6 +367,9 @@ void CombatManager::run()
 		break;
 	case eCombatState::RollInitiative:
 		doRollInitiative();
+		break;
+	case eCombatState::ResetState:
+		doResetState();
 		break;
 	case eCombatState::Offense:
 		doOffense();
