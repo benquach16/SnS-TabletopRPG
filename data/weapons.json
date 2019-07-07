@@ -4,6 +4,7 @@
 		"name": "Pollaxe",
 		"length": "extended",
 		"type": "polearm",
+		"hands": 2,
 		"components": [
 			{
 				"name": "Spike",
@@ -38,6 +39,7 @@
 		"name": "Arming Sword",
 		"length": "medium",
 		"type": "sword",
+		"hands": 1,
 		"components": [
 			{
 				"name": "Blade - Swing",

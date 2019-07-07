@@ -44,200 +44,181 @@
 		},
 		"neck": {
 			"1": {
-				"text": [""],
-				"effects": []
+				"text": ["Barely connects."]
 			},
 			"2": {
-				"text": [""],
-				"effects": []
+				"text": ["Solid blow leaves neck stiff and sore."]
 			},
 			"3": {
-				"text": [""],
-				"effects": []
+				"text": ["Something cracks. Hard and painful to breathe, but no danger of suffocation."]
 			},
 			"4": {
-				"text": [""],
-				"effects": []
+				"text": ["Damaged windpipe. Esophagus injury."]
 			},
 			"5": {
-				"text": [""],
-				"effects": []
+				"text": ["Head tilts in an unnatural angle. Neck snapped. Instant death."],
+				"effects": ["death"]
 			}
 		},
 		"shoulder": {
 			"1": {
-				"text": [""],
-				"effects": []
+				"text": ["Bump."]
 			},
 			"2": {
-				"text": [""],
-				"effects": []
+				"text": ["Distracting buzzing sensation."]
 			},
 			"3": {
-				"text": [""],
+				"text": ["Minor shoulder fracture makes the arm hard to use."],
 				"effects": []
 			},
 			"4": {
-				"text": [""],
+				"text": ["Torn tendons."],
 				"effects": []
 			},
 			"5": {
-				"text": [""],
+				"text": ["Shoulder caves in with broken bones. Arm useless."],
 				"effects": []
 			}
 		},
 		"upperarm": {
 			"1": {
-				"text": [""],
-				"effects": []
+				"text": ["Thump."]
 			},
 			"2": {
-				"text": [""],
-				"effects": []
+				"text": ["Will leave a bruise."]
 			},
 			"3": {
-				"text": [""],
+				"text": ["Swollen bruise makes arm hard to use."],
 				"effects": []
 			},
 			"4": {
-				"text": [""],
+				"text": ["Fractured humerus. Arm disabled until fixed."],
 				"effects": []
 			},
 			"5": {
-				"text": [""],
+				"text": ["Open humerus fracture. Arm useless."],
 				"effects": []
 			}
 		},
 		"elbow": {
 			"1": {
-				"text": [""],
-				"effects": []
+				"text": ["Slight bump."]
 			},
 			"2": {
-				"text": [""],
-				"effects": []
+				"text": ["Funny bone effect."]
 			},
 			"3": {
-				"text": [""],
+				"text": ["Solid blow hits the bone. Whole arm buzzes and fingers are numb."],
 				"effects": []
 			},
 			"4": {
-				"text": [""],
+				"text": ["Elbow bandly strained or concussed. Swelling. Arm useless."],
 				"effects": []
 			},
 			"5": {
-				"text": [""],
+				"text": ["Elbow shattered. Arm useless."],
 				"effects": []
 			}
 		},
 		"forearm": {
 			"1": {
-				"text": [""],
-				"effects": []
+				"text": ["Minor bump. Barely notice it."]
 			},
 			"2": {
-				"text": [""],
+				"text": ["Arm knocked aside, some bruising."],
 				"effects": []
 			},
 			"3": {
-				"text": [""],
+				"text": ["Brutal blow knocks arm aside. Sudden movements are painful"],
 				"effects": []
 			},
 			"4": {
-				"text": [""],
+				"text": ["Radius fractured with blinding pain."],
 				"effects": []
 			},
 			"5": {
-				"text": [""],
+				"text": ["Open compound fracture with severed blood veseels."],
 				"effects": []
 			}
 		},
 		"hand": {
 			"1": {
-				"text": [""],
+				"text": ["Blow connects to the hand."],
 				"effects": []
 			},
 			"2": {
-				"text": [""],
+				"text": ["Hand knocked aside, some bruising."],
 				"effects": []
 			},
 			"3": {
-				"text": [""],
+				"text": ["Fingers smashed."],
 				"effects": []
 			},
 			"4": {
-				"text": [""],
+				"text": ["Hand or wrist mangled with some fingers disabled."],
 				"effects": []
 			},
 			"5": {
-				"text": [""],
+				"text": ["Hand completely crushed."],
 				"effects": []
 			}
 		},
 		"armpit": {
 			"1": {
-				"text": [""],
-				"effects": []
+				"text": ["Bump."]
 			},
 			"2": {
-				"text": [""],
-				"effects": []
+				"text": ["Solid blow, minor brusing."]
 			},
 			"3": {
-				"text": [""],
-				"effects": []
+				"text": ["Knocks out the wind. Bad brusing. Taking deep breaths is going to be painful for a while."]
 			},
 			"4": {
-				"text": [""],
+				"text": ["Mighty upwards blow fractures and dislocates the shoulder. Arm disabled until fixed."],
 				"effects": []
 			},
 			"5": {
-				"text": [""],
+				"text": ["Several broken ribs and internal bleeding. Punctured lung."],
 				"effects": []
 			}
 		},
 		"ribs": {
 			"1": {
-				"text": [""],
-				"effects": []
+				"text": ["Thump."]
 			},
 			"2": {
-				"text": [""],
-				"effects": []
+				"text": ["Solid blow, minor brusing."]
 			},
 			"3": {
-				"text": [""],
-				"effects": []
+				"text": ["Knocks out the wind. Bad brusing. Taking deep breaths is going to be painful for a while."]
 			},
 			"4": {
-				"text": [""],
+				"text": ["Fractured ribs. Chest swells up and painful to breathe."],
 				"effects": []
 			},
 			"5": {
-				"text": [""],
+				"text": ["Several broken ribs and internal bleeding. Punctured lung."],
 				"effects": []
 			}
 		},
 		"abs": {
 			"1": {
-				"text": [""],
-				"effects": []
+				"text": ["Bump."]
 			},
 			"2": {
-				"text": [""],
-				"effects": []
+				"text": ["Blow to the gut forces to bend over."]
 			},
 			"3": {
-				"text": [""],
-				"effects": []
+				"text": ["Knocks out the wind. Bad bruising and concussed organs."],
+				"effects": ["KD2", "KO1"]
 			},
 			"4": {
-				"text": [""],
+				"text": ["Ruptured internal organs and internal bleeding."],
 				"effects": []
 			},
 			"5": {
-				"text": [""],
-				"effects": []
+				"text": ["Damage to internal organs causes heavy internal bleeding."],
+				"effects": ["death"]
 			}
 		}
 	},
@@ -278,7 +259,7 @@
 				"effects":["BL1", "KO1"]
 			},
 			"4": {
-				"text":["Part of the face pierced, but misses the brain. It’s bad. Hideous scar on jaw."],
+				"text":["Part of the face pierced, but misses the brain. It's bad. Hideous scar on jaw."],
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
@@ -328,133 +309,132 @@
 		},
 		"upperarm": {
 			"1": {
-				"text":["Some torn skin, a ittle blood"]
+				"text":["Stings like a famished horse fly."]
 			},
 			"2": {
-				"text":["Grazed scalp or temple. Surprising amount of blood."],
-				"effects": ["BL1"]
+				"text":["Bicep laceration."]
 			},
 			"3": {
-				"text":["Long graze along the skull. Serious bleeding."],
+				"text":["Deeper flesh wound on the outer arm."],
 				"effects":["BL1", "KO1"]
 			},
 			"4": {
-				"text":["Skull is pierced. Brain damaged."],
+				"text":["Passes through the arm, chipping the bone."],
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":[""],
+				"text":["Goes clean through the arm, tearing the flesh. Major blood vessel cut."],
 				"effects":["death"]
 			}
 		},
 		"elbow": {
 			"1": {
-				"text":["Some torn skin, a ittle blood"]
+				"text":["Grazed."]
 			},
 			"2": {
-				"text":["Grazed scalp or temple. Surprising amount of blood."],
+				"text":["Sting leaves a bad funny bone effect."],
 				"effects": ["BL1"]
 			},
 			"3": {
-				"text":["Long graze along the skull. Serious bleeding."],
+				"text":["Solid blow hits the bone. Fingers are numb for a while."],
 				"effects":["BL1", "KO1"]
 			},
 			"4": {
-				"text":["Skull is pierced. Brain damaged."],
+				"text":["Pierces elbow area and damages bone. Arm useless until healed."],
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":[""],
+				"text":["Elbow broken. Open frature. Arm useless with a lot of blood."],
 				"effects":["death"]
 			}
 		},
 		"forearm": {
 			"1": {
-				"text":["Some torn skin, a ittle blood"]
+				"text":["Glancing blow leaves a scratch."]
 			},
 			"2": {
-				"text":["Grazed scalp or temple. Surprising amount of blood."],
+				"text":["Glancing blow leaves a cut."],
 				"effects": ["BL1"]
 			},
 			"3": {
-				"text":["Long graze along the skull. Serious bleeding."],
+				"text":["Punctures skin and hits bone with pain running through the whole arm"],
 				"effects":["BL1", "KO1"]
 			},
 			"4": {
-				"text":["Skull is pierced. Brain damaged."],
+				"text":["Passes through the arm, missing bone. Lots of blood."],
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":[""],
+				"text":["Passes through the arm, spurting blood. Major blood vessel cut."],
 				"effects":["death"]
 			}
 		},
 		"hand": {
 			"1": {
-				"text":["Some torn skin, a ittle blood"]
+				"text":["Stings, but nothing serious."]
 			},
 			"2": {
-				"text":["Grazed scalp or temple. Surprising amount of blood."],
+				"text":["Minor puncture of hand or fingers."],
 				"effects": ["BL1"]
 			},
 			"3": {
-				"text":["Long graze along the skull. Serious bleeding."],
+				"text":["Deeper puncture for hitting bone."],
 				"effects":["BL1", "KO1"]
 			},
 			"4": {
-				"text":["Skull is pierced. Brain damaged."],
+				"text":["Hand pierced with lots of blood."],
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":[""],
+				"text":["Hand pierced. Lost a finger."],
 				"effects":["death"]
 			}
 		},
 		"armpit": {
 			"1": {
-				"text":["Some torn skin, a ittle blood"]
+				"text":["Blow grazes skin and muscle, but is deflected by bone."]
 			},
 			"2": {
-				"text":["Grazed scalp or temple. Surprising amount of blood."],
+				"text":["Long, shallow wound along the ribs."],
 				"effects": ["BL1"]
 			},
 			"3": {
-				"text":["Long graze along the skull. Serious bleeding."],
+				"text":["Most of the softer tissue under in armpit is messed up."],
 				"effects":["BL1", "KO1"]
 			},
 			"4": {
-				"text":["Skull is pierced. Brain damaged."],
+				"text":["Pierces deep, but slides along the ribs and misses major organs. Roll for item drop."],
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":[""],
+				"text":["Pierced heart. Death is almost instantaneous"],
 				"effects":["death"]
 			}
 		},
 		"ribs": {
 			"1": {
-				"text":["Some torn skin, a ittle blood"]
+				"text":["Blow grazes skin and muscle, but is deflected by bone."]
 			},
 			"2": {
-				"text":["Grazed scalp or temple. Surprising amount of blood."],
+				"text":["Long, shallow wound along the ribs."],
 				"effects": ["BL1"]
 			},
 			"3": {
-				"text":["Long graze along the skull. Serious bleeding."],
+				"text":["Pierces ribcage, but misses major organs."],
 				"effects":["BL1", "KO1"]
 			},
 			"4": {
-				"text":["Skull is pierced. Brain damaged."],
+				"text":["Punctured lung leads to stabbing pain, shortness of breath and eerie sucking sound with bubbles in the blood."],
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":[""],
+				"text":["Pierced heart. Death is almost instantaneous"],
 				"effects":["death"]
 			}
 		},
 		"abs": {
 			"1": {
-				"text":["Some torn skin, a ittle blood"]
+				"text":["Some torn skin, a little blood"]
 			},
 			"2": {
 				"text":["Grazed scalp or temple. Surprising amount of blood."],
@@ -469,7 +449,7 @@
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":[""],
+				"text":["Massive organ damage. Death is imminent."],
 				"effects":["death"]
 			}
 		}
@@ -680,51 +660,46 @@
 				"effects": []
 			},
 			"3": {
-				"text": [""],
+				"text": ["Deep gash with enough force to fracture ribs and knock the wind out of you."],
 				"effects": []
 			},
 			"4": {
-				"text": [""],
+				"text": ["Cut goes deep, breaking and fracturing ribs. Lots of internal bleeding."],
 				"effects": []
 			},
 			"5": {
-				"text": [""],
-				"effects": []
+				"text": ["Weapon lodged in chest. Death is imminent."],
+				"effects": ["death"]
 			}
 		},
 		"abs": {
 			"1": {
-				"text": [""],
-				"effects": []
+				"text": ["Just a red slash."]
 			},
 			"2": {
-				"text": [""],
-				"effects": []
+				"text": ["Painful, bleeding cut. Looks worse than it is."]
 			},
 			"3": {
-				"text": [""],
-				"effects": []
+				"text": ["Deeper cut that bleeds hard. No organ damage."]
 			},
 			"4": {
-				"text": [""],
-				"effects": []
+				"text": ["Nasty cut with a lot of blood and some internal damage."]
 			},
 			"5": {
-				"text": [""],
-				"effects": []
+				"text": ["Total disembowelment with entrails everywhere. Legs buckle and the blood keeps coming. Death is imminent."],
+				"effects": ["death"]
 			}
 		},
 		"hip": {
 			"1": {
-				"text": [""],
-				"effects": []
+				"text": ["Glancing blow."]
 			},
 			"2": {
-				"text": [""],
+				"text": ["Surface wound. Painful, but nothing serious."],
 				"effects": []
 			},
 			"3": {
-				"text": [""],
+				"text": ["A deep gash in the fleshy parts."],
 				"effects": []
 			},
 			"4": {
