@@ -2,7 +2,7 @@
 #include "log.h"
 #include "creatures/wound.h"
 #include "combatmanager.h"
-#include "weapons/weapon.h"
+#include "items/weapon.h"
 #include "creatures/human.h"
 #include "creatures/player.h"
 #include "ui/gameui.h"

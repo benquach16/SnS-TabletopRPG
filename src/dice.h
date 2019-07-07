@@ -10,7 +10,7 @@ namespace DiceRoller {
 	constexpr int cDiceSides = 6;
 
 	inline int roll() {
-		return effolkronium::random_static::get(1,6);
+		return effolkronium::random_static::get(1,cDiceSides);
 	}
 	//bool rollGetSuccess(int BTN) { return roll() >= BTN; }
 

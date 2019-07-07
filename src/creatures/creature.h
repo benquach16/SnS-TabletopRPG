@@ -2,8 +2,8 @@
 
 #include "wound.h"
 #include "types.h"
-#include "../weapons/types.h"
-#include "../weapons/weapon.h"
+#include "../items/types.h"
+#include "../items/weapon.h"
 
 #include <vector>
 #include <map>
@@ -38,6 +38,8 @@ public:
 	int getProficiency(eWeaponTypes type) { return m_proficiencies[type]; }
 
 	void inflictWound(Wound* wound);
+
+	int getSuccessRate();
 
 	// for current weapon
 	int getCombatPool() { return m_combatPool; }

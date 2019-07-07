@@ -1,7 +1,7 @@
 #pragma once
 
 #include "creatures/creature.h"
-#include "weapons/types.h"
+#include "items/types.h"
 #include "log.h"
 #include "dice.h"
 

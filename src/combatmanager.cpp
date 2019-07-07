@@ -1,6 +1,6 @@
 #include <iostream>
 #include "creatures/utils.h"
-#include "weapons/utils.h"
+#include "items/utils.h"
 #include "combatmanager.h"
 #include "game.h"
 #include "creatures/player.h"

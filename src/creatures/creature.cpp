@@ -1,5 +1,6 @@
 #include "creature.h"
 #include "../3rdparty/random.hpp"
+#include "../dice.h"
 
 using namespace std;
 
@@ -20,6 +21,15 @@ void Creature::inflictWound(Wound* wound)
 	m_combatPool -= wound->getImpact();
 	m_wounds.push_back(wound);
 	m_bloodLoss;
+}
+
+int Creature::getSuccessRate() {
+	float sides = static_cast<float>(DiceRoller::cDiceSides);
+	float btn = static_cast<float>(DiceRoller::cDiceSides - m_BTN) + 1.f;
+
+	float val = btn / sides;
+	val *= 100;
+	return static_cast<int>(val);
 }
 
 void Creature::resetCombatPool()

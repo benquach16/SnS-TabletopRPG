@@ -72,3 +72,9 @@ enum class eMaterials : unsigned
 {
 	Iron		
 };
+
+enum class eArmorTypes : unsigned
+{
+	Metal,
+	Rigid
+};

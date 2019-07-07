@@ -5,7 +5,7 @@
 #include <set>
 #include <vector>
 
-#include "../weapons/types.h"
+#include "../items/types.h"
 #include "../3rdparty/json.hpp"
 #include "types.h"
 
