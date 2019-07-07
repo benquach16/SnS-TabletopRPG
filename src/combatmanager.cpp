@@ -105,7 +105,7 @@ void CombatManager::doRollInitiative()
 		} else {
 			writeMessage(m_side2->getName() + " declares their attack first");
 		}
-		m_currentState = eCombatState::DualOffense;
+		m_currentState = eCombatState::DualOffense1;
 		return;
 	}
 
@@ -166,7 +166,7 @@ bool CombatManager::doOffense()
 	return true;
 }
 
-void CombatManager::doDualOffense()
+void CombatManager::doDualOffense1()
 {
 	//both sides rolled red
 	Creature* attacker = nullptr;
@@ -175,15 +175,24 @@ void CombatManager::doDualOffense()
 	//person who rolled better on speed goes second
 
 	if(doOffense() == false) {
-		m_currentState = eCombatState::DualOffense;
+		m_currentState = eCombatState::DualOffense1;
 		return;
 	}
 	switchInitiative();
+	m_currentState = eCombatState::DualOffense2;
+}
+
+void CombatManager::doDualOffense2()
+{
+	//both sides rolled red
+	Creature* attacker = nullptr;
+	Creature* defender = nullptr;
+	setSides(attacker, defender);
+
 	if(doOffense() == false) {
-		m_currentState = eCombatState::DualOffense;
+		m_currentState = eCombatState::DualOffense2;
 		return;
 	}
-	
 	m_currentState = eCombatState::DualOffenseResolve;
 }
 
@@ -197,7 +206,6 @@ void CombatManager::doDefense()
 
 	int defenseCombatPool = defender->getProficiency(defenseWeapon->getType()) + defender->getReflex();
 	if(defender->isPlayer() == true) {
-		cout << "polling"  << endl;
 		//wait until player inputs
 		Player* player = static_cast<Player*>(defender);
 		if(player->pollForDefense() == false) {
@@ -217,6 +225,11 @@ void CombatManager::doDefense()
 				 " using " + to_string(defend.dice) + " action points");
 	
 	m_currentState = eCombatState::Resolution;
+}
+
+void CombatManager::doStealInitiative()
+{
+	
 }
 
 
@@ -374,8 +387,11 @@ void CombatManager::run()
 	case eCombatState::Offense:
 		doOffense();
 		break;
-	case eCombatState::DualOffense:
-		doDualOffense();
+	case eCombatState::DualOffense1:
+		doDualOffense1();
+		break;
+	case eCombatState::DualOffense2:
+		doDualOffense2();
 		break;
 	case eCombatState::Defense:
 		doDefense();

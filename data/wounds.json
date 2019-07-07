@@ -246,10 +246,10 @@
 		"impact": [1, 1, 2, 2, 3],
 		"crown": {
 			"1": {
-				"text":["Some torn skin, a ittle blood"]
+				"text":["Some torn skin, a ittle blood."]
 			},
 			"2": {
-				"text":[" Grazed scalp or temple. Surprising amount of blood."],
+				"text":["Grazed scalp or temple. Surprising amount of blood."],
 				"effects": ["BL1"]
 			},
 			"3": {
@@ -261,16 +261,77 @@
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":[""],
+				"text":["The brain is pierced. Body goes limp and collapses. Instant death."],
 				"effects":["death"]
 			}
 		},
 		"face": {
 			"1": {
+				"text":["A graze, but nothing serious."]
+			},
+			"2": {
+				"text":["Grazed cheek. Surprising amount of blood."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Scarring slice on cheekbone."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Part of the face pierced, but misses the brain. It’s bad. Hideous scar on jaw."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":["Head pierced through the eye. Body goes limp and collapses. Death is instantaneous."],
+				"effects":["death"]
+			}
+		},
+		"neck": {
+			"1": {
+				"text":["Just a sting."]
+			},
+			"2": {
+				"text":["Deflected by collarbone. Some blood."]
+			},
+			"3": {
+				"text":["Pierced above the collarbone, missing major blood vessels."],
+				"effects":["BL1"]
+			},
+			"4": {
+				"text":["Throat is pierced, damaging the windpipe."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":["Neck is pierced, severely damaging the carotid artery."],
+				"effects":["death"]
+			}
+		},
+		"shoulder": {
+			"1": {
+				"text":["Shoulder grazed."]
+			},
+			"2": {
+				"text":["Skids off the shoulder. Stings pretty bad."]
+			},
+			"3": {
+				"text":["Skids off the bone. Not much blood, but hurts."],
+				"effects":["drop1"]
+			},
+			"4": {
+				"text":["Shoulder pierced."],
+				"effects":["BL2", "drop2"]
+			},
+			"5": {
+				"text":["Shoulder pierced. Bad bleeding."],
+				"effects":["BL2"]
+			}
+		},
+		"upperarm": {
+			"1": {
 				"text":["Some torn skin, a ittle blood"]
 			},
 			"2": {
-				"text":[" Grazed scalp or temple. Surprising amount of blood."],
+				"text":["Grazed scalp or temple. Surprising amount of blood."],
 				"effects": ["BL1"]
 			},
 			"3": {
@@ -286,7 +347,112 @@
 				"effects":["death"]
 			}
 		},
-		"neck": {
+		"elbow": {
+			"1": {
+				"text":["Some torn skin, a ittle blood"]
+			},
+			"2": {
+				"text":["Grazed scalp or temple. Surprising amount of blood."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Long graze along the skull. Serious bleeding."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Skull is pierced. Brain damaged."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":[""],
+				"effects":["death"]
+			}
+		},
+		"forearm": {
+			"1": {
+				"text":["Some torn skin, a ittle blood"]
+			},
+			"2": {
+				"text":["Grazed scalp or temple. Surprising amount of blood."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Long graze along the skull. Serious bleeding."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Skull is pierced. Brain damaged."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":[""],
+				"effects":["death"]
+			}
+		},
+		"hand": {
+			"1": {
+				"text":["Some torn skin, a ittle blood"]
+			},
+			"2": {
+				"text":["Grazed scalp or temple. Surprising amount of blood."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Long graze along the skull. Serious bleeding."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Skull is pierced. Brain damaged."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":[""],
+				"effects":["death"]
+			}
+		},
+		"armpit": {
+			"1": {
+				"text":["Some torn skin, a ittle blood"]
+			},
+			"2": {
+				"text":["Grazed scalp or temple. Surprising amount of blood."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Long graze along the skull. Serious bleeding."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Skull is pierced. Brain damaged."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":[""],
+				"effects":["death"]
+			}
+		},
+		"ribs": {
+			"1": {
+				"text":["Some torn skin, a ittle blood"]
+			},
+			"2": {
+				"text":["Grazed scalp or temple. Surprising amount of blood."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Long graze along the skull. Serious bleeding."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Skull is pierced. Brain damaged."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":[""],
+				"effects":["death"]
+			}
+		},
+		"abs": {
 			"1": {
 				"text":["Some torn skin, a ittle blood"]
 			},

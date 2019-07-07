@@ -23,10 +23,12 @@ enum class eCombatState : unsigned
 	Initialized,
 	RollInitiative,
 	ResetState, // used only for ui to observe combat manager state
-	DualOffense,
+	DualOffense1,
+	DualOffense2,
 	Offense,
 	StolenOffense,
 	Defense,
+	StealInitiative,
 	Resolution,
 	DualOffenseResolve,
 	FinishedCombat
@@ -45,14 +47,15 @@ public:
 	void doInitialization();
 	void doRollInitiative();
 	void doResetState();
-	void doDualOffense();
+	void doDualOffense1();
+	void doDualOffense2();
 	void doStolenOffense();
 	//doOffense has a return type to poll player input for dual offense
 	bool doOffense();
 	void doDefense();
-	void doDefensePlayer();
+	void doStealInitiative();
 	void doResolution();
-	//this is a special case because if both sides roll to attack both of their attacks resolve at the same time
+	//this is a special case because if both sides roll to attack since both of their attacks resolve at the same time
 	void doDualOffenseResolve();
 	void doEndCombat();
 	void setSides(Creature*& attacker, Creature*& defender);
