@@ -138,6 +138,7 @@ bool CombatManager::doOffense()
 	int offenseCombatPool = attacker->getCombatPool();
 
 	int reachCost = static_cast<int>(defenseWeapon->getLength()) - static_cast<int>(offenseWeapon->getLength());
+	reachCost = std::max(0, reachCost);
 	if(attacker->isPlayer() == true)
 	{
 		//wait until we get input from player
@@ -150,7 +151,7 @@ bool CombatManager::doOffense()
 	else {
 		attacker->doOffense(defender, reachCost);		
 	}
-	reachCost = std::max(0, reachCost);
+
 	Creature::Offense attack = attacker->getQueuedOffense();
 	
 	assert(attack.component != nullptr);
@@ -222,6 +223,7 @@ void CombatManager::doDefense()
 	if(defend.manuever == eDefensiveManuevers::StealInitiative) {
 		//need both sides to attempt to allocate dice
 		m_currentState = eCombatState::StealInitiative;
+		return;
 	}
 	assert(defend.dice <= defenseCombatPool);
 
@@ -244,6 +246,8 @@ void CombatManager::doStealInitiative()
 	Creature::Defense defend = defender->getQueuedDefense();
 	Weapon* offenseWeapon = attacker->getPrimaryWeapon();
 	Weapon* defenseWeapon = defender->getPrimaryWeapon();
+	int reachCost = static_cast<int>(offenseWeapon->getLength()) - static_cast<int>(defenseWeapon->getLength());
+	reachCost = std::max(0, reachCost);
 	//do dice to steal initiative first
 	if(defender->isPlayer() == true) {
 		m_currentState = eCombatState::StealInitiative;
@@ -251,13 +255,12 @@ void CombatManager::doStealInitiative()
 	}
 	else {
 		defender->reduceCombatPool(defend.dice);
+		cout << defender->getCombatPool() << endl;
 		defender->doOffense(attacker, reachCost);
 	}
 
-	int reachCost = static_cast<int>(defenseWeapon->getLength()) - static_cast<int>(offenseWeapon->getLength());
 	writeMessage(defender->getName() + " attempts to steal intiative using " + to_string(defend.dice) +
 		" action points!");
-
 
 	m_currentState = eCombatState::StolenOffense;
 }
@@ -273,9 +276,9 @@ void CombatManager::doStolenOffense()
 		return;
 	}
 
+	attacker->doStolenInitiative(defender);
 	
-	
-	m_currentState = eCombatState::doResolution;
+	m_currentState = eCombatState::Resolution;
 }
 
 void CombatManager::doResolution()
@@ -286,30 +289,102 @@ void CombatManager::doResolution()
 
 	Creature::Offense attack = attacker->getQueuedOffense();
 	Creature::Defense defend = defender->getQueuedDefense();
-	
-	//roll dice
-	int offenseSuccesses = DiceRoller::rollGetSuccess(attacker->getBTN(), attack.dice);
-	int defenseSuccesses = DiceRoller::rollGetSuccess(defender->getBTN(), defend.dice);
 
-	int MoS = offenseSuccesses - defenseSuccesses;
+	//determine who was originally attacking
+	if(defend.manuever == eDefensiveManuevers::StealInitiative) {
+		int side1InitiativeSuccesses =
+			DiceRoller::rollGetSuccess(m_side1->getBTN(), m_side1->getQueuedDefense().dice + m_side1->getSpeed());
+		int side2InitiativeSuccesses =
+			DiceRoller::rollGetSuccess(m_side2->getBTN(), m_side2->getQueuedDefense().dice + m_side2->getSpeed());
 
-	if(MoS > 0) {
-		if(inflictWound(MoS, attack, defender) == true) {
-			m_currentState = eCombatState::FinishedCombat;
-			return;
+		int side1Successes = 0;
+		int side2Successes = 0;
+
+		if(side1InitiativeSuccesses > side2InitiativeSuccesses) {
+			writeMessage(m_side1->getName() + " has stolen initiative, going first");
+			side1Successes = DiceRoller::rollGetSuccess(attacker->getBTN(), attack.dice);
+			if(side1Successes > 0) {
+				if(inflictWound(side1Successes, m_side1->getQueuedOffense(), m_side2) == true) {
+					m_currentState = eCombatState::FinishedCombat;
+					return;
+				}
+			}
+			if(m_side2->getCombatPool() == 0) {
+				//if the attack wiped out their combat pool, do nothing
+				m_initiative = eInitiative::Side1;
+				m_currentState = eCombatState::Offense;
+				return;
+			}
+			side2Successes = DiceRoller::rollGetSuccess(m_side2->getBTN(),
+														  m_side2->getQueuedOffense().dice);
+			if(side2Successes > 0) {
+				if(inflictWound(side2Successes, m_side2->getQueuedOffense(), m_side1) == true) {
+					m_currentState = eCombatState::FinishedCombat;
+					return;
+				}
+			}
+		} else {
+			writeMessage(m_side2->getName() + " has stolen initiative, going first");
+			side2Successes = DiceRoller::rollGetSuccess(attacker->getBTN(), attack.dice);
+			if(side2Successes > 0) {
+				if(inflictWound(side1Successes, m_side2->getQueuedOffense(), m_side1) == true) {
+					m_currentState = eCombatState::FinishedCombat;
+					return;
+				}
+			}
+			if(m_side1->getCombatPool() == 0) {
+				//if the attack wiped out their combat pool, do nothing
+				m_initiative = eInitiative::Side1;
+				m_currentState = eCombatState::Offense;
+				return;
+			}
+			side1Successes = DiceRoller::rollGetSuccess(m_side1->getBTN(),
+														  m_side1->getQueuedOffense().dice);
+			if(side1Successes > 0) {
+				if(inflictWound(side1Successes, m_side1->getQueuedOffense(), m_side2) == true) {
+					m_currentState = eCombatState::FinishedCombat;
+					return;
+				}
+			}
 		}
+		//whoever got more successes takes initiative
+		m_currentState = eCombatState::Offense;
+		if(side1Successes > side2Successes) {
+			m_initiative = eInitiative::Side1;
+		} else if (side1Successes < side2Successes) {
+			m_initiative = eInitiative::Side2;
+		} else {
+			//reroll if no one died
+			m_currentState = eCombatState::RollInitiative;
+		}					
+	} else {
+		
+	
+		//roll dice
+		int offenseSuccesses = DiceRoller::rollGetSuccess(attacker->getBTN(), attack.dice);
+		int defenseSuccesses = DiceRoller::rollGetSuccess(defender->getBTN(), defend.dice);
+
+		int MoS = offenseSuccesses - defenseSuccesses;
+
+		if(MoS > 0) {
+			if(inflictWound(MoS, attack, defender) == true) {
+				m_currentState = eCombatState::FinishedCombat;
+				return;
+			}
+		}
+		else if (MoS == 0) {
+			//nothing happens
+			writeMessage("no net successes");
+		}
+		else if (defend.manuever != eDefensiveManuevers::Dodge) {
+			writeMessage("attack deflected with " + to_string(-MoS) + " successes");
+			writeMessage(defender->getName() + " now has initative, becoming attacker");
+			switchInitiative();
+		}	
+		switchTempo();
 	}
-	else if (MoS == 0) {
-		//nothing happens
-		writeMessage("no net successes");
-	}
-	else if (defend.manuever != eDefensiveManuevers::Dodge) {
-		writeMessage("attack deflected with " + to_string(-MoS) + " successes");
-		writeMessage(defender->getName() + " now has initative, becoming attacker");
-		switchInitiative();
-	}	
-	switchTempo();
 	m_currentState = eCombatState::Offense;
+	
 }
 
 void CombatManager::doDualOffenseResolve()

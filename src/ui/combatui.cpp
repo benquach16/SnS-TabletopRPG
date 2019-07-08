@@ -248,7 +248,7 @@ void CombatUI::doDefense(sf::Event event)
 		sf::Text text;
 		text.setCharacterSize(cCharSize);
 		text.setFont(Game::getDefaultFont());
-		text.setString("Choose defense:\na - Parry\nb - Dodge");
+		text.setString("Choose defense:\na - Parry\nb - Dodge\nc - Linked Parry\nd - Steal initiative\ne - Attack out of initiative");
 		Game::getWindow().draw(text);
 		if(event.type == sf::Event::TextEntered) {
 			char c = event.text.unicode;

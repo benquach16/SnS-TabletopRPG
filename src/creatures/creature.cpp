@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "creature.h"
 #include "../3rdparty/random.hpp"
 #include "../dice.h"
@@ -23,7 +25,7 @@ void Creature::inflictWound(Wound* wound)
 	m_bloodLoss;
 }
 
-int Creature::getSuccessRate() {
+int Creature::getSuccessRate() const {
 	float sides = static_cast<float>(DiceRoller::cDiceSides);
 	float btn = static_cast<float>(DiceRoller::cDiceSides - m_BTN) + 1.f;
 
@@ -41,7 +43,7 @@ void Creature::resetCombatPool()
 	m_combatPool = getProficiency(weapon->getType()) + getReflex() + carry;
 }
 
-void Creature::doOffense(Creature* target, int reachCost)
+void Creature::doOffense(const Creature* target, int reachCost)
 {
 	Weapon* weapon = getPrimaryWeapon();
 	//we shouldn't be able to pgo below 0 with this
@@ -63,7 +65,7 @@ void Creature::doOffense(Creature* target, int reachCost)
 }
 
 
-void Creature::doDefense(Creature* attacker, bool isLastTempo)
+void Creature::doDefense(const Creature* attacker, bool isLastTempo)
 {
 	int diceAllocated = attacker->getQueuedOffense().dice;
 
@@ -73,6 +75,7 @@ void Creature::doDefense(Creature* attacker, bool isLastTempo)
 	if(stealInitiative(attacker, stealDie) == true) {
 		m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
 		m_currentDefense.dice = stealDie;
+		cout << "using " << m_currentDefense.dice << endl;
 		return;
 	}
 	if(isLastTempo == true) {
@@ -87,7 +90,7 @@ void Creature::doDefense(Creature* attacker, bool isLastTempo)
 	m_currentDefense.dice = dice;
 }
 
-bool Creature::stealInitiative(Creature* attacker, int& outDie)
+bool Creature::stealInitiative(const Creature* attacker, int& outDie)
 {
 	int diceAllocated = attacker->getQueuedOffense().dice;
 
@@ -104,6 +107,13 @@ bool Creature::stealInitiative(Creature* attacker, int& outDie)
 
 	}
 	return false;
+}
+
+void Creature::doStolenInitiative(const Creature* defender)
+{
+	m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
+	Defense defend = defender->getQueuedDefense();
+	m_currentDefense.dice = max(m_combatPool, defend.dice);
 }
 
 eInitiativeRoll Creature::doInitiative()

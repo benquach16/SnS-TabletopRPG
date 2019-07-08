@@ -15,16 +15,16 @@ class Creature
 public:
 	Creature();
 	
-	int getBrawn() { return m_brawn; }
-	int getAgility() { return m_agility; }
-	int getCunning() { return m_cunning; }
-	int getPerception() { return m_perception; }
-	int getWill() { return m_will; }
+	int getBrawn() const { return m_brawn; }
+	int getAgility() const { return m_agility; }
+	int getCunning() const { return m_cunning; }
+	int getPerception() const { return m_perception; }
+	int getWill() const { return m_will; }
 	
-	int getGrit() { return (m_brawn + m_will)/2; }
-	int getKeen() { return (m_cunning + m_perception)/2; }
-	int getReflex() { return (m_agility + m_cunning)/2; }
-	int getSpeed() { return (m_agility + m_brawn)/2; }
+	int getGrit() const { return (m_brawn + m_will)/2; }
+	int getKeen() const { return (m_cunning + m_perception)/2; }
+	int getReflex() const { return (m_agility + m_cunning)/2; }
+	int getSpeed() const { return (m_agility + m_brawn)/2; }
 
 	int getBTN() { return m_BTN; }
 	void setBTN(int BTN) { m_BTN = BTN; }
@@ -33,28 +33,28 @@ public:
 	void setWeapon(int id) { m_primaryWeaponId = id; }
 
 	void setName(const std::string& name) { m_name = name; }
-	std::string getName() { return m_name; }
+	std::string getName() const { return m_name; }
 
 	int getProficiency(eWeaponTypes type) { return m_proficiencies[type]; }
 
 	void inflictWound(Wound* wound);
 
-	int getSuccessRate();
+	int getSuccessRate() const;
 
 	// for current weapon
-	int getCombatPool() { return m_combatPool; }
+	int getCombatPool() const { return m_combatPool; }
 	void resetCombatPool();
-	void reduceCombatPool(int num) { m_combatPool -= num; }
+	void reduceCombatPool(int num) { assert(num>=0); m_combatPool -= num; }
 
 	// AI functions
 	virtual bool isPlayer() { return false; }
-	void doOffense(Creature* target, int reachCost);
+	void doOffense(const Creature* target, int reachCost);
 
-	void doDefense(Creature* attacker, bool isLastTempo);
+	void doDefense(const Creature* attacker, bool isLastTempo);
 
-	void doStolenInitiative();
+	void doStolenInitiative(const Creature* defender);
 
-	bool stealInitiative(Creature* attacker, int& outDie);
+	bool stealInitiative(const Creature* attacker, int& outDie);
 
 	eInitiativeRoll doInitiative();
 
@@ -70,8 +70,8 @@ public:
 		int dice;
 	};
 
-	Offense getQueuedOffense() { return m_currentOffense; }
-	Defense getQueuedDefense() { return m_currentDefense; }
+	Offense getQueuedOffense() const { return m_currentOffense; }
+	Defense getQueuedDefense() const { return m_currentDefense; }
 	
 protected:
 	std::vector<eHitLocations> m_hitLocations;

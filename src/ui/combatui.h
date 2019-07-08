@@ -37,6 +37,7 @@ private:
 	void doInitiative();
 	void doOffense(sf::Event event);
 	void doDefense(sf::Event event);
+	void doStolenOffense(sf::Event event);
 	
 	void showSide1Stats();
 	void showSide2Stats();
