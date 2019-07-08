@@ -50,7 +50,11 @@ public:
 	virtual bool isPlayer() { return false; }
 	void doOffense(Creature* target, int reachCost);
 
-	void doDefense(bool isLastTempo, int diceAllocated);
+	void doDefense(Creature* attacker, bool isLastTempo);
+
+	void doStolenInitiative();
+
+	bool stealInitiative(Creature* attacker, int& outDie);
 
 	eInitiativeRoll doInitiative();
 
@@ -60,7 +64,7 @@ public:
 		eHitLocations target;
 		Component* component = nullptr;
 	};
-
+	//this is reused in stealing initiative to hold die allocated to stealing
 	struct Defense {
 		eDefensiveManuevers manuever;
 		int dice;

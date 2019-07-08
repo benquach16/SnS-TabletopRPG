@@ -215,10 +215,16 @@ void CombatManager::doDefense()
 
 	}
 	else {
-		defender->doDefense(m_currentTempo == eTempo::Second, attacker->getQueuedOffense().dice);		
+		defender->doDefense(attacker, m_currentTempo == eTempo::Second);		
 	}
+	
 	Creature::Defense defend = defender->getQueuedDefense();
+	if(defend.manuever == eDefensiveManuevers::StealInitiative) {
+		//need both sides to attempt to allocate dice
+		m_currentState = eCombatState::StealInitiative;
+	}
 	assert(defend.dice <= defenseCombatPool);
+
 	defender->reduceCombatPool(defend.dice);
 	
 	writeMessage(defender->getName() + " defends with " + defenseWeapon->getName() +
@@ -229,9 +235,48 @@ void CombatManager::doDefense()
 
 void CombatManager::doStealInitiative()
 {
-	
+	//defender inputs offense and dice to steal initiative
+	Creature* attacker = nullptr;
+	Creature* defender = nullptr;
+	setSides(attacker, defender);
+
+	//then input manuever
+	Creature::Defense defend = defender->getQueuedDefense();
+	Weapon* offenseWeapon = attacker->getPrimaryWeapon();
+	Weapon* defenseWeapon = defender->getPrimaryWeapon();
+	//do dice to steal initiative first
+	if(defender->isPlayer() == true) {
+		m_currentState = eCombatState::StealInitiative;
+		return;
+	}
+	else {
+		defender->reduceCombatPool(defend.dice);
+		defender->doOffense(attacker, reachCost);
+	}
+
+	int reachCost = static_cast<int>(defenseWeapon->getLength()) - static_cast<int>(offenseWeapon->getLength());
+	writeMessage(defender->getName() + " attempts to steal intiative using " + to_string(defend.dice) +
+		" action points!");
+
+
+	m_currentState = eCombatState::StolenOffense;
 }
 
+void CombatManager::doStolenOffense()
+{
+	Creature* attacker = nullptr;
+	Creature* defender = nullptr;
+	setSides(attacker, defender);
+
+	if(attacker->isPlayer() == true) {
+		m_currentState = eCombatState::StolenOffense;
+		return;
+	}
+
+	
+	
+	m_currentState = eCombatState::doResolution;
+}
 
 void CombatManager::doResolution()
 {
@@ -386,6 +431,9 @@ void CombatManager::run()
 		break;
 	case eCombatState::Offense:
 		doOffense();
+		break;
+	case eCombatState::StealInitiative:
+		doStealInitiative();
 		break;
 	case eCombatState::DualOffense1:
 		doDualOffense1();

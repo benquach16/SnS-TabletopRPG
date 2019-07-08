@@ -63,9 +63,18 @@ void Creature::doOffense(Creature* target, int reachCost)
 }
 
 
-void Creature::doDefense(bool isLastTempo, int diceAllocated)
+void Creature::doDefense(Creature* attacker, bool isLastTempo)
 {
+	int diceAllocated = attacker->getQueuedOffense().dice;
+
 	m_currentDefense.manuever = eDefensiveManuevers::Parry;
+
+	int stealDie = 0;
+	if(stealInitiative(attacker, stealDie) == true) {
+		m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
+		m_currentDefense.dice = stealDie;
+		return;
+	}
 	if(isLastTempo == true) {
 		//use all dice because we're going to refresh anyway
 		m_currentDefense.dice = m_combatPool;
@@ -74,8 +83,27 @@ void Creature::doDefense(bool isLastTempo, int diceAllocated)
 	int dice = std::min(diceAllocated + effolkronium::random_static::get(0, m_combatPool/3)
 					   - effolkronium::random_static::get(0, m_combatPool/3)
 					   , m_combatPool);
-	dice = max(0, dice);
+	dice = max(m_combatPool, dice);
 	m_currentDefense.dice = dice;
+}
+
+bool Creature::stealInitiative(Creature* attacker, int& outDie)
+{
+	int diceAllocated = attacker->getQueuedOffense().dice;
+
+	int combatPool = attacker->getCombatPool() + attacker->getSpeed();
+
+	constexpr int bufferDie = 2;
+	if((combatPool * 1.5) + bufferDie < m_combatPool + getSpeed()) {
+		int diff = (getSpeed() - attacker->getSpeed()) * 1.5;
+		int dice = diff + bufferDie;
+		if(m_combatPool > dice) {
+			outDie = dice;
+			return true;
+		}
+
+	}
+	return false;
 }
 
 eInitiativeRoll Creature::doInitiative()
