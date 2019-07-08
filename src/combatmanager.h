@@ -63,7 +63,7 @@ public:
 	void switchInitiative() { m_initiative = m_initiative == eInitiative::Side1 ? eInitiative::Side2 : eInitiative::Side1; }
 	void switchTempo();
 
-	bool inflictWound(int MoS, Creature::Offense attack, Creature* target);
+	bool inflictWound(int MoS, Creature::Offense attack, Creature* target, bool manueverFirst = false);
 	void writeMessage(const std::string& str, Log::eMessageTypes type = Log::eMessageTypes::Standard);
 
 	eCombatState getState() const { return m_currentState; }

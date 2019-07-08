@@ -37,7 +37,7 @@ public:
 
 	int getProficiency(eWeaponTypes type) { return m_proficiencies[type]; }
 
-	void inflictWound(Wound* wound);
+	void inflictWound(Wound* wound, bool manueverFirst = false);
 
 	int getSuccessRate() const;
 
@@ -45,10 +45,11 @@ public:
 	int getCombatPool() const { return m_combatPool; }
 	void resetCombatPool();
 	void reduceCombatPool(int num) { assert(num>=0); m_combatPool -= num; }
+	void reduceOffenseDie(int num) { m_currentOffense.dice -= num; }
 
 	// AI functions
 	virtual bool isPlayer() { return false; }
-	void doOffense(const Creature* target, int reachCost);
+	void doOffense(const Creature* target, int reachCost, bool allin = false);
 
 	void doDefense(const Creature* attacker, bool isLastTempo);
 

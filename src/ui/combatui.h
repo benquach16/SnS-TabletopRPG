@@ -28,6 +28,11 @@ private:
 		Finished,
 	};
 
+	enum class eStolenOffenseSubState : unsigned {
+		ChooseDice,
+		Finished,
+	};
+
 	enum class eDefenseSubState : unsigned {
 		ChooseManuever,
 		ChooseDice,
@@ -48,5 +53,6 @@ private:
 
 	eInitiativeSubState m_initiativeState;
 	eOffenseSubState m_offenseState;
+	eStolenOffenseSubState m_stolenOffenseState;
 	eDefenseSubState m_defenseState;
 };

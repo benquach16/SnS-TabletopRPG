@@ -156,6 +156,7 @@ bool CombatManager::doOffense()
 	
 	assert(attack.component != nullptr);
 	assert(attack.dice <= offenseCombatPool);
+	cout << attack.dice << endl;
 	attacker->reduceCombatPool(attack.dice);
 	
 	writeMessage(attacker->getName() + " " + offensiveManueverToString(attack.manuever) + "s with " +
@@ -256,7 +257,7 @@ void CombatManager::doStealInitiative()
 	else {
 		defender->reduceCombatPool(defend.dice);
 		cout << defender->getCombatPool() << endl;
-		defender->doOffense(attacker, reachCost);
+		defender->doOffense(attacker, reachCost, true);
 	}
 
 	writeMessage(defender->getName() + " attempts to steal intiative using " + to_string(defend.dice) +
@@ -272,12 +273,20 @@ void CombatManager::doStolenOffense()
 	setSides(attacker, defender);
 
 	if(attacker->isPlayer() == true) {
-		m_currentState = eCombatState::StolenOffense;
-		return;
+		//wait until player inputs
+		Player* player = static_cast<Player*>(attacker);
+		if(player->pollForDefense() == false) {
+			m_currentState = eCombatState::StolenOffense;
+			return;
+		}
 	}
-
-	attacker->doStolenInitiative(defender);
-	
+	else {
+		attacker->doStolenInitiative(defender);
+	}
+	writeMessage(defender->getName() + " " + offensiveManueverToString(defender->getQueuedOffense().manuever) + "s with " +
+				 defender->getPrimaryWeapon()->getName() + " using " +
+				 defender->getQueuedOffense().component->getName() + " with " +
+				 to_string(defender->getQueuedOffense().dice) + " action points");	
 	m_currentState = eCombatState::Resolution;
 }
 
@@ -292,74 +301,52 @@ void CombatManager::doResolution()
 
 	//determine who was originally attacking
 	if(defend.manuever == eDefensiveManuevers::StealInitiative) {
+
+		//original attacker gets advantage
+		int side1BTN = (m_side1 == attacker) ? m_side1->getBTN() - 1 : m_side1->getBTN();
+		int side2BTN = (m_side2 == attacker) ? m_side2->getBTN() - 1 : m_side2->getBTN();
 		int side1InitiativeSuccesses =
-			DiceRoller::rollGetSuccess(m_side1->getBTN(), m_side1->getQueuedDefense().dice + m_side1->getSpeed());
+			DiceRoller::rollGetSuccess(side1BTN, m_side1->getQueuedDefense().dice + m_side1->getSpeed());
 		int side2InitiativeSuccesses =
-			DiceRoller::rollGetSuccess(m_side2->getBTN(), m_side2->getQueuedDefense().dice + m_side2->getSpeed());
-
-		int side1Successes = 0;
-		int side2Successes = 0;
-
+			DiceRoller::rollGetSuccess(side2BTN, m_side2->getQueuedDefense().dice + m_side2->getSpeed());
+		Creature* originalAttackerPtr = attacker;
 		if(side1InitiativeSuccesses > side2InitiativeSuccesses) {
-			writeMessage(m_side1->getName() + " has stolen initiative, going first");
-			side1Successes = DiceRoller::rollGetSuccess(attacker->getBTN(), attack.dice);
-			if(side1Successes > 0) {
-				if(inflictWound(side1Successes, m_side1->getQueuedOffense(), m_side2) == true) {
-					m_currentState = eCombatState::FinishedCombat;
-					return;
-				}
-			}
-			if(m_side2->getCombatPool() == 0) {
-				//if the attack wiped out their combat pool, do nothing
-				m_initiative = eInitiative::Side1;
-				m_currentState = eCombatState::Offense;
-				return;
-			}
-			side2Successes = DiceRoller::rollGetSuccess(m_side2->getBTN(),
-														  m_side2->getQueuedOffense().dice);
-			if(side2Successes > 0) {
-				if(inflictWound(side2Successes, m_side2->getQueuedOffense(), m_side1) == true) {
-					m_currentState = eCombatState::FinishedCombat;
-					return;
-				}
-			}
+			m_initiative = eInitiative::Side1;
 		} else {
-			writeMessage(m_side2->getName() + " has stolen initiative, going first");
-			side2Successes = DiceRoller::rollGetSuccess(attacker->getBTN(), attack.dice);
-			if(side2Successes > 0) {
-				if(inflictWound(side1Successes, m_side2->getQueuedOffense(), m_side1) == true) {
-					m_currentState = eCombatState::FinishedCombat;
-					return;
-				}
-			}
-			if(m_side1->getCombatPool() == 0) {
-				//if the attack wiped out their combat pool, do nothing
-				m_initiative = eInitiative::Side1;
-				m_currentState = eCombatState::Offense;
+			m_initiative = eInitiative::Side2;
+		}
+		setSides(attacker, defender);
+		writeMessage(attacker->getName() + " has taken the initiative!");
+
+		int attackerSuccesses = DiceRoller::rollGetSuccess(attacker->getBTN(),
+													   attacker->getQueuedOffense().dice);
+		if(attackerSuccesses > 0) {
+			if(inflictWound(attackerSuccesses, attacker->getQueuedOffense(), defender, true) == true) {
+				m_currentState = eCombatState::FinishedCombat;
 				return;
-			}
-			side1Successes = DiceRoller::rollGetSuccess(m_side1->getBTN(),
-														  m_side1->getQueuedOffense().dice);
-			if(side1Successes > 0) {
-				if(inflictWound(side1Successes, m_side1->getQueuedOffense(), m_side2) == true) {
-					m_currentState = eCombatState::FinishedCombat;
-					return;
-				}
 			}
 		}
-		//whoever got more successes takes initiative
-		m_currentState = eCombatState::Offense;
-		if(side1Successes > side2Successes) {
-			m_initiative = eInitiative::Side1;
-		} else if (side1Successes < side2Successes) {
-			m_initiative = eInitiative::Side2;
-		} else {
-			//reroll if no one died
-			m_currentState = eCombatState::RollInitiative;
-		}					
-	} else {
+
+		if(defender->getQueuedOffense().dice == 0) {
+			//if the attack wiped out their combat pool, do nothing
+			writeMessage(defender->getName() + " had their action points eliminated by impact, their attack is dropped.");
+			m_currentState = eCombatState::Offense;
+			return;
+		}
 		
-	
+		int defendSuccesses = DiceRoller::rollGetSuccess(defender->getBTN(),
+													defender->getQueuedOffense().dice);
+		if(defendSuccesses > 0) {
+			if(inflictWound(defendSuccesses, defender->getQueuedOffense(), attacker) == true) {
+				m_currentState = eCombatState::FinishedCombat;
+				return;
+			}
+		}
+		if(defendSuccesses > attackerSuccesses) {
+			writeMessage(defender->getName() + " had more successes, taking initiative");
+			switchInitiative();
+		}
+	} else {	
 		//roll dice
 		int offenseSuccesses = DiceRoller::rollGetSuccess(attacker->getBTN(), attack.dice);
 		int defenseSuccesses = DiceRoller::rollGetSuccess(defender->getBTN(), defend.dice);
@@ -432,7 +419,7 @@ void CombatManager::doEndCombat()
 	m_currentState = eCombatState::Uninitialized;
 }
 
-bool CombatManager::inflictWound(int MoS, Creature::Offense attack, Creature* target)
+bool CombatManager::inflictWound(int MoS, Creature::Offense attack, Creature* target, bool manueverFirst)
 {
 	eBodyParts bodyPart = WoundTable::getSingleton()->getSwing(attack.target);
 
@@ -445,7 +432,7 @@ bool CombatManager::inflictWound(int MoS, Creature::Offense attack, Creature* ta
 	{
 		writeMessage(target->getName() + " begins to struggle from the pain", Log::eMessageTypes::Alert);
 	}
-	target->inflictWound(wound);
+	target->inflictWound(wound, manueverFirst);
 
 	if(wound->causesDeath() == true) {
 		//end combat
@@ -509,6 +496,9 @@ void CombatManager::run()
 		break;
 	case eCombatState::StealInitiative:
 		doStealInitiative();
+		break;
+	case eCombatState::StolenOffense:
+		doStolenOffense();
 		break;
 	case eCombatState::DualOffense1:
 		doDualOffense1();

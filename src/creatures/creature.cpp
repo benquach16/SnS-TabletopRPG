@@ -17,10 +17,22 @@ Weapon* Creature::getPrimaryWeapon()
 	return WeaponTable::getSingleton()->get(m_primaryWeaponId);
 }
 
-void Creature::inflictWound(Wound* wound)
+void Creature::inflictWound(Wound* wound, bool manueverFirst)
 {
 	m_BTN = max(m_BTN, wound->getBTN());
-	m_combatPool -= wound->getImpact();
+	if(manueverFirst == true) {
+		if(wound->getImpact() > m_currentOffense.dice) {
+			int diff = wound->getImpact() - m_currentOffense.dice;
+			m_currentOffense.dice = 0;
+			m_combatPool -= diff;
+		}
+		else {			
+			m_currentOffense.dice -= wound->getImpact();
+		}
+	}
+	else {
+		m_combatPool -= wound->getImpact();
+	}
 	m_wounds.push_back(wound);
 	m_bloodLoss;
 }
@@ -43,11 +55,12 @@ void Creature::resetCombatPool()
 	m_combatPool = getProficiency(weapon->getType()) + getReflex() + carry;
 }
 
-void Creature::doOffense(const Creature* target, int reachCost)
+void Creature::doOffense(const Creature* target, int reachCost, bool allin)
 {
 	Weapon* weapon = getPrimaryWeapon();
 	//we shouldn't be able to pgo below 0 with this
 	m_combatPool -= reachCost;
+	m_combatPool = max(0, m_combatPool);
 
 	m_currentOffense.manuever = eOffensiveManuevers::Thrust;
 	m_currentOffense.component = weapon->getBestAttack();
@@ -61,7 +74,11 @@ void Creature::doOffense(const Creature* target, int reachCost)
 	//bound
 	dice = max(0, dice);
 	dice = min(dice, m_combatPool);
-	m_currentOffense.dice = dice;
+	if(allin == true) {
+		m_currentOffense.dice = m_combatPool;
+	} else {
+		m_currentOffense.dice = dice;
+	}
 }
 
 
@@ -121,7 +138,7 @@ eInitiativeRoll Creature::doInitiative()
 	//do random for now
 	//this should be based on other creatures weapon length and armor and stuff
 	if(effolkronium::random_static::get(0, 1) == 1){
-		return eInitiativeRoll::Attack;
+		return eInitiativeRoll::Defend;
 	}
 	return eInitiativeRoll::Defend;
 }

@@ -26,6 +26,7 @@ void CombatUI::resetState()
 {
 	m_initiativeState = eInitiativeSubState::ChooseInitiative;
 	m_offenseState = eOffenseSubState::ChooseManuever;
+	m_stolenOffenseState = eStolenOffenseSubState::ChooseDice;
 	m_defenseState = eDefenseSubState::ChooseManuever;
 }
 
@@ -77,6 +78,9 @@ void CombatUI::run(sf::Event event)
 	}
 	if(m_manager->getState() == eCombatState::DualOffense2 && m_manager->isAttackerPlayer() == true) {
 		doOffense(event);
+	}
+	if(m_manager->getState() == eCombatState::StolenOffense) {
+		doStolenOffense(event);
 	}
 	if(m_manager->getState() == eCombatState::Resolution) {
 		resetState();
@@ -276,6 +280,39 @@ void CombatUI::doDefense(sf::Event event)
 			//last one so set flag
 			player->setDefenseReady();
 			m_numberInput.reset();
+		}
+
+		m_numberInput.setMax(player->getCombatPool());
+		m_numberInput.run(event);
+		m_numberInput.setPosition(sf::Vector2f(0, cCharSize));
+	}
+}
+
+void CombatUI::doStolenOffense(sf::Event event)
+{
+	auto windowSize = Game::getWindow().getSize();
+	
+	sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize*12));
+	bkg.setFillColor(sf::Color(12, 12, 23));
+	Game::getWindow().draw(bkg);
+	Player* player = static_cast<Player*>(m_manager->getSide1());
+
+	if(m_stolenOffenseState == eStolenOffenseSubState::ChooseDice) {
+		
+		sf::Text text;
+		text.setCharacterSize(cCharSize);
+		text.setFont(Game::getDefaultFont());
+		text.setString("Initiative roll, allocate action points (" + std::to_string(player->getCombatPool()) + " action points left):");
+
+		Game::getWindow().draw(text);
+
+		if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
+			player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
+			player->setDefenseDice(m_numberInput.getNumber());
+			//last one so set flag
+			player->setDefenseReady();
+			m_numberInput.reset();
+			m_stolenOffenseState = eStolenOffenseSubState::Finished;
 		}
 
 		m_numberInput.setMax(player->getCombatPool());

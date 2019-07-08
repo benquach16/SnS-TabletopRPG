@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "player.h"
 
 Player::Player() : Human(), m_flagInitiative(false), m_flagOffense(false), m_flagDefense(false)
