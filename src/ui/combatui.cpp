@@ -24,10 +24,11 @@ void CombatUI::initialize(CombatManager* manager)
 
 void CombatUI::resetState()
 {
+	m_defenseUI.resetState();
+	m_offenseUI.resetState();
 	m_initiativeState = eInitiativeSubState::ChooseInitiative;
 	m_offenseState = eOffenseSubState::ChooseManuever;
 	m_stolenOffenseState = eStolenOffenseSubState::ChooseDice;
-	m_defenseState = eDefenseSubState::ChooseManuever;
 }
 
 void CombatUI::run(sf::Event event)
@@ -57,33 +58,49 @@ void CombatUI::run(sf::Event event)
 
 	showSide1Stats();
 	showSide2Stats();
+
+	Player* player = static_cast<Player*>(m_manager->getSide1());
 	
 	if(m_manager->getState() == eCombatState::Initialized) {
 		resetState();
+		return;
 	}
 	if(m_manager->getState() == eCombatState::RollInitiative) {
 		doInitiative();
+		return;
 	}
 	if(m_manager->getState() == eCombatState::ResetState) {
 		resetState();
+		return;
 	}
 	if(m_manager->getState() == eCombatState::Offense && m_manager->isAttackerPlayer() == true) {
-		doOffense(event);
+		m_offenseUI.run(event, player);
+		return;
 	}
 	if(m_manager->getState() == eCombatState::Defense && m_manager->isDefenderPlayer() == true) {
-		doDefense(event);
+		m_defenseUI.run(event, player);
+		return;
 	}
 	if(m_manager->getState() == eCombatState::DualOffense1 && m_manager->isAttackerPlayer() == true) {
-		doOffense(event);
+		m_offenseUI.run(event, player);
+		return;
 	}
 	if(m_manager->getState() == eCombatState::DualOffense2 && m_manager->isAttackerPlayer() == true) {
-		doOffense(event);
+		m_offenseUI.run(event, player);
+		return;
 	}
 	if(m_manager->getState() == eCombatState::StolenOffense) {
 		doStolenOffense(event);
+		return;
 	}
 	if(m_manager->getState() == eCombatState::Resolution) {
 		resetState();
+		m_defenseUI.resetState();
+		return;
+	}
+	if(m_manager->getState() == eCombatState::DualOffenseResolve) {
+		resetState();
+		return;
 	}
 }
 
@@ -111,180 +128,6 @@ void CombatUI::doInitiative()
 			player->setInitiative(eInitiativeRoll::Defend);
 			m_initiativeState = eInitiativeSubState::Finished;
 		}
-	}
-}
-
-void CombatUI::doOffense(sf::Event event)
-{
-	auto windowSize = Game::getWindow().getSize();
-	
-	sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize*12));
-	bkg.setFillColor(sf::Color(12, 12, 23));
-	Game::getWindow().draw(bkg);
-
-	Player* player = static_cast<Player*>(m_manager->getSide1());
-	if(m_offenseState == eOffenseSubState::ChooseManuever) {
-		sf::Text text;
-		text.setCharacterSize(cCharSize);
-		text.setFont(Game::getDefaultFont());
-		text.setString("Choose attack:\na - Swing\nb - Thrust");
-		Game::getWindow().draw(text);
-
-		if(event.type == sf::Event::TextEntered) {
-			char c = event.text.unicode;
-			if(c == 'a') {
-				player->setOffenseManuever(eOffensiveManuevers::Swing);
-				m_offenseState = eOffenseSubState::ChooseComponent;
-			}
-			if(c == 'b') {
-				player->setOffenseManuever(eOffensiveManuevers::Thrust);
-				m_offenseState = eOffenseSubState::ChooseComponent;				
-			}
-		}
-	}
-	else if(m_offenseState == eOffenseSubState::ChooseComponent) {
-		Weapon* weapon = player->getPrimaryWeapon();
-		sf::Text text;
-		text.setCharacterSize(cCharSize);
-		text.setFont(Game::getDefaultFont());
-		std::string str("Choose weapon component:\n");
-		
-		if(player->getQueuedOffense().manuever == eOffensiveManuevers::Swing) {
-			for(int i = 0; i < weapon->getSwingComponents().size(); ++i) {
-				char idx = ('a' + i);
-
-				str += idx;
-				str += " - " + weapon->getSwingComponents()[i]->getName() + '\n';
-
-				if(event.type == sf::Event::TextEntered) {
-					char c = event.text.unicode;
-					if(c == idx) {
-						player->setOffenseComponent(weapon->getSwingComponents()[i]);
-						m_offenseState = eOffenseSubState::ChooseTarget;
-					}
-				}
-			}
-		} else {
-			for(int i = 0; i < weapon->getThrustComponents().size(); ++i) {
-				char idx = ('a' + i);
-
-				str += idx;
-				str += " - " + weapon->getThrustComponents()[i]->getName() + '\n';
-
-				if(event.type == sf::Event::TextEntered) {
-					char c = event.text.unicode;
-					if(c == idx) {
-						player->setOffenseComponent(weapon->getThrustComponents()[i]);
-						m_offenseState = eOffenseSubState::ChooseTarget;
-					}
-				}
-			}
-		}
-
-		text.setString(str);
-		Game::getWindow().draw(text);
-	}
-	else if(m_offenseState == eOffenseSubState::ChooseTarget) {
-		sf::Text text;
-		text.setCharacterSize(cCharSize);
-		text.setFont(Game::getDefaultFont());
-		text.setString("Choose target location:\na - Head\nb - Chest\nc - Arms\nd - Belly\ne - Thigh\nf - Shin\n");
-		if(event.type == sf::Event::TextEntered) {
-			char c = event.text.unicode;
-			if(c == 'a') {
-				player->setOffenseTarget(eHitLocations::Head);
-				m_offenseState = eOffenseSubState::ChooseDice;
-			} else if(c == 'b') {
-				player->setOffenseTarget(eHitLocations::Chest);
-				m_offenseState = eOffenseSubState::ChooseDice;
-			} else if(c == 'c') {
-				player->setOffenseTarget(eHitLocations::Arm);
-				m_offenseState = eOffenseSubState::ChooseDice;
-			} else if(c == 'd') {
-				player->setOffenseTarget(eHitLocations::Head);
-				m_offenseState = eOffenseSubState::ChooseDice;
-			} else if(c == 'e') {
-				player->setOffenseTarget(eHitLocations::Head);
-				m_offenseState = eOffenseSubState::ChooseDice;
-			} else if(c == 'f') {
-				player->setOffenseTarget(eHitLocations::Head);
-				m_offenseState = eOffenseSubState::ChooseDice;
-			}
-		}
-		Game::getWindow().draw(text);
-	}
-	else if(m_offenseState == eOffenseSubState::ChooseDice) {
-		sf::Text text;
-		text.setCharacterSize(cCharSize);
-		text.setFont(Game::getDefaultFont());
-		text.setString("Allocate action points (" + std::to_string(player->getCombatPool()) + " action points left):");
-
-		Game::getWindow().draw(text);
-
-		if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
-			player->setOffenseDice(m_numberInput.getNumber());
-			m_offenseState = eOffenseSubState::Finished;
-			//last one so set flag
-			player->setOffenseReady();
-			m_numberInput.reset();
-		}
-
-		m_numberInput.setMax(player->getCombatPool());
-		m_numberInput.run(event);
-		m_numberInput.setPosition(sf::Vector2f(0, cCharSize));
-	}
-	else if(m_offenseState == eOffenseSubState::Finished) {
-		
-	}
-}
-
-void CombatUI::doDefense(sf::Event event)
-{
-	auto windowSize = Game::getWindow().getSize();
-	
-	sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize*12));
-	bkg.setFillColor(sf::Color(12, 12, 23));
-	Game::getWindow().draw(bkg);
-
-	//player side 1 for now
-	Player* player = static_cast<Player*>(m_manager->getSide1());
-	if(m_defenseState == eDefenseSubState::ChooseManuever) {
-		sf::Text text;
-		text.setCharacterSize(cCharSize);
-		text.setFont(Game::getDefaultFont());
-		text.setString("Choose defense:\na - Parry\nb - Dodge\nc - Linked Parry\nd - Steal initiative\ne - Attack out of initiative");
-		Game::getWindow().draw(text);
-		if(event.type == sf::Event::TextEntered) {
-			char c = event.text.unicode;
-			if(c == 'a') {
-				player->setDefenseManuever(eDefensiveManuevers::Parry);
-				m_defenseState = eDefenseSubState::ChooseDice;
-			}
-			if(c == 'b') {
-				player->setDefenseManuever(eDefensiveManuevers::Dodge);
-				m_defenseState = eDefenseSubState::ChooseDice;
-			}
-		}		
-	}
-	else if(m_defenseState == eDefenseSubState::ChooseDice) {
-		sf::Text text;
-		text.setCharacterSize(cCharSize);
-		text.setFont(Game::getDefaultFont());
-		text.setString("Allocate action points (" + std::to_string(player->getCombatPool()) + " action points left):");
-
-		Game::getWindow().draw(text);
-
-		if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
-			player->setDefenseDice(m_numberInput.getNumber());
-			m_defenseState = eDefenseSubState::Finished;
-			//last one so set flag
-			player->setDefenseReady();
-			m_numberInput.reset();
-		}
-
-		m_numberInput.setMax(player->getCombatPool());
-		m_numberInput.run(event);
-		m_numberInput.setPosition(sf::Vector2f(0, cCharSize));
 	}
 }
 

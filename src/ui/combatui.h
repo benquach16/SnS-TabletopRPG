@@ -3,6 +3,8 @@
 #include <SFML/Graphics.hpp>
 
 #include "numberinput.h"
+#include "defenseui.h"
+#include "offenseui.h"
 
 class CombatManager;
 
@@ -55,4 +57,7 @@ private:
 	eOffenseSubState m_offenseState;
 	eStolenOffenseSubState m_stolenOffenseState;
 	eDefenseSubState m_defenseState;
+
+	DefenseUI m_defenseUI;
+	OffenseUI m_offenseUI;
 };

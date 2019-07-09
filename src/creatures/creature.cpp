@@ -104,6 +104,7 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
 					   - effolkronium::random_static::get(0, m_combatPool/3)
 					   , m_combatPool);
 	dice = max(m_combatPool, dice);
+	dice = max(dice, 0);
 	m_currentDefense.dice = dice;
 }
 
@@ -138,7 +139,7 @@ eInitiativeRoll Creature::doInitiative()
 	//do random for now
 	//this should be based on other creatures weapon length and armor and stuff
 	if(effolkronium::random_static::get(0, 1) == 1){
-		return eInitiativeRoll::Defend;
+		return eInitiativeRoll::Attack;
 	}
 	return eInitiativeRoll::Defend;
 }

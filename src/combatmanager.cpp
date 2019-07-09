@@ -157,6 +157,7 @@ bool CombatManager::doOffense()
 	assert(attack.component != nullptr);
 	assert(attack.dice <= offenseCombatPool);
 	cout << attack.dice << endl;
+	assert(attack.dice >= 0);
 	attacker->reduceCombatPool(attack.dice);
 	
 	writeMessage(attacker->getName() + " " + offensiveManueverToString(attack.manuever) + "s with " +
@@ -227,7 +228,7 @@ void CombatManager::doDefense()
 		return;
 	}
 	assert(defend.dice <= defenseCombatPool);
-
+	assert(defend.dice >= 0);
 	defender->reduceCombatPool(defend.dice);
 	
 	writeMessage(defender->getName() + " defends with " + defenseWeapon->getName() +
