@@ -89,8 +89,12 @@ void CombatUI::run(sf::Event event)
 		m_offenseUI.run(event, player);
 		return;
 	}
-	if(m_manager->getState() == eCombatState::StolenOffense) {
+	if(m_manager->getState() == eCombatState::StolenOffense && m_manager->isAttackerPlayer() == true) {
 		doStolenOffense(event);
+		return;
+	}
+	if(m_manager->getState() == eCombatState::StealInitiative) {
+		m_offenseUI.run(event, player);
 		return;
 	}
 	if(m_manager->getState() == eCombatState::Resolution) {

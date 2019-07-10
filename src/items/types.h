@@ -41,12 +41,17 @@ enum class eDefensiveManuevers : unsigned {
 	//special manuevers used to tell combatmanager about special events
 	NoDefense,
 	StealInitiative,
+	ParryLinked,
 	
 	Parry,
 	Dodge	
 };
 
 static int defenseManueverCost(eDefensiveManuevers manuever) {
+	switch(manuever) {
+	case eDefensiveManuevers::ParryLinked:
+		return 1;
+	}
 	return 0;
 }
 

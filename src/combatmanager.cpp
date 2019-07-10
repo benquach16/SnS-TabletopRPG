@@ -222,14 +222,15 @@ void CombatManager::doDefense()
 	}
 	
 	Creature::Defense defend = defender->getQueuedDefense();
+	assert(defend.dice <= defenseCombatPool);
+	assert(defend.dice >= 0);
+	defender->reduceCombatPool(defend.dice);
 	if(defend.manuever == eDefensiveManuevers::StealInitiative) {
 		//need both sides to attempt to allocate dice
 		m_currentState = eCombatState::StealInitiative;
 		return;
 	}
-	assert(defend.dice <= defenseCombatPool);
-	assert(defend.dice >= 0);
-	defender->reduceCombatPool(defend.dice);
+
 	
 	writeMessage(defender->getName() + " defends with " + defenseWeapon->getName() +
 				 " using " + to_string(defend.dice) + " action points");
@@ -252,12 +253,15 @@ void CombatManager::doStealInitiative()
 	reachCost = std::max(0, reachCost);
 	//do dice to steal initiative first
 	if(defender->isPlayer() == true) {
-		m_currentState = eCombatState::StealInitiative;
-		return;
+		//wait until player inputs
+		Player* player = static_cast<Player*>(defender);
+		if(player->pollForOffense() == false) {
+			m_currentState = eCombatState::StealInitiative;
+			return;
+		}
+
 	}
 	else {
-		defender->reduceCombatPool(defend.dice);
-		cout << defender->getCombatPool() << endl;
 		defender->doOffense(attacker, reachCost, true);
 	}
 
@@ -282,8 +286,15 @@ void CombatManager::doStolenOffense()
 		}
 	}
 	else {
-		attacker->doStolenInitiative(defender);
+ 		attacker->doStolenInitiative(defender);
 	}
+
+	assert(attacker->getQueuedDefense().dice <= attacker->getCombatPool());
+	attacker->reduceCombatPool(attacker->getQueuedDefense().dice);
+	
+	writeMessage(attacker->getName() + " allocates " + to_string(attacker->getQueuedDefense().dice) +
+				 " action points to contest initiative steal");
+
 	writeMessage(defender->getName() + " " + offensiveManueverToString(defender->getQueuedOffense().manuever) + "s with " +
 				 defender->getPrimaryWeapon()->getName() + " using " +
 				 defender->getQueuedOffense().component->getName() + " with " +
@@ -306,10 +317,17 @@ void CombatManager::doResolution()
 		//original attacker gets advantage
 		int side1BTN = (m_side1 == attacker) ? m_side1->getBTN() - 1 : m_side1->getBTN();
 		int side2BTN = (m_side2 == attacker) ? m_side2->getBTN() - 1 : m_side2->getBTN();
+		//special case for thrust manuever, get an extra die
+		int side1Dice = (m_side1->getQueuedOffense().manuever == eOffensiveManuevers::Thrust) ?
+			m_side1->getQueuedDefense().dice + 1 : m_side1->getQueuedDefense().dice;
+		int side2Dice = (m_side2->getQueuedOffense().manuever == eOffensiveManuevers::Thrust) ?
+			m_side2->getQueuedDefense().dice + 1 : m_side2->getQueuedDefense().dice;
+
 		int side1InitiativeSuccesses =
-			DiceRoller::rollGetSuccess(side1BTN, m_side1->getQueuedDefense().dice + m_side1->getSpeed());
+			DiceRoller::rollGetSuccess(side1BTN, side1Dice + m_side1->getSpeed());
 		int side2InitiativeSuccesses =
-			DiceRoller::rollGetSuccess(side2BTN, m_side2->getQueuedDefense().dice + m_side2->getSpeed());
+			DiceRoller::rollGetSuccess(side2BTN, side2Dice + m_side2->getSpeed());
+		
 		Creature* originalAttackerPtr = attacker;
 		if(side1InitiativeSuccesses > side2InitiativeSuccesses) {
 			m_initiative = eInitiative::Side1;
@@ -326,6 +344,8 @@ void CombatManager::doResolution()
 				m_currentState = eCombatState::FinishedCombat;
 				return;
 			}
+		} else {
+			writeMessage(attacker->getName() + " had no successes");			
 		}
 
 		if(defender->getQueuedOffense().dice == 0) {
@@ -342,7 +362,10 @@ void CombatManager::doResolution()
 				m_currentState = eCombatState::FinishedCombat;
 				return;
 			}
+		} else {
+			writeMessage(defender->getName() + " had no successes");
 		}
+
 		if(defendSuccesses > attackerSuccesses) {
 			writeMessage(defender->getName() + " had more successes, taking initiative");
 			switchInitiative();
@@ -369,8 +392,8 @@ void CombatManager::doResolution()
 			writeMessage(defender->getName() + " now has initative, becoming attacker");
 			switchInitiative();
 		}	
-		switchTempo();
 	}
+	switchTempo();
 	m_currentState = eCombatState::Offense;
 	
 }
@@ -426,7 +449,7 @@ bool CombatManager::inflictWound(int MoS, Creature::Offense attack, Creature* ta
 
 	int finalDamage = MoS + attack.component->getDamage();
 
-	writeMessage("inflicted level " + to_string(finalDamage) + " wound to " + bodyPartToString(bodyPart));
+	writeMessage(target->getName() + " received a level " + to_string(finalDamage) + " wound to " + bodyPartToString(bodyPart));
 	Wound* wound = WoundTable::getSingleton()->getWound(attack.component->getType(), bodyPart, finalDamage);
 	writeMessage(wound->getText(), Log::eMessageTypes::Damage);
 	if(wound->getBTN() > target->getBTN())

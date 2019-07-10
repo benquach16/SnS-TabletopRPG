@@ -103,7 +103,7 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
 	int dice = std::min(diceAllocated + effolkronium::random_static::get(0, m_combatPool/3)
 					   - effolkronium::random_static::get(0, m_combatPool/3)
 					   , m_combatPool);
-	dice = max(m_combatPool, dice);
+	dice = min(m_combatPool, dice);
 	dice = max(dice, 0);
 	m_currentDefense.dice = dice;
 }
@@ -131,7 +131,7 @@ void Creature::doStolenInitiative(const Creature* defender)
 {
 	m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
 	Defense defend = defender->getQueuedDefense();
-	m_currentDefense.dice = max(m_combatPool, defend.dice);
+	m_currentDefense.dice = min(m_combatPool, defend.dice);
 }
 
 eInitiativeRoll Creature::doInitiative()

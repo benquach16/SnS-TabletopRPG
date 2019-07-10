@@ -36,14 +36,19 @@ enum class eCombatState : unsigned
 
 class CombatManager
 {
-public:
-
-	
+public:	
 	CombatManager();
 	void run();
 	void runUI();
 
 	void initCombat(Creature* side1, Creature* side2);
+
+	eCombatState getState() const { return m_currentState; }
+	Creature* getSide1() const { return m_side1; }
+	Creature* getSide2() const { return m_side2; }
+	bool isAttackerPlayer();
+	bool isDefenderPlayer();
+private:
 	void doInitialization();
 	void doRollInitiative();
 	void doResetState();
@@ -65,13 +70,7 @@ public:
 
 	bool inflictWound(int MoS, Creature::Offense attack, Creature* target, bool manueverFirst = false);
 	void writeMessage(const std::string& str, Log::eMessageTypes type = Log::eMessageTypes::Standard);
-
-	eCombatState getState() const { return m_currentState; }
-	Creature* getSide1() const { return m_side1; }
-	Creature* getSide2() const { return m_side2; }
-	bool isAttackerPlayer();
-	bool isDefenderPlayer();
-private:
+	
 	eCombatState m_currentState;
 	
 	eTempo m_currentTempo;
