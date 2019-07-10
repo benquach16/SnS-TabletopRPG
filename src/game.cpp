@@ -1,7 +1,6 @@
 #include "game.h"
 #include "log.h"
 #include "creatures/wound.h"
-#include "combatmanager.h"
 #include "items/weapon.h"
 #include "creatures/human.h"
 #include "creatures/player.h"
@@ -22,21 +21,21 @@ void Game::initialize()
 
 void Game::run()
 {
-	CombatManager manager;
+	CombatInstance instance;
 	Player* c1 = new Player;
 	Human* c2 = new Human;
 	c1->setWeapon(40); //pollax
 	c2->setWeapon(41); //arming sword
 	c1->setName("John");
 	c2->setName("Sam");
-	manager.initCombat(c1, c2);
+	instance.initCombat(c1, c2);
 
 	sf::Clock clock;
 	//main game loop
 	float tick = 0;
 
 	GameUI ui;
-	ui.initializeCombatUI(&manager);
+	ui.initializeCombatUI(&instance);
 	while(m_window.isOpen())
 	{
 		m_window.clear();
@@ -57,7 +56,7 @@ void Game::run()
 		Log::run();
 
 		if(tick > 1.0) {
-			manager.run();
+			instance.run();
 			tick = 0;
 		}
 		

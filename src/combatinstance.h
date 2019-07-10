@@ -34,10 +34,10 @@ enum class eCombatState : unsigned
 	FinishedCombat
 };
 
-class CombatManager
+class CombatInstance
 {
 public:	
-	CombatManager();
+	CombatInstance();
 	void run();
 	void runUI();
 

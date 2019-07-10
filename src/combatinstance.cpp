@@ -1,7 +1,7 @@
 #include <iostream>
 #include "creatures/utils.h"
 #include "items/utils.h"
-#include "combatmanager.h"
+#include "combatinstance.h"
 #include "game.h"
 #include "creatures/player.h"
 
@@ -9,12 +9,12 @@
 
 using namespace std;
 
-CombatManager::CombatManager(): m_initiative(eInitiative::Side1), m_side1(nullptr), m_side2(nullptr),
+CombatInstance::CombatInstance(): m_initiative(eInitiative::Side1), m_side1(nullptr), m_side2(nullptr),
 								m_currentTempo(eTempo::First), m_currentState(eCombatState::Uninitialized)
 {
 }
 
-void CombatManager::setSides(Creature*& attacker, Creature*& defender)
+void CombatInstance::setSides(Creature*& attacker, Creature*& defender)
 {
 	if(m_initiative == eInitiative::Side1) {
 		attacker = m_side1;
@@ -28,7 +28,7 @@ void CombatManager::setSides(Creature*& attacker, Creature*& defender)
 	assert(defender != nullptr);
 }
 
-void CombatManager::initCombat(Creature* side1, Creature* side2)
+void CombatInstance::initCombat(Creature* side1, Creature* side2)
 {
 	assert(side1 != nullptr);
 	assert(side2 != nullptr);
@@ -44,7 +44,7 @@ void CombatManager::initCombat(Creature* side1, Creature* side2)
 	m_currentState = eCombatState::Initialized;
 }
 
-void CombatManager::doInitialization()
+void CombatInstance::doInitialization()
 {
 	assert(m_side1 != nullptr);
 	assert(m_side2 != nullptr);
@@ -57,7 +57,7 @@ void CombatManager::doInitialization()
 	m_currentState = eCombatState::RollInitiative;
 }
 
-void CombatManager::doRollInitiative()
+void CombatInstance::doRollInitiative()
 {
 	if(m_side1->isPlayer() == true) {
 		Player* player = static_cast<Player*>(m_side1);
@@ -112,12 +112,12 @@ void CombatManager::doRollInitiative()
 	m_currentState = eCombatState::RollInitiative;
 }
 
-void CombatManager::doResetState()
+void CombatInstance::doResetState()
 {
 	m_currentState = eCombatState::RollInitiative;
 }
 
-bool CombatManager::doOffense()
+bool CombatInstance::doOffense()
 {
 	//get offensive manuever and dice from side 1
 	//then get defensive manuever and dice from side 2
@@ -169,7 +169,7 @@ bool CombatManager::doOffense()
 	return true;
 }
 
-void CombatManager::doDualOffense1()
+void CombatInstance::doDualOffense1()
 {
 	//both sides rolled red
 	Creature* attacker = nullptr;
@@ -185,7 +185,7 @@ void CombatManager::doDualOffense1()
 	m_currentState = eCombatState::DualOffense2;
 }
 
-void CombatManager::doDualOffense2()
+void CombatInstance::doDualOffense2()
 {
 	//both sides rolled red
 	Creature* attacker = nullptr;
@@ -199,7 +199,7 @@ void CombatManager::doDualOffense2()
 	m_currentState = eCombatState::DualOffenseResolve;
 }
 
-void CombatManager::doDefense()
+void CombatInstance::doDefense()
 {
 	Creature* attacker = nullptr;
 	Creature* defender = nullptr;
@@ -238,7 +238,7 @@ void CombatManager::doDefense()
 	m_currentState = eCombatState::Resolution;
 }
 
-void CombatManager::doStealInitiative()
+void CombatInstance::doStealInitiative()
 {
 	//defender inputs offense and dice to steal initiative
 	Creature* attacker = nullptr;
@@ -271,7 +271,7 @@ void CombatManager::doStealInitiative()
 	m_currentState = eCombatState::StolenOffense;
 }
 
-void CombatManager::doStolenOffense()
+void CombatInstance::doStolenOffense()
 {
 	Creature* attacker = nullptr;
 	Creature* defender = nullptr;
@@ -302,7 +302,7 @@ void CombatManager::doStolenOffense()
 	m_currentState = eCombatState::Resolution;
 }
 
-void CombatManager::doResolution()
+void CombatInstance::doResolution()
 {
 	Creature* attacker = nullptr;
 	Creature* defender = nullptr;
@@ -398,7 +398,7 @@ void CombatManager::doResolution()
 	
 }
 
-void CombatManager::doDualOffenseResolve()
+void CombatInstance::doDualOffenseResolve()
 {
 	//dual aggression
 	Creature::Offense attack = m_side1->getQueuedOffense();
@@ -435,7 +435,7 @@ void CombatManager::doDualOffenseResolve()
 	m_currentState = death == true ? eCombatState::FinishedCombat : m_currentState;
 }
 
-void CombatManager::doEndCombat()
+void CombatInstance::doEndCombat()
 {
 	writeMessage("Combat has ended", Log::eMessageTypes::Announcement);
 	m_side1 = nullptr;
@@ -443,7 +443,7 @@ void CombatManager::doEndCombat()
 	m_currentState = eCombatState::Uninitialized;
 }
 
-bool CombatManager::inflictWound(int MoS, Creature::Offense attack, Creature* target, bool manueverFirst)
+bool CombatInstance::inflictWound(int MoS, Creature::Offense attack, Creature* target, bool manueverFirst)
 {
 	eBodyParts bodyPart = WoundTable::getSingleton()->getSwing(attack.target);
 
@@ -470,7 +470,7 @@ bool CombatManager::inflictWound(int MoS, Creature::Offense attack, Creature* ta
 	return false;
 }
 
-void CombatManager::switchTempo()
+void CombatInstance::switchTempo()
 {
 	if(m_currentTempo == eTempo::First) {
 		m_currentTempo = eTempo::Second;
@@ -483,7 +483,7 @@ void CombatManager::switchTempo()
 	}
 }
 
-bool CombatManager::isAttackerPlayer()
+bool CombatInstance::isAttackerPlayer()
 {
 	Creature* attacker = nullptr;
 	Creature* defender = nullptr;
@@ -491,7 +491,7 @@ bool CombatManager::isAttackerPlayer()
 	return attacker->isPlayer();
 }
 
-bool CombatManager::isDefenderPlayer()
+bool CombatInstance::isDefenderPlayer()
 {
 	Creature* attacker = nullptr;
 	Creature* defender = nullptr;
@@ -499,7 +499,7 @@ bool CombatManager::isDefenderPlayer()
 	return defender->isPlayer();
 }
 
-void CombatManager::run()
+void CombatInstance::run()
 {
 	switch(m_currentState)
 	{
@@ -545,12 +545,12 @@ void CombatManager::run()
 	}
 }
 
-void CombatManager::runUI()
+void CombatInstance::runUI()
 {
 	Game::getWindow();
 }
 
-void CombatManager::writeMessage(const std::string& str, Log::eMessageTypes type)
+void CombatInstance::writeMessage(const std::string& str, Log::eMessageTypes type)
 {
 	//combat manager is not a singleton, so we can have multiple.
 	//we can choose not to display combatmanager messages if we want to.

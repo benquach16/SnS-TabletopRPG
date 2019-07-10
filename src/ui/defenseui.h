@@ -1,7 +1,7 @@
 #pragma once
 
 #include "numberinput.h"
-#include "../combatmanager.h"
+#include "../combatinstance.h"
 #include "../creatures/player.h"
 
 class DefenseUI

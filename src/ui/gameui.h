@@ -8,7 +8,7 @@ class GameUI
 {
 public:
 	GameUI();
-	void initializeCombatUI(CombatManager* manager) { m_combatUI.initialize(manager); }
+	void initializeCombatUI(CombatInstance* instance) { m_combatUI.initialize(instance); }
 
 	void run(sf::Event event);
 private:

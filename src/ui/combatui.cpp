@@ -2,7 +2,7 @@
 
 #include "combatui.h"
 #include "../game.h"
-#include "../combatmanager.h"
+#include "../combatinstance.h"
 #include "../items/weapon.h"
 #include "../creatures/player.h"
 #include "types.h"
@@ -12,14 +12,9 @@ using namespace std;
 constexpr unsigned logHeight = cCharSize * (cLinesDisplayed+1);
 constexpr unsigned rectHeight = cCharSize * 5;
 
-CombatUI::CombatUI() : m_manager(nullptr)
+CombatUI::CombatUI() : m_instance(nullptr)
 {
 	resetState();
-}
-
-void CombatUI::initialize(CombatManager* manager)
-{	
-	m_manager = manager;
 }
 
 void CombatUI::resetState()
@@ -33,11 +28,11 @@ void CombatUI::resetState()
 
 void CombatUI::run(sf::Event event)
 {
-	if(m_manager == nullptr) {
+	if(m_instance == nullptr) {
 		return;
 	}
 
-	if(m_manager->getState() == eCombatState::Uninitialized) {
+	if(m_instance->getState() == eCombatState::Uninitialized) {
 		return;
 	}
 
@@ -59,50 +54,50 @@ void CombatUI::run(sf::Event event)
 	showSide1Stats();
 	showSide2Stats();
 
-	Player* player = static_cast<Player*>(m_manager->getSide1());
+	Player* player = static_cast<Player*>(m_instance->getSide1());
 	
-	if(m_manager->getState() == eCombatState::Initialized) {
+	if(m_instance->getState() == eCombatState::Initialized) {
 		resetState();
 		return;
 	}
-	if(m_manager->getState() == eCombatState::RollInitiative) {
+	if(m_instance->getState() == eCombatState::RollInitiative) {
 		doInitiative();
 		return;
 	}
-	if(m_manager->getState() == eCombatState::ResetState) {
+	if(m_instance->getState() == eCombatState::ResetState) {
 		resetState();
 		return;
 	}
-	if(m_manager->getState() == eCombatState::Offense && m_manager->isAttackerPlayer() == true) {
+	if(m_instance->getState() == eCombatState::Offense && m_instance->isAttackerPlayer() == true) {
 		m_offenseUI.run(event, player);
 		return;
 	}
-	if(m_manager->getState() == eCombatState::Defense && m_manager->isDefenderPlayer() == true) {
+	if(m_instance->getState() == eCombatState::Defense && m_instance->isDefenderPlayer() == true) {
 		m_defenseUI.run(event, player);
 		return;
 	}
-	if(m_manager->getState() == eCombatState::DualOffense1 && m_manager->isAttackerPlayer() == true) {
+	if(m_instance->getState() == eCombatState::DualOffense1 && m_instance->isAttackerPlayer() == true) {
 		m_offenseUI.run(event, player);
 		return;
 	}
-	if(m_manager->getState() == eCombatState::DualOffense2 && m_manager->isAttackerPlayer() == true) {
+	if(m_instance->getState() == eCombatState::DualOffense2 && m_instance->isAttackerPlayer() == true) {
 		m_offenseUI.run(event, player);
 		return;
 	}
-	if(m_manager->getState() == eCombatState::StolenOffense && m_manager->isAttackerPlayer() == true) {
+	if(m_instance->getState() == eCombatState::StolenOffense && m_instance->isAttackerPlayer() == true) {
 		doStolenOffense(event);
 		return;
 	}
-	if(m_manager->getState() == eCombatState::StealInitiative) {
+	if(m_instance->getState() == eCombatState::StealInitiative) {
 		m_offenseUI.run(event, player);
 		return;
 	}
-	if(m_manager->getState() == eCombatState::Resolution) {
+	if(m_instance->getState() == eCombatState::Resolution) {
 		resetState();
 		m_defenseUI.resetState();
 		return;
 	}
-	if(m_manager->getState() == eCombatState::DualOffenseResolve) {
+	if(m_instance->getState() == eCombatState::DualOffenseResolve) {
 		resetState();
 		return;
 	}
@@ -122,8 +117,8 @@ void CombatUI::doInitiative()
 		text.setString("Choose initiative:\na - attack \nb - defend");
 		Game::getWindow().draw(text);
 
-		assert(m_manager->getSide1()->isPlayer() == true);
-		Player* player = static_cast<Player*>(m_manager->getSide1());
+		assert(m_instance->getSide1()->isPlayer() == true);
+		Player* player = static_cast<Player*>(m_instance->getSide1());
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) == true) {
 			player->setInitiative(eInitiativeRoll::Attack);
 			m_initiativeState = eInitiativeSubState::Finished;
@@ -142,7 +137,7 @@ void CombatUI::doStolenOffense(sf::Event event)
 	sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize*12));
 	bkg.setFillColor(sf::Color(12, 12, 23));
 	Game::getWindow().draw(bkg);
-	Player* player = static_cast<Player*>(m_manager->getSide1());
+	Player* player = static_cast<Player*>(m_instance->getSide1());
 
 	if(m_stolenOffenseState == eStolenOffenseSubState::ChooseDice) {
 		
@@ -172,8 +167,8 @@ void CombatUI::showSide1Stats()
 {
 	auto windowSize = Game::getWindow().getSize();
 
-	assert(m_manager != nullptr);
-	Creature* creature = m_manager->getSide1();
+	assert(m_instance != nullptr);
+	Creature* creature = m_instance->getSide1();
 	sf::Text side1Info;
 	side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName());
 	side1Info.setCharacterSize(cCharSize);
@@ -196,8 +191,8 @@ void CombatUI::showSide2Stats()
 {
 	auto windowSize = Game::getWindow().getSize();
 
-	assert(m_manager != nullptr);
-	Creature* creature = m_manager->getSide2();
+	assert(m_instance != nullptr);
+	Creature* creature = m_instance->getSide2();
 	sf::Text side1Info;
 	side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName());
 	side1Info.setCharacterSize(cCharSize);

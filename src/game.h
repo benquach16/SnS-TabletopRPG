@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "combatmanager.h"
+#include "combatinstance.h"
 
 class Game
 {

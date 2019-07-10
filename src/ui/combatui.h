@@ -6,13 +6,13 @@
 #include "defenseui.h"
 #include "offenseui.h"
 
-class CombatManager;
+class CombatInstance;
 
 class CombatUI
 {
 public:
 	CombatUI();
-	void initialize(CombatManager* manager);
+	void initialize(CombatInstance* instance) { m_instance = instance; }
 	
 	void run(sf::Event event);
 
@@ -49,7 +49,7 @@ private:
 	void showSide1Stats();
 	void showSide2Stats();
 
-	CombatManager *m_manager;
+	CombatInstance *m_instance;
 
 	NumberInput m_numberInput;
 
