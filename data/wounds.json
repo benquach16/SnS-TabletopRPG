@@ -220,6 +220,126 @@
 				"text": ["Damage to internal organs causes heavy internal bleeding."],
 				"effects": ["death"]
 			}
+		},
+		"hip": {
+			"1": {
+				"text": ["Bump."]
+			},
+			"2": {
+				"text": ["Blow to the gut forces to bend over."]
+			},
+			"3": {
+				"text": ["Knocks out the wind. Bad bruising and concussed organs."],
+				"effects": ["KD2", "KO1"]
+			},
+			"4": {
+				"text": ["Ruptured internal organs and internal bleeding."],
+				"effects": []
+			},
+			"5": {
+				"text": ["Damage to internal organs causes heavy internal bleeding."],
+				"effects": ["death"]
+			}
+		},
+		"groin": {
+			"1": {
+				"text": ["Bump."]
+			},
+			"2": {
+				"text": ["Blow to the gut forces to bend over."]
+			},
+			"3": {
+				"text": ["Knocks out the wind. Bad bruising and concussed organs."],
+				"effects": ["KD2", "KO1"]
+			},
+			"4": {
+				"text": ["Ruptured internal organs and internal bleeding."],
+				"effects": []
+			},
+			"5": {
+				"text": ["Damage to internal organs causes heavy internal bleeding."],
+				"effects": ["death"]
+			}
+		},
+		"thigh": {
+			"1": {
+				"text": ["Bump."]
+			},
+			"2": {
+				"text": ["Blow to the gut forces to bend over."]
+			},
+			"3": {
+				"text": ["Knocks out the wind. Bad bruising and concussed organs."],
+				"effects": ["KD2", "KO1"]
+			},
+			"4": {
+				"text": ["Ruptured internal organs and internal bleeding."],
+				"effects": []
+			},
+			"5": {
+				"text": ["Damage to internal organs causes heavy internal bleeding."],
+				"effects": ["death"]
+			}
+		},
+		"knee": {
+			"1": {
+				"text": ["Bump."]
+			},
+			"2": {
+				"text": ["Blow to the gut forces to bend over."]
+			},
+			"3": {
+				"text": ["Knocks out the wind. Bad bruising and concussed organs."],
+				"effects": ["KD2", "KO1"]
+			},
+			"4": {
+				"text": ["Ruptured internal organs and internal bleeding."],
+				"effects": []
+			},
+			"5": {
+				"text": ["Damage to internal organs causes heavy internal bleeding."],
+				"effects": ["death"]
+			}
+		},
+		"shin": {
+			"1": {
+				"text": ["Bump."]
+			},
+			"2": {
+				"text": ["Blow to the gut forces to bend over."]
+			},
+			"3": {
+				"text": ["Knocks out the wind. Bad bruising and concussed organs."],
+				"effects": ["KD2", "KO1"]
+			},
+			"4": {
+				"text": ["Ruptured internal organs and internal bleeding."],
+				"effects": []
+			},
+			"5": {
+				"text": ["Damage to internal organs causes heavy internal bleeding."],
+				"effects": ["death"]
+			}
+		},
+		"foot": {
+			"1": {
+				"text": ["Ow."]
+			},
+			"2": {
+				"text": ["An eye watering crunch."]
+			},
+			"3": {
+				"text": ["Knocks out the wind. Bad bruising and concussed organs."],
+				"effects": ["KD2", "KO1"]
+			},
+			"4": {
+				"text": ["Ruptured internal organs and internal bleeding."],
+				"effects": []
+			},
+			"5": {
+				"text": ["Damage to internal organs causes heavy internal bleeding."],
+				"effects": ["death"]
+			}
 		}
 	},
 	"piercing": {
@@ -284,7 +404,7 @@
 			},
 			"5": {
 				"text":["Neck is pierced, severely damaging the carotid artery."],
-				"effects":["death"]
+				"effects":["BL3"]
 			}
 		},
 		"shoulder": {
@@ -450,6 +570,130 @@
 			},
 			"5": {
 				"text":["Massive organ damage. Death is imminent."],
+				"effects":["death"]
+			}
+		},
+		"hip": {
+			"1": {
+				"text":["Grazed."]
+			},
+			"2": {
+				"text":["Shallow puncture."]
+			},
+			"3": {
+				"text":["Penetrates muscle on upper hip, but misses major organs."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Deep into the pelvis, clean exit. Stable fracture."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":["Pelvis pierced. Messy and lots of blood. Unstable fracture."],
+				"effects":["death"]
+			}
+		},
+		"groin": {
+			"1": {
+				"text":["Nothing serious."]
+			},
+			"2": {
+				"text":["Some blood, but can still be considered lucky."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Long graze along the skull. Serious bleeding."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Skull is pierced. Brain damaged."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":["Massive organ damage. Death is imminent."],
+				"effects":["death"]
+			}
+		},
+		"thigh": {
+			"1": {
+				"text":["Just a scratch."]
+			},
+			"2": {
+				"text":["Surface layer piereced. Some blood."]
+			},
+			"3": {
+				"text":["Thigh muscles penetrated almost to the bone."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Thigh completely pierced. Leg can only support for short amounts of time."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":["Inner thigh pierced, femoral artery cut."],
+				"effects":["death"]
+			}
+		},
+		"knee": {
+			"1": {
+				"text":["Minor graze."]
+			},
+			"2": {
+				"text":["Bounces off from the bone. Some blood."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Knee is hit. Joint is painful but remains fully functional."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Blow jacks up knee. Causes limp due chipped bone and torn tendons."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":["Knee fractured, femoral nerve severed. Leg is numb and knee won't lock anymore."],
+				"effects":["death"]
+			}
+		},
+		"shin": {
+			"1": {
+				"text":["Hurts, but no blood."]
+			},
+			"2": {
+				"text":["Bounces off from the bone. Some blood."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Shallow puncture or surface wound. Chipped bone and minor ligament damage."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Shin completely pierced with bone damage."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":["Shin completely pierced with tendon injury."],
+				"effects":["death"]
+			}
+		},
+		"foot": {
+			"1": {
+				"text":["Just a graze."]
+			},
+			"2": {
+				"text":["Minor puncture, but balance is compromised."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Deeper puncture hitting bone. Minor fractures."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Foot pierced with lots of blood."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":["Foot pierced."],
 				"effects":["death"]
 			}
 		}
@@ -703,12 +947,115 @@
 				"effects": []
 			},
 			"4": {
-				"text": [""],
+				"text": ["Fractured pelvis. Possible bone fragments."],
 				"effects": []
 			},
 			"5": {
-				"text": [""],
+				"text": ["Weapon stuck in pelvis with massive amount of blood. Death is imminent."],
+				"effects": ["death"]
+			}
+		},
+		"groin": {
+			"1": {
+				"text": ["Nothing serious."]
+			},
+			"2": {
+				"text": ["Some blood, but can still be considered lucky."],
 				"effects": []
+			},
+			"3": {
+				"text": ["Surface organs are damaged, but remain attached."],
+				"effects": []
+			},
+			"4": {
+				"text": ["Say goodby to reproduction. Lots of blood."],
+				"effects": []
+			},
+			"5": {
+				"text": ["Weapon almost reachs the navel and is stuck. Death is imminent."],
+				"effects": ["death"]
+			}
+		} ,
+		"thigh": {
+			"1": {
+				"text": ["Surface graze."]
+			},
+			"2": {
+				"text": ["Slash across the thigh. Not deep."]
+			},
+			"3": {
+				"text": ["Cut penetrates muscle tissue, but doesn’t reach bone."],
+				"effects": []
+			},
+			"4": {
+				"text": ["Blade bites deep. Femur chipped."],
+				"effects": []
+			},
+			"5": {
+				"text": ["Femur broken with lots of blood. Epic feat of surgery needed to save the leg."],
+				"effects": ["death"]
+			}
+		},
+		"knee": {
+			"1": {
+				"text": ["Funny bone effect."]
+			},
+			"2": {
+				"text": ["Blade hits the knee, delivering a shallow wound and compromising balance."]
+			},
+			"3": {
+				"text": ["Deeper cut along the knee that draws blood and compromises balance."],
+				"effects": []
+			},
+			"4": {
+				"text": ["Knee fractured and jacked up. Causes limp due chipped bone and torn tendons."],
+				"effects": []
+			},
+			"5": {
+				"text": ["Limb torn off at knee. Lots of blood."],
+				"effects": ["death"]
+			}
+		},
+		"shin": {
+			"1": {
+				"text": ["Huts, but no blood."]
+			},
+			"2": {
+				"text": ["Shallow wound across the shin, but blow compromises balance."],
+				"effects": []
+			},
+			"3": {
+				"text": ["Blade connects with impact, draws blood and compromises balance."],
+				"effects": []
+			},
+			"4": {
+				"text": ["Bone fractured with blood."],
+				"effects": []
+			},
+			"5": {
+				"text": ["Limb cut off with lots of blood."],
+				"effects": ["death"]
+			}
+		},
+		"foot": {
+			"1": {
+				"text": ["Close one."]
+			},
+			"2": {
+				"text": ["Surface wound. Painful, but nothing serious."],
+				"effects": []
+			},
+			"3": {
+				"text": ["A deep gash in the fleshy parts."],
+				"effects": []
+			},
+			"4": {
+				"text": ["Fractured pelvis. Possible bone fragments."],
+				"effects": []
+			},
+			"5": {
+				"text": ["Weapon stuck in pelvis with massive amount of blood. Death is imminent."],
+				"effects": ["death"]
 			}
 		} 
 	}

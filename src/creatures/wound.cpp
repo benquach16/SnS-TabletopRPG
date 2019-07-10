@@ -237,6 +237,12 @@ eEffects WoundTable::stringToEffect(const std::string& str)
 		return eEffects::KO2;
 	} else if(str == "BL3") {
 		return eEffects::KO2;
+	} else if(str == "drop1") {
+		return eEffects::KO2;
+	} else if(str == "drop2") {
+		return eEffects::KO2;
+	} else if(str == "drop3") {
+		return eEffects::KO2;
 	}
 	return eEffects::Death;
 }

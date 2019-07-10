@@ -50,5 +50,8 @@ enum class eEffects
 	BL1,
 	BL2,
 	BL3,
+	drop1,
+	drop2,
+	drop3,
 	Death,
 };

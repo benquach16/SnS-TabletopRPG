@@ -152,13 +152,13 @@ void OffenseUI::doTarget(sf::Event event, Player* player)
 			player->setOffenseTarget(eHitLocations::Arm);
 			m_currentState = eUiState::ChooseDice;
 		} else if(c == 'd') {
-			player->setOffenseTarget(eHitLocations::Head);
+			player->setOffenseTarget(eHitLocations::Belly);
 			m_currentState = eUiState::ChooseDice;
 		} else if(c == 'e') {
-			player->setOffenseTarget(eHitLocations::Head);
+			player->setOffenseTarget(eHitLocations::Thigh);
 			m_currentState = eUiState::ChooseDice;
 		} else if(c == 'f') {
-			player->setOffenseTarget(eHitLocations::Head);
+			player->setOffenseTarget(eHitLocations::Shin);
 			m_currentState = eUiState::ChooseDice;
 		}
 	}
