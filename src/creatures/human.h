@@ -5,5 +5,8 @@
 class Human : public Creature
 {
 public:
-	Human();	
+	Human();
+
+private:
+	
 };

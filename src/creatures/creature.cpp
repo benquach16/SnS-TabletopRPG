@@ -46,6 +46,11 @@ int Creature::getSuccessRate() const {
 	return static_cast<int>(val);
 }
 
+ArmorSegment Creature::getArmorAtPart(eBodyParts part)
+{
+	return m_armorValues[part];
+}
+
 void Creature::resetCombatPool()
 {
 	//carryover impact damage across tempos

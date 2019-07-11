@@ -9,12 +9,12 @@ class Weapon
 public:
 	Weapon(std::string name, eLength length, std::vector<Component*> components, eWeaponTypes type);
 	~Weapon();
-	std::string getName() { return m_name; }
-	eLength getLength() { return m_length; }
-	eWeaponTypes getType() { return m_type; }
-	std::vector<Component*> getComponents() { return m_components; }
-	std::vector<Component*> getThrustComponents() { return m_thrustComponents; }
-	std::vector<Component*> getSwingComponents() { return m_swingComponents; }
+	std::string getName() const { return m_name; }
+	eLength getLength() const { return m_length; }
+	eWeaponTypes getType() const { return m_type; }
+	std::vector<Component*> getComponents() const { return m_components; }
+	std::vector<Component*> getThrustComponents() const { return m_thrustComponents; }
+	std::vector<Component*> getSwingComponents() const { return m_swingComponents; }
 	//convinence functions
 	Component* getBestAttack();
 private:

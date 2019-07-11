@@ -1,0 +1,24 @@
+{
+    "40": {
+        "name": "Gambeson",
+        "description": "A jacket made of quilted linen.",
+        "AV": 2,
+        "AP": 0.0,
+        "rigid": false,
+        "metal": false,
+        "coverage": ["abs", "ribs", "shoulders", "armpit", "upperarm", "elbow", "forearm"],
+        "layer": "cloth",
+        "type": "none"
+    },
+    "41": {
+        "name": "Chainmail shirt",
+        "description": "A short sleeved shirt made of chainmail.",
+        "AV": 3,
+        "AP": 0.0,
+        "rigid": false,
+        "metal": true,
+        "coverage": ["abs", "ribs", "shoulders", "armpit", "upperarm"],
+        "layer": "maille",
+        "type": "maille"
+    }
+}

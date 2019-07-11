@@ -2,7 +2,8 @@
 
 	"40": {
 		"name": "Pollaxe",
-		"length": "extended",
+		"description":"A knightly polearm that consists of a top spike, an axe blade, and a hammer.",
+		"length": "verylong",
 		"type": "polearm",
 		"hands": 2,
 		"components": [
@@ -37,6 +38,7 @@
 
 	"41": {
 		"name": "Arming Sword",
+		"description": "",
 		"length": "medium",
 		"type": "sword",
 		"hands": 1,

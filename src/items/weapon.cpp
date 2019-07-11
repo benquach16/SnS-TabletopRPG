@@ -67,6 +67,7 @@ WeaponTable::WeaponTable()
 		assert(values["name"].is_null() == false);
 		assert(values["length"].is_null() == false);
 		assert(values["type"].is_null() == false);
+		assert(values["hands"].is_null() == false);
 		assert(componentJson.size() > 0);
 
 		string weaponName = values["name"];

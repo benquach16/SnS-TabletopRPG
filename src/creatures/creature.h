@@ -4,6 +4,7 @@
 #include "types.h"
 #include "../items/types.h"
 #include "../items/weapon.h"
+#include "../items/armor.h"
 
 #include <vector>
 #include <map>
@@ -41,6 +42,9 @@ public:
 
 	int getSuccessRate() const;
 
+	void applyArmor(Armor* armor);
+	ArmorSegment getArmorAtPart(eBodyParts part);
+
 	// for current weapon
 	int getCombatPool() const { return m_combatPool; }
 	void resetCombatPool();
@@ -76,8 +80,9 @@ public:
 	
 protected:
 	std::vector<eHitLocations> m_hitLocations;
-	std::map<eBodyParts, int> m_armor;
+	std::map<eBodyParts, ArmorSegment> m_armorValues;
 	std::vector<Wound*> m_wounds;
+	std::vector<Armor*> m_armor;
 
 	std::string m_name;
 

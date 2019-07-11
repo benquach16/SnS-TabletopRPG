@@ -28,7 +28,7 @@ void DefenseUI::doManuever(sf::Event event, Player* player)
 	sf::Text text;
 	text.setCharacterSize(cCharSize);
 	text.setFont(Game::getDefaultFont());
-	text.setString("Choose defense:\na - Parry\nb - Dodge\nc - Linked Parry\nd - Steal initiative\ne - Attack out of initiative");
+	text.setString("Choose defense:\na - Parry\nb - Dodge\nc - Linked Parry (1AP)\nd - Steal Initiative\ne - Counter (2AP)");
 	Game::getWindow().draw(text);
 	if(event.type == sf::Event::TextEntered) {
 		char c = event.text.unicode;
@@ -42,7 +42,7 @@ void DefenseUI::doManuever(sf::Event event, Player* player)
 		}
 		if(c == 'c') {
 			//costs 1 die
-
+			Log::push("Requires 1 action point");
 		}
 		if(c == 'd') {
 			player->setDefenseManuever(eDefensiveManuevers::StealInitiative);

@@ -78,8 +78,17 @@ enum class eMaterials : unsigned
 	Iron		
 };
 
+enum class eLayer : unsigned
+{
+	Cloth,
+	Maille,
+	Plate,
+	Surcoat
+};
+
 enum class eArmorTypes : unsigned
 {
-	Metal,
-	Rigid
+	None,
+	Maille,
+	Plate
 };
