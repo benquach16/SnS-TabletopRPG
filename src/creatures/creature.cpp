@@ -56,6 +56,12 @@ void Creature::equipArmor(int id)
 	const Armor* armor = ArmorTable::getSingleton()->get(id);
 	assert(armor != nullptr);
 
+	//make sure it doesnt overlap with another armor
+	for(int i : m_armor) {
+		const Armor* equippedArmor = ArmorTable::getSingleton()->get(i);
+		assert(armor->isOverlapping(equippedArmor) == false);
+	}
+
 	m_armor.push_back(id);
 	applyArmor();
 }
@@ -162,6 +168,7 @@ eInitiativeRoll Creature::doInitiative()
 
 void Creature::clearArmor()
 {
+	m_AP = 0;
 	for(auto it : m_armorValues) {
 		it.second.AV = 0;
 		it.second.isMetal = false;
@@ -176,6 +183,7 @@ void Creature::applyArmor()
 	for(int i : m_armor) {
 		const Armor* armor = ArmorTable::getSingleton()->get(i);
 		for(auto it : armor->getCoverage()) {
+			m_AP += armor->getAP();
 			m_armorValues[it].AV = max(m_armorValues[it].AV, armor->getAV());
 			m_armorValues[it].isMetal = m_armorValues[it].isMetal || armor->isMetal();
 			m_armorValues[it].isRigid = m_armorValues[it].isRigid || armor->isRigid();

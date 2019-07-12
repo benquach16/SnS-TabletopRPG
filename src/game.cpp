@@ -28,6 +28,8 @@ void Game::run()
 	c2->setWeapon(41); //arming sword
 	c1->equipArmor(41); //chainmail
 	c2->equipArmor(41); //chainmail
+	c1->equipArmor(42); //sallet
+	c2->equipArmor(42); //sallet
 	c1->setName("John");
 	c2->setName("Sam");
 	instance.initCombat(c1, c2);

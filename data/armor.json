@@ -20,5 +20,16 @@
         "coverage": ["abs", "ribs", "shoulders", "armpit", "upperarm"],
         "layer": "maille",
         "type": "maille"
+    },
+    "42": {
+        "name": "Sallet",
+        "description": "A type of steel helmet.",
+        "AV": 4,
+        "AP": 0.5,
+        "rigid": true,
+        "metal": true,
+        "coverage": ["crown", "face"],
+        "layer": "maille",
+        "type": "maille"
     }
 }

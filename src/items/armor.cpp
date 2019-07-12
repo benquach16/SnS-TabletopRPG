@@ -18,18 +18,18 @@ Armor::Armor(const std::string &name, int AV, int AP,
 {
 }
 
-bool Armor::isOverlapping(const Armor* armor)
+bool Armor::isOverlapping(const Armor* armor) const
 {
 	//layered armor is OK
 	if(m_layer != armor->m_layer) {
-		return false;
+		return true;
 	}
 	for(auto i : armor->m_coverage) {
 		if(m_coverage.find(i) != m_coverage.end()) {
-			return false;
+			return true;
 		}
 	}
-	return true; 
+	return false; 
 }
 
 ArmorTable::ArmorTable()

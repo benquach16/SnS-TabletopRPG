@@ -447,7 +447,7 @@ bool CombatInstance::inflictWound(int MoS, Creature::Offense attack, Creature* t
 {
 	
 	eBodyParts bodyPart = WoundTable::getSingleton()->getSwing(attack.target);
-	//any thrust manevuer
+	//any thrust manevuer should trigger this
 	if(attack.manuever == eOffensiveManuevers::Thrust) {
 		bodyPart = WoundTable::getSingleton()->getThrust(attack.target);
 	}
@@ -456,6 +456,8 @@ bool CombatInstance::inflictWound(int MoS, Creature::Offense attack, Creature* t
 
 	const ArmorSegment armorAtLocation = target->getArmorAtPart(bodyPart);
 
+
+	//complicated armor calcs go here
 	finalDamage -= armorAtLocation.AV;
 
 	if(finalDamage <= 0) {
@@ -464,7 +466,7 @@ bool CombatInstance::inflictWound(int MoS, Creature::Offense attack, Creature* t
 	}
 
 	if(armorAtLocation.AV > 0) {
-		writeMessage("Armor reduced wound level by " + to_string(armorAtLocation.AV));
+		writeMessage(target->getName() + "'s armor reduced wound level by " + to_string(armorAtLocation.AV));
 	}
 
 	writeMessage(target->getName() + " received a level " + to_string(finalDamage) + " wound to " + bodyPartToString(bodyPart));

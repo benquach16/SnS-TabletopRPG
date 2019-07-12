@@ -31,7 +31,7 @@ public:
 
 	eArmorTypes getType() const { return m_type; }
 
-	bool isOverlapping(const Armor* armor);
+	bool isOverlapping(const Armor* armor) const;
 private:
 	Armor();
 	int m_AV;

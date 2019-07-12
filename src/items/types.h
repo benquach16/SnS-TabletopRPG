@@ -80,10 +80,10 @@ enum class eMaterials : unsigned
 
 enum class eLayer : unsigned
 {
-	Cloth,
-	Maille,
-	Plate,
-	Surcoat
+	Cloth = 0,
+	Maille = 1,
+	Plate = 2,
+	Surcoat = 3
 };
 
 enum class eArmorTypes : unsigned
