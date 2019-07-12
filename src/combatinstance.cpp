@@ -131,6 +131,12 @@ bool CombatInstance::doOffense()
 		switchInitiative();
 		setSides(attacker, defender);
 	}
+	if(attacker->getCombatPool() <= 0 && defender->getCombatPool() <= 0) {
+		writeMessage("Neither side has any action points left, starting new exchange and resetting combat pools");
+		m_currentTempo = eTempo::First;
+		attacker->resetCombatPool();
+		defender->resetCombatPool();
+	}
 	
 	Weapon* offenseWeapon = attacker->getPrimaryWeapon();
 	Weapon* defenseWeapon = defender->getPrimaryWeapon();
@@ -151,7 +157,8 @@ bool CombatInstance::doOffense()
 	else {
 		attacker->doOffense(defender, reachCost);		
 	}
-
+	attacker->reduceOffenseDie(reachCost);
+	attacker->reduceCombatPool(reachCost);
 	Creature::Offense attack = attacker->getQueuedOffense();
 	
 	assert(attack.component != nullptr);
@@ -249,8 +256,7 @@ void CombatInstance::doStealInitiative()
 	Creature::Defense defend = defender->getQueuedDefense();
 	Weapon* offenseWeapon = attacker->getPrimaryWeapon();
 	Weapon* defenseWeapon = defender->getPrimaryWeapon();
-	int reachCost = static_cast<int>(offenseWeapon->getLength()) - static_cast<int>(defenseWeapon->getLength());
-	reachCost = std::max(0, reachCost);
+
 	//do dice to steal initiative first
 	if(defender->isPlayer() == true) {
 		//wait until player inputs
@@ -262,9 +268,9 @@ void CombatInstance::doStealInitiative()
 
 	}
 	else {
-		defender->doOffense(attacker, reachCost, true);
+		defender->doOffense(attacker, true);
 	}
-
+	
 	writeMessage(defender->getName() + " attempts to steal intiative using " + to_string(defend.dice) +
 		" action points!");
 
@@ -294,7 +300,14 @@ void CombatInstance::doStolenOffense()
 	
 	writeMessage(attacker->getName() + " allocates " + to_string(attacker->getQueuedDefense().dice) +
 				 " action points to contest initiative steal");
-
+	Weapon* offenseWeapon = attacker->getPrimaryWeapon();
+	Weapon* defenseWeapon = defender->getPrimaryWeapon();	
+	int reachCost = static_cast<int>(offenseWeapon->getLength()) - static_cast<int>(defenseWeapon->getLength());
+	reachCost = std::max(0, reachCost);
+	defender->reduceOffenseDie(reachCost);
+	defender->reduceCombatPool(reachCost);
+	defender->reduceCombatPool(defender->getQueuedOffense().dice);
+	
 	writeMessage(defender->getName() + " " + offensiveManueverToString(defender->getQueuedOffense().manuever) + "s with " +
 				 defender->getPrimaryWeapon()->getName() + " using " +
 				 defender->getQueuedOffense().component->getName() + " with " +
@@ -304,6 +317,8 @@ void CombatInstance::doStolenOffense()
 
 void CombatInstance::doResolution()
 {
+	switchTempo();
+	
 	Creature* attacker = nullptr;
 	Creature* defender = nullptr;
 	setSides(attacker, defender);
@@ -393,7 +408,7 @@ void CombatInstance::doResolution()
 			switchInitiative();
 		}	
 	}
-	switchTempo();
+
 	m_currentState = eCombatState::Offense;
 	
 }

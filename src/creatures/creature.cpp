@@ -75,12 +75,9 @@ void Creature::resetCombatPool()
 	m_combatPool = getProficiency(weapon->getType()) + getReflex() + carry;
 }
 
-void Creature::doOffense(const Creature* target, int reachCost, bool allin)
+void Creature::doOffense(const Creature* target, bool allin)
 {
 	Weapon* weapon = getPrimaryWeapon();
-	//we shouldn't be able to pgo below 0 with this
-	m_combatPool -= reachCost;
-	m_combatPool = max(0, m_combatPool);
 
 	m_currentOffense.manuever = eOffensiveManuevers::Thrust;
 	m_currentOffense.component = weapon->getBestAttack();
@@ -96,6 +93,10 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin)
 	//bound
 	dice = max(0, dice);
 	dice = min(dice, m_combatPool);
+	//never issue 0 dice for attack
+	if(m_combatPool > 0 && dice == 0) {
+		dice = 1;
+	}
 	if(allin == true) {
 		m_currentOffense.dice = m_combatPool;
 	} else {
@@ -120,6 +121,7 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
 	if(isLastTempo == true) {
 		//use all dice because we're going to refresh anyway
 		m_currentDefense.dice = m_combatPool;
+		m_currentDefense.dice = max(m_currentDefense.dice, 0);
 		return;
 	}
 	int dice = std::min(diceAllocated + effolkronium::random_static::get(0, m_combatPool/3)

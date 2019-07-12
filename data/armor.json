@@ -29,7 +29,7 @@
         "rigid": true,
         "metal": true,
         "coverage": ["crown", "face"],
-        "layer": "maille",
-        "type": "maille"
+        "layer": "plate",
+        "type": "plate"
     }
 }

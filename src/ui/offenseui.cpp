@@ -33,7 +33,7 @@ void OffenseUI::doManuever(sf::Event event, Player* player)
 	sf::Text text;
 	text.setCharacterSize(cCharSize);
 	text.setFont(Game::getDefaultFont());
-	text.setString("Choose attack:\na - Swing\nb - Thrust");
+	text.setString("Choose attack:\na - Swing\nb - Thrust\nc - Pinpoint Thrust (2AP)\nd - Feint attack (2AP)\ne - Inspect Target");
 	Game::getWindow().draw(text);
 
 	if(event.type == sf::Event::TextEntered) {

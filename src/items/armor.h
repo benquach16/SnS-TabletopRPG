@@ -19,7 +19,7 @@ struct ArmorSegment
 class Armor : public Nameable
 {
 public:
-	Armor(const std::string &name, int AV, int AP,
+	Armor(const std::string &name, int AV, int AP, eLayer layer,
 		  bool rigid, bool metal, std::set<eBodyParts> coverage);
 	int getAV() const { return m_AV; }
 	int getAP() const { return m_AP; }
@@ -30,6 +30,7 @@ public:
 	std::set<eBodyParts> getCoverage() const { return m_coverage; }
 
 	eArmorTypes getType() const { return m_type; }
+	eLayer getLayer() const { return m_layer; }
 
 	bool isOverlapping(const Armor* armor) const;
 private:
