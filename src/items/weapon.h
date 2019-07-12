@@ -1,15 +1,16 @@
 #pragma once
 #include "component.h"
+#include "../object/nameable.h"
+
 #include <vector>
 #include <string>
 #include <map>
 
-class Weapon
+class Weapon : public Nameable
 {
 public:
 	Weapon(std::string name, eLength length, std::vector<Component*> components, eWeaponTypes type);
 	~Weapon();
-	std::string getName() const { return m_name; }
 	eLength getLength() const { return m_length; }
 	eWeaponTypes getType() const { return m_type; }
 	std::vector<Component*> getComponents() const { return m_components; }
@@ -19,7 +20,6 @@ public:
 	Component* getBestAttack();
 private:
 	Weapon();
-	std::string m_name;
 	eLength m_length;
 	std::vector<Component*> m_components;
 	std::vector<Component*> m_thrustComponents;

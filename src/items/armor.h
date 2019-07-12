@@ -6,6 +6,7 @@
 
 #include "../creatures/types.h"
 #include "types.h"
+#include "../object/nameable.h"
 
 struct ArmorSegment
 {
@@ -15,20 +16,29 @@ struct ArmorSegment
 	eArmorTypes type = eArmorTypes::None;
 };
 
-class Armor
+class Armor : public Nameable
 {
 public:
+	Armor(const std::string &name, int AV, int AP,
+		  bool rigid, bool metal, std::set<eBodyParts> coverage);
+	int getAV() const { return m_AV; }
+	int getAP() const { return m_AP; }
+	
+	bool isRigid() const { return m_rigid; }
+	bool isMetal() const { return m_metal; }
 
-	bool isRigid() const;
-	bool isMetal() const;
+	std::set<eBodyParts> getCoverage() const { return m_coverage; }
 
-	std::string getName() const;
-	std::set<eBodyParts> getCoverage() const;
+	eArmorTypes getType() const { return m_type; }
 
 	bool isOverlapping(const Armor* armor);
 private:
+	Armor();
 	int m_AV;
 	int m_AP;
+	bool m_rigid;
+	bool m_metal;
+	
 	std::set<eBodyParts> m_coverage;
 
 	eLayer m_layer;
@@ -46,7 +56,7 @@ public:
 		}
 		return singleton;
 	}
-	Armor* get(int id);
+	const Armor* get(int id) { return m_armorList[id]; }
 private:
 	static ArmorTable* singleton;
 	//<id, armor>

@@ -51,6 +51,15 @@ ArmorSegment Creature::getArmorAtPart(eBodyParts part)
 	return m_armorValues[part];
 }
 
+void Creature::equipArmor(int id)
+{
+	const Armor* armor = ArmorTable::getSingleton()->get(id);
+	assert(armor != nullptr);
+
+	m_armor.push_back(id);
+	applyArmor();
+}
+
 void Creature::resetCombatPool()
 {
 	//carryover impact damage across tempos
@@ -72,7 +81,9 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin)
 	if(m_currentOffense.component->getAttack() == eAttacks::Swing) {
 		m_currentOffense.manuever = eOffensiveManuevers::Swing;
 	}
-	m_currentOffense.target = eHitLocations::Head;
+
+	//replace me
+	m_currentOffense.target = eHitLocations::Chest;
 	int dice = m_combatPool / 2 + effolkronium::random_static::get(0, m_combatPool/3)
 		- effolkronium::random_static::get(0, m_combatPool/3);
 
@@ -147,5 +158,28 @@ eInitiativeRoll Creature::doInitiative()
 		return eInitiativeRoll::Attack;
 	}
 	return eInitiativeRoll::Defend;
+}
+
+void Creature::clearArmor()
+{
+	for(auto it : m_armorValues) {
+		it.second.AV = 0;
+		it.second.isMetal = false;
+		it.second.isRigid = false;
+		it.second.type = eArmorTypes::None;
+	}
+}
+
+void Creature::applyArmor()
+{
+	clearArmor();
+	for(int i : m_armor) {
+		const Armor* armor = ArmorTable::getSingleton()->get(i);
+		for(auto it : armor->getCoverage()) {
+			m_armorValues[it].AV = max(m_armorValues[it].AV, armor->getAV());
+			m_armorValues[it].isMetal = m_armorValues[it].isMetal || armor->isMetal();
+			m_armorValues[it].isRigid = m_armorValues[it].isRigid || armor->isRigid();
+		}
+	}
 }
 							 

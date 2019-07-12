@@ -26,6 +26,8 @@ void Game::run()
 	Human* c2 = new Human;
 	c1->setWeapon(40); //pollax
 	c2->setWeapon(41); //arming sword
+	c1->equipArmor(41); //chainmail
+	c2->equipArmor(41); //chainmail
 	c1->setName("John");
 	c2->setName("Sam");
 	instance.initCombat(c1, c2);

@@ -42,7 +42,7 @@ public:
 
 	int getSuccessRate() const;
 
-	void applyArmor(Armor* armor);
+	void equipArmor(int id);
 	ArmorSegment getArmorAtPart(eBodyParts part);
 
 	// for current weapon
@@ -79,10 +79,13 @@ public:
 	Defense getQueuedDefense() const { return m_currentDefense; }
 	
 protected:
+	void clearArmor();
+	void applyArmor();
+	
 	std::vector<eHitLocations> m_hitLocations;
 	std::map<eBodyParts, ArmorSegment> m_armorValues;
 	std::vector<Wound*> m_wounds;
-	std::vector<Armor*> m_armor;
+	std::vector<int> m_armor;
 
 	std::string m_name;
 
@@ -94,6 +97,7 @@ protected:
 	
 	int m_bloodLoss;
 	int m_BTN;
+	float m_AP;
 
 	bool m_isPlayer;
 

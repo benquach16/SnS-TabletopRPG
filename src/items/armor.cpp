@@ -4,12 +4,19 @@
 
 #include "armor.h"
 #include "../3rdparty/json.hpp"
+#include "../creatures/utils.h"
 
 ArmorTable* ArmorTable::singleton = nullptr;
 
 using namespace std;
 
 const string filepath = "data/armor.json";
+
+Armor::Armor(const std::string &name, int AV, int AP,
+			 bool rigid, bool metal, std::set<eBodyParts> coverage) :
+	Nameable(name), m_AV(AV), m_AP(AP), m_rigid(rigid), m_metal(metal), m_coverage(coverage)
+{
+}
 
 bool Armor::isOverlapping(const Armor* armor)
 {
@@ -46,11 +53,16 @@ ArmorTable::ArmorTable()
 		float AP = values["AP"];
 		bool rigid = values["rigid"];
 		bool metal = values["metal"];
-
-		auto coverage = values["coverage"];
-		for(int i = 0; i < coverage.size(); ++i) {
-			
+		set<eBodyParts> coverage;
+		
+		auto coverageJson = values["coverage"];
+		for(int i = 0; i < coverageJson.size(); ++i) {
+			eBodyParts part = stringToBodyPart(coverageJson[i]);
+			coverage.insert(part);
 		}
+
+		Armor *armor = new Armor(name, AV, AP, rigid, metal, coverage);
+		m_armorList[id] = armor;
 	}
 }
 

@@ -554,18 +554,18 @@
 		},
 		"abs": {
 			"1": {
-				"text":["Some torn skin, a little blood"]
+				"text":["Lacerates skin without puncturing it."]
 			},
 			"2": {
-				"text":["Grazed scalp or temple. Surprising amount of blood."],
+				"text":["Pierces skin and surface fat, passing straight through."],
 				"effects": ["BL1"]
 			},
 			"3": {
-				"text":["Long graze along the skull. Serious bleeding."],
+				"text":["Pierces body without puncturing any major organs. Painful and bleeds hard."],
 				"effects":["BL1", "KO1"]
 			},
 			"4": {
-				"text":["Skull is pierced. Brain damaged."],
+				"text":["Bad puncture with a lot of blood and some internal damage."],
 				"effects":["BL2", "KO2"]
 			},
 			"5": {

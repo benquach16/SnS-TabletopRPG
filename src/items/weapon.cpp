@@ -11,8 +11,8 @@ using namespace std;
 
 const string filepath = "data/weapons.json";
 
-Weapon::Weapon(std::string name, eLength length, std::vector<Component*> components, eWeaponTypes type) :
-	m_name(name), m_length(length), m_components(components), m_type(type)
+Weapon::Weapon(std::string name, eLength length, std::vector<Component*> components, eWeaponTypes type) : Nameable(name),
+	m_length(length), m_components(components), m_type(type)
 {
 	for(int i = 0; i < components.size(); ++i) {
 		if(components[i]->getAttack() == eAttacks::Thrust) {
@@ -192,9 +192,4 @@ eAttacks WeaponTable::convertAttackFromStr(const std::string& str)
 	}
 	return eAttacks::Swing;
 }
-
-Weapon::Weapon()
-{
-}
-
 

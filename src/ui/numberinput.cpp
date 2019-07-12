@@ -2,6 +2,8 @@
 #include "types.h"
 #include "../game.h"
 
+using namespace std;
+
 NumberInput::NumberInput() : m_number(0), m_max(-1)
 {
 	m_text.setCharacterSize(cCharSize);
@@ -25,6 +27,7 @@ void NumberInput::run(sf::Event event)
 		if(c == '\b') {
 			m_number /= 10;
 		}
+		m_number = max(0, m_number);
 	}
 
 	m_text.setString(std::to_string(m_number));

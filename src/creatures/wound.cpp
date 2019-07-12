@@ -1,5 +1,5 @@
 #include "wound.h"
-
+#include "utils.h"
 #include "../dice.h"
 
 #include <fstream>
@@ -181,46 +181,6 @@ void WoundTable::initHitLocationTable()
 	m_hitTable[eHitLocations::Shin].m_thrust[3] = eBodyParts::Shin;
 	m_hitTable[eHitLocations::Shin].m_thrust[4] = eBodyParts::Shin;
 	m_hitTable[eHitLocations::Shin].m_thrust[5] = eBodyParts::Foot;	
-}
-
-eBodyParts WoundTable::stringToBodyPart(const std::string& str)
-{
-	if(str == "crown") {
-		return eBodyParts::Crown;
-	} else if(str == "face") {
-		return eBodyParts::Face;
-	} else if(str == "neck") {
-		return eBodyParts::Neck;
-	} else if(str == "shoulder") {
-		return eBodyParts::Shoulder;
-	} else if(str == "upperarm") {
-		return eBodyParts::UpperArm;
-	} else if(str == "elbow") {
-		return eBodyParts::Elbow;
-	} else if(str == "forearm") {
-		return eBodyParts::Forearm;
-	} else if(str == "hand") {
-		return eBodyParts::Hand;
-	} else if(str == "armpit") {
-		return eBodyParts::Armpit;
-	} else if(str == "ribs") {
-		return eBodyParts::Ribs;
-	} else if(str == "abs") {
-		return eBodyParts::Abs;
-	} else if(str == "hip") {
-		return eBodyParts::Hip;
-	} else if(str == "groin") {
-		return eBodyParts::Groin;
-	} else if(str == "thigh") {
-		return eBodyParts::Thigh;
-	} else if(str == "knee") {
-		return eBodyParts::Knee;
-	} else if(str == "shin") {
-		return eBodyParts::Shin;
-	} else if(str == "foot") {
-		return eBodyParts::Foot;
-	}
-	return eBodyParts::Tail;
 }
 
 eEffects WoundTable::stringToEffect(const std::string& str)

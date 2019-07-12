@@ -56,7 +56,6 @@ private:
 	WoundTable();
 	void initHitLocationTable();
 	void initWoundTable(eDamageTypes type, nlohmann::json woundJson);
-	eBodyParts stringToBodyPart(const std::string& str);
 	eEffects stringToEffect(const std::string& str);
 	
 	static WoundTable *singleton;
