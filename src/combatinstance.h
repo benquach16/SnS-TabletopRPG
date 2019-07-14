@@ -1,3 +1,7 @@
+// This is a complex class, since this combat in TROS-likes is complicated
+// This flow specifically follows the combat system in the rulebook.
+// Without reading the rulebook, this will not make sense to you.
+
 #pragma once
 
 #include "creatures/creature.h"

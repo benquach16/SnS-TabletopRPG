@@ -12,5 +12,8 @@ public:
 
 	void run(sf::Event event);
 private:
+	enum class eGameUIState {
+		
+	};
 	CombatUI m_combatUI;
 };

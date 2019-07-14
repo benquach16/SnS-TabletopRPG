@@ -1,12 +1,12 @@
 #pragma once
 #include "component.h"
-#include "../object/nameable.h"
+#include "item.h"
 
 #include <vector>
 #include <string>
 #include <map>
 
-class Weapon : public Nameable
+class Weapon : public Item
 {
 public:
 	Weapon(std::string name, eLength length, std::vector<Component*> components, eWeaponTypes type);

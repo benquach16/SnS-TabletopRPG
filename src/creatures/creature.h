@@ -11,10 +11,16 @@
 
 static constexpr int cBaseBTN = 3;
 
+enum class eCreatureType {
+	Human
+};
+
 class Creature
 {
 public:
 	Creature();
+
+	virtual eCreatureType getCreatureType() = 0;
 	
 	int getBrawn() const { return m_brawn; }
 	int getAgility() const { return m_agility; }

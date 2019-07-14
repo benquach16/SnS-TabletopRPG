@@ -101,6 +101,10 @@ void CombatUI::run(sf::Event event)
 		resetState();
 		return;
 	}
+	if(m_instance->getState() == eCombatState::FinishedCombat) {
+		m_instance = nullptr;
+		return;
+	}
 }
 
 void CombatUI::doInitiative()

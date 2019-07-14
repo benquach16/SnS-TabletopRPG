@@ -5,8 +5,8 @@
 #include <map>
 
 #include "../creatures/types.h"
+#include "item.h"
 #include "types.h"
-#include "../object/nameable.h"
 
 struct ArmorSegment
 {
@@ -16,7 +16,7 @@ struct ArmorSegment
 	eArmorTypes type = eArmorTypes::None;
 };
 
-class Armor : public Nameable
+class Armor : public Item
 {
 public:
 	Armor(const std::string &name, int AV, int AP, eLayer layer,

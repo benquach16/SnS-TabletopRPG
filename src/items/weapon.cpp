@@ -11,7 +11,7 @@ using namespace std;
 
 const string filepath = "data/weapons.json";
 
-Weapon::Weapon(std::string name, eLength length, std::vector<Component*> components, eWeaponTypes type) : Nameable(name),
+Weapon::Weapon(std::string name, eLength length, std::vector<Component*> components, eWeaponTypes type) : Item(name),
 	m_length(length), m_components(components), m_type(type)
 {
 	for(int i = 0; i < components.size(); ++i) {

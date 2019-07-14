@@ -2,9 +2,11 @@
 #include "log.h"
 #include "creatures/wound.h"
 #include "items/weapon.h"
-#include "creatures/human.h"
-#include "creatures/player.h"
 #include "ui/gameui.h"
+#include "level/level.h"
+#include "gfxobjects/gfxlevel.h"
+#include "object/playerobject.h"
+#include "object/humanobject.h"
 
 sf::RenderWindow Game::m_window;
 sf::Font Game::m_defaultFont;
@@ -22,24 +24,25 @@ void Game::initialize()
 void Game::run()
 {
 	CombatInstance instance;
-	Player* c1 = new Player;
-	Human* c2 = new Human;
-	c1->setWeapon(40); //pollax
-	c2->setWeapon(41); //arming sword
-	c1->equipArmor(41); //chainmail
-	c2->equipArmor(41); //chainmail
-	c1->equipArmor(42); //sallet
-	c2->equipArmor(42); //sallet
-	c1->setName("John");
-	c2->setName("Sam");
-	instance.initCombat(c1, c2);
+	PlayerObject* playerObject = new PlayerObject;
+	HumanObject* humanObject = new HumanObject;
+
+	//instance.initCombat(c1, c2);
 
 	sf::Clock clock;
 	//main game loop
 	float tick = 0;
 
 	GameUI ui;
-	ui.initializeCombatUI(&instance);
+
+	Level level(20, 20);
+	
+	GFXLevel gfxlevel;
+	gfxlevel.setLevel(&level);
+	level.addObject(playerObject);
+	level.addObject(humanObject);
+	humanObject->setPosition(5, 5);
+	//ui.initializeCombatUI(&instance);
 	while(m_window.isOpen())
 	{
 		m_window.clear();
@@ -53,7 +56,32 @@ void Game::run()
 			}
 
 		}
+
+		vector2d pos = playerObject->getPosition();
+		if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
+			if(level.isFreeSpace(pos.x, pos.y + 1) == true) {
+				playerObject->moveDown();
+			}
+		}
+
+		if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Up) {
+			if(level.isFreeSpace(pos.x, pos.y - 1) == true) {
+				playerObject->moveUp();
+			}
+		}
 		
+		if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Left) {
+			if(level.isFreeSpace(pos.x - 1, pos.y) == true) {
+				playerObject->moveLeft();
+			}
+		}
+
+		if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Right) {
+			if(level.isFreeSpace(pos.x + 1, pos.y) == true) {
+				playerObject->moveRight();
+			}
+		}		
+		gfxlevel.run();
 		sf::Time elapsedTime = clock.getElapsedTime();
 		tick += elapsedTime.asSeconds();
 		ui.run(event);
@@ -65,7 +93,6 @@ void Game::run()
 		}
 		
 		clock.restart();
-
 
 		m_window.display();
 	}
