@@ -14,6 +14,7 @@ public:
 private:
 	enum class eGameUIState {
 		
+		
 	};
 	CombatUI m_combatUI;
 };

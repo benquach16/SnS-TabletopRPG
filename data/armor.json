@@ -14,10 +14,10 @@
         "name": "Chainmail shirt",
         "description": "A short sleeved shirt made of chainmail.",
         "AV": 3,
-        "AP": 0.0,
+        "AP": 0.25,
         "rigid": false,
         "metal": true,
-        "coverage": ["abs", "ribs", "shoulders", "armpit", "upperarm"],
+        "coverage": ["abs", "ribs", "shoulders", "armpit", "upperarm", "elbow"],
         "layer": "maille",
         "type": "maille"
     },
@@ -31,5 +31,27 @@
         "coverage": ["crown", "face"],
         "layer": "plate",
         "type": "plate"
+    },
+    "43": {
+        "name": "Brigandine",
+        "description": "A type of breastplate that consists of of steel plates riveted to a vest.",
+        "AV": 3,
+        "AP": 0.0,
+        "rigid": false,
+        "metal": true,
+        "coverage": ["abs", "ribs"],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "44": {
+        "name": "Hosen",
+        "description": "Leggings made of quilted linen.",
+        "AV": 2,
+        "AP": 0.0,
+        "rigid": false,
+        "metal": false,
+        "coverage": ["thighs", "knees", "shins", "hamstrings"],
+        "layer": "cloth",
+        "type": "none"
     }
 }

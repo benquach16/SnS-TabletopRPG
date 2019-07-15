@@ -7,7 +7,7 @@
 using namespace std;
 
 Creature::Creature() : m_BTN(cBaseBTN), m_brawn(1), m_agility(1),
-					   m_cunning(1), m_perception(1), m_will(1), m_primaryWeaponId(0), m_combatPool(0)
+					   m_cunning(1), m_perception(1), m_will(1), m_primaryWeaponId(0), m_combatPool(0), m_currentState(eCreatureState::Idle)
 {
 	
 }
@@ -34,6 +34,10 @@ void Creature::inflictWound(Wound* wound, bool manueverFirst)
 		m_combatPool -= wound->getImpact();
 	}
 	m_wounds.push_back(wound);
+
+	if(wound->causesDeath() == true) {
+		m_currentState = eCreatureState::Dead;
+	}
 	m_bloodLoss;
 }
 

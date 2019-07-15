@@ -1,14 +1,17 @@
 #pragma once
 
-#include "object.h"
+#include "creatureobject.h"
 #include "../creatures/player.h"
+#include "../combatinstance.h"
 
-class PlayerObject : public Object
+class PlayerObject : public CreatureObject
 {
 public:
 	PlayerObject();
 	~PlayerObject();
-	Player* getPlayerComponent() { return m_player; };
+	void startCombatWith(Creature* creature);
+	void runCombat() { m_instance.run(); }
+	CombatInstance& getCombatInstance() { return m_instance; }
 private:
-	Player* m_player;
+	CombatInstance m_instance;
 };

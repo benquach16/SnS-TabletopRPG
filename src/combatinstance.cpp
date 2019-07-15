@@ -493,7 +493,7 @@ bool CombatInstance::inflictWound(int MoS, Creature::Offense attack, Creature* t
 	}
 	target->inflictWound(wound, manueverFirst);
 
-	if(wound->causesDeath() == true) {
+	if(target->getCreatureState() == eCreatureState::Dead) {
 		//end combat
 		writeMessage(target->getName() + " has been killed", Log::eMessageTypes::Announcement);
 		m_currentState = eCombatState::FinishedCombat;

@@ -8,4 +8,6 @@ class HumanObject : public CreatureObject
 public:
 	HumanObject();
 	~HumanObject() override;
+
+private:
 };

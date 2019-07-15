@@ -22,7 +22,6 @@ void CombatUI::resetState()
 	m_defenseUI.resetState();
 	m_offenseUI.resetState();
 	m_initiativeState = eInitiativeSubState::ChooseInitiative;
-	m_offenseState = eOffenseSubState::ChooseManuever;
 	m_stolenOffenseState = eStolenOffenseSubState::ChooseDice;
 }
 

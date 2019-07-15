@@ -6,6 +6,7 @@
 		"length": "verylong",
 		"type": "polearm",
 		"hands": 2,
+		"cost": 100,
 		"components": [
 			{
 				"name": "Spike",
@@ -28,10 +29,16 @@
 				"properties": [ "crushing" ]
 			},
 			{
-				"name": "Buttspike",
+				"name": "Buttspike - Thrust",
 				"damage": 1,
 				"type": "piercing",
 				"attack": "thrust"
+			},		
+			{
+				"name": "Buttspike - Swing",
+				"damage": 1,
+				"type": "blunt",
+				"attack": "swing"
 			}
 		]
 	},
@@ -42,6 +49,7 @@
 		"length": "medium",
 		"type": "sword",
 		"hands": 1,
+		"cost": 50,
 		"components": [
 			{
 				"name": "Blade - Swing",

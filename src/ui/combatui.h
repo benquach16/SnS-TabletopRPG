@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <memory>
 
 #include "numberinput.h"
 #include "defenseui.h"
@@ -19,14 +20,6 @@ public:
 private:
 	enum class eInitiativeSubState : unsigned {
 		ChooseInitiative,
-		Finished,
-	};
-
-	enum class eOffenseSubState : unsigned {
-		ChooseManuever,
-		ChooseComponent,
-		ChooseDice,
-		ChooseTarget,
 		Finished,
 	};
 
@@ -54,9 +47,7 @@ private:
 	NumberInput m_numberInput;
 
 	eInitiativeSubState m_initiativeState;
-	eOffenseSubState m_offenseState;
 	eStolenOffenseSubState m_stolenOffenseState;
-	eDefenseSubState m_defenseState;
 
 	DefenseUI m_defenseUI;
 	OffenseUI m_offenseUI;

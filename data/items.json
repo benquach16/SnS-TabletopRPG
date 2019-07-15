@@ -1,0 +1,14 @@
+{
+    "1": {
+        "name": "Bread",
+        "description": "Food item.",
+        "type": "food",
+        "cost": 2
+    },
+    "2": {
+        "name": "Waterskin",
+        "description": "A container for water.",
+        "type": "waterskin",
+        "cost": 2
+    }
+}

@@ -1,18 +1,20 @@
 #include "playerobject.h"
 
-PlayerObject::PlayerObject() : m_player(nullptr)
+PlayerObject::PlayerObject() : CreatureObject(new Player)
 {
-	m_player = new Player();
-	m_player->setWeapon(40);
-	m_player->equipArmor(41);
-	m_player->equipArmor(42);
-	m_player->setName("John");
+	m_creature->setWeapon(40);
+	m_creature->equipArmor(41);
+	m_creature->equipArmor(42);
+	m_creature->setName("John");
 }
 
 PlayerObject::~PlayerObject()
 {
-	if(m_player != nullptr) {
-		delete m_player;
-		m_player = nullptr;
-	}
+
+}
+
+void PlayerObject::startCombatWith(Creature* creature)
+{
+	assert(m_instance.getState() == eCombatState::Uninitialized);
+	m_instance.initCombat(m_creature, creature);
 }

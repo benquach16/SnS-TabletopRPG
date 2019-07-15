@@ -15,12 +15,27 @@ enum class eCreatureType {
 	Human
 };
 
+enum class eCreatureState {
+	Idle,
+	InCombat,
+	Dead
+};
+
+enum class eCreatureFaction {
+	Player,
+	Bandit,
+	Wildlife,
+};
+
 class Creature
 {
 public:
 	Creature();
 
 	virtual eCreatureType getCreatureType() = 0;
+
+	void setCreatureFaction(eCreatureFaction faction) { m_faction = faction; }
+	eCreatureFaction getFaction() const { return m_faction; }
 	
 	int getBrawn() const { return m_brawn; }
 	int getAgility() const { return m_agility; }
@@ -84,8 +99,13 @@ public:
 
 	Offense getQueuedOffense() const { return m_currentOffense; }
 	Defense getQueuedDefense() const { return m_currentDefense; }
+
+	eCreatureState getCreatureState() { return m_currentState; }
 	
 protected:
+	eCreatureState m_currentState;
+	eCreatureFaction m_faction;
+	
 	void clearArmor();
 	void applyArmor();
 	
