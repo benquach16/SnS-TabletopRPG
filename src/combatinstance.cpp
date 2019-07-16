@@ -155,7 +155,7 @@ bool CombatInstance::doOffense()
 		} 
 	}
 	else {
-		attacker->doOffense(defender, reachCost);		
+		attacker->doOffense(defender);
 	}
 	attacker->reduceOffenseDie(reachCost);
 	attacker->reduceCombatPool(reachCost);
@@ -163,9 +163,10 @@ bool CombatInstance::doOffense()
 	
 	assert(attack.component != nullptr);
 	assert(attack.dice <= offenseCombatPool);
-	cout << attack.dice << endl;
 	assert(attack.dice >= 0);
 	attacker->reduceCombatPool(attack.dice);
+
+	attacker->addAndResetBonusDice();
 	
 	writeMessage(attacker->getName() + " " + offensiveManueverToString(attack.manuever) + "s with " +
 				 offenseWeapon->getName() + " using " +
@@ -237,11 +238,44 @@ void CombatInstance::doDefense()
 		m_currentState = eCombatState::StealInitiative;
 		return;
 	}
-
+	if(defend.manuever == eDefensiveManuevers::ParryLinked) {
+		writeMessage(defender->getName() + " performs a linked parry with " + defenseWeapon->getName() +
+					 " using " + to_string(defend.dice) + " action points");
+		m_currentState = eCombatState::ParryLinked;
+		return;
+	}
 	
 	writeMessage(defender->getName() + " defends with " + defenseWeapon->getName() +
 				 " using " + to_string(defend.dice) + " action points");
 	
+	m_currentState = eCombatState::Resolution;
+}
+
+void CombatInstance::doParryLinked()
+{
+	Creature* attacker = nullptr;
+	Creature* defender = nullptr;
+	setSides(attacker, defender);
+	
+	Weapon* defenseWeapon = defender->getPrimaryWeapon();
+
+	int defenseCombatPool = defender->getProficiency(defenseWeapon->getType()) + defender->getReflex();
+	if(defender->isPlayer() == true) {
+		//wait until player inputs
+		Player* player = static_cast<Player*>(defender);
+		if(player->pollForOffense() == false) {
+			m_currentState = eCombatState::ParryLinked;
+			return;
+		}
+
+	}
+	else {
+		defender->doOffense(attacker, m_currentTempo == eTempo::Second);		
+	}
+	Creature::Offense offense = defender->getQueuedOffense();
+
+	writeMessage(defender->getName() + " links defense to counter with " + offense.component->getName());
+
 	m_currentState = eCombatState::Resolution;
 }
 
@@ -316,9 +350,7 @@ void CombatInstance::doStolenOffense()
 }
 
 void CombatInstance::doResolution()
-{
-	switchTempo();
-	
+{	
 	Creature* attacker = nullptr;
 	Creature* defender = nullptr;
 	setSides(attacker, defender);
@@ -367,23 +399,23 @@ void CombatInstance::doResolution()
 			//if the attack wiped out their combat pool, do nothing
 			writeMessage(defender->getName() + " had their action points eliminated by impact, their attack is dropped.");
 			m_currentState = eCombatState::Offense;
-			return;
 		}
-		
-		int defendSuccesses = DiceRoller::rollGetSuccess(defender->getBTN(),
-													defender->getQueuedOffense().dice);
-		if(defendSuccesses > 0) {
-			if(inflictWound(defendSuccesses, defender->getQueuedOffense(), attacker) == true) {
-				m_currentState = eCombatState::FinishedCombat;
-				return;
+		else {
+			int defendSuccesses = DiceRoller::rollGetSuccess(defender->getBTN(),
+															 defender->getQueuedOffense().dice);
+			if(defendSuccesses > 0) {
+				if(inflictWound(defendSuccesses, defender->getQueuedOffense(), attacker) == true) {
+					m_currentState = eCombatState::FinishedCombat;
+					return;
+				}
+			} else {
+				writeMessage(defender->getName() + " had no successes");
 			}
-		} else {
-			writeMessage(defender->getName() + " had no successes");
-		}
 
-		if(defendSuccesses > attackerSuccesses) {
-			writeMessage(defender->getName() + " had more successes, taking initiative");
-			switchInitiative();
+			if(defendSuccesses > attackerSuccesses) {
+				writeMessage(defender->getName() + " had more successes, taking initiative");
+				switchInitiative();
+			}
 		}
 	} else {	
 		//roll dice
@@ -404,11 +436,23 @@ void CombatInstance::doResolution()
 		}
 		else if (defend.manuever != eDefensiveManuevers::Dodge) {
 			writeMessage("attack deflected with " + to_string(-MoS) + " successes");
+			if(defend.manuever == eDefensiveManuevers::ParryLinked) {
+				//resolve offense
+				Creature::Offense offense = defender->getQueuedOffense();
+				int linkedOffenseMoS = DiceRoller::rollGetSuccess(defender->getBTN() + 1, MoS);
+				inflictWound(linkedOffenseMoS, offense, attacker);
+			}
+			if(defend.manuever == eDefensiveManuevers::Counter) {
+				cout << "mos " << -MoS << endl;
+				defender->setBonusDice(-MoS);
+				writeMessage(defender->getName() + " receives " + to_string(-MoS) + " action points in their next attack");
+			}
 			writeMessage(defender->getName() + " now has initative, becoming attacker");
 			switchInitiative();
-		}	
+		}
+		
 	}
-
+	switchTempo();
 	m_currentState = eCombatState::Offense;
 	
 }
@@ -567,6 +611,9 @@ void CombatInstance::run()
 		break;
 	case eCombatState::Defense:
 		doDefense();
+		break;
+	case eCombatState::ParryLinked:
+		doParryLinked();
 		break;
 	case eCombatState::Resolution:
 		doResolution();

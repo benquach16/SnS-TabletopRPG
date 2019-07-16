@@ -32,6 +32,7 @@ enum class eCombatState : unsigned
 	Offense,
 	StolenOffense,
 	Defense,
+	ParryLinked,
 	StealInitiative,
 	Resolution,
 	DualOffenseResolve,
@@ -62,6 +63,7 @@ private:
 	//doOffense has a return type to poll player input for dual offense
 	bool doOffense();
 	void doDefense();
+	void doParryLinked();
 	void doStealInitiative();
 	void doResolution();
 	//this is a special case because if both sides roll to attack since both of their attacks resolve at the same time

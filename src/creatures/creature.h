@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <map>
+#include <iostream>
 
 static constexpr int cBaseBTN = 3;
 
@@ -70,8 +71,10 @@ public:
 	int getCombatPool() const { return m_combatPool; }
 	void resetCombatPool();
 	void reduceCombatPool(int num) { assert(num>=0); m_combatPool -= num; }
-	void reduceOffenseDie(int num) { m_currentOffense.dice -= num; m_currentOffense.dice = std
-																	   ::max(0, m_currentOffense.dice); }
+	void setBonusDice(int num) { m_bonusDice = num; }
+	void addAndResetBonusDice();
+	void reduceOffenseDie(int num) { m_currentOffense.dice -= num; m_currentOffense.dice = std::max(0, m_currentOffense.dice); }
+	const std::vector<eHitLocations>& getHitLocations() const { return m_hitLocations; }
 
 	// AI functions
 	virtual bool isPlayer() { return false; }
@@ -136,6 +139,7 @@ protected:
 	int m_will;
 
 	int m_combatPool;
+	int m_bonusDice;
 
 	std::map<eWeaponTypes, int> m_proficiencies;
 	

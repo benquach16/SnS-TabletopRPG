@@ -2,7 +2,7 @@
 #include "types.h"
 #include "../game.h"
 
-void OffenseUI::run(sf::Event event, Player* player)
+void OffenseUI::run(sf::Event event, Player* player, bool allowStealInitiative, bool linkedParry)
 {
 	switch(m_currentState) {
 	case eUiState::ChooseManuever:
@@ -15,7 +15,7 @@ void OffenseUI::run(sf::Event event, Player* player)
 		doDice(event, player);
 		break;
 	case eUiState::ChooseTarget:
-		doTarget(event, player);
+		doTarget(event, player, linkedParry);
 		break;
 	case eUiState::Finished:
 		break;
@@ -45,6 +45,15 @@ void OffenseUI::doManuever(sf::Event event, Player* player)
 		if(c == 'b') {
 			player->setOffenseManuever(eOffensiveManuevers::Thrust);
 			m_currentState = eUiState::ChooseComponent;				
+		}
+		if(c == 'c') {
+			if(player->getCombatPool() > 2) {
+				player->setOffenseManuever(eOffensiveManuevers::Thrust);
+				m_currentState = eUiState::ChooseComponent;				
+			}
+			else {
+				//need 2 dice
+			}
 		}
 	}
 }
@@ -128,7 +137,7 @@ void OffenseUI::doDice(sf::Event event, Player* player)
 
 }
 
-void OffenseUI::doTarget(sf::Event event, Player* player)
+void OffenseUI::doTarget(sf::Event event, Player* player, bool linkedParry)
 {
 	auto windowSize = Game::getWindow().getSize();
 	
@@ -161,6 +170,14 @@ void OffenseUI::doTarget(sf::Event event, Player* player)
 			player->setOffenseTarget(eHitLocations::Shin);
 			m_currentState = eUiState::ChooseDice;
 		}
+		//the uistate comparision is a hacky way to repurpose it
+		if(linkedParry == true && m_currentState == eUiState::ChooseDice) {
+			player->setOffenseDice(0);
+			m_currentState = eUiState::Finished;
+			//linked parry so set flag
+			player->setOffenseReady();
+		}
 	}
+
 	Game::getWindow().draw(text);
 }

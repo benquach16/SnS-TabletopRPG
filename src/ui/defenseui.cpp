@@ -42,11 +42,26 @@ void DefenseUI::doManuever(sf::Event event, Player* player)
 		}
 		if(c == 'c') {
 			//costs 1 die
-			Log::push("Requires 1 action point");
+			if(player->getCombatPool() <= 0) {	
+				Log::push("Requires 1 action point");
+			} else {
+				player->setDefenseManuever(eDefensiveManuevers::ParryLinked);
+				player->reduceCombatPool(1);
+				m_currentState = eUiState::ChooseDice;
+			}
 		}
 		if(c == 'd') {
 			player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
 			m_currentState = eUiState::ChooseDice;
+		}
+		if(c == 'e') {
+			if(player->getCombatPool() <= 1) {
+				Log::push("Requires 2 action points");
+			} else {
+				player->setDefenseManuever(eDefensiveManuevers::Counter);
+				player->reduceCombatPool(2);
+				m_currentState = eUiState::ChooseDice;
+			}
 		}
 	}	
 }
@@ -76,4 +91,13 @@ void DefenseUI::doChooseDice(sf::Event event, Player* player)
 	m_numberInput.setMax(player->getCombatPool());
 	m_numberInput.run(event);
 	m_numberInput.setPosition(sf::Vector2f(0, cCharSize));
+}
+
+void DefenseUI::doLinkedManuever(sf::Event event, Player* player)
+{
+	auto windowSize = Game::getWindow().getSize();
+	
+	sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize*12));
+	bkg.setFillColor(sf::Color(12, 12, 23));
+	Game::getWindow().draw(bkg);
 }

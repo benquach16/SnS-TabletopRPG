@@ -7,7 +7,9 @@ Level::Level(int width, int height) : m_width(width), m_height(height), m_data(w
 
 void Level::run()
 {
-
+	for(int i = 0; i < m_objects.size(); ++i) {
+		
+	}
 }
 
 bool Level::isFreeSpace(int x, int y) const

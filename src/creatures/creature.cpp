@@ -7,7 +7,8 @@
 using namespace std;
 
 Creature::Creature() : m_BTN(cBaseBTN), m_brawn(1), m_agility(1),
-					   m_cunning(1), m_perception(1), m_will(1), m_primaryWeaponId(0), m_combatPool(0), m_currentState(eCreatureState::Idle)
+					   m_cunning(1), m_perception(1), m_will(1), m_primaryWeaponId(0), m_combatPool(0),
+					   m_currentState(eCreatureState::Idle), m_bonusDice(0)
 {
 	
 }
@@ -79,6 +80,12 @@ void Creature::resetCombatPool()
 	m_combatPool = getProficiency(weapon->getType()) + getReflex() + carry;
 }
 
+void Creature::addAndResetBonusDice()
+{
+	m_currentOffense.dice += m_bonusDice;
+	m_bonusDice = 0;
+}
+
 void Creature::doOffense(const Creature* target, bool allin)
 {
 	Weapon* weapon = getPrimaryWeapon();
@@ -90,7 +97,7 @@ void Creature::doOffense(const Creature* target, bool allin)
 	}
 
 	//replace me
-	m_currentOffense.target = eHitLocations::Chest;
+	m_currentOffense.target = target->getHitLocations()[rand()%target->getHitLocations().size() - 1];
 	int dice = m_combatPool / 2 + effolkronium::random_static::get(0, m_combatPool/3)
 		- effolkronium::random_static::get(0, m_combatPool/3);
 
@@ -119,7 +126,6 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
 	if(stealInitiative(attacker, stealDie) == true) {
 		m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
 		m_currentDefense.dice = stealDie;
-		cout << "using " << m_currentDefense.dice << endl;
 		return;
 	}
 	if(isLastTempo == true) {

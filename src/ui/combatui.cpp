@@ -75,6 +75,10 @@ void CombatUI::run(sf::Event event)
 		m_defenseUI.run(event, player);
 		return;
 	}
+	if(m_instance->getState() == eCombatState::ParryLinked) {
+		m_offenseUI.run(event, player, false, true);
+		return;
+	}
 	if(m_instance->getState() == eCombatState::DualOffense1 && m_instance->isAttackerPlayer() == true) {
 		m_offenseUI.run(event, player);
 		return;
