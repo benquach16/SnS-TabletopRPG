@@ -20,6 +20,7 @@ private:
 		ChooseComponent,
 		ChooseDice,
 		ChooseTarget,
+		PinpointThrust,
 		Finished,
 	};
 

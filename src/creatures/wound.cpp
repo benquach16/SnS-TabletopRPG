@@ -25,6 +25,12 @@ bool Wound::causesDeath()
 	return (it != m_effects.end());
 }
 
+bool Wound::immediateKO()
+{
+	auto it = m_effects.find(eEffects::KO);
+	return (it != m_effects.end());
+}
+
 WoundTable::WoundTable()
 {
 	ifstream file(filepath);
@@ -191,18 +197,30 @@ eEffects WoundTable::stringToEffect(const std::string& str)
 		return eEffects::KO2;
 	} else if(str == "KO3") {
 		return eEffects::KO3;
-	} else if(str == "BL1") {
-		return eEffects::KO2;
+	} else if(str == "KO") {
+		return eEffects::KO;
+	}else if(str == "BL1") {
+		return eEffects::BL1;
 	} else if(str == "BL2") {
-		return eEffects::KO2;
+		return eEffects::BL2;
 	} else if(str == "BL3") {
-		return eEffects::KO2;
+		return eEffects::BL3;
 	} else if(str == "drop1") {
-		return eEffects::KO2;
+		return eEffects::drop1;
 	} else if(str == "drop2") {
-		return eEffects::KO2;
+		return eEffects::drop2;
 	} else if(str == "drop3") {
-		return eEffects::KO2;
+		return eEffects::drop3;
+	} else if(str == "drop") {
+		return eEffects::drop;
+	} else if(str == "KD1") {
+		return eEffects::KD1;
+	} else if(str == "KD2") {
+		return eEffects::KD2;
+	} else if(str == "KD3") {
+		return eEffects::KD3;
+	} else if(str == "KD") {
+		return eEffects::KD;
 	}
 	return eEffects::Death;
 }

@@ -543,7 +543,12 @@ bool CombatInstance::inflictWound(int MoS, Creature::Offense attack, Creature* t
 		m_currentState = eCombatState::FinishedCombat;
 		return true;
 	}
-
+	if(target->getCreatureState() == eCreatureState::Unconcious) {
+		//end combat
+		writeMessage(target->getName() + " has been knocked unconcious", Log::eMessageTypes::Announcement);
+		m_currentState = eCombatState::FinishedCombat;
+		return true;
+	}
 	writeMessage("Wound impact causes " + target->getName() + " to lose " +
 				 to_string(wound->getImpact()) + " action points!", Log::eMessageTypes::Alert);
 	return false;

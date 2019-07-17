@@ -69,15 +69,15 @@
 			},
 			"3": {
 				"text": ["Minor shoulder fracture makes the arm hard to use."],
-				"effects": []
+				"effects": ["drop1"]
 			},
 			"4": {
 				"text": ["Torn tendons."],
-				"effects": []
+				"effects": ["drop2"]
 			},
 			"5": {
 				"text": ["Shoulder caves in with broken bones. Arm useless."],
-				"effects": []
+				"effects": ["drop"]
 			}
 		},
 		"upperarm": {
@@ -89,15 +89,15 @@
 			},
 			"3": {
 				"text": ["Swollen bruise makes arm hard to use."],
-				"effects": []
+				"effects": ["drop1"]
 			},
 			"4": {
 				"text": ["Fractured humerus. Arm disabled until fixed."],
-				"effects": []
+				"effects": ["drop2"]
 			},
 			"5": {
 				"text": ["Open humerus fracture. Arm useless."],
-				"effects": []
+				"effects": ["drop"]
 			}
 		},
 		"elbow": {
@@ -105,19 +105,20 @@
 				"text": ["Slight bump."]
 			},
 			"2": {
-				"text": ["Funny bone effect."]
+				"text": ["Funny bone effect."],
+				"effects": ["drop1"]
 			},
 			"3": {
 				"text": ["Solid blow hits the bone. Whole arm buzzes and fingers are numb."],
-				"effects": []
+				"effects": ["drop3"]
 			},
 			"4": {
 				"text": ["Elbow bandly strained or concussed. Swelling. Arm useless."],
-				"effects": []
+				"effects": ["drop"]
 			},
 			"5": {
 				"text": ["Elbow shattered. Arm useless."],
-				"effects": []
+				"effects": ["drop"]
 			}
 		},
 		"forearm": {
@@ -126,29 +127,29 @@
 			},
 			"2": {
 				"text": ["Arm knocked aside, some bruising."],
-				"effects": []
+				"effects": ["drop1"]
 			},
 			"3": {
 				"text": ["Brutal blow knocks arm aside. Sudden movements are painful"],
-				"effects": []
+				"effects": ["drop3"]
 			},
 			"4": {
 				"text": ["Radius fractured with blinding pain."],
-				"effects": []
+				"effects": ["drop3"]
 			},
 			"5": {
 				"text": ["Open compound fracture with severed blood veseels."],
-				"effects": []
+				"effects": ["drop3"]
 			}
 		},
 		"hand": {
 			"1": {
 				"text": ["Blow connects to the hand."],
-				"effects": []
+				"effects": ["drop1"]
 			},
 			"2": {
 				"text": ["Hand knocked aside, some bruising."],
-				"effects": []
+				"effects": ["drop2"]
 			},
 			"3": {
 				"text": ["Fingers smashed."],
@@ -359,7 +360,7 @@
 			},
 			"4": {
 				"text":["Skull is pierced. Brain damaged."],
-				"effects":["BL2", "KO2"]
+				"effects":["KO"]
 			},
 			"5": {
 				"text":["The brain is pierced. Body goes limp and collapses. Instant death."],
@@ -424,7 +425,7 @@
 			},
 			"5": {
 				"text":["Shoulder pierced. Bad bleeding."],
-				"effects":["BL2"]
+				"effects":["BL2", "drop2"]
 			}
 		},
 		"upperarm": {
@@ -436,15 +437,15 @@
 			},
 			"3": {
 				"text":["Deeper flesh wound on the outer arm."],
-				"effects":["BL1", "KO1"]
+				"effects":["drop1"]
 			},
 			"4": {
 				"text":["Passes through the arm, chipping the bone."],
-				"effects":["BL2", "KO2"]
+				"effects":["BL1", "drop2"]
 			},
 			"5": {
 				"text":["Goes clean through the arm, tearing the flesh. Major blood vessel cut."],
-				"effects":["death"]
+				"effects":["BL2", "drop2"]
 			}
 		},
 		"elbow": {
@@ -453,7 +454,7 @@
 			},
 			"2": {
 				"text":["Sting leaves a bad funny bone effect."],
-				"effects": ["BL1"]
+				"effects": ["drop1"]
 			},
 			"3": {
 				"text":["Solid blow hits the bone. Fingers are numb for a while."],
@@ -474,7 +475,7 @@
 			},
 			"2": {
 				"text":["Glancing blow leaves a cut."],
-				"effects": ["BL1"]
+				"effects": ["drop1"]
 			},
 			"3": {
 				"text":["Punctures skin and hits bone with pain running through the whole arm"],
@@ -491,7 +492,8 @@
 		},
 		"hand": {
 			"1": {
-				"text":["Stings, but nothing serious."]
+				"text":["Stings, but nothing serious."],
+				"effects": ["drop1"]
 			},
 			"2": {
 				"text":["Minor puncture of hand or fingers."],
@@ -515,16 +517,15 @@
 				"text":["Blow grazes skin and muscle, but is deflected by bone."]
 			},
 			"2": {
-				"text":["Long, shallow wound along the ribs."],
-				"effects": ["BL1"]
+				"text":["Long, shallow wound along the ribs."]
 			},
 			"3": {
 				"text":["Most of the softer tissue under in armpit is messed up."],
-				"effects":["BL1", "KO1"]
+				"effects":["drop1"]
 			},
 			"4": {
 				"text":["Pierces deep, but slides along the ribs and misses major organs. Roll for item drop."],
-				"effects":["BL2", "KO2"]
+				"effects":["BL1", "drop2"]
 			},
 			"5": {
 				"text":["Pierced heart. Death is almost instantaneous"],
@@ -536,12 +537,11 @@
 				"text":["Blow grazes skin and muscle, but is deflected by bone."]
 			},
 			"2": {
-				"text":["Long, shallow wound along the ribs."],
-				"effects": ["BL1"]
+				"text":["Long, shallow wound along the ribs."]
 			},
 			"3": {
 				"text":["Pierces ribcage, but misses major organs."],
-				"effects":["BL1", "KO1"]
+				"effects":["BL1"]
 			},
 			"4": {
 				"text":["Punctured lung leads to stabbing pain, shortness of breath and eerie sucking sound with bubbles in the blood."],
@@ -557,12 +557,11 @@
 				"text":["Lacerates skin without puncturing it."]
 			},
 			"2": {
-				"text":["Pierces skin and surface fat, passing straight through."],
-				"effects": ["BL1"]
+				"text":["Pierces skin and surface fat, passing straight through."]
 			},
 			"3": {
 				"text":["Pierces body without puncturing any major organs. Painful and bleeds hard."],
-				"effects":["BL1", "KO1"]
+				"effects":["BL1"]
 			},
 			"4": {
 				"text":["Bad puncture with a lot of blood and some internal damage."],
@@ -582,15 +581,15 @@
 			},
 			"3": {
 				"text":["Penetrates muscle on upper hip, but misses major organs."],
-				"effects":["BL1", "KO1"]
+				"effects":["KD1"]
 			},
 			"4": {
 				"text":["Deep into the pelvis, clean exit. Stable fracture."],
-				"effects":["BL2", "KO2"]
+				"effects":["BL1", "KD2"]
 			},
 			"5": {
 				"text":["Pelvis pierced. Messy and lots of blood. Unstable fracture."],
-				"effects":["death"]
+				"effects":["BL2", "KD3"]
 			}
 		},
 		"groin": {
@@ -599,18 +598,18 @@
 			},
 			"2": {
 				"text":["Some blood, but can still be considered lucky."],
-				"effects": ["BL1"]
+				"effects": ["KD1"]
 			},
 			"3": {
-				"text":["Long graze along the skull. Serious bleeding."],
-				"effects":["BL1", "KO1"]
+				"text":["Surface organs are pierced, but remain attached."],
+				"effects":["KO1"]
 			},
 			"4": {
-				"text":["Skull is pierced. Brain damaged."],
-				"effects":["BL2", "KO2"]
+				"text":["Say goodbye to reproduction. Lots of blood."],
+				"effects":["BL1", "KO2"]
 			},
 			"5": {
-				"text":["Massive organ damage. Death is imminent."],
+				"text":["Pelvis pierced, lots of blood. Dismembered organ."],
 				"effects":["death"]
 			}
 		},
@@ -623,15 +622,15 @@
 			},
 			"3": {
 				"text":["Thigh muscles penetrated almost to the bone."],
-				"effects":["BL1", "KO1"]
+				"effects":["BL1"]
 			},
 			"4": {
 				"text":["Thigh completely pierced. Leg can only support for short amounts of time."],
-				"effects":["BL2", "KO2"]
+				"effects":["BL1", "KD1"]
 			},
 			"5": {
 				"text":["Inner thigh pierced, femoral artery cut."],
-				"effects":["death"]
+				"effects":["BL3", "KD2"]
 			}
 		},
 		"knee": {
@@ -639,8 +638,7 @@
 				"text":["Minor graze."]
 			},
 			"2": {
-				"text":["Bounces off from the bone. Some blood."],
-				"effects": ["BL1"]
+				"text":["Bounces off from the bone. Some blood."]
 			},
 			"3": {
 				"text":["Knee is hit. Joint is painful but remains fully functional."],
@@ -661,7 +659,7 @@
 			},
 			"2": {
 				"text":["Bounces off from the bone. Some blood."],
-				"effects": ["BL1"]
+				"effects": ["KD1"]
 			},
 			"3": {
 				"text":["Shallow puncture or surface wound. Chipped bone and minor ligament damage."],
@@ -769,20 +767,19 @@
 				"text":["Shaves off some skin."]
 			},
 			"2": {
-				"text":["Nasty cut scrapes on the shoulder bones."],
-				"effects": ["BL1"]
+				"text":["Nasty cut scrapes on the shoulder bones."]
 			},
 			"3": {
 				"text":["Deeper flesh wound on the outer arm."],
-				"effects":["BL1", "KO1"]
+				"effects":["BL1", "drop1"]
 			},
 			"4": {
 				"text":["Blade cuts to the bone. Lots of blood."],
-				"effects":["BL2", "KO2"]
+				"effects":["BL2", "drop2"]
 			},
 			"5": {
 				"text":["Arm severed clean at the shoulder in a spray of blood. Barely a stump remains."],
-				"effects":["death"]
+				"effects":["BL3"]
 			}
 		},		
 		"upperarm": {
@@ -790,126 +787,119 @@
 				"text":["Shaves off some skin."]
 			},
 			"2": {
-				"text":["Long gash by the elbow."],
-				"effects": ["BL1"]
+				"text":["Long gash by the elbow."]
 			},
 			"3": {
 				"text":["Deeper flesh wound on the outer arm."],
-				"effects":["BL1", "KO1"]
+				"effects":["BL1", "drop1"]
 			},
 			"4": {
 				"text":["Blade bites through the muscle and reached bone on the outer arm."],
-				"effects":["BL2", "KO2"]
+				"effects":["BL1", "drop2"]
 			},
 			"5": {
 				"text":["Arm severed above the elbow in a shower of blood."],
-				"effects":["death"]
+				"effects":["BL2"]
 			}
 		},
 		"elbow": {
 			"1": {
-				"text": ["Glancing blow."],
-				"effects": []
+				"text": ["Glancing blow."]
 			},
 			"2": {
 				"text": ["Small cut, but funny bone effect."],
-				"effects": []
+				"effects": ["drop1"]
 			},
 			"3": {
 				"text": ["Solid blow hits the bone. Fingers are numb for a while."],
-				"effects": []
+				"effects": ["drop3"]
 			},
 			"4": {
-				"text": ["Mangled elbow renders arm useless with pain extending to the fingers. Drop item."],
-				"effects": []
+				"text": ["Mangled elbow renders arm useless with pain extending to the fingers."],
+				"effects": ["drop", "BL1"]
 			},
 			"5": {
 				"text": ["Arm severed at the elbow in a spray of blood."],
-				"effects": []
+				"effects": ["BL2"]
 			}
 		},
 		"forearm": {
 			"1": {
-				"text": ["Light slash along the forearm. Some blood."],
-				"effects": []
+				"text": ["Light slash along the forearm. Some blood."]
 			},
 			"2": {
 				"text": ["Long but shallow gash. Bleeds a lot."],
-				"effects": []
+				"effects": ["drop1"]
 			},
 			"3": {
 				"text": ["Nasty cut damages ulnar nerve. Fingers are numb."],
-				"effects": []
+				"effects": ["drop3"]
 			},
 			"4": {
 				"text": ["Arm broken with a lot of blood."],
-				"effects": []
+				"effects": ["drop", "BL1"]
 			},
 			"5": {
 				"text": ["Forearm completely mangled"],
-				"effects": []
+				"effects": ["BL2"]
 			}
 		},
 		"hand": {
 			"1": {
 				"text": ["Grazed hand."],
-				"effects": []
+				"effects": ["drop1"]
 			},
 			"2": {
 				"text": ["Small cut, but hand flinches from the pain."],
-				"effects": []
+				"effects": ["drop2"]
 			},
 			"3": {
 				"text": ["Deep, bleeding cut on hand."],
-				"effects": []
+				"effects": ["drop3", "BL1"]
 			},
 			"4": {
 				"text": ["Some fingers lost."],
-				"effects": []
+				"effects": ["drop", "BL1"]
 			},
 			"5": {
 				"text": ["Hand completely mangled."],
-				"effects": []
+				"effects": ["BL2"]
 			}
 		},
 		"armpit": {
 			"1": {
-				"text": ["Minor slash. Some torn skin."],
-				"effects": []
+				"text": ["Minor slash. Some torn skin."]
 			},
 			"2": {
-				"text": ["Nasty cut scrapes on the ribs, but does little damage."],
-				"effects": []
+				"text": ["Nasty cut scrapes on the ribs, but does little damage."]
 			},
 			"3": {
-				"text": ["Deep gash with enough force to fracture ribs and knock the wind out of you."],
-				"effects": []
+				"text": ["Deep gash wound into the soft bits."],
+				"effects": ["drop1"]
 			},
 			"4": {
 				"text": ["Cleaves through the flesh and reaches bone."],
-				"effects": []
+				"effects": ["BL2", "drop2"]
 			},
 			"5": {
 				"text": ["Arm severed at a shoulder in a spray of blood."],
-				"effects": []
+				"effects": ["BL3"]
 			}
 		},
 		"ribs": {
 			"1": {
-				"text": ["Minor slash. Some torn skin."],
-				"effects": []
+				"text": ["Minor slash. Some torn skin."]
 			},
 			"2": {
-				"text": ["Nasty cut scrapes on the ribs, but does little damage."],
-				"effects": []
+				"text": ["Nasty cut scrapes on the ribs, but does little damage."]
 			},
 			"3": {
 				"text": ["Deep gash with enough force to fracture ribs and knock the wind out of you."],
-				"effects": []
+				"effects": ["KD1"]
 			},
 			"4": {
 				"text": ["Cut goes deep, breaking and fracturing ribs. Lots of internal bleeding."],
-				"effects": []
+				"effects": ["BL2", "KO2"]
 			},
 			"5": {
 				"text": ["Weapon lodged in chest. Death is imminent."],
@@ -924,10 +914,12 @@
 				"text": ["Painful, bleeding cut. Looks worse than it is."]
 			},
 			"3": {
-				"text": ["Deeper cut that bleeds hard. No organ damage."]
+				"text": ["Deeper cut that bleeds hard. No organ damage."],
+				"effects": ["BL1"]
 			},
 			"4": {
-				"text": ["Nasty cut with a lot of blood and some internal damage."]
+				"text": ["Nasty cut with a lot of blood and some internal damage."],
+				"effects": ["BL2", "KD1"]
 			},
 			"5": {
 				"text": ["Total disembowelment with entrails everywhere. Legs buckle and the blood keeps coming. Death is imminent."],
@@ -939,16 +931,15 @@
 				"text": ["Glancing blow."]
 			},
 			"2": {
-				"text": ["Surface wound. Painful, but nothing serious."],
-				"effects": []
+				"text": ["Surface wound. Painful, but nothing serious."]
 			},
 			"3": {
 				"text": ["A deep gash in the fleshy parts."],
-				"effects": []
+				"effects": ["KD1"]
 			},
 			"4": {
 				"text": ["Fractured pelvis. Possible bone fragments."],
-				"effects": []
+				"effects": ["BL2", "KD2"]
 			},
 			"5": {
 				"text": ["Weapon stuck in pelvis with massive amount of blood. Death is imminent."],
@@ -961,18 +952,18 @@
 			},
 			"2": {
 				"text": ["Some blood, but can still be considered lucky."],
-				"effects": []
+				"effects": ["KD1"]
 			},
 			"3": {
 				"text": ["Surface organs are damaged, but remain attached."],
-				"effects": []
+				"effects": ["KO1"]
 			},
 			"4": {
 				"text": ["Say goodby to reproduction. Lots of blood."],
-				"effects": []
+				"effects": ["BL2", "KO2"]
 			},
 			"5": {
-				"text": ["Weapon almost reachs the navel and is stuck. Death is imminent."],
+				"text": ["Weapon almost reaches the navel and is stuck. Death is imminent."],
 				"effects": ["death"]
 			}
 		} ,
@@ -985,15 +976,15 @@
 			},
 			"3": {
 				"text": ["Cut penetrates muscle tissue, but doesn’t reach bone."],
-				"effects": []
+				"effects": ["BL1", "KD1"]
 			},
 			"4": {
 				"text": ["Blade bites deep. Femur chipped."],
-				"effects": []
+				"effects": ["BL2", "KD2"]
 			},
 			"5": {
 				"text": ["Femur broken with lots of blood. Epic feat of surgery needed to save the leg."],
-				"effects": ["death"]
+				"effects": ["KD", "BL2"]
 			}
 		},
 		"knee": {
@@ -1001,19 +992,20 @@
 				"text": ["Funny bone effect."]
 			},
 			"2": {
-				"text": ["Blade hits the knee, delivering a shallow wound and compromising balance."]
+				"text": ["Blade hits the knee, delivering a shallow wound and compromising balance."],
+				"effects": ["KD1"]
 			},
 			"3": {
 				"text": ["Deeper cut along the knee that draws blood and compromises balance."],
-				"effects": []
+				"effects": ["KD2"]
 			},
 			"4": {
 				"text": ["Knee fractured and jacked up. Causes limp due chipped bone and torn tendons."],
-				"effects": []
+				"effects": ["BL1", "KD3"]
 			},
 			"5": {
 				"text": ["Limb torn off at knee. Lots of blood."],
-				"effects": ["death"]
+				"effects": ["KD", "BL2"]
 			}
 		},
 		"shin": {
@@ -1022,19 +1014,19 @@
 			},
 			"2": {
 				"text": ["Shallow wound across the shin, but blow compromises balance."],
-				"effects": []
+				"effects": ["KD1"]
 			},
 			"3": {
 				"text": ["Blade connects with impact, draws blood and compromises balance."],
-				"effects": []
+				"effects": ["KD2"]
 			},
 			"4": {
 				"text": ["Bone fractured with blood."],
-				"effects": []
+				"effects": ["KD", "BL1"]
 			},
 			"5": {
 				"text": ["Limb cut off with lots of blood."],
-				"effects": ["death"]
+				"effects": ["KD", "BL2"]
 			}
 		},
 		"foot": {
@@ -1042,20 +1034,20 @@
 				"text": ["Close one."]
 			},
 			"2": {
-				"text": ["Surface wound. Painful, but nothing serious."],
-				"effects": []
+				"text": ["Minor cut, but balance is compromised."],
+				"effects": ["KD1"]
 			},
 			"3": {
-				"text": ["A deep gash in the fleshy parts."],
-				"effects": []
+				"text": ["Hits bone, but foot stays intact."],
+				"effects": ["KD2"]
 			},
 			"4": {
-				"text": ["Fractured pelvis. Possible bone fragments."],
-				"effects": []
+				"text": ["Some toes lost."],
+				"effects": ["KD3", "BL1"]
 			},
 			"5": {
-				"text": ["Weapon stuck in pelvis with massive amount of blood. Death is imminent."],
-				"effects": ["death"]
+				"text": ["Foot destroyed."],
+				"effects": ["KD", "BL2"]
 			}
 		} 
 	}

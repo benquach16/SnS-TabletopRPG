@@ -11,6 +11,8 @@
 #include <iostream>
 
 static constexpr int cBaseBTN = 3;
+//different based on race
+static constexpr int cBaseBloodLoss = 8;
 
 enum class eCreatureType {
 	Human
@@ -19,13 +21,20 @@ enum class eCreatureType {
 enum class eCreatureState {
 	Idle,
 	InCombat,
-	Dead
+	Dead,
+	Unconcious
 };
 
 enum class eCreatureFaction {
 	Player,
 	Bandit,
 	Wildlife,
+	Goblin
+};
+
+enum class eCreatureStance {
+	Standing,
+	Prone
 };
 
 class Creature

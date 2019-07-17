@@ -1,6 +1,7 @@
 #include "offenseui.h"
 #include "types.h"
 #include "../game.h"
+#include "common.h"
 
 void OffenseUI::run(sf::Event event, Player* player, bool allowStealInitiative, bool linkedParry)
 {
@@ -24,16 +25,12 @@ void OffenseUI::run(sf::Event event, Player* player, bool allowStealInitiative, 
 
 void OffenseUI::doManuever(sf::Event event, Player* player)
 {
-	auto windowSize = Game::getWindow().getSize();
-	
-	sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize*12));
-	bkg.setFillColor(sf::Color(12, 12, 23));
-	Game::getWindow().draw(bkg);
+	UiCommon::drawTopPanel();
 	
 	sf::Text text;
 	text.setCharacterSize(cCharSize);
 	text.setFont(Game::getDefaultFont());
-	text.setString("Choose attack:\na - Swing\nb - Thrust\nc - Pinpoint Thrust (2AP)\nd - Feint attack (2AP)\ne - Inspect Target");
+	text.setString("Choose attack:\na - Swing\nb - Thrust\nc - Pinpoint Thrust (2AP)\nd - Feint swing (2AP)\ne - Feint thrust (2AP)\nf - Inspect Target");
 	Game::getWindow().draw(text);
 
 	if(event.type == sf::Event::TextEntered) {
@@ -60,11 +57,7 @@ void OffenseUI::doManuever(sf::Event event, Player* player)
 
 void OffenseUI::doComponent(sf::Event event, Player* player)
 {
-	auto windowSize = Game::getWindow().getSize();
-	
-	sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize*12));
-	bkg.setFillColor(sf::Color(12, 12, 23));
-	Game::getWindow().draw(bkg);
+	UiCommon::drawTopPanel();
 	
 	Weapon* weapon = player->getPrimaryWeapon();
 	sf::Text text;
@@ -110,11 +103,7 @@ void OffenseUI::doComponent(sf::Event event, Player* player)
 
 void OffenseUI::doDice(sf::Event event, Player* player)
 {
-	auto windowSize = Game::getWindow().getSize();
-	
-	sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize*12));
-	bkg.setFillColor(sf::Color(12, 12, 23));
-	Game::getWindow().draw(bkg);
+	UiCommon::drawTopPanel();
 
 	sf::Text text;
 	text.setCharacterSize(cCharSize);
@@ -139,11 +128,7 @@ void OffenseUI::doDice(sf::Event event, Player* player)
 
 void OffenseUI::doTarget(sf::Event event, Player* player, bool linkedParry)
 {
-	auto windowSize = Game::getWindow().getSize();
-	
-	sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize*12));
-	bkg.setFillColor(sf::Color(12, 12, 23));
-	Game::getWindow().draw(bkg);
+	UiCommon::drawTopPanel();
 
 	sf::Text text;
 	text.setCharacterSize(cCharSize);
@@ -170,6 +155,7 @@ void OffenseUI::doTarget(sf::Event event, Player* player, bool linkedParry)
 			player->setOffenseTarget(eHitLocations::Shin);
 			m_currentState = eUiState::ChooseDice;
 		}
+		//if player chose pinpoit thrust allow them to pick a specific location
 		//the uistate comparision is a hacky way to repurpose it
 		if(linkedParry == true && m_currentState == eUiState::ChooseDice) {
 			player->setOffenseDice(0);

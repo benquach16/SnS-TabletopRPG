@@ -3,6 +3,7 @@
 #include "creatureobject.h"
 #include "../creatures/player.h"
 #include "../combatinstance.h"
+#include "selectorobject.h"
 
 class PlayerObject : public CreatureObject
 {
@@ -14,4 +15,5 @@ public:
 	CombatInstance& getCombatInstance() { return m_instance; }
 private:
 	CombatInstance m_instance;
+	SelectorObject m_selectorObject;
 };

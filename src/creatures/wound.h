@@ -15,10 +15,12 @@ class Wound
 public:
 	Wound(eBodyParts location, std::vector<std::string> text, int level, int btn, int impact, std::set<eEffects> effects);
 
-	std::string getText() { return m_text[0]; }
-	int getBTN() { return m_btn; }
-	int getImpact() { return m_impact; }
+	std::string getText() const { return m_text[0]; }
+	int getBTN() const { return m_btn; }
+	int getImpact() const { return m_impact; }
 	bool causesDeath();
+	bool immediateKO();
+	const std::set<eEffects>& getEffects() const { return m_effects; }
 private:
 	eBodyParts m_location;
 	std::vector<std::string> m_text;

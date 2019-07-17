@@ -12,8 +12,6 @@ public:
 private:
 	void doManuever(sf::Event event, Player* player);
 	void doChooseDice(sf::Event event, Player* player);
-	void doLinkedManuever(sf::Event event, Player* player);
-	void doLinkedTarget(sf::Event event, Player* player);
 	
 	enum class eUiState : unsigned {
 		ChooseManuever,

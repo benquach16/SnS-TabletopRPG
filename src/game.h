@@ -20,6 +20,7 @@ private:
 		Uninitialized,
 		MainMenu,
 		Playing,
+		SelectionMode,
 		Inventory,
 		InCombat,
 		PauseMenu,

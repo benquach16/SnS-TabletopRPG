@@ -4,12 +4,9 @@
 
 class Level;
 
-class GFXLevel : public GFXObject
+class GFXLevel 
 {
 public:
-	void setLevel(Level* level) { m_level = level; }
-	void run() override;
+	void run(const Level* level);
 
-private:
-	Level* m_level;
 };

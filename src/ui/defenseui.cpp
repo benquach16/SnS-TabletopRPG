@@ -1,6 +1,7 @@
 #include "defenseui.h"
 #include "../game.h"
 #include "types.h"
+#include "common.h"
 
 void DefenseUI::run(sf::Event event, Player* player)
 {
@@ -19,11 +20,7 @@ void DefenseUI::run(sf::Event event, Player* player)
 
 void DefenseUI::doManuever(sf::Event event, Player* player)
 {
-	auto windowSize = Game::getWindow().getSize();
-	
-	sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize*12));
-	bkg.setFillColor(sf::Color(12, 12, 23));
-	Game::getWindow().draw(bkg);
+	UiCommon::drawTopPanel();
 	
 	sf::Text text;
 	text.setCharacterSize(cCharSize);
@@ -68,11 +65,7 @@ void DefenseUI::doManuever(sf::Event event, Player* player)
 
 void DefenseUI::doChooseDice(sf::Event event, Player* player)
 {
-	auto windowSize = Game::getWindow().getSize();
-	
-	sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize*12));
-	bkg.setFillColor(sf::Color(12, 12, 23));
-	Game::getWindow().draw(bkg);
+	UiCommon::drawTopPanel();
 	
 	sf::Text text;
 	text.setCharacterSize(cCharSize);
@@ -91,13 +84,4 @@ void DefenseUI::doChooseDice(sf::Event event, Player* player)
 	m_numberInput.setMax(player->getCombatPool());
 	m_numberInput.run(event);
 	m_numberInput.setPosition(sf::Vector2f(0, cCharSize));
-}
-
-void DefenseUI::doLinkedManuever(sf::Event event, Player* player)
-{
-	auto windowSize = Game::getWindow().getSize();
-	
-	sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize*12));
-	bkg.setFillColor(sf::Color(12, 12, 23));
-	Game::getWindow().draw(bkg);
 }

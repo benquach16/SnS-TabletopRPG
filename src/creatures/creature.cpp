@@ -8,7 +8,7 @@ using namespace std;
 
 Creature::Creature() : m_BTN(cBaseBTN), m_brawn(1), m_agility(1),
 					   m_cunning(1), m_perception(1), m_will(1), m_primaryWeaponId(0), m_combatPool(0),
-					   m_currentState(eCreatureState::Idle), m_bonusDice(0)
+					   m_currentState(eCreatureState::Idle), m_bonusDice(0), m_bloodLoss(0)
 {
 	
 }
@@ -39,7 +39,26 @@ void Creature::inflictWound(Wound* wound, bool manueverFirst)
 	if(wound->causesDeath() == true) {
 		m_currentState = eCreatureState::Dead;
 	}
-	m_bloodLoss;
+	if(wound->immediateKO() == true) {
+		m_currentState = eCreatureState::Unconcious;
+	}
+	set<eEffects> effects = wound->getEffects();
+	auto BL1 = effects.find(eEffects::BL1);
+	auto BL2 = effects.find(eEffects::BL2);
+	auto BL3 = effects.find(eEffects::BL3);
+	if(BL1 != effects.end()) {
+		m_bloodLoss++;
+	}
+	if(BL2 != effects.end()) {
+		m_bloodLoss+=2;
+	}
+	if(BL3 != effects.end()) {
+		m_bloodLoss+=3;
+	}
+
+	if(m_bloodLoss >= cBaseBloodLoss) {
+		m_currentState = eCreatureState::Dead;
+	}
 }
 
 int Creature::getSuccessRate() const {

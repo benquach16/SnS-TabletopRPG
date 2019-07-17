@@ -36,7 +36,6 @@ void Game::run()
 	Level level(20, 20);
 	
 	GFXLevel gfxlevel;
-	gfxlevel.setLevel(&level);
 	level.addObject(playerObject);
 	level.addObject(humanObject);
 	humanObject->setPosition(5, 5);
@@ -81,10 +80,17 @@ void Game::run()
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::A) {
 				playerObject->startCombatWith(humanObject->getCreatureComponent());
 				m_currentState = eGameState::InCombat;
+			}
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::I) {
+				playerObject->startCombatWith(humanObject->getCreatureComponent());
+				m_currentState = eGameState::InCombat;
+			}
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::D) {
+				m_currentState = eGameState::SelectionMode;
 			}			
 		}
 		level.run();
-		gfxlevel.run();
+		gfxlevel.run(&level);
 		sf::Time elapsedTime = clock.getElapsedTime();
 		tick += elapsedTime.asSeconds();
 		ui.run(event);
