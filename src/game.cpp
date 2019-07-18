@@ -80,18 +80,19 @@ void Game::run()
 				}
 			}
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::A) {
-				playerObject->startCombatWith(humanObject->getCreatureComponent());
-				m_currentState = eGameState::InCombat;
+				selector.setPosition(playerObject->getPosition());
+				m_currentState = eGameState::AttackMode;
 			}
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::I) {
 				m_currentState = eGameState::Inventory;
 			}
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::D) {
+				selector.setPosition(playerObject->getPosition());
 				m_currentState = eGameState::SelectionMode;
 			}
 			level.run();
 		}
-		if(m_currentState == eGameState::SelectionMode) {
+		else if(m_currentState == eGameState::SelectionMode) {
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
 				selector.moveDown();
 			}
@@ -112,11 +113,49 @@ void Game::run()
 				else
 				{
 					std::cout << "Something here" << std::endl;
+					Log::push("You see " + object->getDescription());
+					
 				}
 			}
 			gfxSelector.run(&selector);
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::D) {
+				m_currentState = eGameState::Playing;
+			}
 		}
-
+		else if(m_currentState == eGameState::AttackMode) {
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
+				if(selector.getPosition().y < playerObject->getPosition().y+2) {
+					selector.moveDown();
+				}
+			}
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Up) {
+				if(selector.getPosition().y > playerObject->getPosition().y-2) {
+					selector.moveUp();
+				}
+			}
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Left) {
+				if(selector.getPosition().x > playerObject->getPosition().x-2) {
+					selector.moveLeft();
+				}
+			}
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Right) {
+				if(selector.getPosition().x < playerObject->getPosition().x+2) {
+					selector.moveRight();
+				}
+			}
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
+				const Object *object = level.getObject(selector.getPosition());
+				if(object != nullptr) {
+					if(object->getObjectType() == eObjectTypes::Creature) {
+						const CreatureObject* creatureObject = static_cast<const CreatureObject*>(object);
+						playerObject->startCombatWith(creatureObject->getCreatureComponent());
+						m_currentState = eGameState::InCombat;
+					}
+				}
+			
+			}
+			gfxSelector.run(&selector);
+		}
 		sf::Time elapsedTime = clock.getElapsedTime();
 		tick += elapsedTime.asSeconds();
 		ui.run(event);
@@ -125,7 +164,10 @@ void Game::run()
 		if(tick > 1.0) {
 			if(m_currentState == eGameState::InCombat) {
 				//pause rest of game if player is in combat. combat between two NPCS can happen anytime
-				playerObject->runCombat();
+				if(playerObject->runCombat() == false) {
+					m_currentState = eGameState::Playing;
+				}
+				
 			}
 			m_combatManager.run();
 			tick = 0;

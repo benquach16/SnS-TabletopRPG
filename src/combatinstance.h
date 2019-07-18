@@ -51,6 +51,7 @@ public:
 	eCombatState getState() const { return m_currentState; }
 	Creature* getSide1() const { return m_side1; }
 	Creature* getSide2() const { return m_side2; }
+	eLength getCurrentReach() const { return m_currentReach; }
 	bool isAttackerPlayer();
 	bool isDefenderPlayer();
 private:

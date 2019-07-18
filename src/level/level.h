@@ -21,6 +21,7 @@ public:
 	Level(int width, int height);
 
 	virtual void run();
+	void cleanup();
 
 	Tile& operator()(int x, int y) {
 		assert(x >= 0);
@@ -47,6 +48,7 @@ public:
 	const std::vector<Object*>& getObjects() const { return m_objects; }
 private:
 	std::vector<Object*> m_objects;
+	std::vector<Object*> m_toDelete;
 	int m_width;
 	int m_height;
 	std::vector<Tile> m_data;	

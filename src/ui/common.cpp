@@ -8,7 +8,7 @@ namespace UiCommon {
 	{
 		auto windowSize = Game::getWindow().getSize();
 	
-		sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize*12));
+		static sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize*12));
 		bkg.setFillColor(sf::Color(12, 12, 23));
 		Game::getWindow().draw(bkg);	
 	}

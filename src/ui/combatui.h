@@ -18,6 +18,8 @@ public:
 	void run(sf::Event event);
 
 private:
+	sf::RectangleShape m_combatBkg;
+	
 	enum class eInitiativeSubState : unsigned {
 		ChooseInitiative,
 		InspectTarget,

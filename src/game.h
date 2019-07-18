@@ -21,6 +21,7 @@ private:
 		MainMenu,
 		Playing,
 		SelectionMode,
+		AttackMode,
 		Inventory,
 		InCombat,
 		PauseMenu,

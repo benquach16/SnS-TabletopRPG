@@ -10,4 +10,6 @@ std::string defensiveManueverToString(eDefensiveManuevers manuever);
 
 std::string damageTypeToString(eDamageTypes type);
 
+std::string lengthToString(eLength length);
+
 eLayer stringToArmorLayer(const std::string& str);

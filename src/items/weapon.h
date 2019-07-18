@@ -17,7 +17,7 @@ public:
 	std::vector<Component*> getThrustComponents() const { return m_thrustComponents; }
 	std::vector<Component*> getSwingComponents() const { return m_swingComponents; }
 	//convinence functions
-	Component* getBestAttack();
+	Component* getBestAttack() const;
 private:
 	Weapon();
 	eLength m_length;
@@ -30,16 +30,18 @@ private:
 class WeaponTable
 {
 public:
-	WeaponTable();
-	~WeaponTable();
-	static WeaponTable* getSingleton() {
+
+	static const WeaponTable* getSingleton() {
 		if(singleton == nullptr) {
 			singleton = new WeaponTable;
 		}
 		return singleton;
 	}
-	Weapon* get(int id);
+	const Weapon* get(int id) const;
 private:
+	WeaponTable();
+	~WeaponTable();
+	
 	eLength convertLengthFromStr(const std::string& str);
 	eWeaponTypes convertTypeFromStr(const std::string& str);
 	eWeaponProperties convertPropertiesFromStr(const std::string& str);

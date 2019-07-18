@@ -32,7 +32,7 @@ Weapon::~Weapon()
 	m_components.clear();
 }
 
-Component* Weapon::getBestAttack()
+Component* Weapon::getBestAttack() const
 {
 	assert(m_components.size() > 0);
 
@@ -116,7 +116,7 @@ WeaponTable::~WeaponTable()
 	m_weaponsList.clear();
 }
 
-Weapon* WeaponTable::get(int id)
+const Weapon* WeaponTable::get(int id) const
 {
 	auto it = m_weaponsList.find(id);
 	assert(it != m_weaponsList.end());

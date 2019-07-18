@@ -57,7 +57,7 @@ void CombatInstance::doInitialization()
 
 	//ugly implicit casting
 	m_currentReach = max(m_side1->getPrimaryWeapon()->getLength(), m_side2->getPrimaryWeapon()->getLength());
-
+	m_dualWhiteTimes = 0;
 	m_currentState = eCombatState::RollInitiative;
 }
 
@@ -83,7 +83,7 @@ void CombatInstance::doRollInitiative()
 		//repeat
 		writeMessage("Both sides chose to defend, deciding initiative again");
 		if(m_dualWhiteTimes > 1) {
-			writeMessage("Initiative going to willpower constest");
+			writeMessage("Defense chosen too many times, initiative going to willpower contest");
 			int side1Successes = DiceRoller::rollGetSuccess(m_side1->getBTN(), m_side1->getWill());
 			int side2Successes = DiceRoller::rollGetSuccess(m_side2->getBTN(), m_side2->getWill());
 
@@ -156,13 +156,13 @@ bool CombatInstance::doOffense()
 		defender->resetCombatPool();
 	}
 	
-	Weapon* offenseWeapon = attacker->getPrimaryWeapon();
-	Weapon* defenseWeapon = defender->getPrimaryWeapon();
+	const Weapon* offenseWeapon = attacker->getPrimaryWeapon();
+	const Weapon* defenseWeapon = defender->getPrimaryWeapon();
 	
 	int offenseCombatPool = attacker->getCombatPool();
 
-	int reachCost = static_cast<int>(defenseWeapon->getLength()) - static_cast<int>(offenseWeapon->getLength());
-	reachCost = std::max(0, reachCost);
+	int reachCost = static_cast<int>(m_currentReach) - static_cast<int>(offenseWeapon->getLength());
+	reachCost = abs(reachCost);
 	if(attacker->isPlayer() == true)
 	{
 		//wait until we get input from player
@@ -173,10 +173,14 @@ bool CombatInstance::doOffense()
 		} 
 	}
 	else {
-		attacker->doOffense(defender);
+		attacker->doOffense(defender, reachCost);
 	}
-	attacker->reduceOffenseDie(reachCost);
-	attacker->reduceCombatPool(reachCost);
+	if(reachCost != 0) {
+
+		writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost) + " action points", Log::eMessageTypes::Announcement);
+		attacker->reduceOffenseDie(reachCost);
+		attacker->reduceCombatPool(min(reachCost, offenseCombatPool));
+	}
 	Creature::Offense attack = attacker->getQueuedOffense();
 	
 	assert(attack.component != nullptr);
@@ -231,7 +235,7 @@ void CombatInstance::doDefense()
 	Creature* defender = nullptr;
 	setSides(attacker, defender);
 
-	Weapon* defenseWeapon = defender->getPrimaryWeapon();
+	const Weapon* defenseWeapon = defender->getPrimaryWeapon();
 
 	int defenseCombatPool = defender->getProficiency(defenseWeapon->getType()) + defender->getReflex();
 	if(defender->isPlayer() == true) {
@@ -275,9 +279,11 @@ void CombatInstance::doParryLinked()
 	Creature* defender = nullptr;
 	setSides(attacker, defender);
 	
-	Weapon* defenseWeapon = defender->getPrimaryWeapon();
+	const Weapon* defenseWeapon = defender->getPrimaryWeapon();
 
 	int defenseCombatPool = defender->getProficiency(defenseWeapon->getType()) + defender->getReflex();
+	int reachCost = static_cast<int>(defenseWeapon->getLength()) - static_cast<int>(m_currentReach);
+	reachCost = abs(reachCost);
 	if(defender->isPlayer() == true) {
 		//wait until player inputs
 		Player* player = static_cast<Player*>(defender);
@@ -288,7 +294,7 @@ void CombatInstance::doParryLinked()
 
 	}
 	else {
-		defender->doOffense(attacker, m_currentTempo == eTempo::Second);		
+		defender->doOffense(attacker, reachCost, m_currentTempo == eTempo::Second);		
 	}
 	Creature::Offense offense = defender->getQueuedOffense();
 
@@ -306,8 +312,8 @@ void CombatInstance::doStealInitiative()
 
 	//then input manuever
 	Creature::Defense defend = defender->getQueuedDefense();
-	Weapon* offenseWeapon = attacker->getPrimaryWeapon();
-	Weapon* defenseWeapon = defender->getPrimaryWeapon();
+	const Weapon* offenseWeapon = attacker->getPrimaryWeapon();
+	const Weapon* defenseWeapon = defender->getPrimaryWeapon();
 
 	//do dice to steal initiative first
 	if(defender->isPlayer() == true) {
@@ -352,10 +358,10 @@ void CombatInstance::doStolenOffense()
 	
 	writeMessage(attacker->getName() + " allocates " + to_string(attacker->getQueuedDefense().dice) +
 				 " action points to contest initiative steal");
-	Weapon* offenseWeapon = attacker->getPrimaryWeapon();
-	Weapon* defenseWeapon = defender->getPrimaryWeapon();	
-	int reachCost = static_cast<int>(offenseWeapon->getLength()) - static_cast<int>(defenseWeapon->getLength());
-	reachCost = std::max(0, reachCost);
+	const Weapon* offenseWeapon = attacker->getPrimaryWeapon();
+	const Weapon* defenseWeapon = defender->getPrimaryWeapon();	
+	int reachCost = static_cast<int>(offenseWeapon->getLength()) - static_cast<int>(m_currentReach);
+	reachCost = abs(reachCost);
 	defender->reduceOffenseDie(reachCost);
 	defender->reduceCombatPool(reachCost);
 	defender->reduceCombatPool(defender->getQueuedOffense().dice);
@@ -422,6 +428,7 @@ void CombatInstance::doResolution()
 			int defendSuccesses = DiceRoller::rollGetSuccess(defender->getBTN(),
 															 defender->getQueuedOffense().dice);
 			if(defendSuccesses > 0) {
+
 				if(inflictWound(defendSuccesses, defender->getQueuedOffense(), attacker) == true) {
 					m_currentState = eCombatState::FinishedCombat;
 					return;
@@ -447,6 +454,7 @@ void CombatInstance::doResolution()
 				m_currentState = eCombatState::FinishedCombat;
 				return;
 			}
+			m_currentReach = attacker->getPrimaryWeapon()->getLength();
 		}
 		else if (MoS == 0) {
 			//nothing happens

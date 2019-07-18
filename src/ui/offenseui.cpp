@@ -95,7 +95,7 @@ void OffenseUI::doComponent(sf::Event event, Player* player)
 {
 	UiCommon::drawTopPanel();
 	
-	Weapon* weapon = player->getPrimaryWeapon();
+	const Weapon* weapon = player->getPrimaryWeapon();
 	sf::Text text;
 	text.setCharacterSize(cCharSize);
 	text.setFont(Game::getDefaultFont());

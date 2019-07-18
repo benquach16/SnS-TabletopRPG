@@ -45,6 +45,7 @@ enum class eDefensiveManuevers : unsigned {
 	NoDefense,
 	StealInitiative,
 	ParryLinked,
+	DodgeLinked,
 	Counter,
 	
 	Parry,

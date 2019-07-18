@@ -50,7 +50,6 @@ private:
 class ArmorTable
 {
 public:
-	ArmorTable();
 	static ArmorTable* getSingleton() {
 		if(singleton == nullptr) {
 			singleton = new ArmorTable;
@@ -59,6 +58,7 @@ public:
 	}
 	const Armor* get(int id) { return m_armorList[id]; }
 private:
+	ArmorTable();
 	static ArmorTable* singleton;
 	//<id, armor>
 	std::map<int, Armor*> m_armorList; 

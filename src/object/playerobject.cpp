@@ -18,3 +18,9 @@ void PlayerObject::startCombatWith(Creature* creature)
 	assert(m_instance.getState() == eCombatState::Uninitialized);
 	m_instance.initCombat(m_creature, creature);
 }
+
+bool PlayerObject::runCombat()
+{
+	m_instance.run();
+	return m_instance.getState() != eCombatState::FinishedCombat;
+}

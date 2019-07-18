@@ -13,7 +13,7 @@ Creature::Creature() : m_BTN(cBaseBTN), m_brawn(1), m_agility(1),
 	
 }
 
-Weapon* Creature::getPrimaryWeapon() const
+const Weapon* Creature::getPrimaryWeapon() const
 {
 	return WeaponTable::getSingleton()->get(m_primaryWeaponId);
 }
@@ -103,7 +103,7 @@ void Creature::equipArmor(int id)
 void Creature::resetCombatPool()
 {
 	//carryover impact damage across tempos
-	Weapon* weapon = getPrimaryWeapon();
+	const Weapon* weapon = getPrimaryWeapon();
 	int carry = m_combatPool;
 	carry = min(0, carry);
 	m_combatPool = getProficiency(weapon->getType()) + getReflex() + carry;
@@ -115,9 +115,9 @@ void Creature::addAndResetBonusDice()
 	m_bonusDice = 0;
 }
 
-void Creature::doOffense(const Creature* target, bool allin)
+void Creature::doOffense(const Creature* target, int reachCost, bool allin)
 {
-	Weapon* weapon = getPrimaryWeapon();
+	const Weapon* weapon = getPrimaryWeapon();
 
 	m_currentOffense.manuever = eOffensiveManuevers::Thrust;
 	m_currentOffense.component = weapon->getBestAttack();
@@ -131,6 +131,7 @@ void Creature::doOffense(const Creature* target, bool allin)
 		- effolkronium::random_static::get(0, m_combatPool/3);
 
 	//bound
+	dice += reachCost;
 	dice = max(0, dice);
 	dice = min(dice, m_combatPool);
 	//never issue 0 dice for attack
@@ -142,6 +143,7 @@ void Creature::doOffense(const Creature* target, bool allin)
 	} else {
 		m_currentOffense.dice = dice;
 	}
+	cout << m_currentOffense.dice << endl;
 }
 
 

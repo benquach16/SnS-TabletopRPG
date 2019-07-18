@@ -25,13 +25,6 @@ enum class eCreatureState {
 	Unconcious
 };
 
-enum class eCreatureFaction {
-	Player,
-	Bandit,
-	Wildlife,
-	Goblin
-};
-
 enum class eCreatureStance {
 	Standing,
 	Prone
@@ -43,9 +36,6 @@ public:
 	Creature();
 
 	virtual eCreatureType getCreatureType() = 0;
-
-	void setCreatureFaction(eCreatureFaction faction) { m_faction = faction; }
-	eCreatureFaction getFaction() const { return m_faction; }
 	
 	int getBrawn() const { return m_brawn; }
 	int getAgility() const { return m_agility; }
@@ -59,9 +49,10 @@ public:
 	int getSpeed() const { return (m_agility + m_brawn)/2; }
 
 	int getBTN() const { return m_BTN; }
+	int getBloodLoss() const { return m_bloodLoss; }
 	void setBTN(int BTN) { m_BTN = BTN; }
 
-	Weapon* getPrimaryWeapon() const;
+	const Weapon* getPrimaryWeapon() const;
 	std::vector<const Armor*> getArmor() const;
 	void setWeapon(int id) { m_primaryWeaponId = id; }
 
@@ -89,7 +80,7 @@ public:
 	// AI functions
 	//move these to ai combat controller
 	virtual bool isPlayer() { return false; }
-	void doOffense(const Creature* target, bool allin = false);
+	void doOffense(const Creature* target, int reachCost, bool allin = false);
 
 	void doDefense(const Creature* attacker, bool isLastTempo);
 
@@ -118,7 +109,6 @@ public:
 	
 protected:
 	eCreatureState m_currentState;
-	eCreatureFaction m_faction;
 	
 	void clearArmor();
 	void applyArmor();

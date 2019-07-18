@@ -16,3 +16,17 @@ public:
 
 	virtual eItemType getItemType() { return eItemType::Item; }
 };
+
+class ItemTable
+{
+public:
+	static const ItemTable* getSingleton() {
+		if(singleton == nullptr) {
+			singleton = new ItemTable;
+		}
+		return singleton;
+	}
+	static ItemTable* singleton;
+
+private:
+};

@@ -35,6 +35,34 @@ std::string damageTypeToString(eDamageTypes type)
 	return "";
 }
 
+std::string lengthToString(eLength length)
+{
+	switch(length) {
+	case eLength::Hand:
+		return "Hand";
+		break;
+	case eLength::Short:
+		return "Short";
+		break;
+	case eLength::Medium:
+		return "Medium";
+		break;
+	case eLength::Long:
+		return "Long";
+		break;
+	case eLength::VeryLong:
+		return "Very Long";
+		break;
+	case eLength::Extended:
+		return "Extended";
+		break;
+	case eLength::Ludicrous:
+		return "Ludicrous";
+		break;
+	}
+	return "";
+}
+
 eLayer stringToArmorLayer(const std::string& str)
 {
 	if(str == "surcoat") {

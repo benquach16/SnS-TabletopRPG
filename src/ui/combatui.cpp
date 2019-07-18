@@ -4,6 +4,7 @@
 #include "../game.h"
 #include "../combatinstance.h"
 #include "../items/weapon.h"
+#include "../items/utils.h"
 #include "../creatures/player.h"
 #include "types.h"
 #include "common.h"
@@ -51,12 +52,26 @@ void CombatUI::run(sf::Event event)
 	combatBkg2.setOutlineColor(sf::Color(22, 22, 33));
 	Game::getWindow().draw(combatBkg2);
 
+	sf::RectangleShape reachBkg(sf::Vector2f(windowSize.x - 6, cCharSize));
+	reachBkg.setFillColor(sf::Color(12, 12, 23));
+	reachBkg.setPosition(3, windowSize.y - logHeight - rectHeight - cCharSize - 3);
+	reachBkg.setOutlineThickness(3);
+	reachBkg.setOutlineColor(sf::Color(22, 22, 33));
+	sf::Text reachTxt;
+	reachTxt.setCharacterSize(cCharSize);
+	reachTxt.setFont(Game::getDefaultFont());
+	reachTxt.setString("Current reach is " + lengthToString(m_instance->getCurrentReach()));
+	reachTxt.setPosition(5, windowSize.y - logHeight - rectHeight - cCharSize - 6);
+	Game::getWindow().draw(reachBkg);
+	Game::getWindow().draw(reachTxt);
+
 	showSide1Stats();
 	showSide2Stats();
 
 	assert(m_instance->getSide1()->isPlayer() == true);
 	Player *player = static_cast<Player *>(m_instance->getSide1());
 	Creature *target = m_instance->getSide2();
+
 	if (m_instance->getState() == eCombatState::Initialized)
 	{
 		resetState();
@@ -195,7 +210,8 @@ void CombatUI::showSide1Stats()
 	assert(m_instance != nullptr);
 	Creature* creature = m_instance->getSide1();
 	sf::Text side1Info;
-	side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName());
+	side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName() + " - " +
+						lengthToString(creature->getPrimaryWeapon()->getLength()));
 	side1Info.setCharacterSize(cCharSize);
 	side1Info.setFont(Game::getDefaultFont());
 	side1Info.setPosition(6, windowSize.y - logHeight - rectHeight);
@@ -207,7 +223,8 @@ void CombatUI::showSide1Stats()
 	ap.setFont(Game::getDefaultFont());
 	ap.setPosition(6, windowSize.y - logHeight - rectHeight + cCharSize);
 	ap.setString("Action Points : " + to_string(creature->getCombatPool()) +
-				 " - Success rate: " + to_string(creature->getSuccessRate()) + "%");
+				 " - Success rate: " + to_string(creature->getSuccessRate()) + "%" +
+				 '\n' + "Blood loss: " + to_string(creature->getBloodLoss()));
 	
 	Game::getWindow().draw(ap);
 }
@@ -219,19 +236,21 @@ void CombatUI::showSide2Stats()
 	assert(m_instance != nullptr);
 	Creature* creature = m_instance->getSide2();
 	sf::Text side1Info;
-	side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName());
+	side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName() + " - " +
+						lengthToString(creature->getPrimaryWeapon()->getLength()));
 	side1Info.setCharacterSize(cCharSize);
 	side1Info.setFont(Game::getDefaultFont());
-	side1Info.setPosition(windowSize.x/2, windowSize.y - logHeight - rectHeight);
+	side1Info.setPosition(windowSize.x/2 + 5, windowSize.y - logHeight - rectHeight);
 	
 	Game::getWindow().draw(side1Info);
 
 	sf::Text ap;
 	ap.setCharacterSize(cCharSize);
 	ap.setFont(Game::getDefaultFont());
-	ap.setPosition(windowSize.x/2, windowSize.y - logHeight - rectHeight + cCharSize);
+	ap.setPosition(windowSize.x/2 + 5, windowSize.y - logHeight - rectHeight + cCharSize);
 	ap.setString("Action Points : " + to_string(creature->getCombatPool()) +
-				 " - Success rate: " + to_string(creature->getSuccessRate()) + "%");
+				 " - Success rate: " + to_string(creature->getSuccessRate()) + "%"+
+				 '\n' + "Blood loss: " + to_string(creature->getBloodLoss()));
 	
 	Game::getWindow().draw(ap);
 }
