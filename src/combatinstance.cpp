@@ -10,7 +10,8 @@
 using namespace std;
 
 CombatInstance::CombatInstance(): m_initiative(eInitiative::Side1), m_side1(nullptr), m_side2(nullptr),
-								m_currentTempo(eTempo::First), m_currentState(eCombatState::Uninitialized)
+								m_currentTempo(eTempo::First), m_currentState(eCombatState::Uninitialized), 
+								m_currentReach(eLength::Hand), m_dualWhiteTimes(0)
 {
 }
 
@@ -54,6 +55,9 @@ void CombatInstance::doInitialization()
 	writeMessage(m_side1->getName() + " is using " + m_side1->getPrimaryWeapon()->getName() + " and " +
 			  m_side2->getName() + " is using " + m_side2->getPrimaryWeapon()->getName());
 
+	//ugly implicit casting
+	m_currentReach = max(m_side1->getPrimaryWeapon()->getLength(), m_side2->getPrimaryWeapon()->getLength());
+
 	m_currentState = eCombatState::RollInitiative;
 }
 
@@ -65,7 +69,6 @@ void CombatInstance::doRollInitiative()
 			m_currentState = eCombatState::RollInitiative;
 			return;			
 		}
-		
 	}
 	
 	//get initiative rolls from both sides to determine roles.
@@ -79,6 +82,21 @@ void CombatInstance::doRollInitiative()
 	if(side1 == eInitiativeRoll::Defend && side2 == eInitiativeRoll::Defend) {
 		//repeat
 		writeMessage("Both sides chose to defend, deciding initiative again");
+		if(m_dualWhiteTimes > 1) {
+			writeMessage("Initiative going to willpower constest");
+			int side1Successes = DiceRoller::rollGetSuccess(m_side1->getBTN(), m_side1->getWill());
+			int side2Successes = DiceRoller::rollGetSuccess(m_side2->getBTN(), m_side2->getWill());
+
+			m_initiative = side1Successes < side2Successes ? eInitiative::Side1 : eInitiative::Side2;
+			if(m_initiative == eInitiative::Side1) {
+				writeMessage(m_side1->getName() + " takes initiative");
+			} else {
+				writeMessage(m_side2->getName() + " takes initiative");
+			}
+			m_currentState = eCombatState::Offense;
+			return;
+		}
+		m_dualWhiteTimes++;
 		m_currentState = eCombatState::ResetState;
 		return;
 	} else if(side1 == eInitiativeRoll::Attack && side2 == eInitiativeRoll::Defend) {

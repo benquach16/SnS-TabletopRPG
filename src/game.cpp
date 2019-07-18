@@ -7,6 +7,8 @@
 #include "gfxobjects/gfxlevel.h"
 #include "object/playerobject.h"
 #include "object/humanobject.h"
+#include "object/selectorobject.h"
+#include "gfxobjects/gfxselector.h"
 
 Game::eGameState Game::m_currentState;
 sf::RenderWindow Game::m_window;
@@ -40,7 +42,9 @@ void Game::run()
 	level.addObject(humanObject);
 	humanObject->setPosition(5, 5);
 	ui.initializeCombatUI(&playerObject->getCombatInstance());
-	while(m_window.isOpen())
+	SelectorObject selector;
+	GFXSelector gfxSelector;
+	while (m_window.isOpen())
 	{
 		m_window.clear();
 		
@@ -51,9 +55,8 @@ void Game::run()
 			if (event.type == sf::Event::Closed) {
 				m_window.close();
 			}
-
 		}
-
+		gfxlevel.run(&level);
 		if(m_currentState == eGameState::Playing) {
 			vector2d pos = playerObject->getPosition();
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
@@ -65,8 +68,7 @@ void Game::run()
 				if(level.isFreeSpace(pos.x, pos.y - 1) == true) {
 					playerObject->moveUp();
 				}
-			}
-		
+			} 
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Left) {
 				if(level.isFreeSpace(pos.x - 1, pos.y) == true) {
 					playerObject->moveLeft();
@@ -82,15 +84,39 @@ void Game::run()
 				m_currentState = eGameState::InCombat;
 			}
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::I) {
-				playerObject->startCombatWith(humanObject->getCreatureComponent());
-				m_currentState = eGameState::InCombat;
+				m_currentState = eGameState::Inventory;
 			}
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::D) {
 				m_currentState = eGameState::SelectionMode;
-			}			
+			}
+			level.run();
 		}
-		level.run();
-		gfxlevel.run(&level);
+		if(m_currentState == eGameState::SelectionMode) {
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
+				selector.moveDown();
+			}
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Up) {
+				selector.moveUp();
+			}
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Left) {
+				selector.moveLeft();
+			}
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Right) {
+				selector.moveRight();
+			}
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
+				const Object *object = level.getObject(selector.getPosition());
+				if(object == nullptr) {
+					std::cout << "Nothing here" << std::endl;
+				}
+				else
+				{
+					std::cout << "Something here" << std::endl;
+				}
+			}
+			gfxSelector.run(&selector);
+		}
+
 		sf::Time elapsedTime = clock.getElapsedTime();
 		tick += elapsedTime.asSeconds();
 		ui.run(event);
@@ -104,9 +130,6 @@ void Game::run()
 			m_combatManager.run();
 			tick = 0;
 		}
-
-
-
 		
 		clock.restart();
 

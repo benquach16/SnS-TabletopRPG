@@ -58,10 +58,11 @@ public:
 	int getReflex() const { return (m_agility + m_cunning)/2; }
 	int getSpeed() const { return (m_agility + m_brawn)/2; }
 
-	int getBTN() { return m_BTN; }
+	int getBTN() const { return m_BTN; }
 	void setBTN(int BTN) { m_BTN = BTN; }
 
-	Weapon* getPrimaryWeapon();
+	Weapon* getPrimaryWeapon() const;
+	std::vector<const Armor*> getArmor() const;
 	void setWeapon(int id) { m_primaryWeaponId = id; }
 
 	void setName(const std::string& name) { m_name = name; }
@@ -86,6 +87,7 @@ public:
 	const std::vector<eHitLocations>& getHitLocations() const { return m_hitLocations; }
 
 	// AI functions
+	//move these to ai combat controller
 	virtual bool isPlayer() { return false; }
 	void doOffense(const Creature* target, bool allin = false);
 

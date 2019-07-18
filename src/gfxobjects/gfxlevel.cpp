@@ -23,7 +23,7 @@ void GFXLevel::run(const Level* level)
 		}
 	}
 
-	std::vector<Object*> rLevelObjs = level->getObjects();
+	const std::vector<Object*> rLevelObjs = level->getObjects();
 
 	for(int i = 0; i < rLevelObjs.size(); ++i) {
 		vector2d position = rLevelObjs[i]->getPosition();

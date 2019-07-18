@@ -9,6 +9,10 @@ struct vector2d
 	vector2d(int x, int y) : x(x), y(y) {}
 };
 
+enum eObjectTypes {
+	
+};
+
 class Object
 {
 public:
@@ -22,5 +26,4 @@ public:
 	void moveRight() { m_position.x++; }
 protected:
 	vector2d m_position;
-
 };

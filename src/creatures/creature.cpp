@@ -13,9 +13,19 @@ Creature::Creature() : m_BTN(cBaseBTN), m_brawn(1), m_agility(1),
 	
 }
 
-Weapon* Creature::getPrimaryWeapon()
+Weapon* Creature::getPrimaryWeapon() const
 {
 	return WeaponTable::getSingleton()->get(m_primaryWeaponId);
+}
+
+std::vector<const Armor*> Creature::getArmor() const
+{
+	std::vector<const Armor*> ret;
+	for (int i = 0; i < m_armor.size(); ++i)
+	{
+		ret.push_back(ArmorTable::getSingleton()->get(m_armor[i]));
+	}
+	return ret;
 }
 
 void Creature::inflictWound(Wound* wound, bool manueverFirst)

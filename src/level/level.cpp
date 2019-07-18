@@ -12,6 +12,17 @@ void Level::run()
 	}
 }
 
+const Object* Level::getObject(vector2d position)
+{
+	for (int i = 0; i < m_objects.size(); ++i) {
+		vector2d objectPosition = m_objects[i]->getPosition();
+		if(position.x == objectPosition.x && position.y == objectPosition.y) {
+			return m_objects[i];
+		}
+	}
+	return nullptr;
+}
+
 bool Level::isFreeSpace(int x, int y) const
 {
 	if(x < 0 || y < 0 || x >= m_width || y >= m_height) {

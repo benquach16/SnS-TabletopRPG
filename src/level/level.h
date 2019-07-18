@@ -25,14 +25,20 @@ public:
 	Tile& operator()(int x, int y) {
 		assert(x >= 0);
 		assert(y >= 0);
+		assert(x < m_width);
+		assert(y < m_height);
 		return m_data[x * m_height + y];
 	}
 
 	Tile operator()(int x, int y) const {
 		assert(x >= 0);
 		assert(y >= 0);
+		assert(x < m_width);
+		assert(y < m_height);
 		return m_data[x * m_height + y];
-	}	
+	}
+
+	const Object *getObject(vector2d position);
 
 	int getWidth() const { return m_width; }
 	int getHeight() const { return m_height; }

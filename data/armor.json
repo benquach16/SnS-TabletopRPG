@@ -37,7 +37,7 @@
         "description": "A type of breastplate that consists of of steel plates riveted to a vest.",
         "AV": 3,
         "AP": 0.0,
-        "rigid": false,
+        "rigid": true,
         "metal": true,
         "coverage": ["abs", "ribs"],
         "layer": "plate",
@@ -51,6 +51,39 @@
         "rigid": false,
         "metal": false,
         "coverage": ["thighs", "knees", "shins", "hamstrings"],
+        "layer": "cloth",
+        "type": "none"
+    },
+    "45": {
+        "name": "Cloth shirt",
+        "description": "Better than nothing.",
+        "AV": 1,
+        "AP": 0.0,
+        "rigid": false,
+        "metal": false,
+        "coverage": ["abs", "ribs", "shoulders", "armpit", "armpit", "elbow"],
+        "layer": "cloth",
+        "type": "none"
+    },
+    "46": {
+        "name": "Leather shoes",
+        "description": "Shoes with a bit of protection",
+        "AV": 2,
+        "AP": 0.0,
+        "rigid": false,
+        "metal": false,
+        "coverage": ["foot"],
+        "layer": "cloth",
+        "type": "none"
+    },
+    "47": {
+        "name": "Leather gloves",
+        "description": "Leather that covers your hands.",
+        "AV": 2,
+        "AP": 0.0,
+        "rigid": false,
+        "metal": false,
+        "coverage": ["hands"],
         "layer": "cloth",
         "type": "none"
     }

@@ -458,15 +458,15 @@
 			},
 			"3": {
 				"text":["Solid blow hits the bone. Fingers are numb for a while."],
-				"effects":["BL1", "KO1"]
+				"effects":["drop3"]
 			},
 			"4": {
 				"text":["Pierces elbow area and damages bone. Arm useless until healed."],
-				"effects":["BL2", "KO2"]
+				"effects":["BL1", "drop2"]
 			},
 			"5": {
 				"text":["Elbow broken. Open frature. Arm useless with a lot of blood."],
-				"effects":["death"]
+				"effects":["drop", "BL2"]
 			}
 		},
 		"forearm": {
@@ -479,15 +479,15 @@
 			},
 			"3": {
 				"text":["Punctures skin and hits bone with pain running through the whole arm"],
-				"effects":["BL1", "KO1"]
+				"effects":["drop3"]
 			},
 			"4": {
 				"text":["Passes through the arm, missing bone. Lots of blood."],
-				"effects":["BL2", "KO2"]
+				"effects":["BL1", "drop"]
 			},
 			"5": {
 				"text":["Passes through the arm, spurting blood. Major blood vessel cut."],
-				"effects":["death"]
+				"effects":["BL2", "drop"]
 			}
 		},
 		"hand": {
@@ -497,19 +497,19 @@
 			},
 			"2": {
 				"text":["Minor puncture of hand or fingers."],
-				"effects": ["BL1"]
+				"effects": ["drop2"]
 			},
 			"3": {
 				"text":["Deeper puncture for hitting bone."],
-				"effects":["BL1", "KO1"]
+				"effects":["drop3"]
 			},
 			"4": {
 				"text":["Hand pierced with lots of blood."],
-				"effects":["BL2", "KO2"]
+				"effects":["drop", "BL1"]
 			},
 			"5": {
 				"text":["Hand pierced. Lost a finger."],
-				"effects":["death"]
+				"effects":["drop", "BL1"]
 			}
 		},
 		"armpit": {
@@ -650,7 +650,7 @@
 			},
 			"5": {
 				"text":["Knee fractured, femoral nerve severed. Leg is numb and knee won't lock anymore."],
-				"effects":["death"]
+				"effects":["BL1", "KD"]
 			}
 		},
 		"shin": {
@@ -663,15 +663,15 @@
 			},
 			"3": {
 				"text":["Shallow puncture or surface wound. Chipped bone and minor ligament damage."],
-				"effects":["BL1", "KO1"]
+				"effects":["KD2"]
 			},
 			"4": {
 				"text":["Shin completely pierced with bone damage."],
-				"effects":["BL2", "KO2"]
+				"effects":["BL1", "KD3"]
 			},
 			"5": {
 				"text":["Shin completely pierced with tendon injury."],
-				"effects":["death"]
+				"effects":["BL2", "KD"]
 			}
 		},
 		"foot": {
@@ -680,19 +680,19 @@
 			},
 			"2": {
 				"text":["Minor puncture, but balance is compromised."],
-				"effects": ["BL1"]
+				"effects": ["KD1"]
 			},
 			"3": {
 				"text":["Deeper puncture hitting bone. Minor fractures."],
-				"effects":["BL1", "KO1"]
+				"effects":["KD2"]
 			},
 			"4": {
 				"text":["Foot pierced with lots of blood."],
-				"effects":["BL2", "KO2"]
+				"effects":["BL1", "KD2"]
 			},
 			"5": {
 				"text":["Foot pierced."],
-				"effects":["death"]
+				"effects":["BL2", "KD"]
 			}
 		}
 	},

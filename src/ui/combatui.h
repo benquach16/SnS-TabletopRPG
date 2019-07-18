@@ -20,6 +20,7 @@ public:
 private:
 	enum class eInitiativeSubState : unsigned {
 		ChooseInitiative,
+		InspectTarget,
 		Finished,
 	};
 
@@ -28,17 +29,11 @@ private:
 		Finished,
 	};
 
-	enum class eDefenseSubState : unsigned {
-		ChooseManuever,
-		ChooseDice,
-		Finished,
-	};
 	void resetState();
 	void doInitiative();
-	void doOffense(sf::Event event);
-	void doDefense(sf::Event event);
-	void doStolenOffense(sf::Event event);
 	
+	void doStolenOffense(sf::Event event);
+
 	void showSide1Stats();
 	void showSide2Stats();
 

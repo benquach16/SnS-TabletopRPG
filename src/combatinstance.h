@@ -78,9 +78,13 @@ private:
 	void writeMessage(const std::string& str, Log::eMessageTypes type = Log::eMessageTypes::Standard);
 	
 	eCombatState m_currentState;
-	
+
+	eLength m_currentReach;
+
 	eTempo m_currentTempo;
 	eInitiative m_initiative;
+
+	int m_dualWhiteTimes;
 
 	Creature* m_side1;
 	Creature* m_side2;

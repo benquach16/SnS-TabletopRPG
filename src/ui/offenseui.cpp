@@ -3,7 +3,9 @@
 #include "../game.h"
 #include "common.h"
 
-void OffenseUI::run(sf::Event event, Player* player, bool allowStealInitiative, bool linkedParry)
+using namespace std;
+
+void OffenseUI::run(sf::Event event, Player* player, Creature* target, bool allowStealInitiative, bool linkedParry)
 {
 	switch(m_currentState) {
 	case eUiState::ChooseManuever:
@@ -17,6 +19,9 @@ void OffenseUI::run(sf::Event event, Player* player, bool allowStealInitiative, 
 		break;
 	case eUiState::ChooseTarget:
 		doTarget(event, player, linkedParry);
+		break;
+	case eUiState::InspectTarget:
+		doInspect(event, target);
 		break;
 	case eUiState::Finished:
 		break;
@@ -46,12 +51,43 @@ void OffenseUI::doManuever(sf::Event event, Player* player)
 		if(c == 'c') {
 			if(player->getCombatPool() > 2) {
 				player->setOffenseManuever(eOffensiveManuevers::Thrust);
-				m_currentState = eUiState::ChooseComponent;				
+				m_currentState = eUiState::ChooseComponent;
+				player->reduceCombatPool(2);
 			}
 			else {
 				//need 2 dice
 			}
 		}
+		if(c == 'd') {
+
+		}
+		if(c == 'e') {
+
+		}
+		if(c == 'f') {
+			m_currentState = eUiState::InspectTarget;
+		}
+	}
+}
+
+void OffenseUI::doInspect(sf::Event event, Creature* target)
+{
+	UiCommon::drawTopPanel();
+
+	std::vector<const Armor *> armor = target->getArmor();
+	string str;
+	str += target->getName() + " is wearing ";
+	for (int i = 0; i < armor.size(); ++i)
+	{
+		str += armor[i]->getName() + ", ";
+	}
+	sf::Text text;	
+	text.setCharacterSize(cCharSize);
+	text.setFont(Game::getDefaultFont());
+	text.setString(str);
+	Game::getWindow().draw(text);
+	if(event.type == sf::Event::TextEntered) {
+		m_currentState = eUiState::ChooseManuever;
 	}
 }
 

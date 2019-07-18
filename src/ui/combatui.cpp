@@ -6,6 +6,7 @@
 #include "../items/weapon.h"
 #include "../creatures/player.h"
 #include "types.h"
+#include "common.h"
 
 using namespace std;
 
@@ -53,9 +54,11 @@ void CombatUI::run(sf::Event event)
 	showSide1Stats();
 	showSide2Stats();
 
-	Player* player = static_cast<Player*>(m_instance->getSide1());
-	
-	if(m_instance->getState() == eCombatState::Initialized) {
+	assert(m_instance->getSide1()->isPlayer() == true);
+	Player *player = static_cast<Player *>(m_instance->getSide1());
+	Creature *target = m_instance->getSide2();
+	if (m_instance->getState() == eCombatState::Initialized)
+	{
 		resetState();
 		return;
 	}
@@ -68,7 +71,7 @@ void CombatUI::run(sf::Event event)
 		return;
 	}
 	if(m_instance->getState() == eCombatState::Offense && m_instance->isAttackerPlayer() == true) {
-		m_offenseUI.run(event, player);
+		m_offenseUI.run(event, player, target);
 		return;
 	}
 	if(m_instance->getState() == eCombatState::Defense && m_instance->isDefenderPlayer() == true) {
@@ -76,15 +79,15 @@ void CombatUI::run(sf::Event event)
 		return;
 	}
 	if(m_instance->getState() == eCombatState::ParryLinked) {
-		m_offenseUI.run(event, player, false, true);
+		m_offenseUI.run(event, player, target, false, true);
 		return;
 	}
 	if(m_instance->getState() == eCombatState::DualOffense1 && m_instance->isAttackerPlayer() == true) {
-		m_offenseUI.run(event, player);
+		m_offenseUI.run(event, player, target);
 		return;
 	}
 	if(m_instance->getState() == eCombatState::DualOffense2 && m_instance->isAttackerPlayer() == true) {
-		m_offenseUI.run(event, player);
+		m_offenseUI.run(event, player, target);
 		return;
 	}
 	if(m_instance->getState() == eCombatState::StolenOffense && m_instance->isAttackerPlayer() == true) {
@@ -92,7 +95,7 @@ void CombatUI::run(sf::Event event)
 		return;
 	}
 	if(m_instance->getState() == eCombatState::StealInitiative) {
-		m_offenseUI.run(event, player);
+		m_offenseUI.run(event, player, target);
 		return;
 	}
 	if(m_instance->getState() == eCombatState::Resolution) {
@@ -112,21 +115,20 @@ void CombatUI::run(sf::Event event)
 
 void CombatUI::doInitiative()
 {
-	auto windowSize = Game::getWindow().getSize();
 	if(m_initiativeState == eInitiativeSubState::ChooseInitiative) {
-		sf::RectangleShape chooseInitiative(sf::Vector2f(windowSize.x, cCharSize*12));
-		chooseInitiative.setFillColor(sf::Color(12, 12, 23));
-		Game::getWindow().draw(chooseInitiative);
+		UiCommon::drawTopPanel();
 
 		sf::Text text;
 		text.setCharacterSize(cCharSize);
 		text.setFont(Game::getDefaultFont());
-		text.setString("Choose initiative:\na - attack \nb - defend");
+		text.setString("Choose initiative:\na - Attack \nb - Defend\nc - Inspect target");
 		Game::getWindow().draw(text);
 
+		//temporary, maybe
 		assert(m_instance->getSide1()->isPlayer() == true);
 		Player* player = static_cast<Player*>(m_instance->getSide1());
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) == true) {
+		Creature *target = m_instance->getSide2();
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) == true) {
 			player->setInitiative(eInitiativeRoll::Attack);
 			m_initiativeState = eInitiativeSubState::Finished;
 		}
@@ -134,6 +136,22 @@ void CombatUI::doInitiative()
 			player->setInitiative(eInitiativeRoll::Defend);
 			m_initiativeState = eInitiativeSubState::Finished;
 		}
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::C) == true) {
+			m_initiativeState = eInitiativeSubState::InspectTarget;
+		}
+	} 
+	else if(m_initiativeState == eInitiativeSubState::InspectTarget) {
+		UiCommon::drawTopPanel();
+
+		Creature *target = m_instance->getSide2();
+		sf::Text text;
+		text.setCharacterSize(cCharSize);
+		text.setFont(Game::getDefaultFont());
+		text.setString(target->getName() + " looks aggressive");
+		Game::getWindow().draw(text);
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) == true) {
+			m_initiativeState = eInitiativeSubState::ChooseInitiative;
+		}		
 	}
 }
 
