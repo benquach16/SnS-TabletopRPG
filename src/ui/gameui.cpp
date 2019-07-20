@@ -8,10 +8,11 @@ GameUI::GameUI()
 void GameUI::run(sf::Event event)
 {
 	m_combatUI.run(event);
+}
 
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::I)) {
-		
-	}
+void GameUI::runInventory(sf::Event event)
+{
+	m_inventoryUI.run(event);
 }
 
 

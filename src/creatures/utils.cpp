@@ -88,3 +88,22 @@ eBodyParts stringToBodyPart(const std::string& str)
 	}
 	return eBodyParts::Tail;
 }
+
+std::string hitLocationToString(eHitLocations location)
+{
+	switch(location) {
+	case eHitLocations::Head:
+		return "Head";
+	case eHitLocations::Chest:
+		return "Chest";
+	case eHitLocations::Arm:
+		return "Arm";
+	case eHitLocations::Belly:
+		return "Belly";
+	case eHitLocations::Shin:
+		return "Shin";
+	case eHitLocations::Wing:
+		return "Wing";
+	}
+	return "";
+}

@@ -9,6 +9,12 @@
         "name": "Waterskin",
         "description": "A container for water.",
         "type": "waterskin",
+        "cost": 5
+    },
+    "3": {
+        "name": "Torch",
+        "description": "A piece of wood you can set on fire for light.",
+        "type": "light",
         "cost": 2
     }
 }

@@ -1,29 +1,32 @@
 {
-    "40": {
+    "2040": {
         "name": "Gambeson",
         "description": "A jacket made of quilted linen.",
+        "cost": 5,
         "AV": 2,
         "AP": 0.0,
         "rigid": false,
         "metal": false,
-        "coverage": ["abs", "ribs", "shoulders", "armpit", "upperarm", "elbow", "forearm"],
+        "coverage": ["abs", "ribs", "shoulder", "armpit", "upperarm", "elbow", "forearm"],
         "layer": "cloth",
         "type": "none"
     },
-    "41": {
+    "2041": {
         "name": "Chainmail shirt",
         "description": "A short sleeved shirt made of chainmail.",
+        "cost": 50,
         "AV": 3,
         "AP": 0.25,
         "rigid": false,
         "metal": true,
-        "coverage": ["abs", "ribs", "shoulders", "armpit", "upperarm", "elbow"],
+        "coverage": ["abs", "ribs", "shoulder", "armpit", "upperarm", "elbow"],
         "layer": "maille",
         "type": "maille"
     },
-    "42": {
+    "2042": {
         "name": "Sallet",
-        "description": "A type of steel helmet.",
+        "description": "A type of visored steel helmet, popular with foot knights and men at arms.",
+        "cost": 100,
         "AV": 4,
         "AP": 0.5,
         "rigid": true,
@@ -32,9 +35,10 @@
         "layer": "plate",
         "type": "plate"
     },
-    "43": {
+    "2043": {
         "name": "Brigandine",
         "description": "A type of breastplate that consists of of steel plates riveted to a vest.",
+        "cost": 100,
         "AV": 3,
         "AP": 0.0,
         "rigid": true,
@@ -43,31 +47,34 @@
         "layer": "plate",
         "type": "plate"
     },
-    "44": {
+    "2044": {
         "name": "Hosen",
         "description": "Leggings made of quilted linen.",
+        "cost": 5,
         "AV": 2,
         "AP": 0.0,
         "rigid": false,
         "metal": false,
-        "coverage": ["thighs", "knees", "shins", "hamstrings"],
+        "coverage": ["thighs", "knees", "shins", "groin"],
         "layer": "cloth",
         "type": "none"
     },
-    "45": {
+    "2045": {
         "name": "Cloth shirt",
         "description": "Better than nothing.",
+        "cost": 2,
         "AV": 1,
         "AP": 0.0,
         "rigid": false,
         "metal": false,
-        "coverage": ["abs", "ribs", "shoulders", "armpit", "armpit", "elbow"],
+        "coverage": ["abs", "ribs", "shoulder", "armpit", "armpit", "elbow"],
         "layer": "cloth",
         "type": "none"
     },
-    "46": {
+    "2046": {
         "name": "Leather shoes",
         "description": "Shoes with a bit of protection",
+        "cost": 10,
         "AV": 2,
         "AP": 0.0,
         "rigid": false,
@@ -76,9 +83,10 @@
         "layer": "cloth",
         "type": "none"
     },
-    "47": {
+    "2047": {
         "name": "Leather gloves",
         "description": "Leather that covers your hands.",
+        "cost": 10,
         "AV": 2,
         "AP": 0.0,
         "rigid": false,
@@ -86,5 +94,65 @@
         "coverage": ["hands"],
         "layer": "cloth",
         "type": "none"
+    },
+    "2048": {
+        "name": "Cloth pants",
+        "description": "Better than nothing.",
+        "cost": 2,
+        "AV": 1,
+        "AP": 0.0,
+        "rigid": false,
+        "metal": false,
+        "coverage": ["thighs", "knees", "shins", "groin"],
+        "layer": "cloth",
+        "type": "none"
+    },
+    "2049": {
+        "name": "Fancy shirt",
+        "description": "Shirt for nobility that provides no protection whatsoever, but looks nice.",
+        "cost": 100,
+        "AV": 0,
+        "AP": 0.0,
+        "rigid": false,
+        "metal": false,
+        "coverage": ["abs", "ribs", "shoulder", "armpit", "armpit", "elbow"],
+        "layer": "cloth",
+        "type": "none"
+    },
+    "2050": {
+        "name": "Arming cap",
+        "description": "A cap made of quilted linen. Usually worn under a helmet.",
+        "cost": 10,
+        "AV": 2,
+        "AP": 0.0,
+        "rigid": false,
+        "metal": false,
+        "coverage": ["crown"],
+        "layer": "cloth",
+        "type": "none"
+    },
+    "2051": {
+        "name": "Maille coif",
+        "description": "A chainmail hood.",
+        "cost": 75,
+        "AV": 3,
+        "AP": 0.25,
+        "rigid": false,
+        "metal": true,
+        "coverage": ["crown"],
+        "layer": "maille",
+        "type": "maille"
+    },
+    "2052": {
+        "name": "Bascinet",
+        "description": "A type of open faced steel helmet.",
+        "cost": 150,
+        "AV": 4,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": ["crown"],
+        "layer": "plate",
+        "type": "plate"
     }
 }

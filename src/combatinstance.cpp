@@ -1,11 +1,11 @@
 #include <iostream>
+#include <assert.h>
+
 #include "creatures/utils.h"
 #include "items/utils.h"
 #include "combatinstance.h"
 #include "game.h"
 #include "creatures/player.h"
-
-#include <assert.h>
 
 using namespace std;
 
@@ -176,8 +176,8 @@ bool CombatInstance::doOffense()
 		attacker->doOffense(defender, reachCost);
 	}
 	if(reachCost != 0) {
-
-		writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost) + " action points", Log::eMessageTypes::Announcement);
+		writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost) +
+					 " action points", Log::eMessageTypes::Announcement);
 		attacker->reduceOffenseDie(reachCost);
 		attacker->reduceCombatPool(min(reachCost, offenseCombatPool));
 	}
@@ -191,7 +191,7 @@ bool CombatInstance::doOffense()
 	attacker->addAndResetBonusDice();
 	
 	writeMessage(attacker->getName() + " " + offensiveManueverToString(attack.manuever) + "s with " +
-				 offenseWeapon->getName() + " using " +
+				 offenseWeapon->getName() + " at " + hitLocationToString(attack.target) + " using " +
 				 attack.component->getName() + " with " +
 				 to_string(attack.dice) + " action points");
 	
@@ -367,7 +367,7 @@ void CombatInstance::doStolenOffense()
 	defender->reduceCombatPool(defender->getQueuedOffense().dice);
 	
 	writeMessage(defender->getName() + " " + offensiveManueverToString(defender->getQueuedOffense().manuever) + "s with " +
-				 defender->getPrimaryWeapon()->getName() + " using " +
+				 defender->getPrimaryWeapon()->getName() + " at " + hitLocationToString(defender->getQueuedOffense().target) + " using " +
 				 defender->getQueuedOffense().component->getName() + " with " +
 				 to_string(defender->getQueuedOffense().dice) + " action points");	
 	m_currentState = eCombatState::Resolution;
@@ -436,8 +436,9 @@ void CombatInstance::doResolution()
 			} else {
 				writeMessage(defender->getName() + " had no successes");
 			}
-
+			m_currentReach = attacker->getPrimaryWeapon()->getLength();
 			if(defendSuccesses > attackerSuccesses) {
+				m_currentReach = defender->getPrimaryWeapon()->getLength();
 				writeMessage(defender->getName() + " had more successes, taking initiative");
 				switchInitiative();
 			}
@@ -510,8 +511,10 @@ void CombatInstance::doDualOffenseResolve()
 	//intiative goes to whoever got more hits
 	m_currentState = eCombatState::Offense;
 	if(MoS > MoS2) {
+		m_currentReach = m_side1->getPrimaryWeapon()->getLength();
 		m_initiative = eInitiative::Side1;
 	} else if (MoS < MoS2) {
+		m_currentReach = m_side2->getPrimaryWeapon()->getLength();
 		m_initiative = eInitiative::Side2;
 	} else {
 		//reroll if no one died
@@ -541,17 +544,28 @@ bool CombatInstance::inflictWound(int MoS, Creature::Offense attack, Creature* t
 
 	const ArmorSegment armorAtLocation = target->getArmorAtPart(bodyPart);
 
-
+	if(armorAtLocation.AV > 0) {
+		writeMessage(target->getName() + "'s armor reduced wound level by " + to_string(armorAtLocation.AV));
+	}
+	
 	//complicated armor calcs go here
 	finalDamage -= armorAtLocation.AV;
+	if(armorAtLocation.isMetal == true && attack.component->getType() != eDamageTypes::Blunt) {
+		if(attack.component->hasProperty(eWeaponProperties::MaillePiercing) == false &&
+		armorAtLocation.type == eArmorTypes::Maille) {
+			writeMessage("Maille armor reduces wound level by half");
+			//piercing attacks round up, otherwise round down
+			if(attack.component->getType() == eDamageTypes::Piercing) {
+				finalDamage = (finalDamage+1)/2;	
+			} else {
+				finalDamage = finalDamage / 2;
+			}
+		}
+	}
 
 	if(finalDamage <= 0) {
 		writeMessage(target->getName() + "'s armor prevented any damage!", Log::eMessageTypes::Announcement);
 		return false;
-	}
-
-	if(armorAtLocation.AV > 0) {
-		writeMessage(target->getName() + "'s armor reduced wound level by " + to_string(armorAtLocation.AV));
 	}
 
 	writeMessage(target->getName() + " received a level " + to_string(finalDamage) + " wound to " + bodyPartToString(bodyPart));

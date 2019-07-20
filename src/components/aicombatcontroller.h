@@ -1,5 +1,11 @@
 #pragma once
 
+enum eAICombatProfiles {
+	Aggressive,
+	Cautious,
+	Neutral,
+};
+
 class AICombatController
 {
 public:

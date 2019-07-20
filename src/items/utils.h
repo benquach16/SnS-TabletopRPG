@@ -13,3 +13,5 @@ std::string damageTypeToString(eDamageTypes type);
 std::string lengthToString(eLength length);
 
 eLayer stringToArmorLayer(const std::string& str);
+
+eArmorTypes stringToArmorType(const std::string &str);

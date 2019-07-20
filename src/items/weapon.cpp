@@ -11,7 +11,8 @@ using namespace std;
 
 const string filepath = "data/weapons.json";
 
-Weapon::Weapon(std::string name, eLength length, std::vector<Component*> components, eWeaponTypes type) : Item(name),
+Weapon::Weapon(std::string name, eLength length, std::vector<Component*> components, eWeaponTypes type, int cost) :
+	Item(name, cost),
 	m_length(length), m_components(components), m_type(type)
 {
 	for(int i = 0; i < components.size(); ++i) {
@@ -68,11 +69,14 @@ WeaponTable::WeaponTable()
 		assert(values["length"].is_null() == false);
 		assert(values["type"].is_null() == false);
 		assert(values["hands"].is_null() == false);
+		assert(values["description"].is_null() == false);
+		assert(values["cost"].is_null() == false);
 		assert(componentJson.size() > 0);
 
 		string weaponName = values["name"];
 		eLength length = convertLengthFromStr(values["length"]);
 		eWeaponTypes weaponType = convertTypeFromStr(values["type"]);
+		int cost = values["cost"];
 		vector<Component*> weaponComponents;
 
 		for(int i = 0; i < componentJson.size(); ++i) {
@@ -91,9 +95,10 @@ WeaponTable::WeaponTable()
 			//check for component properties
 			if(componentJson[i]["properties"].is_null() == false)	{
 				//is an array
-				auto properties = componentJson[i]["properties"];
-				for(int j = 0; j < properties.size(); ++j) {
-					eWeaponProperties property = convertPropertiesFromStr(properties[j]);
+				auto propertiesJson = componentJson[i]["properties"];
+				for(int j = 0; j < propertiesJson.size(); ++j) {
+					eWeaponProperties property = convertPropertiesFromStr(propertiesJson[j]);
+					properties.insert(property);
 				}
 			}
 
@@ -102,7 +107,7 @@ WeaponTable::WeaponTable()
 			weaponComponents.push_back(component);
 		}
 
-		Weapon* weapon = new Weapon(weaponName, length, weaponComponents, weaponType);
+		Weapon* weapon = new Weapon(weaponName, length, weaponComponents, weaponType, cost);
 		assert(m_weaponsList.find(id) == m_weaponsList.end());
 		m_weaponsList[id] = weapon;
 	}
@@ -146,6 +151,9 @@ eLength WeaponTable::convertLengthFromStr(const std::string& str)
 	else if(str == "short") {
 		return eLength::Short;
 	}
+	else if(str == "close") {
+		return eLength::Close;
+	}
 	return eLength::Hand;
 }
 
@@ -172,6 +180,7 @@ eWeaponProperties WeaponTable::convertPropertiesFromStr(const std::string& str)
 	if(str == "hook") {
 		return eWeaponProperties::Hook;
 	}
+	assert(true);
 }
 
 eDamageTypes WeaponTable::convertDamageFromStr(const std::string& str)

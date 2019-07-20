@@ -9,8 +9,10 @@
 class Weapon : public Item
 {
 public:
-	Weapon(std::string name, eLength length, std::vector<Component*> components, eWeaponTypes type);
+	Weapon(std::string name, eLength length, std::vector<Component*> components, eWeaponTypes type, int cost);
 	~Weapon();
+	eItemType getItemType() const override { return eItemType::Weapon; }
+	
 	eLength getLength() const { return m_length; }
 	eWeaponTypes getType() const { return m_type; }
 	std::vector<Component*> getComponents() const { return m_components; }

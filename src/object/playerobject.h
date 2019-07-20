@@ -16,6 +16,7 @@ public:
 	eCreatureFaction getFaction() const override { return eCreatureFaction::Player; }
 	eCreatureRace getRace() const override { return eCreatureRace::Human; }
 	std::string getDescription() const override { return "This is you"; }
+	eObjectTypes getObjectType() const override { return eObjectTypes::Player; }
 
 private:
 	CombatInstance m_instance;

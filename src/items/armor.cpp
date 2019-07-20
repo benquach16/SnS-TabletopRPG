@@ -13,9 +13,10 @@ using namespace std;
 
 const string filepath = "data/armor.json";
 
-Armor::Armor(const std::string &name, int AV, int AP, eLayer layer,
-			 bool rigid, bool metal, std::set<eBodyParts> coverage) :
-	Item(name), m_AV(AV), m_AP(AP), m_rigid(rigid), m_metal(metal), m_coverage(coverage), m_layer(layer)
+Armor::Armor(const std::string &name, int AV, int AP, eLayer layer, eArmorTypes type,
+			 bool rigid, bool metal, std::set<eBodyParts> coverage, int cost) :
+	Item(name, cost), m_AV(AV), m_AP(AP), m_rigid(rigid), m_metal(metal), 
+	m_coverage(coverage), m_layer(layer), m_type(type)
 {
 }
 
@@ -47,6 +48,8 @@ ArmorTable::ArmorTable()
 
 		//asert valid json
 		assert(values["name"].is_null() == false);
+		assert(values["description"].is_null() == false);
+		assert(values["cost"].is_null() == false);
 		assert(values["coverage"].is_null() == false);
 		assert(values["AV"].is_null() == false);
 		assert(values["AP"].is_null() == false);
@@ -54,13 +57,16 @@ ArmorTable::ArmorTable()
 		assert(values["metal"].is_null() == false);
 		assert(values["layer"].is_null() == false);
 		
+		
 		string name = values["name"];
 		int AV = values["AV"];
 		float AP = values["AP"];
 		bool rigid = values["rigid"];
 		bool metal = values["metal"];
 		eLayer layer = stringToArmorLayer(values["layer"]);
-		
+		eArmorTypes type = stringToArmorType(values["type"]);
+		int cost = values["cost"];
+
 		set<eBodyParts> coverage;
 		
 		auto coverageJson = values["coverage"];
@@ -69,8 +75,9 @@ ArmorTable::ArmorTable()
 			coverage.insert(part);
 		}
 
-		Armor *armor = new Armor(name, AV, AP, layer, rigid, metal, coverage);
+		Armor *armor = new Armor(name, AV, AP, layer, type, rigid, metal, coverage, cost);
 		m_armorList[id] = armor;
+		ItemTable::getSingleton()->addArmor(id, armor);
 	}
 }
 

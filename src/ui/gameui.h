@@ -1,6 +1,7 @@
 #pragma once
 
 #include "combatui.h"
+#include "inventoryui.h"
 
 class CombatManager;
 
@@ -11,10 +12,12 @@ public:
 	void initializeCombatUI(CombatInstance* instance) { m_combatUI.initialize(instance); }
 
 	void run(sf::Event event);
+	void runInventory(sf::Event event);
 private:
 	enum class eGameUIState {
 		
 		
 	};
 	CombatUI m_combatUI;
+	InventoryUI m_inventoryUI;
 };

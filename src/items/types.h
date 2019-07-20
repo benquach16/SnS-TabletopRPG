@@ -63,13 +63,14 @@ static int defenseManueverCost(eDefensiveManuevers manuever) {
 enum class eLength : unsigned
 {
 	Hand = 0,
-	Short = 1,
-	Medium = 2,
-	Long = 3,
-	VeryLong = 4,
-	Extended = 5,
-	Extreme = 6,
-	Ludicrous = 7
+	Close = 1,
+	Short = 2,
+	Medium = 3,
+	Long = 4,
+	VeryLong = 5,
+	Extended = 6,
+	Extreme = 7,
+	Ludicrous = 8
 };
 
 enum class eInitiativeRoll : unsigned
@@ -93,7 +94,7 @@ enum class eLayer : unsigned
 
 enum class eArmorTypes : unsigned
 {
-	None,
-	Maille,
-	Plate
+	None = 0,
+	Maille = 1,
+	Plate = 2
 };

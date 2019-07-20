@@ -41,6 +41,9 @@ std::string lengthToString(eLength length)
 	case eLength::Hand:
 		return "Hand";
 		break;
+	case eLength::Close:
+		return "Close";
+		break;
 	case eLength::Short:
 		return "Short";
 		break;
@@ -68,5 +71,22 @@ eLayer stringToArmorLayer(const std::string& str)
 	if(str == "surcoat") {
 		return eLayer::Surcoat;
 	}
+	if(str == "plate") {
+		return eLayer::Plate;
+	}
+	if(str == "maille") {
+		return eLayer::Maille;
+	}
+	
 	return eLayer::Cloth;
+}
+
+eArmorTypes stringToArmorType(const std::string& str) {
+	if(str == "plate") {
+		return eArmorTypes::Plate;
+	} 
+	else if(str == "maille") {
+		return eArmorTypes::Maille;
+	}
+	return eArmorTypes::None;
 }

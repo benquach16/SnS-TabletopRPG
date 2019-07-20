@@ -28,6 +28,12 @@ std::vector<const Armor*> Creature::getArmor() const
 	return ret;
 }
 
+void Creature::setWeapon(int idx)
+{
+	const Weapon* weapon = WeaponTable::getSingleton()->get(idx);
+	m_primaryWeaponId = idx;
+}
+
 void Creature::inflictWound(Wound* wound, bool manueverFirst)
 {
 	m_BTN = max(m_BTN, wound->getBTN());
@@ -87,7 +93,7 @@ ArmorSegment Creature::getArmorAtPart(eBodyParts part)
 
 void Creature::equipArmor(int id)
 {
-	const Armor* armor = ArmorTable::getSingleton()->get(id);
+	const Armor *armor = ArmorTable::getSingleton()->get(id);
 	assert(armor != nullptr);
 
 	//make sure it doesnt overlap with another armor
@@ -151,7 +157,14 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
 {
 	int diceAllocated = attacker->getQueuedOffense().dice;
 
-	m_currentDefense.manuever = eDefensiveManuevers::Parry;
+	if(diceAllocated + 3 < m_combatPool) {
+		m_currentDefense.manuever = eDefensiveManuevers::ParryLinked;
+		m_combatPool -= 1;
+	}
+	else
+	{
+		m_currentDefense.manuever = eDefensiveManuevers::Parry;
+	}
 
 	int stealDie = 0;
 	if(stealInitiative(attacker, stealDie) == true) {
@@ -165,8 +178,8 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
 		m_currentDefense.dice = max(m_currentDefense.dice, 0);
 		return;
 	}
-	int dice = std::min(diceAllocated + effolkronium::random_static::get(0, m_combatPool/3)
-					   - effolkronium::random_static::get(0, m_combatPool/3)
+	int dice = std::min(diceAllocated + effolkronium::random_static::get(0, diceAllocated/3)
+					   - effolkronium::random_static::get(0, diceAllocated/3)
 					   , m_combatPool);
 	dice = min(m_combatPool, dice);
 	dice = max(dice, 0);
@@ -230,6 +243,7 @@ void Creature::applyArmor()
 			m_armorValues[it].AV = max(m_armorValues[it].AV, armor->getAV());
 			m_armorValues[it].isMetal = m_armorValues[it].isMetal || armor->isMetal();
 			m_armorValues[it].isRigid = m_armorValues[it].isRigid || armor->isRigid();
+			m_armorValues[it].type = max(armor->getType(), m_armorValues[it].type);
 		}
 	}
 }

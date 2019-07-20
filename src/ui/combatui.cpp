@@ -52,25 +52,29 @@ void CombatUI::run(sf::Event event)
 	combatBkg2.setOutlineColor(sf::Color(22, 22, 33));
 	Game::getWindow().draw(combatBkg2);
 
-	sf::RectangleShape reachBkg(sf::Vector2f(windowSize.x - 6, cCharSize));
-	reachBkg.setFillColor(sf::Color(12, 12, 23));
-	reachBkg.setPosition(3, windowSize.y - logHeight - rectHeight - cCharSize - 3);
-	reachBkg.setOutlineThickness(3);
-	reachBkg.setOutlineColor(sf::Color(22, 22, 33));
-	sf::Text reachTxt;
-	reachTxt.setCharacterSize(cCharSize);
-	reachTxt.setFont(Game::getDefaultFont());
-	reachTxt.setString("Current reach is " + lengthToString(m_instance->getCurrentReach()));
-	reachTxt.setPosition(5, windowSize.y - logHeight - rectHeight - cCharSize - 6);
-	Game::getWindow().draw(reachBkg);
-	Game::getWindow().draw(reachTxt);
-
 	showSide1Stats();
 	showSide2Stats();
 
 	assert(m_instance->getSide1()->isPlayer() == true);
 	Player *player = static_cast<Player *>(m_instance->getSide1());
 	Creature *target = m_instance->getSide2();
+
+	sf::RectangleShape reachBkg(sf::Vector2f(windowSize.x - 6, cCharSize));
+	reachBkg.setFillColor(sf::Color(12, 12, 23));
+	reachBkg.setPosition(3, windowSize.y - logHeight - rectHeight - cCharSize - 3);
+	reachBkg.setOutlineThickness(3);
+	reachBkg.setOutlineColor(sf::Color(22, 22, 33));
+	int reachCost = static_cast<int>(m_instance->getCurrentReach()) -
+		static_cast<int>(player->getPrimaryWeapon()->getLength());
+	reachCost = abs(reachCost);
+	sf::Text reachTxt;
+	reachTxt.setCharacterSize(cCharSize);
+	reachTxt.setFont(Game::getDefaultFont());
+	reachTxt.setString("Current reach is " + lengthToString(m_instance->getCurrentReach()) + " (" +
+					   to_string(reachCost) + "AP to attack)");
+	reachTxt.setPosition(5, windowSize.y - logHeight - rectHeight - cCharSize - 6);
+	Game::getWindow().draw(reachBkg);
+	Game::getWindow().draw(reachTxt);
 
 	if (m_instance->getState() == eCombatState::Initialized)
 	{

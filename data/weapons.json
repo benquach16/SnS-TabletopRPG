@@ -1,12 +1,12 @@
 {
-
-	"40": {
+	"1040": {
 		"name": "Pollaxe",
-		"description":"A knightly polearm that consists of a top spike, an axe blade, and a hammer.",
+		"description":"A knightly polearm that consists of a top spike, an axe blade, and a hammer. Particularly effective against plate armor.",
 		"length": "verylong",
 		"type": "polearm",
 		"hands": 2,
-		"cost": 100,
+		"cost": 300,
+		"hook": true,
 		"components": [
 			{
 				"name": "Spike",
@@ -42,14 +42,14 @@
 			}
 		]
 	},
-
-	"41": {
+	"1041": {
 		"name": "Arming Sword",
-		"description": "",
+		"description": "A type of 1 handed sword, commonly used by knights as a sidearm or with a shield.",
 		"length": "medium",
 		"type": "sword",
 		"hands": 1,
-		"cost": 50,
+		"cost": 150,
+		"hook": false,
 		"components": [
 			{
 				"name": "Blade - Swing",
@@ -61,6 +61,176 @@
 				"name": "Blade - Thrust",
 				"damage": 1,
 				"type": "piercing",
+				"attack": "thrust"
+			}
+		]
+	},
+	"1042": {
+		"name": "Spear",
+		"description": "The most popular weapon in history. A blade attached to an 8 foot pole.",
+		"length": "extended",
+		"type": "polearm",
+		"hands": 2,
+		"cost": 75,
+		"hook": false,
+		"components": [
+			{
+				"name": "Spear point - Swing",
+				"damage": 1,
+				"type": "cutting",
+				"attack": "swing"
+			},
+			{
+				"name": "Spear point - Thrust",
+				"damage": 3,
+				"type": "piercing",
+				"attack": "thrust"
+			},
+			{
+				"name": "Buttend - Thrust",
+				"damage": 1,
+				"type": "blunt",
+				"attack": "thrust"
+			},		
+			{
+				"name": "Buttend - Swing",
+				"damage": 1,
+				"type": "blunt",
+				"attack": "swing"
+			}
+		]
+	},
+	"1043": {
+		"name": "Rondel Dagger",
+		"description": "A type of thrusting dagger.",
+		"length": "close",
+		"type": "brawling",
+		"hands": 1,
+		"cost": 50,
+		"hook": false,
+		"components": [
+			{
+				"name": "Blade - Swing",
+				"damage": -2,
+				"type": "cutting",
+				"attack": "swing"
+			},
+			{
+				"name": "Blade - Thrust",
+				"damage": 0,
+				"type": "piercing",
+				"attack": "thrust"
+			}
+		]
+	},
+	"1044": {
+		"name": "Elegant Pollaxe",
+		"description":"A lighter and better balanced version of the knightly pollaxe. One of the best weapons money can buy.",
+		"length": "verylong",
+		"type": "polearm",
+		"hands": 2,
+		"cost": 1000,
+		"hook": true,
+		"components": [
+			{
+				"name": "Spike",
+				"damage": 3,
+				"type": "piercing",
+				"attack": "thrust",
+				"properties": [ "maillepiercing" ]
+			},
+			{
+				"name": "Axe head",
+				"damage": 3,
+				"attack": "swing",
+				"type": "cutting"
+			},
+			{
+				"name": "Hammer head",
+				"damage": 2,
+				"type": "blunt",
+				"attack": "swing",
+				"properties": [ "crushing" ]
+			},
+			{
+				"name": "Buttspike - Thrust",
+				"damage": 2,
+				"type": "piercing",
+				"attack": "thrust"
+			},		
+			{
+				"name": "Buttspike - Swing",
+				"damage": 1,
+				"type": "blunt",
+				"attack": "swing"
+			}
+		]
+	},
+	"1045": {
+		"name": "Short Sword",
+		"description": "A short 1 handed sword.",
+		"length": "short",
+		"type": "sword",
+		"hands": 1,
+		"cost": 100,
+		"hook": false,
+		"components": [
+			{
+				"name": "Blade - Swing",
+				"damage": 1,
+				"type": "cutting",
+				"attack": "swing"
+			},
+			{
+				"name": "Blade - Thrust",
+				"damage": 1,
+				"type": "piercing",
+				"attack": "thrust"
+			}
+		]
+	},
+	"1046": {
+		"name": "Iron Short Sword",
+		"description": "A short sword made of soft iron. Very poor penetrative ability.",
+		"length": "short",
+		"type": "sword",
+		"hands": 1,
+		"cost": 50,
+		"hook": false,
+		"components": [
+			{
+				"name": "Blade - Swing",
+				"damage": 0,
+				"type": "cutting",
+				"attack": "swing"
+			},
+			{
+				"name": "Blade - Thrust",
+				"damage": 0,
+				"type": "piercing",
+				"attack": "thrust"
+			}
+		]
+	},
+	"1047": {
+		"name": "Quarterstaff",
+		"description": "The basis of all polearms. Surprisingly effective against armored foes.",
+		"length": "extended",
+		"type": "polearm",
+		"hands": 1,
+		"cost": 25,
+		"hook": false,
+		"components": [
+			{
+				"name": "Staff - Swing",
+				"damage": 1,
+				"type": "blunt",
+				"attack": "swing"
+			},
+			{
+				"name": "Staff - Thrust",
+				"damage": 1,
+				"type": "blunt",
 				"attack": "thrust"
 			}
 		]

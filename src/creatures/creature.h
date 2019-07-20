@@ -54,7 +54,7 @@ public:
 
 	const Weapon* getPrimaryWeapon() const;
 	std::vector<const Armor*> getArmor() const;
-	void setWeapon(int id) { m_primaryWeaponId = id; }
+	void setWeapon(int id);
 
 	void setName(const std::string& name) { m_name = name; }
 	std::string getName() const { return m_name; }

@@ -9,6 +9,7 @@
 #include "object/humanobject.h"
 #include "object/selectorobject.h"
 #include "gfxobjects/gfxselector.h"
+#include "object/relationmanager.h"
 
 Game::eGameState Game::m_currentState;
 sf::RenderWindow Game::m_window;
@@ -114,7 +115,15 @@ void Game::run()
 				{
 					std::cout << "Something here" << std::endl;
 					Log::push("You see " + object->getDescription());
-					
+					if(object->getObjectType() == eObjectTypes::Creature) {
+						const CreatureObject* creatureObj = static_cast<const CreatureObject*>(object);
+						int relation = RelationManager::getSingleton()->getRelationship(eCreatureFaction::Player,
+																						creatureObj->getFaction());
+						
+						if(relation <= RelationManager::cHostile) {
+							Log::push(creatureObj->getName() + " is hostile to you", Log::eMessageTypes::Damage);
+						}
+					}
 				}
 			}
 			gfxSelector.run(&selector);
@@ -155,6 +164,8 @@ void Game::run()
 			
 			}
 			gfxSelector.run(&selector);
+		} else if (m_currentState == eGameState::Inventory) {
+			ui.runInventory(event);
 		}
 		sf::Time elapsedTime = clock.getElapsedTime();
 		tick += elapsedTime.asSeconds();
@@ -176,5 +187,6 @@ void Game::run()
 		clock.restart();
 
 		m_window.display();
+		level.cleanup();
 	}
 }
