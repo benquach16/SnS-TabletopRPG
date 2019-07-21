@@ -16,6 +16,7 @@ public:
 	virtual ~CreatureObject();
 	bool hasCollision() const override { return true; }
 	bool deleteMe() const override { return m_creature->getCreatureState() == eCreatureState::Dead; }
+	bool isConscious() const { return (!deleteMe() && m_creature->getCreatureState() != eCreatureState::Unconscious); }
 	Creature* getCreatureComponent() const { return m_creature; }
 	const std::string getName() const { return m_creature->getName(); }
 	virtual eCreatureFaction getFaction() const { return m_creatureFaction; }
@@ -24,6 +25,8 @@ public:
 	virtual bool isPlayer() const { return false; }
 	bool isInCombat() const { return m_creature->getCreatureState() == eCreatureState::InCombat; }
 	void run(const Level*) override;
+
+	const std::map<int, int> &getInventory() { return m_inventory; }
 
 protected:
 	Creature* m_creature;

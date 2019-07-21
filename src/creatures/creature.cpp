@@ -35,7 +35,6 @@ void Creature::setWeapon(int idx)
 
 void Creature::inflictWound(Wound* wound, bool manueverFirst)
 {
-	m_BTN = max(m_BTN, wound->getBTN());
 	if(manueverFirst == true) {
 		if(wound->getImpact() > m_currentOffense.dice) {
 			int diff = wound->getImpact() - m_currentOffense.dice;
@@ -70,10 +69,30 @@ void Creature::inflictWound(Wound* wound, bool manueverFirst)
 	if(BL3 != effects.end()) {
 		m_bloodLoss+=3;
 	}
-
-	if(m_bloodLoss >= cBaseBloodLoss) {
-		m_currentState = eCreatureState::Dead;
+	auto KO1 = effects.find(eEffects::KO1);
+	auto KO2 = effects.find(eEffects::KO2);
+	auto KO3 = effects.find(eEffects::KO3);
+	
+	if(KO1 != effects.end()) {
+		if(DiceRoller::rollGetSuccess(m_BTN, getGrit()) < 1) {
+			m_currentState = eCreatureState::Unconscious;	
+		}
 	}
+	if(KO2 != effects.end()) {
+		if(DiceRoller::rollGetSuccess(m_BTN, getGrit()) < 2) {
+			m_currentState = eCreatureState::Unconscious;	
+		}
+	}
+	if(KO3 != effects.end()) {
+		if(DiceRoller::rollGetSuccess(m_BTN, getGrit()) < 3) {
+			m_currentState = eCreatureState::Unconscious;	
+		}
+	}
+	if (m_bloodLoss >= cBaseBloodLoss)
+	{
+		m_currentState = eCreatureState::Unconscious;
+	}
+	m_BTN = max(m_BTN, wound->getBTN());
 }
 
 int Creature::getSuccessRate() const {

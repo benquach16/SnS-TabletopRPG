@@ -10,10 +10,15 @@ public:
 	InventoryUI();
 
 	void run(sf::Event event, PlayerObject* player);
+	void doBackpack(sf::Event event, PlayerObject *player);
+	void doEquipped(sf::Event event, PlayerObject *player);
+	void displayDetail(sf::Event event, int id);
+
 private:
 	enum eUiState
 	{
-		View,
+		Backpack,
+		Equipped,
 		DetailedDescription
 	};
 

@@ -139,7 +139,7 @@
 			},
 			"5": {
 				"text": ["Open compound fracture with severed blood veseels."],
-				"effects": ["drop3"]
+				"effects": ["drop", "BL2"]
 			}
 		},
 		"hand": {
@@ -153,15 +153,15 @@
 			},
 			"3": {
 				"text": ["Fingers smashed."],
-				"effects": []
+				"effects": ["drop3"]
 			},
 			"4": {
 				"text": ["Hand or wrist mangled with some fingers disabled."],
-				"effects": []
+				"effects": ["drop"]
 			},
 			"5": {
 				"text": ["Hand completely crushed."],
-				"effects": []
+				"effects": ["drop"]
 			}
 		},
 		"armpit": {
@@ -176,11 +176,11 @@
 			},
 			"4": {
 				"text": ["Mighty upwards blow fractures and dislocates the shoulder. Arm disabled until fixed."],
-				"effects": []
+				"effects": ["drop2"]
 			},
 			"5": {
 				"text": ["Several broken ribs and internal bleeding. Punctured lung."],
-				"effects": []
+				"effects": ["BL1", "KO2"]
 			}
 		},
 		"ribs": {
@@ -195,11 +195,11 @@
 			},
 			"4": {
 				"text": ["Fractured ribs. Chest swells up and painful to breathe."],
-				"effects": []
+				"effects": ["KO2"]
 			},
 			"5": {
 				"text": ["Several broken ribs and internal bleeding. Punctured lung."],
-				"effects": []
+				"effects": ["BL1", "KO2"]
 			}
 		},
 		"abs": {
@@ -215,11 +215,11 @@
 			},
 			"4": {
 				"text": ["Ruptured internal organs and internal bleeding."],
-				"effects": []
+				"effects": ["KD", "BL1"]
 			},
 			"5": {
 				"text": ["Damage to internal organs causes heavy internal bleeding."],
-				"effects": ["death"]
+				"effects": ["BL2", "KO3", "KD"]
 			}
 		},
 		"hip": {

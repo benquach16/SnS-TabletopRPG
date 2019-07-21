@@ -12,7 +12,7 @@ AIController::AIController() : m_role(eAIRoles::Patrolling)
 void AIController::run(const Level* level, CreatureObject* controlledCreature)
 {
 	//dont run world ai for creatures in combat or are dead
-	if(controlledCreature->isInCombat() == true || controlledCreature->deleteMe() == true) return;
+	if(controlledCreature->isInCombat() == true || controlledCreature->isConscious() == false) return;
 	
 	std::vector<Object *> rLevelObjs = level->getObjects();
 	int minDist = 64;

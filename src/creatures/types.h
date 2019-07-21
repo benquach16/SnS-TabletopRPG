@@ -4,12 +4,12 @@
 
 enum class eHitLocations : unsigned
 {	
-	Head,
-	Chest,
-	Arm,
-	Belly,
-	Thigh,
-	Shin,
+	Head = 0,
+	Chest = 1,
+	Arm = 2,
+	Belly = 3,
+	Thigh = 4,
+	Shin = 5,
 	Wing,
 	Tail
 };

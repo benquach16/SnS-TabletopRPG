@@ -19,10 +19,10 @@ enum class eCreatureType {
 };
 
 enum class eCreatureState {
-	Idle,
-	InCombat,
-	Dead,
-	Unconscious
+	Idle = 0,
+	InCombat = 1,
+	Dead = 2,
+	Unconscious = 3
 };
 
 enum class eCreatureStance {
