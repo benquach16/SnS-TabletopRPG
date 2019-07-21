@@ -4,6 +4,7 @@
 #include "inventoryui.h"
 
 class CombatManager;
+class PlayerObject;
 
 class GameUI
 {
@@ -12,7 +13,7 @@ public:
 	void initializeCombatUI(CombatInstance* instance) { m_combatUI.initialize(instance); }
 
 	void run(sf::Event event);
-	void runInventory(sf::Event event);
+	void runInventory(sf::Event event, PlayerObject* player);
 private:
 	enum class eGameUIState {
 		

@@ -105,5 +105,6 @@ std::string hitLocationToString(eHitLocations location)
 	case eHitLocations::Wing:
 		return "Wing";
 	}
+	std::cout << "bad thing : " << static_cast<int>(location) << std::endl;
 	return "";
 }

@@ -15,5 +15,5 @@ CreatureObject::~CreatureObject()
 
 void CreatureObject::run(const Level* level)
 {
-	
+	m_controller.run(level, this);
 }

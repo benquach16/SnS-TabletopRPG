@@ -165,7 +165,10 @@ eWeaponTypes WeaponTable::convertTypeFromStr(const std::string& str)
 	if(str == "sword") {
 		return eWeaponTypes::Swords;
 	}
-	
+	if(str == "longsword") {
+		return eWeaponTypes::Longswords;
+	}
+
 	return eWeaponTypes::Brawling;
 }
 

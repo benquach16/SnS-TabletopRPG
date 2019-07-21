@@ -21,8 +21,7 @@ const Weapon* Creature::getPrimaryWeapon() const
 std::vector<const Armor*> Creature::getArmor() const
 {
 	std::vector<const Armor*> ret;
-	for (int i = 0; i < m_armor.size(); ++i)
-	{
+	for (int i = 0; i < m_armor.size(); ++i) {
 		ret.push_back(ArmorTable::getSingleton()->get(m_armor[i]));
 	}
 	return ret;
@@ -56,7 +55,7 @@ void Creature::inflictWound(Wound* wound, bool manueverFirst)
 		m_currentState = eCreatureState::Dead;
 	}
 	if(wound->immediateKO() == true) {
-		m_currentState = eCreatureState::Unconcious;
+		m_currentState = eCreatureState::Unconscious;
 	}
 	set<eEffects> effects = wound->getEffects();
 	auto BL1 = effects.find(eEffects::BL1);
@@ -149,7 +148,6 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin)
 	} else {
 		m_currentOffense.dice = dice;
 	}
-	cout << m_currentOffense.dice << endl;
 }
 
 

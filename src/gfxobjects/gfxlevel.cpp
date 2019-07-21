@@ -13,6 +13,7 @@ void GFXLevel::run(const Level* level)
 
 	auto windowSize = Game::getWindow().getSize();
 
+
 	for(int x = 0; x < width; ++x) {
 		for(int y = 0; y < height; ++y) {
 			Tile tile = (*level)(x, y);
@@ -33,5 +34,4 @@ void GFXLevel::run(const Level* level)
 		Game::getWindow().draw(rect);	
 	}
 
-	
 }

@@ -21,8 +21,9 @@ public:
 	virtual eCreatureFaction getFaction() const { return m_creatureFaction; }
 	virtual eCreatureRace getRace() const = 0;
 	virtual eObjectTypes getObjectType() const { return eObjectTypes::Creature; }
-
-	virtual void run(const Level*);
+	virtual bool isPlayer() const { return false; }
+	bool isInCombat() const { return m_creature->getCreatureState() == eCreatureState::InCombat; }
+	void run(const Level*) override;
 
 protected:
 	Creature* m_creature;

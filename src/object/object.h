@@ -15,9 +15,10 @@ struct vector2d
 enum class eObjectTypes {
 	Misc,
 	Item,
-	Creature,
-	Player
+	Creature
 };
+
+class Level;
 
 class Object
 {
@@ -29,6 +30,7 @@ public:
 	virtual std::string getDescription() const = 0;
 	virtual eObjectTypes getObjectType() const = 0;
 	virtual bool deleteMe() const { return false; }
+	virtual void run(const Level*) {}
 	void setPosition(int x, int y)
 	{
 		m_position.x = x;

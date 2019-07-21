@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "game.h"
 #include "log.h"
 #include "creatures/wound.h"
@@ -10,6 +12,8 @@
 #include "object/selectorobject.h"
 #include "gfxobjects/gfxselector.h"
 #include "object/relationmanager.h"
+
+using namespace std;
 
 Game::eGameState Game::m_currentState;
 sf::RenderWindow Game::m_window;
@@ -32,12 +36,13 @@ void Game::run()
 
 	sf::Clock clock;
 	//main game loop
-	float tick = 0;
+	int tick = 0;
+	int aiTick = 0;
 
 	GameUI ui;
 
 	Level level(20, 20);
-	
+
 	GFXLevel gfxlevel;
 	level.addObject(playerObject);
 	level.addObject(humanObject);
@@ -57,7 +62,13 @@ void Game::run()
 				m_window.close();
 			}
 		}
+		sf::Time elapsedTime = clock.getElapsedTime();
+		//as milliseconds returns 0, so we have to go more granular
+		tick += elapsedTime.asMicroseconds();
+		aiTick += elapsedTime.asMicroseconds();
+		
 		gfxlevel.run(&level);
+		ui.run(event);
 		if(m_currentState == eGameState::Playing) {
 			vector2d pos = playerObject->getPosition();
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
@@ -91,7 +102,14 @@ void Game::run()
 				selector.setPosition(playerObject->getPosition());
 				m_currentState = eGameState::SelectionMode;
 			}
-			level.run();
+			if(aiTick > 60000) {
+				level.run();
+				aiTick = 0;
+			}
+			if(playerObject->isInCombat() == true) {
+				m_currentState = eGameState::InCombat;
+			}
+			
 		}
 		else if(m_currentState == eGameState::SelectionMode) {
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
@@ -165,21 +183,22 @@ void Game::run()
 			}
 			gfxSelector.run(&selector);
 		} else if (m_currentState == eGameState::Inventory) {
-			ui.runInventory(event);
+			ui.runInventory(event, playerObject);
 		}
-		sf::Time elapsedTime = clock.getElapsedTime();
-		tick += elapsedTime.asSeconds();
-		ui.run(event);
+		
+
 		Log::run();
 
-		if(tick > 1.0) {
-			if(m_currentState == eGameState::InCombat) {
+		if(tick > 105000) {
+			if (m_currentState == eGameState::InCombat)
+			{
 				//pause rest of game if player is in combat. combat between two NPCS can happen anytime
 				if(playerObject->runCombat() == false) {
 					m_currentState = eGameState::Playing;
 				}
 				
 			}
+	
 			m_combatManager.run();
 			tick = 0;
 		}

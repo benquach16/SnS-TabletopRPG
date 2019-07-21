@@ -348,7 +348,7 @@
 		"impact": [1, 1, 2, 2, 3],
 		"crown": {
 			"1": {
-				"text":["Some torn skin, a ittle blood."]
+				"text":["Some torn skin, a little blood."]
 			},
 			"2": {
 				"text":["Grazed scalp or temple. Surprising amount of blood."],
@@ -975,7 +975,7 @@
 				"text": ["Slash across the thigh. Not deep."]
 			},
 			"3": {
-				"text": ["Cut penetrates muscle tissue, but doesn’t reach bone."],
+				"text": ["Cut penetrates muscle tissue, but doesn't reach bone."],
 				"effects": ["BL1", "KD1"]
 			},
 			"4": {

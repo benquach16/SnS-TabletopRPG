@@ -22,7 +22,7 @@ enum class eCreatureState {
 	Idle,
 	InCombat,
 	Dead,
-	Unconcious
+	Unconscious
 };
 
 enum class eCreatureStance {
@@ -106,7 +106,9 @@ public:
 	Defense getQueuedDefense() const { return m_currentDefense; }
 
 	eCreatureState getCreatureState() { return m_currentState; }
-	
+	bool isConscious() { return (m_currentState != eCreatureState::Unconscious) && (m_currentState != eCreatureState::Dead); }
+	void setInCombat() { m_currentState = eCreatureState::InCombat; }
+	void setIdle() { m_currentState = eCreatureState::Idle; }
 protected:
 	eCreatureState m_currentState;
 	

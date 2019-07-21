@@ -1,8 +1,10 @@
+#include <iostream>
+
 #include "playerobject.h"
 
 PlayerObject::PlayerObject() : CreatureObject(new Player)
 {
-	m_creature->setWeapon(1044);
+	m_creature->setWeapon(1048);
 	m_creature->equipArmor(2041);
 	m_creature->equipArmor(2042);
 	m_creature->equipArmor(2044);
@@ -18,11 +20,12 @@ PlayerObject::~PlayerObject()
 void PlayerObject::startCombatWith(Creature* creature)
 {
 	assert(m_instance.getState() == eCombatState::Uninitialized);
+	std::cout << static_cast<int>(creature->getCreatureState()) << std::endl;
 	m_instance.initCombat(m_creature, creature);
 }
 
 bool PlayerObject::runCombat()
 {
 	m_instance.run();
-	return m_instance.getState() != eCombatState::FinishedCombat;
+	return m_instance.getState() != eCombatState::Uninitialized;
 }

@@ -40,6 +40,9 @@ void CombatInstance::initCombat(Creature* side1, Creature* side2)
 	m_side2 = side2;
 	m_side2->resetCombatPool();
 
+	m_side1->setInCombat();
+	m_side2->setInCombat();
+
 	m_currentTempo = eTempo::First;
 	m_initiative = eInitiative::Side1;
 	m_currentState = eCombatState::Initialized;
@@ -193,7 +196,7 @@ bool CombatInstance::doOffense()
 	writeMessage(attacker->getName() + " " + offensiveManueverToString(attack.manuever) + "s with " +
 				 offenseWeapon->getName() + " at " + hitLocationToString(attack.target) + " using " +
 				 attack.component->getName() + " with " +
-				 to_string(attack.dice) + " action points");
+				 to_string(attacker->getQueuedOffense().dice) + " action points");
 	
 	m_currentState = eCombatState::Defense;
 	return true;
@@ -360,11 +363,16 @@ void CombatInstance::doStolenOffense()
 				 " action points to contest initiative steal");
 	const Weapon* offenseWeapon = attacker->getPrimaryWeapon();
 	const Weapon* defenseWeapon = defender->getPrimaryWeapon();	
-	int reachCost = static_cast<int>(offenseWeapon->getLength()) - static_cast<int>(m_currentReach);
+	int reachCost = static_cast<int>(defenseWeapon->getLength()) - static_cast<int>(m_currentReach);
 	reachCost = abs(reachCost);
-	defender->reduceOffenseDie(reachCost);
-	defender->reduceCombatPool(reachCost);
-	defender->reduceCombatPool(defender->getQueuedOffense().dice);
+	if(reachCost != 0) {
+		
+			writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost) +
+					 " action points", Log::eMessageTypes::Announcement);
+			defender->reduceOffenseDie(reachCost);
+			defender->reduceCombatPool(reachCost);
+			defender->reduceCombatPool(defender->getQueuedOffense().dice);
+	}
 	
 	writeMessage(defender->getName() + " " + offensiveManueverToString(defender->getQueuedOffense().manuever) + "s with " +
 				 defender->getPrimaryWeapon()->getName() + " at " + hitLocationToString(defender->getQueuedOffense().target) + " using " +
@@ -467,12 +475,15 @@ void CombatInstance::doResolution()
 				//resolve offense
 				Creature::Offense offense = defender->getQueuedOffense();
 				int linkedOffenseMoS = DiceRoller::rollGetSuccess(defender->getBTN() + 1, MoS);
-				inflictWound(linkedOffenseMoS, offense, attacker);
+				if(inflictWound(linkedOffenseMoS, offense, attacker) == true) {
+					m_currentState = eCombatState::FinishedCombat;
+					return;
+				}
 			}
 			if(defend.manuever == eDefensiveManuevers::Counter) {
-				cout << "mos " << -MoS << endl;
-				defender->setBonusDice(-MoS);
-				writeMessage(defender->getName() + " receives " + to_string(-MoS) + " action points in their next attack");
+				cout << "bonus: " << defenseSuccesses << endl;
+				defender->setBonusDice(defenseSuccesses);
+				writeMessage(defender->getName() + " receives " + to_string(defenseSuccesses) + " action points in their next attack");
 			}
 			writeMessage(defender->getName() + " now has initative, becoming attacker");
 			switchInitiative();
@@ -526,6 +537,12 @@ void CombatInstance::doDualOffenseResolve()
 void CombatInstance::doEndCombat()
 {
 	writeMessage("Combat has ended", Log::eMessageTypes::Announcement);
+	if(m_side1->isConscious() == true) {
+		m_side1->setIdle();
+	}
+	if(m_side2->isConscious() == true) {
+		m_side2->setIdle();
+	}
 	m_side1 = nullptr;
 	m_side2 = nullptr;
 	m_currentState = eCombatState::Uninitialized;
@@ -547,12 +564,12 @@ bool CombatInstance::inflictWound(int MoS, Creature::Offense attack, Creature* t
 	if(armorAtLocation.AV > 0) {
 		writeMessage(target->getName() + "'s armor reduced wound level by " + to_string(armorAtLocation.AV));
 	}
-	
+	bool doBlunt = false;
 	//complicated armor calcs go here
 	finalDamage -= armorAtLocation.AV;
-	if(armorAtLocation.isMetal == true && attack.component->getType() != eDamageTypes::Blunt) {
+	if(armorAtLocation.isMetal == true && attack.component->getType() != eDamageTypes::Blunt && finalDamage > 0) {
 		if(attack.component->hasProperty(eWeaponProperties::MaillePiercing) == false &&
-		armorAtLocation.type == eArmorTypes::Maille) {
+		   armorAtLocation.type == eArmorTypes::Maille) {
 			writeMessage("Maille armor reduces wound level by half");
 			//piercing attacks round up, otherwise round down
 			if(attack.component->getType() == eDamageTypes::Piercing) {
@@ -560,6 +577,32 @@ bool CombatInstance::inflictWound(int MoS, Creature::Offense attack, Creature* t
 			} else {
 				finalDamage = finalDamage / 2;
 			}
+			finalDamage = max(finalDamage, 1);
+			doBlunt = true;
+		} 
+		else if(attack.component->hasProperty(eWeaponProperties::PlatePiercing) == false &&
+				  armorAtLocation.type == eArmorTypes::Plate) {
+			writeMessage("Plate armor reduces wound level by half");
+			//piercing attacks round up, otherwise round down
+			if(attack.component->getType() == eDamageTypes::Piercing) {
+				finalDamage = (finalDamage+1)/2;	
+			} else {
+				finalDamage = finalDamage / 2;
+			}
+			finalDamage = max(finalDamage, 1);
+			doBlunt = true;
+		} 
+		else if (armorAtLocation.type != eArmorTypes::Plate && armorAtLocation.type != eArmorTypes::Maille) {
+			//weird case
+			writeMessage("Metal armor reduces wound level by half");
+			//piercing attacks round up, otherwise round down
+			if(attack.component->getType() == eDamageTypes::Piercing) {
+				finalDamage = (finalDamage+1)/2;	
+			} else {
+				finalDamage = finalDamage / 2;
+			}
+			finalDamage = max(finalDamage, 1);
+			doBlunt = true;
 		}
 	}
 
@@ -569,7 +612,8 @@ bool CombatInstance::inflictWound(int MoS, Creature::Offense attack, Creature* t
 	}
 
 	writeMessage(target->getName() + " received a level " + to_string(finalDamage) + " wound to " + bodyPartToString(bodyPart));
-	Wound* wound = WoundTable::getSingleton()->getWound(attack.component->getType(), bodyPart, finalDamage);
+	eDamageTypes finalType = doBlunt == true ? eDamageTypes::Blunt : attack.component->getType();
+	Wound *wound = WoundTable::getSingleton()->getWound(finalType, bodyPart, finalDamage);
 	writeMessage(wound->getText(), Log::eMessageTypes::Damage);
 	if(wound->getBTN() > target->getBTN())
 	{
@@ -583,7 +627,7 @@ bool CombatInstance::inflictWound(int MoS, Creature::Offense attack, Creature* t
 		m_currentState = eCombatState::FinishedCombat;
 		return true;
 	}
-	if(target->getCreatureState() == eCreatureState::Unconcious) {
+	if(target->getCreatureState() == eCreatureState::Unconscious) {
 		//end combat
 		writeMessage(target->getName() + " has been knocked unconcious", Log::eMessageTypes::Announcement);
 		m_currentState = eCombatState::FinishedCombat;

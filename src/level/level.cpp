@@ -12,6 +12,7 @@ void Level::run()
 		if(m_objects[i]->deleteMe() == true) {
 			m_objects.erase(m_objects.begin() + i);
 		}
+		m_objects[i]->run(this);
 	}
 }
 

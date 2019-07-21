@@ -234,5 +234,71 @@
 				"attack": "thrust"
 			}
 		]
+	},
+	"1048": {
+		"name": "Halberd",
+		"description":"The quintessential infantry weapon. Has a top spike, axe, and a beak.",
+		"length": "extended",
+		"type": "polearm",
+		"hands": 2,
+		"cost": 150,
+		"hook": true,
+		"components": [
+			{
+				"name": "Spike",
+				"damage": 2,
+				"type": "piercing",
+				"attack": "thrust",
+				"properties": [ "maillepiercing" ]
+			},
+			{
+				"name": "Axe head",
+				"damage": 3,
+				"attack": "swing",
+				"type": "cutting"
+			},
+			{
+				"name": "Beak",
+				"damage": 1,
+				"type": "piercing",
+				"attack": "swing",
+				"properties": [ "platepiercing" ]
+			},
+			{
+				"name": "Buttspike - Thrust",
+				"damage": 2,
+				"type": "piercing",
+				"attack": "thrust"
+			},		
+			{
+				"name": "Buttspike - Swing",
+				"damage": 1,
+				"type": "blunt",
+				"attack": "swing"
+			}
+		]
+	},
+	"1050": {
+		"name": "Longsword",
+		"description":"The longsword is a popular 2 handed sword, commonly used as a sidearm by knights.",
+		"length": "long",
+		"type": "longsword",
+		"hands": 2,
+		"cost": 150,
+		"hook": false,
+		"components": [
+			{
+				"name": "Blade - Thrust",
+				"damage": 2,
+				"type": "piercing",
+				"attack": "thrust"
+			},
+			{
+				"name": "Blade - Swing",
+				"damage": 1,
+				"attack": "swing",
+				"type": "cutting"
+			}
+		]
 	}
 }
