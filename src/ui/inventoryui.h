@@ -11,5 +11,11 @@ public:
 
 	void run(sf::Event event, PlayerObject* player);
 private:
-	
+	enum eUiState
+	{
+		View,
+		DetailedDescription
+	};
+
+	eUiState m_uiState;
 };

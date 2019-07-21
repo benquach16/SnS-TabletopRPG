@@ -13,9 +13,9 @@ using namespace std;
 
 const string filepath = "data/armor.json";
 
-Armor::Armor(const std::string &name, int AV, int AP, eLayer layer, eArmorTypes type,
+Armor::Armor(const std::string &name, const std::string& description, int AV, int AP, eLayer layer, eArmorTypes type,
 			 bool rigid, bool metal, std::set<eBodyParts> coverage, int cost) :
-	Item(name, cost), m_AV(AV), m_AP(AP), m_rigid(rigid), m_metal(metal), 
+	Item(name, description, cost), m_AV(AV), m_AP(AP), m_rigid(rigid), m_metal(metal), 
 	m_coverage(coverage), m_layer(layer), m_type(type)
 {
 }
@@ -59,6 +59,7 @@ ArmorTable::ArmorTable()
 		
 		
 		string name = values["name"];
+		string description = values["description"];
 		int AV = values["AV"];
 		float AP = values["AP"];
 		bool rigid = values["rigid"];
@@ -75,7 +76,7 @@ ArmorTable::ArmorTable()
 			coverage.insert(part);
 		}
 
-		Armor *armor = new Armor(name, AV, AP, layer, type, rigid, metal, coverage, cost);
+		Armor *armor = new Armor(name, description, AV, AP, layer, type, rigid, metal, coverage, cost);
 		m_armorList[id] = armor;
 		ItemTable::getSingleton()->addArmor(id, armor);
 	}

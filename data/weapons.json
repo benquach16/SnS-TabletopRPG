@@ -300,5 +300,48 @@
 				"type": "cutting"
 			}
 		]
+	},
+	"1051": {
+		"name": "Meteor Metal Pollaxe",
+		"description":"A pollaxe made from the rarest metal on the planet, meteor metal. You can feel the power radiating from this weapon.",
+		"length": "verylong",
+		"type": "polearm",
+		"hands": 2,
+		"cost": 6000,
+		"hook": true,
+		"components": [
+			{
+				"name": "Spike",
+				"damage": 3,
+				"type": "piercing",
+				"attack": "thrust",
+				"properties": [ "maillepiercing" ]
+			},
+			{
+				"name": "Axe head",
+				"damage": 4,
+				"attack": "swing",
+				"type": "cutting"
+			},
+			{
+				"name": "Hammer head",
+				"damage": 3,
+				"type": "blunt",
+				"attack": "swing",
+				"properties": [ "crushing" ]
+			},
+			{
+				"name": "Buttspike - Thrust",
+				"damage": 2,
+				"type": "piercing",
+				"attack": "thrust"
+			},		
+			{
+				"name": "Buttspike - Swing",
+				"damage": 2,
+				"type": "blunt",
+				"attack": "swing"
+			}
+		]
 	}
 }

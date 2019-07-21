@@ -19,7 +19,7 @@ struct ArmorSegment
 class Armor : public Item
 {
 public:
-	Armor(const std::string &name, int AV, int AP, eLayer layer, eArmorTypes type,
+	Armor(const std::string &name, const std::string& description, int AV, int AP, eLayer layer, eArmorTypes type,
 		  bool rigid, bool metal, std::set<eBodyParts> coverage, int cost);
 	int getAV() const { return m_AV; }
 	int getAP() const { return m_AP; }

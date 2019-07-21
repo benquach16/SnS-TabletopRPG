@@ -23,6 +23,7 @@ private:
 		SelectionMode,
 		AttackMode,
 		Inventory,
+		Profile,
 		InCombat,
 		PauseMenu,
 		Exiting

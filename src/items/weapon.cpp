@@ -11,8 +11,8 @@ using namespace std;
 
 const string filepath = "data/weapons.json";
 
-Weapon::Weapon(std::string name, eLength length, std::vector<Component*> components, eWeaponTypes type, int cost) :
-	Item(name, cost),
+Weapon::Weapon(const std::string& name, const std::string& description, eLength length, std::vector<Component*> components, eWeaponTypes type, int cost) :
+	Item(name, description, cost),
 	m_length(length), m_components(components), m_type(type)
 {
 	for(int i = 0; i < components.size(); ++i) {
@@ -66,6 +66,7 @@ WeaponTable::WeaponTable()
 		
 		//assert valid json
 		assert(values["name"].is_null() == false);
+		assert(values["description"].is_null() == false);
 		assert(values["length"].is_null() == false);
 		assert(values["type"].is_null() == false);
 		assert(values["hands"].is_null() == false);
@@ -74,6 +75,7 @@ WeaponTable::WeaponTable()
 		assert(componentJson.size() > 0);
 
 		string weaponName = values["name"];
+		string description = values["description"];
 		eLength length = convertLengthFromStr(values["length"]);
 		eWeaponTypes weaponType = convertTypeFromStr(values["type"]);
 		int cost = values["cost"];
@@ -93,7 +95,7 @@ WeaponTable::WeaponTable()
 			std::set<eWeaponProperties> properties;
 
 			//check for component properties
-			if(componentJson[i]["properties"].is_null() == false)	{
+			if(componentJson[i]["properties"].is_null() == false) {
 				//is an array
 				auto propertiesJson = componentJson[i]["properties"];
 				for(int j = 0; j < propertiesJson.size(); ++j) {
@@ -107,7 +109,7 @@ WeaponTable::WeaponTable()
 			weaponComponents.push_back(component);
 		}
 
-		Weapon* weapon = new Weapon(weaponName, length, weaponComponents, weaponType, cost);
+		Weapon* weapon = new Weapon(weaponName, description, length, weaponComponents, weaponType, cost);
 		assert(m_weaponsList.find(id) == m_weaponsList.end());
 		m_weaponsList[id] = weapon;
 	}

@@ -14,7 +14,7 @@ enum class eItemType {
 class Item : public Nameable
 {
 public:
-	Item(const std::string& name, int cost) : Nameable(name), m_cost(cost) {}
+	Item(const std::string& name, const std::string& description, int cost) : Nameable(name, description), m_cost(cost) {}
 	
 	virtual eItemType getItemType() const { return eItemType::Item; }
 	int getCost() const { return m_cost; }

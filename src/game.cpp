@@ -69,6 +69,8 @@ void Game::run()
 		
 		gfxlevel.run(&level);
 		ui.run(event);
+
+		Log::run();
 		if(m_currentState == eGameState::Playing) {
 			vector2d pos = playerObject->getPosition();
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
@@ -185,9 +187,6 @@ void Game::run()
 		} else if (m_currentState == eGameState::Inventory) {
 			ui.runInventory(event, playerObject);
 		}
-		
-
-		Log::run();
 
 		if(tick > 105000) {
 			if (m_currentState == eGameState::InCombat)
