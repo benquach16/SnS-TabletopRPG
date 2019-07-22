@@ -145,7 +145,7 @@
     },
     "2052": {
         "name": "Bascinet",
-        "description": "A type of open faced steel helmet.",
+        "description": "A type of open faced steel helmet. Usually attached to an aventail.",
         "cost": 150,
         "AV": 4,
         "AP": 0.25,

@@ -15,3 +15,16 @@ std::string factionToString(eCreatureFaction faction)
 	}
 	return "";
 }
+
+std::string raceToString(eCreatureRace race)
+{
+	switch(race) {
+	case eCreatureRace::Human:
+		return "Human";
+		break;
+	case eCreatureRace::Goblin:
+		return "Goblin";
+		break;
+	}
+	return "";
+}

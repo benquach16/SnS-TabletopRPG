@@ -87,6 +87,9 @@ private:
 
 	int m_dualWhiteTimes;
 
+	bool m_inWind;
+	bool m_inGrapple;
+
 	Creature* m_side1;
 	Creature* m_side2;
 };

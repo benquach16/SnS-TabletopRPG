@@ -18,6 +18,8 @@ public:
 	std::string getText() const { return m_text[0]; }
 	int getBTN() const { return m_btn; }
 	int getImpact() const { return m_impact; }
+	int getLevel() const { return m_level; }
+	eBodyParts getLocation() const { return m_location; }
 	bool causesDeath();
 	bool immediateKO();
 	const std::set<eEffects>& getEffects() const { return m_effects; }

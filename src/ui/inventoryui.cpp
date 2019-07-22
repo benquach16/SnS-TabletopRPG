@@ -27,6 +27,9 @@ void InventoryUI::run(sf::Event event, PlayerObject* player)
 	case eUiState::Detailed:
 		displayDetail(event);
 		break;
+	case eUiState::Profile:
+		doProfile(event, player);
+		break;
 	}
 }
 
@@ -44,7 +47,7 @@ void InventoryUI::doBackpack(sf::Event event, PlayerObject* player)
 	txt.setFont(Game::getDefaultFont());
 	txt.setCharacterSize(cCharSize);
 
-	string str = "Backpack:\n";
+	string str = "Backpack (1 - Backpack, 2 - Equipment, 3 - Profile):\n";
 	
 	std::map<int, int> inventory = player->getInventory();
 
@@ -75,6 +78,7 @@ void InventoryUI::doBackpack(sf::Event event, PlayerObject* player)
 			m_uiState = eUiState::Equipped;
 			break;
 		case '3':
+			m_uiState = eUiState::Profile;
 			break;
 		}
 	}
@@ -143,6 +147,7 @@ void InventoryUI::doEquipped(sf::Event event, PlayerObject* player)
 		case '2':
 			break;
 		case '3':
+			m_uiState = eUiState::Profile;
 			break;
 		}
 		if(c == idx) {
@@ -207,5 +212,61 @@ void InventoryUI::displayDetail(sf::Event event)
 
 	if(event.type == sf::Event::TextEntered) {
 		m_uiState = eUiState::Backpack;
+	}
+}
+
+void InventoryUI::doProfile(sf::Event event, PlayerObject* player)
+{
+	auto windowSize = Game::getWindow().getSize();
+	
+	sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize * cDisplayLines));
+	bkg.setFillColor(sf::Color(12, 12, 23));
+	Game::getWindow().draw(bkg);
+
+	Creature* creature = player->getCreatureComponent();
+
+	sf::Text ap;
+	ap.setCharacterSize(cCharSize);
+	ap.setFont(Game::getDefaultFont());
+	string str = "Success rate: " + to_string(creature->getSuccessRate()) + "%" +
+				 '\n' + "Blood loss: " + to_string(creature->getBloodLoss()) + '\n';
+
+	const std::vector<Wound*> wounds = creature->getWounds();
+	for(auto i : wounds) {
+		str += "Level " + to_string(i->getLevel()) + " wound at " + bodyPartToString(i->getLocation()) + '\n';
+	}
+	ap.setString(str);
+
+	sf::Text stats;
+	stats.setCharacterSize(cCharSize);
+	stats.setFont(Game::getDefaultFont());
+	stats.setPosition(sf::Vector2f(windowSize.x/2, 0));
+	string statStr = "Primary Attributes\nBrawn: " + to_string(creature->getBrawn()) + '\n' +
+					  "Agility: " + to_string(creature->getAgility()) + '\n' +
+					  "Cunning: " + to_string(creature->getCunning()) + '\n' +
+					  "Perception: " + to_string(creature->getPerception()) + '\n' +
+					  "Will: " + to_string(creature->getWill()) + '\n' +
+					  "Derived Attributes\n"+
+					  "Grit: " + to_string(creature->getGrit()) + '\n' +
+					  "Keen: " + to_string(creature->getKeen()) + '\n' +
+					  "Reflex: " + to_string(creature->getReflex()) + '\n' +
+					  "Speed: " + to_string(creature->getSpeed()) + '\n';
+
+	statStr+="Proficiencies\n";
+	statStr+="Polearms: " + to_string(creature->getProficiency(eWeaponTypes::Polearms)) + '\n';
+	stats.setString(statStr);
+	Game::getWindow().draw(ap);
+	Game::getWindow().draw(stats);
+		if(event.type == sf::Event::TextEntered) {
+		char c = event.text.unicode;
+		switch(c) {
+		case '1':
+			m_uiState = eUiState::Backpack;
+			break;
+		case '2':
+			m_uiState = eUiState::Equipped;
+			break;
+
+		}
 	}
 }

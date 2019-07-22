@@ -1,5 +1,7 @@
-
 #include "level.h"
+#include "../object/corpseobject.h"
+#include "../object/creatureobject.h"
+
 
 Level::Level(int width, int height) : m_width(width), m_height(height), m_data(width*height)
 {
@@ -10,7 +12,16 @@ void Level::run()
 {
 	for(int i = 0; i < m_objects.size(); ++i) {
 		if(m_objects[i]->deleteMe() == true) {
+			Object* object = m_objects[i];
+			if(object->getObjectType() == eObjectTypes::Creature) {
+				CreatureObject* creatureObject = static_cast<CreatureObject*>(object);
+				CorpseObject* corpse = new CorpseObject(creatureObject->getCreatureComponent()->getName());
+				corpse->setPosition(creatureObject->getPosition());
+				m_objects.push_back(corpse);
+			}
+			m_toDelete.push_back(m_objects[i]);
 			m_objects.erase(m_objects.begin() + i);
+			
 		}
 		m_objects[i]->run(this);
 	}

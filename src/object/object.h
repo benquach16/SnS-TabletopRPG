@@ -15,7 +15,8 @@ struct vector2d
 enum class eObjectTypes {
 	Misc,
 	Item,
-	Creature
+	Creature,
+	Corpse
 };
 
 class Level;

@@ -28,7 +28,8 @@ void AIController::run(const Level* level, CreatureObject* controlledCreature)
 			int relationship = RelationManager::getSingleton()->getRelationship(controlledCreature->getFaction(),
 																				creature->getFaction());
 
-			if(relationship <= RelationManager::cHostile) {
+			//dont attack dead people
+			if(relationship <= RelationManager::cHostile && creature->isConscious() == true) {
 				//get distance
 				int dist = getDistance(object->getPosition(), controlledCreature->getPosition());
 				if(dist < minDist) {

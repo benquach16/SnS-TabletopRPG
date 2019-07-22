@@ -104,6 +104,21 @@ void Game::run()
 				selector.setPosition(playerObject->getPosition());
 				m_currentState = eGameState::SelectionMode;
 			}
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::P) {
+				const Object *object = level.getObject(playerObject->getPosition());
+				if(object != nullptr) {
+					switch(object->getObjectType()) {
+					case eObjectTypes::Corpse:
+						Log::push("Searching corpse..");
+						break;
+					case eObjectTypes::Creature:
+						Log::push("There is a creature here. You need to kill them if you want to loot them.");
+						break;
+					}
+				} else {
+					Log::push("There is nothing here.");
+				}
+			}
 			if(aiTick > 60000) {
 				level.run();
 				aiTick = 0;
@@ -137,6 +152,10 @@ void Game::run()
 					Log::push("You see " + object->getDescription());
 					if(object->getObjectType() == eObjectTypes::Creature) {
 						const CreatureObject* creatureObj = static_cast<const CreatureObject*>(object);
+
+						if(creatureObj->isConscious() == false) {
+							Log::push("They are unconscious", Log::eMessageTypes::Announcement);
+						}
 						int relation = RelationManager::getSingleton()->getRelationship(eCreatureFaction::Player,
 																						creatureObj->getFaction());
 						
@@ -181,11 +200,13 @@ void Game::run()
 						m_currentState = eGameState::InCombat;
 					}
 				}
-			
 			}
 			gfxSelector.run(&selector);
 		} else if (m_currentState == eGameState::Inventory) {
 			ui.runInventory(event, playerObject);
+			if(event.type == sf::Event::KeyReleased && event.key.code ==sf::Keyboard::I) {
+				m_currentState = eGameState::Playing;
+			}
 		}
 
 		if(tick > 105000) {

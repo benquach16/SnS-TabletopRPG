@@ -227,39 +227,40 @@
 				"text": ["Bump."]
 			},
 			"2": {
-				"text": ["Blow to the gut forces to bend over."]
+				"text": ["Solid blow leaves a bruise."]
 			},
 			"3": {
-				"text": ["Knocks out the wind. Bad bruising and concussed organs."],
-				"effects": ["KD2", "KO1"]
+				"text": ["Bad bruising and abdominal pain."],
+				"effects": ["KD1"]
 			},
 			"4": {
-				"text": ["Ruptured internal organs and internal bleeding."],
-				"effects": []
+				"text": ["Fractured pelvis. Ruptured internal organs and internal bleeding."],
+				"effects": ["KD2"]
 			},
 			"5": {
-				"text": ["Damage to internal organs causes heavy internal bleeding."],
-				"effects": ["death"]
+				"text": ["Shattered pelvis. May never walk again."],
+				"effects": ["KD", "BL1"]
 			}
 		},
 		"groin": {
 			"1": {
-				"text": ["Bump."]
+				"text": ["Minor bump."]
 			},
 			"2": {
-				"text": ["Blow to the gut forces to bend over."]
+				"text": ["Some bruising."],
+				"effects": ["KD1"]
 			},
 			"3": {
-				"text": ["Knocks out the wind. Bad bruising and concussed organs."],
-				"effects": ["KD2", "KO1"]
+				"text": ["Bad swelling and lots of pain. Nausea."],
+				"effects": ["KO2"]
 			},
 			"4": {
-				"text": ["Ruptured internal organs and internal bleeding."],
-				"effects": []
+				"text": ["Damage and swelling are real bad."],
+				"effects": ["KO2"]
 			},
 			"5": {
-				"text": ["Damage to internal organs causes heavy internal bleeding."],
-				"effects": ["death"]
+				"text": ["Surface organs crushed, say goodbye to reproduction."],
+				"effects": ["KO"]
 			}
 		},
 		"thigh": {
@@ -267,39 +268,40 @@
 				"text": ["Bump."]
 			},
 			"2": {
-				"text": ["Blow to the gut forces to bend over."]
+				"text": ["Solid blow. Will leave a bruise."]
 			},
 			"3": {
-				"text": ["Knocks out the wind. Bad bruising and concussed organs."],
-				"effects": ["KD2", "KO1"]
+				"text": ["Minor fracture in the femur. Some swelling."],
+				"effects": ["KD1"]
 			},
 			"4": {
-				"text": ["Ruptured internal organs and internal bleeding."],
-				"effects": []
+				"text": ["Broken femur with bad swelling."],
+				"effects": ["KD3"]
 			},
 			"5": {
-				"text": ["Damage to internal organs causes heavy internal bleeding."],
-				"effects": ["death"]
+				"text": ["Open femur fracture with sharp bone ends showing through tissue."],
+				"effects": ["KD", "BL2"]
 			}
 		},
 		"knee": {
 			"1": {
-				"text": ["Bump."]
+				"text": ["Thump."]
 			},
 			"2": {
-				"text": ["Blow to the gut forces to bend over."]
+				"text": ["Solid blow creates a buzzing sensation in the joint."],
+				"effects": ["KD1"]
 			},
 			"3": {
-				"text": ["Knocks out the wind. Bad bruising and concussed organs."],
-				"effects": ["KD2", "KO1"]
+				"text": ["Concussed knee and minor ruptures. Some swelling."],
+				"effects": ["KD2"]
 			},
 			"4": {
-				"text": ["Ruptured internal organs and internal bleeding."],
-				"effects": []
+				"text": ["Closed knee fracture. Causes limp due to chipped bone and torn tendons."],
+				"effects": ["KD3"]
 			},
 			"5": {
-				"text": ["Damage to internal organs causes heavy internal bleeding."],
-				"effects": ["death"]
+				"text": ["Knee shattered beyond repair. Leg unstable and can't stand."],
+				"effects": ["KD", "BL1"]
 			}
 		},
 		"shin": {
@@ -307,19 +309,19 @@
 				"text": ["Bump."]
 			},
 			"2": {
-				"text": ["Blow to the gut forces to bend over."]
+				"text": ["An eye watering thump."]
 			},
 			"3": {
-				"text": ["Knocks out the wind. Bad bruising and concussed organs."],
-				"effects": ["KD2", "KO1"]
+				"text": ["Minor fracture in the shin. Putting weight on the leg is painful. Some swelling."],
+				"effects": ["KD1"]
 			},
 			"4": {
-				"text": ["Ruptured internal organs and internal bleeding."],
-				"effects": []
+				"text": ["Closed shin bone fracture with bad swelling."],
+				"effects": ["KD2"]
 			},
 			"5": {
-				"text": ["Damage to internal organs causes heavy internal bleeding."],
-				"effects": ["death"]
+				"text": ["Shin bends into an unnatural shape with sharp bone fragments poking out.."],
+				"effects": ["BL1", "KD"]
 			}
 		},
 		"foot": {
@@ -330,16 +332,16 @@
 				"text": ["An eye watering crunch."]
 			},
 			"3": {
-				"text": ["Knocks out the wind. Bad bruising and concussed organs."],
+				"text": ["Minor foot fractures. Putting weight on the leg is painful."],
 				"effects": ["KD2", "KO1"]
 			},
 			"4": {
-				"text": ["Ruptured internal organs and internal bleeding."],
-				"effects": []
+				"text": ["Some toes smashed."],
+				"effects": ["KD2"]
 			},
 			"5": {
-				"text": ["Damage to internal organs causes heavy internal bleeding."],
-				"effects": ["death"]
+				"text": ["Foot completely smashed."],
+				"effects": ["KD", "BL1"]
 			}
 		}
 	},

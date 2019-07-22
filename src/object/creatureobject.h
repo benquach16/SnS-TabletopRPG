@@ -26,6 +26,8 @@ public:
 	bool isInCombat() const { return m_creature->getCreatureState() == eCreatureState::InCombat; }
 	void run(const Level*) override;
 
+	void addItem(int id, int count) { m_inventory[id] = count; }
+	void addItem(int id) { m_inventory[id]++; }
 	const std::map<int, int> &getInventory() { return m_inventory; }
 
 protected:
