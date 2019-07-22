@@ -29,13 +29,13 @@
 				"properties": [ "crushing" ]
 			},
 			{
-				"name": "Buttspike - Thrust",
+				"name": "Buttspike, Thrust",
 				"damage": 1,
 				"type": "piercing",
 				"attack": "thrust"
 			},		
 			{
-				"name": "Buttspike - Swing",
+				"name": "Buttspike, Swing",
 				"damage": 1,
 				"type": "blunt",
 				"attack": "swing"
@@ -52,13 +52,13 @@
 		"hook": false,
 		"components": [
 			{
-				"name": "Blade - Swing",
+				"name": "Blade, Swing",
 				"damage": 1,
 				"type": "cutting",
 				"attack": "swing"
 			},
 			{
-				"name": "Blade - Thrust",
+				"name": "Blade, Thrust",
 				"damage": 1,
 				"type": "piercing",
 				"attack": "thrust"
@@ -75,25 +75,25 @@
 		"hook": false,
 		"components": [
 			{
-				"name": "Spear point - Swing",
+				"name": "Spear point, Swing",
 				"damage": 1,
 				"type": "cutting",
 				"attack": "swing"
 			},
 			{
-				"name": "Spear point - Thrust",
+				"name": "Spear point, Thrust",
 				"damage": 3,
 				"type": "piercing",
 				"attack": "thrust"
 			},
 			{
-				"name": "Buttend - Thrust",
+				"name": "Buttend, Thrust",
 				"damage": 1,
 				"type": "blunt",
 				"attack": "thrust"
 			},		
 			{
-				"name": "Buttend - Swing",
+				"name": "Buttend, Swing",
 				"damage": 1,
 				"type": "blunt",
 				"attack": "swing"
@@ -110,13 +110,13 @@
 		"hook": false,
 		"components": [
 			{
-				"name": "Blade - Swing",
+				"name": "Blade, Swing",
 				"damage": -2,
 				"type": "cutting",
 				"attack": "swing"
 			},
 			{
-				"name": "Blade - Thrust",
+				"name": "Blade, Thrust",
 				"damage": 0,
 				"type": "piercing",
 				"attack": "thrust"
@@ -153,13 +153,13 @@
 				"properties": [ "crushing" ]
 			},
 			{
-				"name": "Buttspike - Thrust",
+				"name": "Buttspike, Thrust",
 				"damage": 2,
 				"type": "piercing",
 				"attack": "thrust"
 			},		
 			{
-				"name": "Buttspike - Swing",
+				"name": "Buttspike, Swing",
 				"damage": 1,
 				"type": "blunt",
 				"attack": "swing"
@@ -176,13 +176,13 @@
 		"hook": false,
 		"components": [
 			{
-				"name": "Blade - Swing",
+				"name": "Blade, Swing",
 				"damage": 1,
 				"type": "cutting",
 				"attack": "swing"
 			},
 			{
-				"name": "Blade - Thrust",
+				"name": "Blade, Thrust",
 				"damage": 1,
 				"type": "piercing",
 				"attack": "thrust"
@@ -199,13 +199,13 @@
 		"hook": false,
 		"components": [
 			{
-				"name": "Blade - Swing",
+				"name": "Blade, Swing",
 				"damage": 0,
 				"type": "cutting",
 				"attack": "swing"
 			},
 			{
-				"name": "Blade - Thrust",
+				"name": "Blade, Thrust",
 				"damage": 0,
 				"type": "piercing",
 				"attack": "thrust"
@@ -222,13 +222,13 @@
 		"hook": false,
 		"components": [
 			{
-				"name": "Staff - Swing",
+				"name": "Staff, Swing",
 				"damage": 1,
 				"type": "blunt",
 				"attack": "swing"
 			},
 			{
-				"name": "Staff - Thrust",
+				"name": "Staff, Thrust",
 				"damage": 1,
 				"type": "blunt",
 				"attack": "thrust"
@@ -265,13 +265,13 @@
 				"properties": [ "platepiercing" ]
 			},
 			{
-				"name": "Buttspike - Thrust",
+				"name": "Buttspike, Thrust",
 				"damage": 2,
 				"type": "piercing",
 				"attack": "thrust"
 			},		
 			{
-				"name": "Buttspike - Swing",
+				"name": "Buttspike, Swing",
 				"damage": 1,
 				"type": "blunt",
 				"attack": "swing"
@@ -288,13 +288,13 @@
 		"hook": false,
 		"components": [
 			{
-				"name": "Blade - Thrust",
+				"name": "Blade, Thrust",
 				"damage": 2,
 				"type": "piercing",
 				"attack": "thrust"
 			},
 			{
-				"name": "Blade - Swing",
+				"name": "Blade, Swing",
 				"damage": 1,
 				"attack": "swing",
 				"type": "cutting"
@@ -331,13 +331,13 @@
 				"properties": [ "crushing" ]
 			},
 			{
-				"name": "Buttspike - Thrust",
+				"name": "Buttspike, Thrust",
 				"damage": 2,
 				"type": "piercing",
 				"attack": "thrust"
 			},		
 			{
-				"name": "Buttspike - Swing",
+				"name": "Buttspike, Swing",
 				"damage": 2,
 				"type": "blunt",
 				"attack": "swing"

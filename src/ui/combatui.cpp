@@ -39,16 +39,16 @@ void CombatUI::run(sf::Event event)
 
 	auto windowSize = Game::getWindow().getSize();
 	
-	sf::RectangleShape combatBkg(sf::Vector2f(windowSize.x/2 - 6, rectHeight));
-	combatBkg.setPosition(3, windowSize.y - logHeight - rectHeight - 3);
+	sf::RectangleShape combatBkg(sf::Vector2f(windowSize.x/2 - 4, rectHeight));
+	combatBkg.setPosition(2, windowSize.y - logHeight - rectHeight - 3);
 	combatBkg.setFillColor(sf::Color(12, 12, 23));
-	combatBkg.setOutlineThickness(3);
+	combatBkg.setOutlineThickness(2);
 	combatBkg.setOutlineColor(sf::Color(22, 22, 33));
 	Game::getWindow().draw(combatBkg);
-	sf::RectangleShape combatBkg2(sf::Vector2f(windowSize.x/2 - 6, rectHeight));
-	combatBkg2.setPosition(windowSize.x/2 + 3, windowSize.y - logHeight - rectHeight - 3);
+	sf::RectangleShape combatBkg2(sf::Vector2f(windowSize.x/2 - 2, rectHeight));
+	combatBkg2.setPosition(windowSize.x/2, windowSize.y - logHeight - rectHeight - 3);
 	combatBkg2.setFillColor(sf::Color(12, 12, 23));
-	combatBkg2.setOutlineThickness(3);
+	combatBkg2.setOutlineThickness(2);
 	combatBkg2.setOutlineColor(sf::Color(22, 22, 33));
 	Game::getWindow().draw(combatBkg2);
 
@@ -59,10 +59,10 @@ void CombatUI::run(sf::Event event)
 	Player *player = static_cast<Player *>(m_instance->getSide1());
 	Creature *target = m_instance->getSide2();
 
-	sf::RectangleShape reachBkg(sf::Vector2f(windowSize.x - 6, cCharSize));
+	sf::RectangleShape reachBkg(sf::Vector2f(windowSize.x - 4, cCharSize));
 	reachBkg.setFillColor(sf::Color(12, 12, 23));
-	reachBkg.setPosition(3, windowSize.y - logHeight - rectHeight - cCharSize - 3);
-	reachBkg.setOutlineThickness(3);
+	reachBkg.setPosition(2, windowSize.y - logHeight - rectHeight - cCharSize - 2);
+	reachBkg.setOutlineThickness(2);
 	reachBkg.setOutlineColor(sf::Color(22, 22, 33));
 	int reachCost = static_cast<int>(m_instance->getCurrentReach()) -
 		static_cast<int>(player->getPrimaryWeapon()->getLength());

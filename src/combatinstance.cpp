@@ -459,9 +459,16 @@ void CombatInstance::doResolution()
 		int MoS = offenseSuccesses - defenseSuccesses;
 
 		if(MoS > 0) {
-			if(inflictWound(MoS, attack, defender) == true) {
-				m_currentState = eCombatState::FinishedCombat;
-				return;
+			if(attack.manuever == eOffensiveManuevers::FeintThrust || attack.manuever == eOffensiveManuevers::FeintSwing) {
+				attacker->setBonusDice(defenseSuccesses);
+				writeMessage(attacker->getName() + " feints their attack and receives " +
+							 to_string(defenseSuccesses) + " action points on their next attack");
+			}
+			else {
+				if(inflictWound(MoS, attack, defender) == true) {
+					m_currentState = eCombatState::FinishedCombat;
+					return;
+				}
 			}
 			m_currentReach = attacker->getPrimaryWeapon()->getLength();
 		}

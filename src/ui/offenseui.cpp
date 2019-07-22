@@ -59,10 +59,22 @@ void OffenseUI::doManuever(sf::Event event, Player* player)
 			}
 		}
 		if(c == 'd') {
-
+			if(player->getCombatPool() > 2) {
+				player->setOffenseManuever(eOffensiveManuevers::FeintSwing);
+				m_currentState = eUiState::ChooseComponent;
+				player->reduceCombatPool(2);
+			}
+			else {
+			}
 		}
 		if(c == 'e') {
-
+			if(player->getCombatPool() > 2) {
+				player->setOffenseManuever(eOffensiveManuevers::FeintThrust);
+				m_currentState = eUiState::ChooseComponent;
+				player->reduceCombatPool(2);
+			}
+			else {
+			}
 		}
 		if(c == 'f') {
 			m_currentState = eUiState::InspectTarget;
@@ -101,7 +113,8 @@ void OffenseUI::doComponent(sf::Event event, Player* player)
 	text.setFont(Game::getDefaultFont());
 	std::string str("Choose weapon component:\n");
 		
-	if(player->getQueuedOffense().manuever == eOffensiveManuevers::Swing) {
+	if(player->getQueuedOffense().manuever == eOffensiveManuevers::Swing ||
+	   player->getQueuedOffense().manuever == eOffensiveManuevers::FeintSwing) {
 		for(int i = 0; i < weapon->getSwingComponents().size(); ++i) {
 			char idx = ('a' + i);
 
@@ -192,6 +205,10 @@ void OffenseUI::doTarget(sf::Event event, Player* player, bool linkedParry)
 			m_currentState = eUiState::ChooseDice;
 		}
 		//if player chose pinpoit thrust allow them to pick a specific location
+		if(player->getQueuedOffense().manuever == eOffensiveManuevers::PinpointThrust &&
+		   m_currentState == eUiState::ChooseDice) {
+			
+		}
 		//the uistate comparision is a hacky way to repurpose it
 		if(linkedParry == true && m_currentState == eUiState::ChooseDice) {
 			player->setOffenseDice(0);
@@ -202,4 +219,18 @@ void OffenseUI::doTarget(sf::Event event, Player* player, bool linkedParry)
 	}
 
 	Game::getWindow().draw(text);
+}
+
+void OffenseUI::doPinpointThrust(sf::Event event, Player* player)
+{
+	UiCommon::drawTopPanel();
+
+	sf::Text text;
+	text.setCharacterSize(cCharSize);
+	text.setFont(Game::getDefaultFont());
+	eHitLocations location = player->getQueuedOffense().target;
+
+	if(event.type == sf::Event::TextEntered) {
+		char c = event.text.unicode;
+	}
 }

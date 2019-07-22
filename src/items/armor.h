@@ -29,6 +29,8 @@ public:
 
 	std::set<eBodyParts> getCoverage() const { return m_coverage; }
 
+	eItemType getItemType() const override { return eItemType::Armor; }
+
 	eArmorTypes getType() const { return m_type; }
 	eLayer getLayer() const { return m_layer; }
 

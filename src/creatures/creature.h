@@ -53,7 +53,9 @@ public:
 	void setBTN(int BTN) { m_BTN = BTN; }
 
 	const Weapon* getPrimaryWeapon() const;
+	int getPrimaryWeaponId() const { return m_primaryWeaponId; }
 	std::vector<const Armor*> getArmor() const;
+	const std::vector<int>& getArmorId() const { return m_armor; }
 	void setWeapon(int id);
 
 	void setName(const std::string& name) { m_name = name; }
@@ -94,6 +96,7 @@ public:
 		eOffensiveManuevers manuever;
 		int dice;
 		eHitLocations target;
+		eBodyParts pinpoint;
 		Component* component = nullptr;
 	};
 	//this is reused in stealing initiative to hold die allocated to stealing

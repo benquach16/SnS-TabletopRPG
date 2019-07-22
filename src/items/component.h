@@ -15,7 +15,7 @@ public:
 	eDamageTypes getType() const { return m_damageType; }
 	eAttacks getAttack() const { return m_attack; }
 	bool hasProperty(eWeaponProperties prop) const { return m_properties.find(prop) != m_properties.end(); }
-
+	const std::set<eWeaponProperties>& getProperties() const { return m_properties; }
 private:
 	std::string m_name;
 	int m_damage;

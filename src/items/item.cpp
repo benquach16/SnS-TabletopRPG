@@ -30,6 +30,16 @@ ItemTable::ItemTable()
 		assert(values["description"].is_null() == false);
 		assert(values["cost"].is_null() == false);
 		assert(values["type"].is_null() == false);
+
+		string name = values["name"];
+		string description = values["description"];
+		int cost = values["cost"];
+		string type = values["type"];
+
+		Item* item = new Item(name, description, cost);
+
+		assert(m_itemList.find(id) == m_itemList.end());
+		m_itemList[id] = item;
 	}
 }
 

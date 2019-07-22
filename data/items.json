@@ -1,7 +1,8 @@
 {
     "1": {
         "name": "Bread",
-        "description": "Food item.",
+        "description": "Basic food item that can be found anywhere.",
+        "hunger": 2,
         "type": "food",
         "cost": 2
     },
@@ -16,5 +17,17 @@
         "description": "A piece of wood you can set on fire for light.",
         "type": "light",
         "cost": 2
+    },
+    "4": {
+        "name": "Bedroll",
+        "description": "You can sleep with this.",
+        "type": "bedroll",
+        "cost": 10
+    },
+    "5": {
+        "name": "Bandages",
+        "description": "Strips of linen used to staunch bleeding. Does not heal wounds.",
+        "type": "bandage",
+        "cost": 5
     }
 }

@@ -7,7 +7,8 @@ enum class eWeaponTypes : unsigned {
 	Mass,
 	Polearms,
 	Bows,
-	Crossbows
+	Crossbows,
+	Firearms
 };
 
 enum class eDamageTypes {
@@ -97,4 +98,12 @@ enum class eArmorTypes : unsigned
 	None = 0,
 	Maille = 1,
 	Plate = 2
+};
+
+enum class eItemType {
+	Item,
+	Armor,
+	Weapon,
+	Food,
+	Waterskin
 };

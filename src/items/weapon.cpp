@@ -112,6 +112,7 @@ WeaponTable::WeaponTable()
 		Weapon* weapon = new Weapon(weaponName, description, length, weaponComponents, weaponType, cost);
 		assert(m_weaponsList.find(id) == m_weaponsList.end());
 		m_weaponsList[id] = weapon;
+		ItemTable::getSingleton()->addWeapon(id, weapon);
 	}
 }
 

@@ -4,12 +4,7 @@
 
 #include "nameable.h"
 #include "../object/nameable.h"
-
-enum class eItemType {
-	Item,
-	Armor,
-	Weapon
-};
+#include "types.h"
 
 class Item : public Nameable
 {

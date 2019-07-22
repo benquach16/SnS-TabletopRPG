@@ -15,7 +15,7 @@ public:
 	
 	eLength getLength() const { return m_length; }
 	eWeaponTypes getType() const { return m_type; }
-	std::vector<Component*> getComponents() const { return m_components; }
+	const std::vector<Component*>& getComponents() const { return m_components; }
 	std::vector<Component*> getThrustComponents() const { return m_thrustComponents; }
 	std::vector<Component*> getSwingComponents() const { return m_swingComponents; }
 	//convinence functions

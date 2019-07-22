@@ -12,15 +12,18 @@ public:
 	void run(sf::Event event, PlayerObject* player);
 	void doBackpack(sf::Event event, PlayerObject *player);
 	void doEquipped(sf::Event event, PlayerObject *player);
-	void displayDetail(sf::Event event, int id);
+	void doProfile(sf::Event event, PlayerObject* player);
+	void displayDetail(sf::Event event);
 
 private:
 	enum eUiState
 	{
 		Backpack,
 		Equipped,
-		DetailedDescription
+		Detailed,
+		Profile
 	};
 
 	eUiState m_uiState;
+	int m_id;
 };

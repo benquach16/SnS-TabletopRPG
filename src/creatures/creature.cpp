@@ -130,7 +130,7 @@ void Creature::resetCombatPool()
 	const Weapon* weapon = getPrimaryWeapon();
 	int carry = m_combatPool;
 	carry = min(0, carry);
-	m_combatPool = getProficiency(weapon->getType()) + getReflex() + carry;
+	m_combatPool = getProficiency(weapon->getType()) + getReflex() + carry - m_AP;
 }
 
 void Creature::addAndResetBonusDice()

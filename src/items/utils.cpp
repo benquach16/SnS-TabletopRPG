@@ -7,6 +7,10 @@ std::string offensiveManueverToString(eOffensiveManuevers manuever)
 		return "Swing";
 	case eOffensiveManuevers::Thrust:
 		return "Thrust";
+	case eOffensiveManuevers::FeintSwing:
+		return "Swing";
+	case eOffensiveManuevers::FeintThrust:
+		return "Thrust";
 	}
 	return "";
 }
@@ -89,4 +93,73 @@ eArmorTypes stringToArmorType(const std::string& str) {
 		return eArmorTypes::Maille;
 	}
 	return eArmorTypes::None;
+}
+
+std::string itemTypeToString(eItemType type) {
+	switch(type) {
+	case eItemType::Item:
+		return "Item";
+		break;
+	case eItemType::Armor:
+		return "Armor";
+		break;
+	case eItemType::Weapon:
+		return "Weapon";
+		break;
+	case eItemType::Food:
+		return "Food";
+		break;
+	case eItemType::Waterskin:
+		return "Waterskin";
+		break;
+	}
+	return "";
+}
+
+std::string weaponTypeToString(eWeaponTypes type)
+{
+	switch (type) {
+	case eWeaponTypes::Brawling:
+		return "Brawling";
+		break;
+	case eWeaponTypes::Swords:
+		return "Swords";
+		break;
+	case eWeaponTypes::Longswords:
+		return "Longswords";
+		break;
+	case eWeaponTypes::Polearms:
+		return "Polearms";
+		break;
+	case eWeaponTypes::Mass:
+		return "Mass Weapons";
+		break;
+	case eWeaponTypes::Bows:
+		return "Bows";
+		break;
+	case eWeaponTypes::Crossbows:
+		return "Crossbows";
+		break;
+	case eWeaponTypes::Firearms:
+		return "Firearms";
+		break;
+	}
+	
+	return "";
+}
+
+std::string weaponPropToString(eWeaponProperties prop)
+{
+	switch(prop) {
+	case eWeaponProperties::Crushing:
+		return "Crushing";
+		break;
+	case eWeaponProperties::MaillePiercing:
+		return "Maille Piercing";
+		break;
+	case eWeaponProperties::PlatePiercing:
+		return "Plate Piercing";
+		break;
+	}
+	return "";
 }
