@@ -24,6 +24,7 @@ public:
 	virtual eObjectTypes getObjectType() const { return eObjectTypes::Creature; }
 	virtual bool isPlayer() const { return false; }
 	bool isInCombat() const { return m_creature->getCreatureState() == eCreatureState::InCombat; }
+	void kill() const { m_creature->kill(); }
 	void run(const Level*) override;
 
 	void addItem(int id, int count) { m_inventory[id] = count; }

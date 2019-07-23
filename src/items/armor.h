@@ -2,7 +2,7 @@
 
 #include <string>
 #include <set>
-#include <map>
+#include <unordered_map>
 
 #include "../creatures/types.h"
 #include "item.h"
@@ -63,5 +63,5 @@ private:
 	ArmorTable();
 	static ArmorTable* singleton;
 	//<id, armor>
-	std::map<int, Armor*> m_armorList; 
+	std::unordered_map<int, Armor*> m_armorList; 
 };

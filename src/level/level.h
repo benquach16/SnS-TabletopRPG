@@ -40,12 +40,15 @@ public:
 	}
 
 	const Object *getObject(vector2d position);
+	Object* getObjectMutable(vector2d position, const Object* exclude);
 
 	int getWidth() const { return m_width; }
 	int getHeight() const { return m_height; }
 	bool isFreeSpace(int x, int y) const;
 	void addObject(Object* object) { m_objects.push_back(object); }
 	const std::vector<Object*>& getObjects() const { return m_objects; }
+	std::vector<Object*> getObjectsAtLocation(vector2d position);
+	
 private:
 	std::vector<Object*> m_objects;
 	std::vector<Object*> m_toDelete;

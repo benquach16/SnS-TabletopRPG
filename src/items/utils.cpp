@@ -112,6 +112,9 @@ std::string itemTypeToString(eItemType type) {
 	case eItemType::Waterskin:
 		return "Waterskin";
 		break;
+	case eItemType::Money:
+		return "Money";
+		break;
 	}
 	return "";
 }
@@ -162,4 +165,15 @@ std::string weaponPropToString(eWeaponProperties prop)
 		break;
 	}
 	return "";
+}
+
+eItemType stringToItemType(const std::string& str)
+{
+	if(str == "item") {
+		return eItemType::Item;
+	} else if (str == "food") {
+		return eItemType::Food;
+	} else if (str == "waterskin") {
+		return eItemType::Waterskin;
+	}
 }

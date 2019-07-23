@@ -15,7 +15,7 @@ public:
 	
 	eCreatureFaction getFaction() const override { return eCreatureFaction::Player; }
 	eCreatureRace getRace() const override { return eCreatureRace::Human; }
-	std::string getDescription() const override { return "This is you"; }
+	std::string getDescription() const override { return "yourself."; }
 	bool isPlayer() const override { return true; }
 	void run(const Level* level) override {}
 

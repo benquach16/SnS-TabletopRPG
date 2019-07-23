@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 
 #include "nameable.h"
 #include "../object/nameable.h"
@@ -41,5 +41,5 @@ private:
 	void addWeapon(int id, Weapon* weapon);
 	void addArmor(int id, Armor* armor);
 	ItemTable();
-	std::map<int, Item*> m_itemList;
+	std::unordered_map<int, Item*> m_itemList;
 };

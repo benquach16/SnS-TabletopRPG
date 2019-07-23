@@ -105,7 +105,7 @@ void Game::run()
 				m_currentState = eGameState::SelectionMode;
 			}
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::P) {
-				const Object *object = level.getObject(playerObject->getPosition());
+				const Object *object = level.getObjectMutable(playerObject->getPosition(), playerObject);
 				if(object != nullptr) {
 					switch(object->getObjectType()) {
 					case eObjectTypes::Corpse:
@@ -152,15 +152,17 @@ void Game::run()
 					Log::push("You see " + object->getDescription());
 					if(object->getObjectType() == eObjectTypes::Creature) {
 						const CreatureObject* creatureObj = static_cast<const CreatureObject*>(object);
-
-						if(creatureObj->isConscious() == false) {
-							Log::push("They are unconscious", Log::eMessageTypes::Announcement);
-						}
-						int relation = RelationManager::getSingleton()->getRelationship(eCreatureFaction::Player,
-																						creatureObj->getFaction());
+						//don't do anything more for player
+						if(creatureObj->isPlayer() == false) {
+							if(creatureObj->isConscious() == false) {
+								Log::push("They are unconscious", Log::eMessageTypes::Announcement);
+							}
+							int relation = RelationManager::getSingleton()->getRelationship(eCreatureFaction::Player,
+																							creatureObj->getFaction());
 						
-						if(relation <= RelationManager::cHostile) {
-							Log::push(creatureObj->getName() + " is hostile to you", Log::eMessageTypes::Damage);
+							if(relation <= RelationManager::cHostile) {
+								Log::push(creatureObj->getName() + " is hostile to you", Log::eMessageTypes::Damage);
+							}
 						}
 					}
 				}
@@ -196,10 +198,19 @@ void Game::run()
 				if(object != nullptr) {
 					if(object->getObjectType() == eObjectTypes::Creature) {
 						const CreatureObject* creatureObject = static_cast<const CreatureObject*>(object);
-						playerObject->startCombatWith(creatureObject->getCreatureComponent());
-						m_currentState = eGameState::InCombat;
+						if(creatureObject->isConscious() == true) {
+							playerObject->startCombatWith(creatureObject->getCreatureComponent());
+							m_currentState = eGameState::InCombat;
+						} else {
+							creatureObject->kill();
+							Log::push("You finish off the unconscious creature");
+						}
+						
 					}
 				}
+			}
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::A) {
+				m_currentState = eGameState::Playing;
 			}
 			gfxSelector.run(&selector);
 		} else if (m_currentState == eGameState::Inventory) {

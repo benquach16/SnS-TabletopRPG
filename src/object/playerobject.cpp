@@ -11,6 +11,7 @@ PlayerObject::PlayerObject() : CreatureObject(new Player)
 	m_creature->equipArmor(2040);
 	m_creature->setName("John");
 
+	m_inventory[0] = 50;
 	m_inventory[1] = 5;
 	m_inventory[2] = 1;
 	m_inventory[3] = 1;

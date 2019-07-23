@@ -11,7 +11,9 @@ Human::Human() : Creature()
 
 	m_proficiencies[eWeaponTypes::Polearms] = 6;
 	m_proficiencies[eWeaponTypes::Swords] = 6;
-
+	m_proficiencies[eWeaponTypes::Longswords] = 5;
+	m_proficiencies[eWeaponTypes::Brawling] = 2;
+	
 	m_brawn = 4;
 	m_agility = 4;
 	m_cunning = 4;

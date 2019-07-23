@@ -21,3 +21,5 @@ std::string itemTypeToString(eItemType type);
 std::string weaponTypeToString(eWeaponTypes type);
 
 std::string weaponPropToString(eWeaponProperties prop);
+
+eItemType stringToItemType(const std::string& str);

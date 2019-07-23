@@ -4,7 +4,7 @@
 
 #include <vector>
 #include <string>
-#include <map>
+#include <unordered_map>
 
 class Weapon : public Item
 {
@@ -53,5 +53,5 @@ private:
 	static WeaponTable* singleton;
 
 	//<id, weapon>
-	std::map<int, Weapon*> m_weaponsList;
+	std::unordered_map<int, Weapon*> m_weaponsList;
 };

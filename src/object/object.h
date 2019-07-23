@@ -46,4 +46,7 @@ public:
 	void moveRight() { m_position.x++; }
 protected:
 	vector2d m_position;
+
+	//should be assigned a unique id on creation
+	int m_id;
 };

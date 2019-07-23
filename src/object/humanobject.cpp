@@ -8,6 +8,7 @@ HumanObject::HumanObject() : CreatureObject(new Human)
 	m_creature->equipArmor(2051); //maille coif
 	m_creature->setName("Sam");
 
+	m_inventory[0] = 10;
 	m_inventory[1041] = 1;
 	m_inventory[2041] = 1;
 	m_inventory[2051] = 1;

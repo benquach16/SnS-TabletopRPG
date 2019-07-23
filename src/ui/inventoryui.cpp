@@ -13,7 +13,7 @@ using namespace std;
 InventoryUI::InventoryUI() : m_uiState(eUiState::Backpack), m_id(-1)
 {
 }
-constexpr int cDisplayLines = 24;
+constexpr int cDisplayLines = 28;
 
 void InventoryUI::run(sf::Event event, PlayerObject* player)
 {
@@ -219,9 +219,17 @@ void InventoryUI::doProfile(sf::Event event, PlayerObject* player)
 {
 	auto windowSize = Game::getWindow().getSize();
 	
-	sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize * cDisplayLines));
+	sf::RectangleShape bkg(sf::Vector2f(windowSize.x/2, cCharSize * cDisplayLines));
 	bkg.setFillColor(sf::Color(12, 12, 23));
+	bkg.setOutlineThickness(1);
+	bkg.setOutlineColor(sf::Color(22, 22, 33));
 	Game::getWindow().draw(bkg);
+	sf::RectangleShape bkg2(sf::Vector2f(windowSize.x/2, cCharSize * cDisplayLines));
+	bkg2.setPosition(sf::Vector2f(windowSize.x/2, 0));
+	bkg2.setFillColor(sf::Color(12, 12, 23));
+	bkg2.setOutlineThickness(1);
+	bkg2.setOutlineColor(sf::Color(22, 22, 33));
+	Game::getWindow().draw(bkg2);
 
 	Creature* creature = player->getCreatureComponent();
 
@@ -253,7 +261,10 @@ void InventoryUI::doProfile(sf::Event event, PlayerObject* player)
 					  "Speed: " + to_string(creature->getSpeed()) + '\n';
 
 	statStr+="Proficiencies\n";
+	statStr+="Brawling: " + to_string(creature->getProficiency(eWeaponTypes::Brawling)) + '\n';
 	statStr+="Polearms: " + to_string(creature->getProficiency(eWeaponTypes::Polearms)) + '\n';
+	statStr+="Swords: " + to_string(creature->getProficiency(eWeaponTypes::Swords)) + '\n';
+	statStr+="Longswords: " + to_string(creature->getProficiency(eWeaponTypes::Longswords)) + '\n';
 	stats.setString(statStr);
 	Game::getWindow().draw(ap);
 	Game::getWindow().draw(stats);

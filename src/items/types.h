@@ -105,5 +105,6 @@ enum class eItemType {
 	Armor,
 	Weapon,
 	Food,
-	Waterskin
+	Waterskin,
+	Money
 };

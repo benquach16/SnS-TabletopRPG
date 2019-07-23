@@ -112,6 +112,7 @@ public:
 	bool isConscious() { return (m_currentState != eCreatureState::Unconscious) && (m_currentState != eCreatureState::Dead); }
 	void setInCombat() { m_currentState = eCreatureState::InCombat; }
 	void setIdle() { m_currentState = eCreatureState::Idle; }
+	void kill() { m_currentState = eCreatureState::Dead; }
 protected:
 	eCreatureState m_currentState;
 	
