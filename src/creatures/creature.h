@@ -68,6 +68,7 @@ public:
 	int getSuccessRate() const;
 
 	void equipArmor(int id);
+	bool canEquipArmor(int id);
 	ArmorSegment getArmorAtPart(eBodyParts part);
 
 	// for current weapon

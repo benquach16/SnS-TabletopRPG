@@ -124,6 +124,19 @@ void Creature::equipArmor(int id)
 	applyArmor();
 }
 
+bool Creature::canEquipArmor(int id)
+{
+	const Armor *armor = ArmorTable::getSingleton()->get(id);
+	assert(armor != nullptr);
+	for(int i : m_armor) {
+		const Armor* equippedArmor = ArmorTable::getSingleton()->get(i);
+		if(armor->isOverlapping(equippedArmor) == true) {
+			return false;
+		}
+	}
+	return true;
+}
+
 void Creature::resetCombatPool()
 {
 	//carryover impact damage across tempos

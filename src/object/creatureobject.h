@@ -29,6 +29,7 @@ public:
 
 	void addItem(int id, int count) { m_inventory[id] = count; }
 	void addItem(int id) { m_inventory[id]++; }
+	void removeItem(int id) { m_inventory[id]--; }
 
 protected:
 	Creature* m_creature;

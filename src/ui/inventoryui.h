@@ -13,7 +13,7 @@ public:
 	void doBackpack(sf::Event event, PlayerObject *player);
 	void doEquipped(sf::Event event, PlayerObject *player);
 	void doProfile(sf::Event event, PlayerObject* player);
-	void displayDetail(sf::Event event);
+	void displayDetail(sf::Event event, PlayerObject* player);
 
 private:
 	enum eUiState

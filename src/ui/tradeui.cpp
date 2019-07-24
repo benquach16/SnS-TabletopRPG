@@ -111,3 +111,7 @@ void TradeUI::run(sf::Event event, std::map<int, int>& inventory, std::map<int, 
 	}
 }
 
+void TradeUI::displayContainer(sf::Event, std::map<int, int> &inventory, std::string& str)
+{
+
+}

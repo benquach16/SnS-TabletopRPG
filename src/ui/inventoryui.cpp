@@ -25,7 +25,7 @@ void InventoryUI::run(sf::Event event, PlayerObject* player)
 		doEquipped(event, player);
 		break;
 	case eUiState::Detailed:
-		displayDetail(event);
+		displayDetail(event, player);
 		break;
 	case eUiState::Profile:
 		doProfile(event, player);
@@ -158,7 +158,7 @@ void InventoryUI::doEquipped(sf::Event event, PlayerObject* player)
 	}
 }
 
-void InventoryUI::displayDetail(sf::Event event)
+void InventoryUI::displayDetail(sf::Event event, PlayerObject* player)
 {
 	assert(m_id != -1);
 	auto windowSize = Game::getWindow().getSize();
@@ -187,6 +187,14 @@ void InventoryUI::displayDetail(sf::Event event)
 			str += bodyPartToString(i) + ',';
 		}
 		str += '\n';
+
+		if(event.type == sf::Event::TextEntered && event.text.unicode == 'e') {
+			if(player->getCreatureComponent()->canEquipArmor(m_id)) {
+				player->getCreatureComponent()->equipArmor(m_id);
+				player->removeItem(m_id);
+				m_uiState = eUiState::Equipped;
+			}
+		}
 	}
 	if(item->getItemType() == eItemType::Weapon) {
 		const Weapon* weapon = static_cast<const Weapon*>(item);
@@ -203,6 +211,13 @@ void InventoryUI::displayDetail(sf::Event event)
 			}
 			str += "]\n";
 		}
+
+		if(event.type == sf::Event::TextEntered && event.text.unicode == 'e') {
+			player->addItem(player->getCreatureComponent()->getPrimaryWeaponId());
+			player->getCreatureComponent()->setWeapon(m_id);
+			player->removeItem(m_id);
+			m_uiState = eUiState::Equipped;
+		}
 	}
 	str += '\n';
 	str += "Worth " + to_string(item->getCost()) + " silvers\n";
@@ -210,7 +225,7 @@ void InventoryUI::displayDetail(sf::Event event)
 
 	Game::getWindow().draw(txt);
 
-	if(event.type == sf::Event::TextEntered) {
+	if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
 		m_uiState = eUiState::Backpack;
 	}
 }
@@ -240,8 +255,9 @@ void InventoryUI::doProfile(sf::Event event, PlayerObject* player)
 				 '\n' + "Blood loss: " + to_string(creature->getBloodLoss()) + '\n';
 
 	const std::vector<Wound*> wounds = creature->getWounds();
-	for(auto i : wounds) {
-		str += "Level " + to_string(i->getLevel()) + " wound at " + bodyPartToString(i->getLocation()) + '\n';
+	for(auto i : wounds)
+				{
+					str += "Level " + to_string(i->getLevel()) + " wound at " + bodyPartToString(i->getLocation()) + '\n';
 	}
 	ap.setString(str);
 
