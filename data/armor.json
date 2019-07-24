@@ -2,7 +2,7 @@
     "2040": {
         "name": "Gambeson",
         "description": "A jacket made of quilted linen.",
-        "cost": 5,
+        "cost": 50,
         "AV": 2,
         "AP": 0.0,
         "rigid": false,
@@ -14,7 +14,7 @@
     "2041": {
         "name": "Chainmail shirt",
         "description": "A short sleeved shirt made of chainmail.",
-        "cost": 50,
+        "cost": 150,
         "AV": 3,
         "AP": 0.25,
         "rigid": false,
@@ -26,7 +26,7 @@
     "2042": {
         "name": "Sallet",
         "description": "A type of visored steel helmet, popular with foot knights and men at arms.",
-        "cost": 100,
+        "cost": 500,
         "AV": 4,
         "AP": 0.5,
         "rigid": true,
@@ -38,7 +38,7 @@
     "2043": {
         "name": "Brigandine",
         "description": "A type of breastplate that consists of of steel plates riveted to a vest.",
-        "cost": 100,
+        "cost": 500,
         "AV": 3,
         "AP": 0.0,
         "rigid": true,
@@ -50,7 +50,7 @@
     "2044": {
         "name": "Hosen",
         "description": "Leggings made of quilted linen.",
-        "cost": 5,
+        "cost": 50,
         "AV": 2,
         "AP": 0.0,
         "rigid": false,
@@ -62,7 +62,7 @@
     "2045": {
         "name": "Cloth shirt",
         "description": "Better than nothing.",
-        "cost": 2,
+        "cost": 20,
         "AV": 1,
         "AP": 0.0,
         "rigid": false,
@@ -74,7 +74,7 @@
     "2046": {
         "name": "Leather shoes",
         "description": "Shoes with a bit of protection",
-        "cost": 10,
+        "cost": 30,
         "AV": 2,
         "AP": 0.0,
         "rigid": false,
@@ -86,7 +86,7 @@
     "2047": {
         "name": "Leather gloves",
         "description": "Leather that covers your hands.",
-        "cost": 10,
+        "cost": 30,
         "AV": 2,
         "AP": 0.0,
         "rigid": false,
@@ -98,7 +98,7 @@
     "2048": {
         "name": "Cloth pants",
         "description": "Better than nothing.",
-        "cost": 2,
+        "cost": 20,
         "AV": 1,
         "AP": 0.0,
         "rigid": false,
@@ -110,7 +110,7 @@
     "2049": {
         "name": "Fancy shirt",
         "description": "Shirt for nobility that provides no protection whatsoever, but looks nice.",
-        "cost": 100,
+        "cost": 1000,
         "AV": 0,
         "AP": 0.0,
         "rigid": false,
@@ -122,7 +122,7 @@
     "2050": {
         "name": "Arming cap",
         "description": "A cap made of quilted linen. Usually worn under a helmet.",
-        "cost": 10,
+        "cost": 75,
         "AV": 2,
         "AP": 0.0,
         "rigid": false,
@@ -134,7 +134,7 @@
     "2051": {
         "name": "Maille coif",
         "description": "A chainmail hood.",
-        "cost": 75,
+        "cost": 200,
         "AV": 3,
         "AP": 0.25,
         "rigid": false,
@@ -146,7 +146,7 @@
     "2052": {
         "name": "Bascinet",
         "description": "A type of open faced steel helmet. Usually attached to an aventail.",
-        "cost": 150,
+        "cost": 300,
         "AV": 4,
         "AP": 0.25,
         "rigid": true,

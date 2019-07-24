@@ -29,7 +29,6 @@ public:
 
 	void addItem(int id, int count) { m_inventory[id] = count; }
 	void addItem(int id) { m_inventory[id]++; }
-	const std::map<int, int> &getInventory() { return m_inventory; }
 
 protected:
 	Creature* m_creature;
@@ -37,8 +36,7 @@ protected:
 	eCreatureRace m_creatureRace;
 
 	AIController m_controller;
-
-	std::map<int, int> m_inventory;
+	
 	int m_money;
 
 	int m_thirst;

@@ -17,6 +17,7 @@ void Level::run()
 				CreatureObject* creatureObject = static_cast<CreatureObject*>(object);
 				CorpseObject* corpse = new CorpseObject(creatureObject->getCreatureComponent()->getName());
 				corpse->setPosition(creatureObject->getPosition());
+				corpse->setInventory(creatureObject->getInventory());
 				m_objects.push_back(corpse);
 			}
 			m_toDelete.push_back(m_objects[i]);

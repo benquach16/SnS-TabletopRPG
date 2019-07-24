@@ -1,4 +1,10 @@
 {
+    "0": {
+        "name": "Silver coin",
+        "description": "Currency accepted at all cities.",
+        "type": "money",
+        "cost": 1
+    },
     "1": {
         "name": "Bread",
         "description": "Basic food item that can be found anywhere.",

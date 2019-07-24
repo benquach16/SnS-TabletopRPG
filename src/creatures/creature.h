@@ -95,6 +95,8 @@ public:
 	struct Offense {
 		eOffensiveManuevers manuever;
 		int dice;
+		bool linked;
+		bool feint;
 		eHitLocations target;
 		eBodyParts pinpoint;
 		Component* component = nullptr;

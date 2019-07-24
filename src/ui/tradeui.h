@@ -7,11 +7,15 @@
 class TradeUI
 {
 public:
-	void run(std::map<int, int>& inventory, std::map<int, int>& container);
-	
+	TradeUI();
+	void run(sf::Event event, std::map<int, int>& inventory, std::map<int, int>& container);
+	void doInventory();
+	void doContainer();
 private:
 	enum eUiState {
+		Inventory,
+		Container
 	};
 
-	
+	eUiState m_uiState;
 };

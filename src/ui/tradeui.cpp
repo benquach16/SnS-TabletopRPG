@@ -6,7 +6,11 @@ using namespace std;
 
 constexpr int cDisplayLines = 28;
 
-void TradeUI::run(std::map<int, int>& inventory, std::map<int, int>& container)
+TradeUI::TradeUI() : m_uiState(eUiState::Inventory)
+{
+}
+
+void TradeUI::run(sf::Event event, std::map<int, int>& inventory, std::map<int, int>& container)
 {
 	auto windowSize = Game::getWindow().getSize();
 	
@@ -27,16 +31,34 @@ void TradeUI::run(std::map<int, int>& inventory, std::map<int, int>& container)
 	inventoryTxt.setCharacterSize(cCharSize);
 
 	string inventoryStr;
-
+	inventoryStr += "Your inventory\n";
 	int count = 0;
-	for(auto it : inventory) {
-		char idx = ('a' + count);
-		const Item* item = ItemTable::getSingleton()->get(it.first);
-		inventoryStr+= idx;
-		inventoryStr+= " - " + item->getName() + " x" + to_string(it.second) + '\n';
-		count++;
+	for(auto it = inventory.begin(); it != inventory.end();) {
+		if(it->second == 0) {
+			it = inventory.erase(it);
+		}
+		else {
+			const Item* item = ItemTable::getSingleton()->get(it->first);
+			if(m_uiState == eUiState::Inventory) {
+				char idx = ('a' + count);
+				inventoryStr+= idx;
+				inventoryStr+= " - ";
+				count++;
+				bool remove = false;
+				//fun nesting
+				if(event.type == sf::Event::TextEntered) {
+					char c = event.text.unicode;
+					if(c == idx) {
+						inventory[it->first]--;
+						container[it->first]++;
+					}
+				}
+			}
+			inventoryStr+= item->getName() + " x" + to_string(it->second) + '\n';
+			it++;
+		}
 	}
-
+	
 	inventoryTxt.setString(inventoryStr);
 
 	Game::getWindow().draw(inventoryTxt);
@@ -44,20 +66,48 @@ void TradeUI::run(std::map<int, int>& inventory, std::map<int, int>& container)
 	sf::Text containerTxt;
 	containerTxt.setFont(Game::getDefaultFont());
 	containerTxt.setCharacterSize(cCharSize);
-	containerTxt.setPosition(sf::Vector2f(windowSize.x, 0));
+	containerTxt.setPosition(sf::Vector2f(windowSize.x/2, 0));
 
 	string containerStr;
+	containerStr += "Container inventory\n";
+	for(auto it = container.begin(); it != container.end();) {
+		if(it->second == 0) {
+			it = container.erase(it);
+		}
+		else {
+			char idx = ('a' + count);
+			const Item* item = ItemTable::getSingleton()->get(it->first);
+			if(m_uiState == eUiState::Container) {
+				char idx = ('a' + count);
+				containerStr+= idx;
+				containerStr+= " - ";
+				count++;
 
-	for(auto it : container) {
-		char idx = ('a' + count);
-		const Item* item = ItemTable::getSingleton()->get(it.first);
-		containerStr+= idx;
-		containerStr+= " - " + item->getName() + " x" + to_string(it.second) + '\n';
-		count++;
+				if(event.type == sf::Event::TextEntered) {
+					char c = event.text.unicode;
+					if(c == idx) {
+						inventory[it->first]++;
+						container[it->first]--;
+					}
+				}
+			}
+			containerStr+=item->getName() + " x" + to_string(it->second) + '\n';
+			it++;
+		}
 	}
 
 	containerTxt.setString(containerStr);
 
 	Game::getWindow().draw(containerTxt);
+
+	if(event.type == sf::Event::TextEntered) {
+		char c = event.text.unicode;
+		if(c == '1') {
+			m_uiState = eUiState::Inventory;
+		}
+		if(c == '2') {
+			m_uiState = eUiState::Container;
+		}
+	}
 }
 

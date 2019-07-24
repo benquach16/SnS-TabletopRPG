@@ -3,7 +3,6 @@
 
 CorpseObject::CorpseObject(const std::string& name): m_name(name), m_race(eCreatureRace::Human)
 {
-	
 }
 
 

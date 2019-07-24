@@ -5,7 +5,7 @@
 		"length": "verylong",
 		"type": "polearm",
 		"hands": 2,
-		"cost": 300,
+		"cost": 500,
 		"hook": true,
 		"components": [
 			{
@@ -71,7 +71,7 @@
 		"length": "extended",
 		"type": "polearm",
 		"hands": 2,
-		"cost": 75,
+		"cost": 100,
 		"hook": false,
 		"components": [
 			{
@@ -106,7 +106,7 @@
 		"length": "close",
 		"type": "brawling",
 		"hands": 1,
-		"cost": 50,
+		"cost": 75,
 		"hook": false,
 		"components": [
 			{
@@ -129,7 +129,7 @@
 		"length": "verylong",
 		"type": "polearm",
 		"hands": 2,
-		"cost": 1000,
+		"cost": 1500,
 		"hook": true,
 		"components": [
 			{
@@ -172,7 +172,7 @@
 		"length": "short",
 		"type": "sword",
 		"hands": 1,
-		"cost": 100,
+		"cost": 125,
 		"hook": false,
 		"components": [
 			{
@@ -195,7 +195,7 @@
 		"length": "short",
 		"type": "sword",
 		"hands": 1,
-		"cost": 50,
+		"cost": 75,
 		"hook": false,
 		"components": [
 			{
@@ -217,7 +217,7 @@
 		"description": "The basis of all polearms. Surprisingly effective against armored foes.",
 		"length": "extended",
 		"type": "polearm",
-		"hands": 1,
+		"hands": 2,
 		"cost": 25,
 		"hook": false,
 		"components": [
@@ -237,11 +237,11 @@
 	},
 	"1048": {
 		"name": "Halberd",
-		"description":"The quintessential infantry weapon. Has a top spike, axe, and a beak.",
+		"description":"The quintessential infantry weapon. Has a top spike, axe, and an armor piercing beak.",
 		"length": "extended",
 		"type": "polearm",
 		"hands": 2,
-		"cost": 150,
+		"cost": 300,
 		"hook": true,
 		"components": [
 			{
@@ -284,7 +284,7 @@
 		"length": "long",
 		"type": "longsword",
 		"hands": 2,
-		"cost": 150,
+		"cost": 300,
 		"hook": false,
 		"components": [
 			{
@@ -307,7 +307,7 @@
 		"length": "verylong",
 		"type": "polearm",
 		"hands": 2,
-		"cost": 6000,
+		"cost": 10000,
 		"hook": true,
 		"components": [
 			{

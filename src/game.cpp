@@ -50,6 +50,8 @@ void Game::run()
 	ui.initializeCombatUI(&playerObject->getCombatInstance());
 	SelectorObject selector;
 	GFXSelector gfxSelector;
+	
+	Object* pickup = nullptr;
 	while (m_window.isOpen())
 	{
 		m_window.clear();
@@ -105,11 +107,13 @@ void Game::run()
 				m_currentState = eGameState::SelectionMode;
 			}
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::P) {
-				const Object *object = level.getObjectMutable(playerObject->getPosition(), playerObject);
+				Object *object = level.getObjectMutable(playerObject->getPosition(), playerObject);
 				if(object != nullptr) {
 					switch(object->getObjectType()) {
 					case eObjectTypes::Corpse:
 						Log::push("Searching corpse..");
+						pickup = object;
+						m_currentState = eGameState::Pickup;
 						break;
 					case eObjectTypes::Creature:
 						Log::push("There is a creature here. You need to kill them if you want to loot them.");
@@ -218,6 +222,13 @@ void Game::run()
 			if(event.type == sf::Event::KeyReleased && event.key.code ==sf::Keyboard::I) {
 				m_currentState = eGameState::Playing;
 			}
+		} else if(m_currentState == eGameState::Pickup) {
+			assert(pickup != nullptr);
+			ui.runTrade(event, playerObject->getInventoryMutable(), pickup->getInventoryMutable());
+			if(event.type == sf::Event::KeyReleased && event.key.code ==sf::Keyboard::P) {
+				m_currentState = eGameState::Playing;
+			}
+
 		}
 
 		if(tick > 105000) {

@@ -2,6 +2,7 @@
 
 #include "combatui.h"
 #include "inventoryui.h"
+#include "tradeui.h"
 
 class CombatManager;
 class PlayerObject;
@@ -14,6 +15,7 @@ public:
 
 	void run(sf::Event event);
 	void runInventory(sf::Event event, PlayerObject* player);
+	void runTrade(sf::Event event, std::map<int, int>& inventory, std::map<int, int>& container);
 private:
 	enum class eGameUIState {
 		
@@ -21,4 +23,5 @@ private:
 	};
 	CombatUI m_combatUI;
 	InventoryUI m_inventoryUI;
+	TradeUI m_tradeUI;
 };

@@ -16,9 +16,7 @@ public:
 	std::string getDescription() const override;
 	eObjectTypes getObjectType() const override { return eObjectTypes::Corpse; }
 	void setInventory(const std::map<int, int>& inventory) { m_inventory = inventory; }
-	const std::map<int, int>& getInventory() const { return m_inventory; }
 protected:
 	std::string m_name;
 	eCreatureRace m_race;
-	std::map<int, int> m_inventory;
 };

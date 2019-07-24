@@ -15,4 +15,8 @@ void GameUI::runInventory(sf::Event event, PlayerObject* player)
 	m_inventoryUI.run(event, player);
 }
 
+void GameUI::runTrade(sf::Event event, std::map<int, int>& inventory, std::map<int, int>& container)
+{
+	m_tradeUI.run(event, inventory, container);
+}
 

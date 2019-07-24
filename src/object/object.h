@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 struct vector2d
 {
@@ -31,7 +32,7 @@ public:
 	virtual std::string getDescription() const = 0;
 	virtual eObjectTypes getObjectType() const = 0;
 	virtual bool deleteMe() const { return false; }
-	virtual void run(const Level*) {}
+	virtual void run(const Level *);
 	void setPosition(int x, int y)
 	{
 		m_position.x = x;
@@ -44,9 +45,13 @@ public:
 	void moveUp() { m_position.y--; }
 	void moveLeft() { m_position.x--; }
 	void moveRight() { m_position.x++; }
+
+	const std::map<int, int>& getInventory() const { return m_inventory; }
+	std::map<int, int>& getInventoryMutable() { return m_inventory; }
 protected:
 	vector2d m_position;
 
+	std::map<int, int> m_inventory;
 	//should be assigned a unique id on creation
 	int m_id;
 };
