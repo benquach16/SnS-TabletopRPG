@@ -23,7 +23,7 @@ private:
 		Detailed,
 		Profile
 	};
-
+	bool m_equipped;
 	eUiState m_uiState;
 	int m_id;
 };

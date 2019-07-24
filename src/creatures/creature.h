@@ -9,6 +9,8 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <queue>
+#include <unordered_map>
 
 static constexpr int cBaseBTN = 3;
 //different based on race
@@ -70,6 +72,7 @@ public:
 	void equipArmor(int id);
 	bool canEquipArmor(int id);
 	ArmorSegment getArmorAtPart(eBodyParts part);
+	void removeArmor(int id);
 
 	// for current weapon
 	int getCombatPool() const { return m_combatPool; }
@@ -131,6 +134,9 @@ protected:
 
 	Offense m_currentOffense;
 	Defense m_currentDefense;
+
+	std::queue<Offense> m_offenseQueue;
+	std::queue<Defense> m_defenseQueue;
 
 	//index
 	int m_primaryWeaponId;

@@ -137,6 +137,12 @@ bool Creature::canEquipArmor(int id)
 	return true;
 }
 
+void Creature::removeArmor(int id)
+{
+	m_armor.erase(remove(m_armor.begin(), m_armor.end(), id), m_armor.end());
+	applyArmor();
+}
+
 void Creature::resetCombatPool()
 {
 	//carryover impact damage across tempos
@@ -222,7 +228,7 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
 
 	int combatPool = attacker->getCombatPool() + attacker->getSpeed();
 
-	constexpr int bufferDie = 2;
+	int bufferDie = effolkronium::random_static::get(1, 5);
 	if((combatPool * 1.5) + bufferDie < m_combatPool + getSpeed()) {
 		int diff = (getSpeed() - attacker->getSpeed()) * 1.5;
 		int dice = diff + bufferDie;

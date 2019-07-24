@@ -317,8 +317,10 @@ void CombatInstance::doStealInitiative()
 	Creature::Defense defend = defender->getQueuedDefense();
 	const Weapon* offenseWeapon = attacker->getPrimaryWeapon();
 	const Weapon* defenseWeapon = defender->getPrimaryWeapon();
-
+	int reachCost = static_cast<int>(defenseWeapon->getLength()) - static_cast<int>(m_currentReach);
+	reachCost = abs(reachCost);
 	//do dice to steal initiative first
+	//this polls for offense since the initiative steal is stored inside the defense struct
 	if(defender->isPlayer() == true) {
 		//wait until player inputs
 		Player* player = static_cast<Player*>(defender);
@@ -329,7 +331,7 @@ void CombatInstance::doStealInitiative()
 
 	}
 	else {
-		defender->doOffense(attacker, true);
+		defender->doOffense(attacker, reachCost, true);
 	}
 	
 	writeMessage(defender->getName() + " attempts to steal intiative using " + to_string(defend.dice) +

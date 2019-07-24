@@ -10,7 +10,7 @@
 
 using namespace std;
 
-InventoryUI::InventoryUI() : m_uiState(eUiState::Backpack), m_id(-1)
+InventoryUI::InventoryUI() : m_uiState(eUiState::Backpack), m_id(-1), m_equipped(false)
 {
 }
 constexpr int cDisplayLines = 28;
@@ -63,6 +63,7 @@ void InventoryUI::doBackpack(sf::Event event, PlayerObject* player)
 			char c = event.text.unicode;
 			if(c == idx) {
 				m_id = it.first;
+				m_equipped = false;
 				m_uiState = eUiState::Detailed;
 			}
 		}
@@ -116,6 +117,7 @@ void InventoryUI::doEquipped(sf::Event event, PlayerObject* player)
 			char c = event.text.unicode;
 			if(c == idx) {
 				m_id = armorId[i];
+				m_equipped = true;
 				m_uiState = eUiState::Detailed;
 			}
 		}
@@ -152,7 +154,6 @@ void InventoryUI::doEquipped(sf::Event event, PlayerObject* player)
 		}
 		if(c == idx) {
 			m_id = player->getCreatureComponent()->getPrimaryWeaponId();
-			cout << m_id << endl;
 			m_uiState = eUiState::Detailed;
 		}
 	}
@@ -189,11 +190,18 @@ void InventoryUI::displayDetail(sf::Event event, PlayerObject* player)
 		str += '\n';
 
 		if(event.type == sf::Event::TextEntered && event.text.unicode == 'e') {
-			if(player->getCreatureComponent()->canEquipArmor(m_id)) {
-				player->getCreatureComponent()->equipArmor(m_id);
-				player->removeItem(m_id);
+			if(m_equipped == false) {
+				if(player->getCreatureComponent()->canEquipArmor(m_id)) {
+					player->getCreatureComponent()->equipArmor(m_id);
+					player->removeItem(m_id);
+					m_uiState = eUiState::Equipped;
+				}
+			} else {
+				player->getCreatureComponent()->removeArmor(m_id);
+				player->addItem(m_id);
 				m_uiState = eUiState::Equipped;
 			}
+			
 		}
 	}
 	if(item->getItemType() == eItemType::Weapon) {
@@ -212,7 +220,8 @@ void InventoryUI::displayDetail(sf::Event event, PlayerObject* player)
 			str += "]\n";
 		}
 
-		if(event.type == sf::Event::TextEntered && event.text.unicode == 'e') {
+		//don't allow fists since they dont exist yet
+		if(event.type == sf::Event::TextEntered && event.text.unicode == 'e' && m_equipped == false) {
 			player->addItem(player->getCreatureComponent()->getPrimaryWeaponId());
 			player->getCreatureComponent()->setWeapon(m_id);
 			player->removeItem(m_id);

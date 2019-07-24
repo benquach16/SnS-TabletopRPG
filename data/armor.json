@@ -55,7 +55,7 @@
         "AP": 0.0,
         "rigid": false,
         "metal": false,
-        "coverage": ["thigh", "knee", "shin", "groin"],
+        "coverage": ["thigh", "knee", "shin", "groin", "hip"],
         "layer": "cloth",
         "type": "none"
     },
