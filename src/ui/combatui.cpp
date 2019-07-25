@@ -102,14 +102,18 @@ void CombatUI::run(sf::Event event)
 		return;
 	}
 	if(m_instance->getState() == eCombatState::DualOffense1 && m_instance->isAttackerPlayer() == true) {
-		m_offenseUI.run(event, player, target);
+		m_offenseUI.run(event, player, target, true);
 		return;
 	}
 	if(m_instance->getState() == eCombatState::DualOffense2 && m_instance->isAttackerPlayer() == true) {
-		m_offenseUI.run(event, player, target);
+		m_offenseUI.run(event, player, target, true);
 		return;
 	}
 	if(m_instance->getState() == eCombatState::StolenOffense && m_instance->isAttackerPlayer() == true) {
+		doStolenOffense(event);
+		return;
+	}
+	if(m_instance->getState() == eCombatState::DualOffenseStealInitiative && m_instance->isAttackerPlayer() == true) {
 		doStolenOffense(event);
 		return;
 	}

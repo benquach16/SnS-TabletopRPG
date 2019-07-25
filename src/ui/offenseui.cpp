@@ -9,7 +9,7 @@ void OffenseUI::run(sf::Event event, Player* player, Creature* target, bool allo
 {
 	switch(m_currentState) {
 	case eUiState::ChooseManuever:
-		doManuever(event, player);
+		doManuever(event, player, allowStealInitiative);
 		break;
 	case eUiState::ChooseComponent:
 		doComponent(event, player);
@@ -28,14 +28,18 @@ void OffenseUI::run(sf::Event event, Player* player, Creature* target, bool allo
 	}
 }
 
-void OffenseUI::doManuever(sf::Event event, Player* player)
+void OffenseUI::doManuever(sf::Event event, Player* player, bool allowStealInitiative)
 {
 	UiCommon::drawTopPanel();
 	
 	sf::Text text;
 	text.setCharacterSize(cCharSize);
 	text.setFont(Game::getDefaultFont());
-	text.setString("Choose attack:\na - Swing\nb - Thrust\nc - Pinpoint Thrust (2AP)\nd - Feint swing (2AP)\ne - Feint thrust (2AP)\nf - Inspect Target");
+	string str = "Choose attack:\na - Swing\nb - Thrust\nc - Pinpoint Thrust (2AP)\nd - Feint swing (2AP)\ne - Feint thrust (2AP)\nf - Beat (1AP)\ng - Hook (1AP)\nh - Inspect Target";
+	if(allowStealInitiative == true) {
+		str += "\ni - Steal Initiative";
+	}
+	text.setString(str);
 	Game::getWindow().draw(text);
 
 	if(event.type == sf::Event::TextEntered) {
@@ -76,9 +80,10 @@ void OffenseUI::doManuever(sf::Event event, Player* player)
 			else {
 			}
 		}
-		if(c == 'f') {
+		if(c == 'h') {
 			m_currentState = eUiState::InspectTarget;
 		}
+
 	}
 }
 

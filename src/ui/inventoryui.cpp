@@ -174,6 +174,7 @@ void InventoryUI::displayDetail(sf::Event event, PlayerObject* player)
 
 	string str;
 	const Item* item = ItemTable::getSingleton()->get(m_id);
+	str += "Selected Item (E to equip/use, D to drop)\n";
 	str += item->getName() + '\n';
 	str += item->getDescription() + '\n';
 	str += "Type: " + itemTypeToString(item->getItemType()) + '\n';
