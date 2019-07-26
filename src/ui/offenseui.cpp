@@ -83,7 +83,10 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool allowStealIniti
 		if(c == 'h') {
 			m_currentState = eUiState::InspectTarget;
 		}
-
+		if(c == 'i' && allowStealInitiative == true) {
+			player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
+			cout << "set" <<endl;
+		}
 	}
 }
 

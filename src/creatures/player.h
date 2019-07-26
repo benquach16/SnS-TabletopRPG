@@ -17,6 +17,7 @@ public:
 	void setOffenseDice(int dice) { m_currentOffense.dice = dice; }
 	void setOffenseComponent(Component* component) { m_currentOffense.component = component; }
 	void setOffenseTarget(eHitLocations location) { m_currentOffense.target = location; }
+	void setOffenseLinked() { m_currentOffense.linked = true; }
 
 	void setDefenseManuever(eDefensiveManuevers manuever) { m_currentDefense.manuever = manuever; }
 	void setDefenseDice(int dice) { m_currentDefense.dice = dice; }

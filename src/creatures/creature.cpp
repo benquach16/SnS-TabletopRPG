@@ -8,7 +8,8 @@ using namespace std;
 
 Creature::Creature() : m_BTN(cBaseBTN), m_brawn(1), m_agility(1),
 					   m_cunning(1), m_perception(1), m_will(1), m_primaryWeaponId(0), m_combatPool(0),
-					   m_currentState(eCreatureState::Idle), m_bonusDice(0), m_bloodLoss(0)
+					   m_currentState(eCreatureState::Idle), m_bonusDice(0), m_bloodLoss(0),
+					   m_hasOffense(false), m_hasDefense(false), m_hasPosition(false)
 {
 	
 }
@@ -158,7 +159,7 @@ void Creature::addAndResetBonusDice()
 	m_bonusDice = 0;
 }
 
-void Creature::doOffense(const Creature* target, int reachCost, bool allin)
+void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool dualRedThrow)
 {
 	const Weapon* weapon = getPrimaryWeapon();
 
@@ -185,6 +186,12 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin)
 		m_currentOffense.dice = m_combatPool;
 	} else {
 		m_currentOffense.dice = dice;
+	}
+
+	if(dualRedThrow == true && m_combatPool > 0) {
+		m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
+		m_currentDefense.dice = m_combatPool - m_currentOffense.dice;
+		m_combatPool -= m_currentDefense.dice;
 	}
 }
 
@@ -241,11 +248,14 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
 	return false;
 }
 
-void Creature::doStolenInitiative(const Creature* defender)
+void Creature::doStolenInitiative(const Creature* defender, bool allin)
 {
 	m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
 	Defense defend = defender->getQueuedDefense();
 	m_currentDefense.dice = min(m_combatPool, defend.dice);
+	if(allin == true) {
+		m_currentDefense.dice = m_combatPool;
+	}
 }
 
 eInitiativeRoll Creature::doInitiative()
@@ -256,6 +266,11 @@ eInitiativeRoll Creature::doInitiative()
 		return eInitiativeRoll::Attack;
 	}
 	return eInitiativeRoll::Defend;
+}
+
+void Creature::clearCreatureManuevers()
+{
+
 }
 
 void Creature::clearArmor()

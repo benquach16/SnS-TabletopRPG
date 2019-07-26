@@ -25,6 +25,7 @@ void CombatUI::resetState()
 	m_offenseUI.resetState();
 	m_initiativeState = eInitiativeSubState::ChooseInitiative;
 	m_stolenOffenseState = eStolenOffenseSubState::ChooseDice;
+	m_dualRedState = eDualRedStealSubState::ChooseInitiative;
 }
 
 void CombatUI::run(sf::Event event)
@@ -102,7 +103,11 @@ void CombatUI::run(sf::Event event)
 		return;
 	}
 	if(m_instance->getState() == eCombatState::DualOffense1 && m_instance->isAttackerPlayer() == true) {
-		m_offenseUI.run(event, player, target, true);
+		if(m_dualRedState == eDualRedStealSubState::Finished) {
+			m_offenseUI.run(event, player, target, true);
+		} else {
+			doDualRedSteal(event);
+		}
 		return;
 	}
 	if(m_instance->getState() == eCombatState::DualOffense2 && m_instance->isAttackerPlayer() == true) {
@@ -113,8 +118,19 @@ void CombatUI::run(sf::Event event)
 		doStolenOffense(event);
 		return;
 	}
-	if(m_instance->getState() == eCombatState::DualOffenseStealInitiative && m_instance->isAttackerPlayer() == true) {
-		doStolenOffense(event);
+	if(m_instance->getState() == eCombatState::DualOffenseStealInitiative && m_instance->isDefenderPlayer() == true) {
+
+		if(m_stolenOffenseState == eStolenOffenseSubState::Finished) {
+			m_offenseUI.run(event, player, target);
+		} else {
+			doStolenOffense(event);
+			
+		}
+		
+		return;
+	}
+	if(m_instance->getState() == eCombatState::DualOffenseSecondInitiative && m_instance->isDefenderPlayer() == true) {
+		doStolenOffense(event);	
 		return;
 	}
 	if(m_instance->getState() == eCombatState::StealInitiative) {
@@ -180,11 +196,7 @@ void CombatUI::doInitiative()
 
 void CombatUI::doStolenOffense(sf::Event event)
 {
-	auto windowSize = Game::getWindow().getSize();
-	
-	sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize*12));
-	bkg.setFillColor(sf::Color(12, 12, 23));
-	Game::getWindow().draw(bkg);
+	UiCommon::drawTopPanel();
 	Player* player = static_cast<Player*>(m_instance->getSide1());
 
 	if(m_stolenOffenseState == eStolenOffenseSubState::ChooseDice) {
@@ -203,6 +215,48 @@ void CombatUI::doStolenOffense(sf::Event event)
 			player->setDefenseReady();
 			m_numberInput.reset();
 			m_stolenOffenseState = eStolenOffenseSubState::Finished;
+		}
+
+		m_numberInput.setMax(player->getCombatPool());
+		m_numberInput.run(event);
+		m_numberInput.setPosition(sf::Vector2f(0, cCharSize));
+	}
+}
+
+void CombatUI::doDualRedSteal(sf::Event event)
+{
+	UiCommon::drawTopPanel();
+
+	Player* player = static_cast<Player*>(m_instance->getSide1());
+	if(m_dualRedState == eDualRedStealSubState::ChooseInitiative) {
+		sf::Text text;
+		text.setCharacterSize(cCharSize);
+		text.setFont(Game::getDefaultFont());
+		text.setString("Steal Initiative?\na - Yes\nb - No");
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) == true) {
+			player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
+			m_dualRedState = eDualRedStealSubState::ChooseDice;
+		}
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::B) == true) {
+			m_dualRedState = eDualRedStealSubState::Finished;
+		}
+		Game::getWindow().draw(text);
+	} else if (m_dualRedState == eDualRedStealSubState::ChooseDice) {
+		sf::Text text;
+		text.setCharacterSize(cCharSize);
+		text.setFont(Game::getDefaultFont());
+		text.setString("Initiative roll, allocate action points (" + std::to_string(player->getCombatPool()) + " action points left):");
+
+		Game::getWindow().draw(text);
+
+		if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
+			player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
+			player->setDefenseDice(m_numberInput.getNumber());
+			player->reduceCombatPool(m_numberInput.getNumber());
+			//last one so set flag
+			player->setDefenseReady();
+			m_numberInput.reset();
+			m_dualRedState = eDualRedStealSubState::Finished;
 		}
 
 		m_numberInput.setMax(player->getCombatPool());

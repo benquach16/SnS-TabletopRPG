@@ -11,7 +11,7 @@ using namespace std;
 
 CombatInstance::CombatInstance(): m_initiative(eInitiative::Side1), m_side1(nullptr), m_side2(nullptr),
 								m_currentTempo(eTempo::First), m_currentState(eCombatState::Uninitialized), 
-								m_currentReach(eLength::Hand), m_dualWhiteTimes(0)
+								m_currentReach(eLength::Hand), m_dualWhiteTimes(0), m_dualRedThrow(false)
 {
 }
 
@@ -91,6 +91,7 @@ void CombatInstance::doRollInitiative()
 			int side2Successes = DiceRoller::rollGetSuccess(m_side2->getBTN(), m_side2->getWill());
 
 			m_initiative = side1Successes < side2Successes ? eInitiative::Side1 : eInitiative::Side2;
+
 			if(m_initiative == eInitiative::Side1) {
 				writeMessage(m_side1->getName() + " takes initiative");
 			} else {
@@ -121,11 +122,15 @@ void CombatInstance::doRollInitiative()
 		int side2Successes = DiceRoller::rollGetSuccess(m_side2->getBTN(), m_side2->getSpeed());
 
 		m_initiative = side1Successes < side2Successes ? eInitiative::Side1 : eInitiative::Side2;
+		
+		//DEBUG
+		m_initiative = eInitiative::Side1;
 		if(m_initiative == eInitiative::Side1) {
 			writeMessage(m_side1->getName() + " declares their attack first");
 		} else {
 			writeMessage(m_side2->getName() + " declares their attack first");
 		}
+		m_dualRedThrow = true;
 		m_currentState = eCombatState::DualOffense1;
 		return;
 	}
@@ -176,7 +181,7 @@ bool CombatInstance::doOffense()
 		} 
 	}
 	else {
-		attacker->doOffense(defender, reachCost);
+		attacker->doOffense(defender, reachCost, false, m_dualRedThrow);
 	}
 	if(reachCost != 0) {
 		writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost) +
@@ -184,7 +189,7 @@ bool CombatInstance::doOffense()
 		attacker->reduceOffenseDie(reachCost);
 		attacker->reduceCombatPool(min(reachCost, offenseCombatPool));
 	}
-	Creature::Offense attack = attacker->getQueuedOffense();
+	Offense attack = attacker->getQueuedOffense();
 	
 	assert(attack.component != nullptr);
 	assert(attack.dice <= offenseCombatPool);
@@ -209,13 +214,72 @@ void CombatInstance::doDualOffense1()
 	Creature* defender = nullptr;
 	setSides(attacker, defender);
 	//person who rolled better on speed goes second
-
+	//allow stealing of initiative here
 	if(doOffense() == false) {
 		m_currentState = eCombatState::DualOffense1;
 		return;
 	}
+
+	Defense defense = attacker->getQueuedDefense();
+	if(defense.manuever == eDefensiveManuevers::StealInitiative) {
+		writeMessage(attacker->getName() + " allocates " + to_string(defense.dice) + " to steal initiative");
+		m_currentState = eCombatState::DualOffenseStealInitiative;
+		return;
+	}
 	switchInitiative();
+	
 	m_currentState = eCombatState::DualOffense2;
+}
+
+void CombatInstance::doDualOffenseStealInitiative()
+{
+	Creature *attacker = nullptr;
+	Creature *defender = nullptr;
+	setSides(attacker, defender);
+
+	const Weapon* defenseWeapon = defender->getPrimaryWeapon();
+
+	int reachCost = static_cast<int>(m_currentReach) - static_cast<int>(defenseWeapon->getLength());
+	reachCost = abs(reachCost);
+	if (defender->isPlayer() == true) {
+		//wait until player inputs
+		Player *player = static_cast<Player *>(defender);
+
+		//two staged ui
+		if (player->pollForDefense() == true) {
+			Defense defense = player->getQueuedDefense();
+			player->reduceCombatPool(defense.dice);
+		}
+		if (player->pollForOffense() == false) {
+			m_currentState = eCombatState::DualOffenseStealInitiative;
+			return;
+		}
+		
+	}
+	else {
+		//confusing nomenclature
+		defender->doOffense(attacker, reachCost, false, true);		
+	}
+	
+	Offense offense = defender->getQueuedOffense();
+	assert(offense.dice <= defender->getCombatPool());
+	defender->reduceCombatPool(offense.dice);
+
+	if(reachCost != 0) {
+		writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost) +
+					 " action points", Log::eMessageTypes::Announcement);
+		defender->reduceOffenseDie(reachCost);
+		defender->reduceCombatPool(min(reachCost, defender->getCombatPool()));
+	}
+	
+	Defense defense = defender->getQueuedDefense();
+	writeMessage(defender->getName() + " allocates " + to_string(defense.dice) + " for initiative");
+	writeMessage(defender->getName() + " " + offensiveManueverToString(defender->getQueuedOffense().manuever) + "s with " +
+				 defender->getPrimaryWeapon()->getName() + " at " + hitLocationToString(defender->getQueuedOffense().target) + " using " +
+				 defender->getQueuedOffense().component->getName() + " with " +
+				 to_string(defender->getQueuedOffense().dice) + " action points");
+
+	m_currentState = eCombatState::Resolution;
 }
 
 void CombatInstance::doDualOffense2()
@@ -229,7 +293,46 @@ void CombatInstance::doDualOffense2()
 		m_currentState = eCombatState::DualOffense2;
 		return;
 	}
+	Defense defense = attacker->getQueuedDefense();
+	if(defense.manuever == eDefensiveManuevers::StealInitiative) {
+		writeMessage(attacker->getName() + " allocates " + to_string(defense.dice) + " for initiative");
+		attacker->reduceCombatPool(defense.dice);
+	    //defender already declared initiative roll, just go to resolution
+		if(defender->getQueuedDefense().manuever == eDefensiveManuevers::StealInitiative) {
+			m_currentState = eCombatState::Resolution;
+			return;
+		}
+		m_currentState = eCombatState::DualOffenseSecondInitiative;
+		return;
+	}
+	
 	m_currentState = eCombatState::DualOffenseResolve;
+}
+
+void CombatInstance::doDualOffenseSecondInitiative()
+{
+	//both sides rolled red
+	Creature* attacker = nullptr;
+	Creature* defender = nullptr;
+	setSides(attacker, defender);
+
+	//defender is person who went first, they need to respond with dice allocation
+	if (defender->isPlayer() == true) {
+		//wait until player inputs
+		Player *player = static_cast<Player *>(defender);
+		if (player->pollForDefense() == false) {
+			m_currentState = eCombatState::DualOffenseSecondInitiative;
+			return;
+		}
+	}
+	else {
+		//confusing nomenclature
+		defender->doStolenInitiative(attacker, true);
+	}
+
+	Defense defense = defender->getQueuedDefense();
+	writeMessage(defender->getName() + " allocates " + to_string(defense.dice) + " action points for initiative");
+	m_currentState = eCombatState::Resolution;
 }
 
 void CombatInstance::doDefense()
@@ -254,7 +357,7 @@ void CombatInstance::doDefense()
 		defender->doDefense(attacker, m_currentTempo == eTempo::Second);		
 	}
 	
-	Creature::Defense defend = defender->getQueuedDefense();
+	Defense defend = defender->getQueuedDefense();
 	assert(defend.dice <= defenseCombatPool);
 	assert(defend.dice >= 0);
 	defender->reduceCombatPool(defend.dice);
@@ -299,7 +402,7 @@ void CombatInstance::doParryLinked()
 	else {
 		defender->doOffense(attacker, reachCost, m_currentTempo == eTempo::Second);		
 	}
-	Creature::Offense offense = defender->getQueuedOffense();
+	Offense offense = defender->getQueuedOffense();
 
 	writeMessage(defender->getName() + " links defense to counter with " + offense.component->getName());
 
@@ -314,7 +417,7 @@ void CombatInstance::doStealInitiative()
 	setSides(attacker, defender);
 
 	//then input manuever
-	Creature::Defense defend = defender->getQueuedDefense();
+	Defense defend = defender->getQueuedDefense();
 	const Weapon* offenseWeapon = attacker->getPrimaryWeapon();
 	const Weapon* defenseWeapon = defender->getPrimaryWeapon();
 	int reachCost = static_cast<int>(defenseWeapon->getLength()) - static_cast<int>(m_currentReach);
@@ -357,7 +460,7 @@ void CombatInstance::doStolenOffense()
 	else {
  		attacker->doStolenInitiative(defender);
 	}
-
+	
 	assert(attacker->getQueuedDefense().dice <= attacker->getCombatPool());
 	attacker->reduceCombatPool(attacker->getQueuedDefense().dice);
 	
@@ -369,11 +472,11 @@ void CombatInstance::doStolenOffense()
 	reachCost = abs(reachCost);
 	if(reachCost != 0) {
 		
-			writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost) +
+		writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost) +
 					 " action points", Log::eMessageTypes::Announcement);
-			defender->reduceOffenseDie(reachCost);
-			defender->reduceCombatPool(reachCost);
-			defender->reduceCombatPool(defender->getQueuedOffense().dice);
+		defender->reduceOffenseDie(reachCost);
+		defender->reduceCombatPool(reachCost);
+		defender->reduceCombatPool(defender->getQueuedOffense().dice);
 	}
 	
 	writeMessage(defender->getName() + " " + offensiveManueverToString(defender->getQueuedOffense().manuever) + "s with " +
@@ -383,21 +486,35 @@ void CombatInstance::doStolenOffense()
 	m_currentState = eCombatState::Resolution;
 }
 
+void CombatInstance::doResolution2()
+{
+	Creature* attacker = nullptr;
+	Creature* defender = nullptr;
+	setSides(attacker, defender);
+
+	//resolve all of the effects
+	
+	m_dualRedThrow = false;
+	switchTempo();
+	m_currentState = eCombatState::Offense;
+}
+
 void CombatInstance::doResolution()
 {	
 	Creature* attacker = nullptr;
 	Creature* defender = nullptr;
 	setSides(attacker, defender);
 
-	Creature::Offense attack = attacker->getQueuedOffense();
-	Creature::Defense defend = defender->getQueuedDefense();
+	Offense attack = attacker->getQueuedOffense();
+	Defense defend = defender->getQueuedDefense();
 
 	//determine who was originally attacking
 	if(defend.manuever == eDefensiveManuevers::StealInitiative) {
-
 		//original attacker gets advantage
-		int side1BTN = (m_side1 == attacker) ? m_side1->getBTN() - 1 : m_side1->getBTN();
-		int side2BTN = (m_side2 == attacker) ? m_side2->getBTN() - 1 : m_side2->getBTN();
+		int side1BTN = (m_side1 == attacker && m_dualRedThrow == false) ? m_side1->getAdvantagedBTN() : m_side1->getBTN();
+		cout << side1BTN << endl;
+		int side2BTN = (m_side2 == attacker && m_dualRedThrow == false) ? m_side2->getAdvantagedBTN() : m_side2->getBTN();
+		cout << side2BTN << endl;
 		//special case for thrust manuever, get an extra die
 		int side1Dice = (m_side1->getQueuedOffense().manuever == eOffensiveManuevers::Thrust) ?
 			m_side1->getQueuedDefense().dice + 1 : m_side1->getQueuedDefense().dice;
@@ -482,9 +599,9 @@ void CombatInstance::doResolution()
 			writeMessage("attack deflected with " + to_string(-MoS) + " successes");
 			if(defend.manuever == eDefensiveManuevers::ParryLinked) {
 				//resolve offense
-				Creature::Offense offense = defender->getQueuedOffense();
+				Offense offense = defender->getQueuedOffense();
 				int linkedOffenseMoS = DiceRoller::rollGetSuccess(defender->getBTN() + 1, MoS);
-				if(inflictWound(linkedOffenseMoS, offense, attacker) == true) {
+				if(linkedOffenseMoS > 0 && inflictWound(linkedOffenseMoS, offense, attacker) == true) {
 					m_currentState = eCombatState::FinishedCombat;
 					return;
 				}
@@ -499,6 +616,9 @@ void CombatInstance::doResolution()
 		}
 		
 	}
+	m_side1->clearCreatureManuevers();
+	m_side2->clearCreatureManuevers();
+	m_dualRedThrow = false;
 	switchTempo();
 	m_currentState = eCombatState::Offense;
 	
@@ -507,8 +627,8 @@ void CombatInstance::doResolution()
 void CombatInstance::doDualOffenseResolve()
 {
 	//dual aggression
-	Creature::Offense attack = m_side1->getQueuedOffense();
-	Creature::Offense attack2 = m_side2->getQueuedOffense();
+	Offense attack = m_side1->getQueuedOffense();
+	Offense attack2 = m_side2->getQueuedOffense();
 
 	int MoS = DiceRoller::rollGetSuccess(m_side1->getBTN(), attack.dice);
 	int MoS2 = DiceRoller::rollGetSuccess(m_side2->getBTN(), attack2.dice);
@@ -540,6 +660,7 @@ void CombatInstance::doDualOffenseResolve()
 		//reroll if no one died
 		m_currentState = eCombatState::RollInitiative;
 	}
+	m_dualRedThrow = false;
 	m_currentState = death == true ? eCombatState::FinishedCombat : m_currentState;
 }
 
@@ -557,7 +678,7 @@ void CombatInstance::doEndCombat()
 	m_currentState = eCombatState::Uninitialized;
 }
 
-bool CombatInstance::inflictWound(int MoS, Creature::Offense attack, Creature* target, bool manueverFirst)
+bool CombatInstance::inflictWound(int MoS, Offense attack, Creature* target, bool manueverFirst)
 {
 	
 	eBodyParts bodyPart = WoundTable::getSingleton()->getSwing(attack.target);
@@ -678,6 +799,7 @@ bool CombatInstance::isDefenderPlayer()
 
 void CombatInstance::run()
 {
+	//cout << (int)(m_currentState) << endl;
 	switch(m_currentState)
 	{
 	case eCombatState::Uninitialized:
@@ -704,8 +826,14 @@ void CombatInstance::run()
 	case eCombatState::DualOffense1:
 		doDualOffense1();
 		break;
+	case eCombatState::DualOffenseStealInitiative:
+		doDualOffenseStealInitiative();
+		break;
 	case eCombatState::DualOffense2:
 		doDualOffense2();
+		break;
+	case eCombatState::DualOffenseSecondInitiative:
+		doDualOffenseSecondInitiative();
 		break;
 	case eCombatState::Defense:
 		doDefense();
@@ -736,3 +864,4 @@ void CombatInstance::writeMessage(const std::string& str, Log::eMessageTypes typ
 	//we can choose not to display combatmanager messages if we want to.
 	Log::push(str, type);
 }
+

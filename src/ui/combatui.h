@@ -31,10 +31,18 @@ private:
 		Finished,
 	};
 
+	enum class eDualRedStealSubState : unsigned {
+		ChooseInitiative,
+		ChooseDice,
+		Finished
+	};
+
+
 	void resetState();
 	void doInitiative();
 	
 	void doStolenOffense(sf::Event event);
+	void doDualRedSteal(sf::Event event);
 
 	void showSide1Stats();
 	void showSide2Stats();
@@ -45,6 +53,7 @@ private:
 
 	eInitiativeSubState m_initiativeState;
 	eStolenOffenseSubState m_stolenOffenseState;
+	eDualRedStealSubState m_dualRedState;
 
 	DefenseUI m_defenseUI;
 	OffenseUI m_offenseUI;

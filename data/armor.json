@@ -154,5 +154,20 @@
         "coverage": ["crown"],
         "layer": "plate",
         "type": "plate"
+    },
+    "2053": {
+        "name": "Lamellar Cuirass",
+        "description": "A chestpiece made of metal scales that are laced together.",
+        "cost": 500,
+        "AV": 3,
+        "AP": 0.0,
+        "rigid": true,
+        "metal": false,
+        "coverage": [
+            "abs",
+            "ribs"
+        ],
+        "layer": "plate",
+        "type": "none"
     }
 }

@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include <queue>
+#include <unordered_map>
+
 #include "creatures/creature.h"
 #include "items/types.h"
 #include "log.h"
@@ -26,9 +29,12 @@ enum class eCombatState : unsigned
 	Uninitialized,
 	Initialized,
 	RollInitiative,
+	PreCombat,
 	ResetState, // used only for ui to observe combat manager state
+	DualOffenseStealInitiative,
 	DualOffense1,
 	DualOffense2,
+	DualOffenseSecondInitiative,
 	Offense,
 	StolenOffense,
 	Defense,
@@ -59,13 +65,16 @@ private:
 	void doRollInitiative();
 	void doResetState();
 	void doDualOffense1();
+	void doDualOffenseStealInitiative();
 	void doDualOffense2();
+	void doDualOffenseSecondInitiative();
 	void doStolenOffense();
 	//doOffense has a return type to poll player input for dual offense
 	bool doOffense();
 	void doDefense();
 	void doParryLinked();
 	void doStealInitiative();
+	void doResolution2();
 	void doResolution();
 	//this is a special case because if both sides roll to attack since both of their attacks resolve at the same time
 	void doDualOffenseResolve();
@@ -75,8 +84,9 @@ private:
 	void switchInitiative() { m_initiative = m_initiative == eInitiative::Side1 ? eInitiative::Side2 : eInitiative::Side1; }
 	void switchTempo();
 
-	bool inflictWound(int MoS, Creature::Offense attack, Creature* target, bool manueverFirst = false);
+	bool inflictWound(int MoS, Offense attack, Creature* target, bool manueverFirst = false);
 	void writeMessage(const std::string& str, Log::eMessageTypes type = Log::eMessageTypes::Standard);
+	void outputReachCost(int cost);
 	
 	eCombatState m_currentState;
 
@@ -86,10 +96,15 @@ private:
 	eInitiative m_initiative;
 
 	int m_dualWhiteTimes;
-
+	bool m_dualRedThrow;
 	bool m_inWind;
 	bool m_inGrapple;
 
 	Creature* m_side1;
 	Creature* m_side2;
+
+	std::unordered_map<Creature*, std::queue<Manuever*> > m_queues;
+
+	std::queue<Manuever*> m_side1ActionQueue;
+	std::queue<Manuever*> m_side2ActionQueue;
 };

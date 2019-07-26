@@ -5,6 +5,7 @@
 #include "../items/types.h"
 #include "../items/weapon.h"
 #include "../items/armor.h"
+#include "manuever.h"
 
 #include <vector>
 #include <map>
@@ -13,6 +14,8 @@
 #include <unordered_map>
 
 static constexpr int cBaseBTN = 3;
+static constexpr int cMinBTN = 2;
+static constexpr int cMaxBTN = 6;
 //different based on race
 static constexpr int cBaseBloodLoss = 8;
 
@@ -50,7 +53,9 @@ public:
 	int getReflex() const { return (m_agility + m_cunning)/2; }
 	int getSpeed() const { return (m_agility + m_brawn)/2; }
 
-	int getBTN() const { return m_BTN; }
+	int getBTN() const { return m_currentStance == eCreatureStance::Prone ? getDisavantagedBTN() : m_BTN; }
+	int getAdvantagedBTN() const { return std::max(m_BTN-1, cMinBTN); }
+	int getDisavantagedBTN() const { return std::min(m_BTN + 1, cMaxBTN); }
 	int getBloodLoss() const { return m_bloodLoss; }
 	void setBTN(int BTN) { m_BTN = BTN; }
 
@@ -86,16 +91,17 @@ public:
 	// AI functions
 	//move these to ai combat controller
 	virtual bool isPlayer() { return false; }
-	void doOffense(const Creature* target, int reachCost, bool allin = false);
+	void doOffense(const Creature* target, int reachCost, bool allin = false, bool dualRedThrow =false);
 
 	void doDefense(const Creature* attacker, bool isLastTempo);
 
-	void doStolenInitiative(const Creature* defender);
+	void doStolenInitiative(const Creature* defender, bool allin = false);
 
 	bool stealInitiative(const Creature* attacker, int& outDie);
 
 	eInitiativeRoll doInitiative();
 
+	/*
 	struct Offense {
 		eOffensiveManuevers manuever;
 		int dice;
@@ -103,16 +109,30 @@ public:
 		bool feint;
 		eHitLocations target;
 		eBodyParts pinpoint;
-		Component* component = nullptr;
+		Component* component;
+		Offense() : dice(0), linked(false), feint(false), stealInitiative(false), component(nullptr) {}
 	};
 	//this is reused in stealing initiative to hold die allocated to stealing
 	struct Defense {
 		eDefensiveManuevers manuever;
+		bool linked = false;
+		int dice = 0;
+	};
+
+	struct Position {
 		int dice;
 	};
+	*/ 
 
 	Offense getQueuedOffense() const { return m_currentOffense; }
 	Defense getQueuedDefense() const { return m_currentDefense; }
+
+	void clearCreatureManuevers();
+
+	void setProne() { m_currentStance = eCreatureStance::Prone; }
+	void setStand() { m_currentStance = eCreatureStance::Standing; }
+
+	eCreatureStance getStance() const { return m_currentStance; }
 
 	eCreatureState getCreatureState() { return m_currentState; }
 	bool isConscious() { return (m_currentState != eCreatureState::Unconscious) && (m_currentState != eCreatureState::Dead); }
@@ -121,7 +141,8 @@ public:
 	void kill() { m_currentState = eCreatureState::Dead; }
 protected:
 	eCreatureState m_currentState;
-	
+	eCreatureStance m_currentStance;
+
 	void clearArmor();
 	void applyArmor();
 	
@@ -134,9 +155,13 @@ protected:
 
 	Offense m_currentOffense;
 	Defense m_currentDefense;
+	Position m_currentPosition;
 
-	std::queue<Offense> m_offenseQueue;
-	std::queue<Defense> m_defenseQueue;
+	bool m_hasOffense;
+	bool m_hasDefense;
+	bool m_hasPosition;
+
+	std::vector<Manuever*> m_secondaryManuevers;
 
 	//index
 	int m_primaryWeaponId;
