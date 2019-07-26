@@ -107,6 +107,17 @@ std::string hitLocationToString(eHitLocations location)
 	case eHitLocations::Wing:
 		return "Wing";
 	}
-	std::cout << "bad thing : " << static_cast<int>(location) << std::endl;
+	//std::cout << "bad thing : " << static_cast<int>(location) << std::endl;
+	return "";
+}
+
+std::string stanceToString(eCreatureStance stance)
+{
+	switch(stance) {
+	case eCreatureStance::Standing:
+		return "Standing";
+	case eCreatureStance::Prone:
+		return "Prone";
+	}
 	return "";
 }

@@ -12,7 +12,7 @@
         "type": "none"
     },
     "2041": {
-        "name": "Chainmail shirt",
+        "name": "Chainmail shirt (short sleeved)",
         "description": "A short sleeved shirt made of chainmail.",
         "cost": 150,
         "AV": 3,
@@ -139,7 +139,7 @@
         "AP": 0.25,
         "rigid": false,
         "metal": true,
-        "coverage": ["crown"],
+        "coverage": ["crown", "neck"],
         "layer": "maille",
         "type": "maille"
     },
@@ -169,5 +169,71 @@
         ],
         "layer": "plate",
         "type": "none"
+    },
+    "2054": {
+        "name": "Maille mittens",
+        "description": "Protective mittens made of chainmail.",
+        "cost": 30,
+        "AV": 3,
+        "AP": 0.0,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "hands"
+        ],
+        "layer": "maille",
+        "type": "maille"
+    },
+    "2055": {
+        "name": "Chainmail shirt (long sleeved)",
+        "description": "A long sleeved shirt made of chainmail.",
+        "cost": 175,
+        "AV": 3,
+        "AP": 0.5,
+        "rigid": false,
+        "metal": true,
+        "coverage": [
+            "abs",
+            "ribs",
+            "shoulder",
+            "armpit",
+            "upperarm",
+            "elbow",
+            "forearm"
+        ],
+        "layer": "maille",
+        "type": "maille"
+    },
+    "2056": {
+        "name": "Maille skirt",
+        "description": "A skirt made of chainmail that provides lower body protection while preserving mobility.",
+        "cost": 100,
+        "AV": 3,
+        "AP": 0.25,
+        "rigid": false,
+        "metal": true,
+        "coverage": [
+            "hips",
+            "groin"
+        ],
+        "layer": "maille",
+        "type": "maille"
+    },
+    "2057": {
+        "name": "Maille chausses",
+        "description": "Protective leggings made of maille.",
+        "cost": 200,
+        "AV": 3,
+        "AP": 0.5,
+        "rigid": false,
+        "metal": true,
+        "coverage": [
+            "thigh",
+            "knee",
+            "shin",
+            "foot"
+        ],
+        "layer": "maille",
+        "type": "maille"
     }
 }

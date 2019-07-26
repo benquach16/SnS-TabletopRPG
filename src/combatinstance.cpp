@@ -1,3 +1,5 @@
+//I have lots of redundant code, refactor me!
+
 #include <iostream>
 #include <assert.h>
 
@@ -42,6 +44,9 @@ void CombatInstance::initCombat(Creature* side1, Creature* side2)
 
 	m_side1->setInCombat();
 	m_side2->setInCombat();
+
+	m_side1->setStand();
+	m_side2->setStand();
 
 	m_currentTempo = eTempo::First;
 	m_initiative = eInitiative::Side1;
@@ -123,8 +128,6 @@ void CombatInstance::doRollInitiative()
 
 		m_initiative = side1Successes < side2Successes ? eInitiative::Side1 : eInitiative::Side2;
 		
-		//DEBUG
-		m_initiative = eInitiative::Side1;
 		if(m_initiative == eInitiative::Side1) {
 			writeMessage(m_side1->getName() + " declares their attack first");
 		} else {
@@ -246,9 +249,8 @@ void CombatInstance::doDualOffenseStealInitiative()
 		Player *player = static_cast<Player *>(defender);
 
 		//two staged ui
-		if (player->pollForDefense() == true) {
-			Defense defense = player->getQueuedDefense();
-			player->reduceCombatPool(defense.dice);
+		if(player->pollForDefense() == true) {
+			player->reduceCombatPool(player->getQueuedDefense().dice);
 		}
 		if (player->pollForOffense() == false) {
 			m_currentState = eCombatState::DualOffenseStealInitiative;
@@ -296,7 +298,7 @@ void CombatInstance::doDualOffense2()
 	Defense defense = attacker->getQueuedDefense();
 	if(defense.manuever == eDefensiveManuevers::StealInitiative) {
 		writeMessage(attacker->getName() + " allocates " + to_string(defense.dice) + " for initiative");
-		attacker->reduceCombatPool(defense.dice);
+		//attacker->reduceCombatPool(defense.dice);
 	    //defender already declared initiative roll, just go to resolution
 		if(defender->getQueuedDefense().manuever == eDefensiveManuevers::StealInitiative) {
 			m_currentState = eCombatState::Resolution;
@@ -328,6 +330,9 @@ void CombatInstance::doDualOffenseSecondInitiative()
 	else {
 		//confusing nomenclature
 		defender->doStolenInitiative(attacker, true);
+		//hacky way because of how dice is removed for now
+		Defense defense = defender->getQueuedDefense();
+		defender->reduceCombatPool(defense.dice);
 	}
 
 	Defense defense = defender->getQueuedDefense();
@@ -512,9 +517,9 @@ void CombatInstance::doResolution()
 	if(defend.manuever == eDefensiveManuevers::StealInitiative) {
 		//original attacker gets advantage
 		int side1BTN = (m_side1 == attacker && m_dualRedThrow == false) ? m_side1->getAdvantagedBTN() : m_side1->getBTN();
-		cout << side1BTN << endl;
+
 		int side2BTN = (m_side2 == attacker && m_dualRedThrow == false) ? m_side2->getAdvantagedBTN() : m_side2->getBTN();
-		cout << side2BTN << endl;
+
 		//special case for thrust manuever, get an extra die
 		int side1Dice = (m_side1->getQueuedOffense().manuever == eOffensiveManuevers::Thrust) ?
 			m_side1->getQueuedDefense().dice + 1 : m_side1->getQueuedDefense().dice;

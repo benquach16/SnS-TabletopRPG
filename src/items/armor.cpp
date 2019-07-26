@@ -13,7 +13,7 @@ using namespace std;
 
 const string filepath = "data/armor.json";
 
-Armor::Armor(const std::string &name, const std::string& description, int AV, int AP, eLayer layer, eArmorTypes type,
+Armor::Armor(const std::string &name, const std::string& description, int AV, float AP, eLayer layer, eArmorTypes type,
 			 bool rigid, bool metal, std::set<eBodyParts> coverage, int cost) :
 	Item(name, description, cost), m_AV(AV), m_AP(AP), m_rigid(rigid), m_metal(metal), 
 	m_coverage(coverage), m_layer(layer), m_type(type)

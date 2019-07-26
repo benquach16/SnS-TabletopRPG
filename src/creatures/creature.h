@@ -30,11 +30,6 @@ enum class eCreatureState {
 	Unconscious = 3
 };
 
-enum class eCreatureStance {
-	Standing,
-	Prone
-};
-
 class Creature
 {
 public:
@@ -78,6 +73,7 @@ public:
 	bool canEquipArmor(int id);
 	ArmorSegment getArmorAtPart(eBodyParts part);
 	void removeArmor(int id);
+	float getAP() const { return m_AP; }
 
 	// for current weapon
 	int getCombatPool() const { return m_combatPool; }

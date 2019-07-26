@@ -61,3 +61,8 @@ enum class eEffects
 	KD,
 	Death,
 };
+
+enum class eCreatureStance {
+	Standing,
+	Prone
+};

@@ -6,6 +6,7 @@
 #include "../items/weapon.h"
 #include "../items/utils.h"
 #include "../creatures/player.h"
+#include "../creatures/utils.h"
 #include "types.h"
 #include "common.h"
 
@@ -104,14 +105,18 @@ void CombatUI::run(sf::Event event)
 	}
 	if(m_instance->getState() == eCombatState::DualOffense1 && m_instance->isAttackerPlayer() == true) {
 		if(m_dualRedState == eDualRedStealSubState::Finished) {
-			m_offenseUI.run(event, player, target, true);
+			m_offenseUI.run(event, player, target, false);
 		} else {
 			doDualRedSteal(event);
 		}
 		return;
 	}
 	if(m_instance->getState() == eCombatState::DualOffense2 && m_instance->isAttackerPlayer() == true) {
-		m_offenseUI.run(event, player, target, true);
+		if(m_dualRedState == eDualRedStealSubState::Finished) {
+			m_offenseUI.run(event, player, target, false);
+		} else {
+			doDualRedSteal(event);
+		}
 		return;
 	}
 	if(m_instance->getState() == eCombatState::StolenOffense && m_instance->isAttackerPlayer() == true) {
@@ -119,14 +124,11 @@ void CombatUI::run(sf::Event event)
 		return;
 	}
 	if(m_instance->getState() == eCombatState::DualOffenseStealInitiative && m_instance->isDefenderPlayer() == true) {
-
 		if(m_stolenOffenseState == eStolenOffenseSubState::Finished) {
 			m_offenseUI.run(event, player, target);
 		} else {
 			doStolenOffense(event);
-			
 		}
-		
 		return;
 	}
 	if(m_instance->getState() == eCombatState::DualOffenseSecondInitiative && m_instance->isDefenderPlayer() == true) {
@@ -286,7 +288,8 @@ void CombatUI::showSide1Stats()
 	ap.setPosition(6, windowSize.y - logHeight - rectHeight + cCharSize);
 	ap.setString("Action Points : " + to_string(creature->getCombatPool()) +
 				 " - Success rate: " + to_string(creature->getSuccessRate()) + "%" +
-				 '\n' + "Blood loss: " + to_string(creature->getBloodLoss()));
+				 '\n' + "Blood loss: " + to_string(creature->getBloodLoss()) + '\n' +
+				 stanceToString(creature->getStance()));
 	
 	Game::getWindow().draw(ap);
 }
@@ -312,7 +315,8 @@ void CombatUI::showSide2Stats()
 	ap.setPosition(windowSize.x/2 + 5, windowSize.y - logHeight - rectHeight + cCharSize);
 	ap.setString("Action Points : " + to_string(creature->getCombatPool()) +
 				 " - Success rate: " + to_string(creature->getSuccessRate()) + "%"+
-				 '\n' + "Blood loss: " + to_string(creature->getBloodLoss()));
+				 '\n' + "Blood loss: " + to_string(creature->getBloodLoss()) + '\n' +
+				 stanceToString(creature->getStance()));
 	
 	Game::getWindow().draw(ap);
 }

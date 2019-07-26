@@ -73,7 +73,7 @@ void Creature::inflictWound(Wound* wound, bool manueverFirst)
 	auto KO1 = effects.find(eEffects::KO1);
 	auto KO2 = effects.find(eEffects::KO2);
 	auto KO3 = effects.find(eEffects::KO3);
-	
+	auto KO = effects.find(eEffects::KO);
 	if(KO1 != effects.end()) {
 		if(DiceRoller::rollGetSuccess(m_BTN, getGrit()) < 1) {
 			m_currentState = eCreatureState::Unconscious;	
@@ -89,6 +89,31 @@ void Creature::inflictWound(Wound* wound, bool manueverFirst)
 			m_currentState = eCreatureState::Unconscious;	
 		}
 	}
+	if(KO != effects.end()) {
+		m_currentState = eCreatureState::Unconscious;	
+	}
+	auto KD1 = effects.find(eEffects::KD1);
+	auto KD2 = effects.find(eEffects::KD2);
+	auto KD3 = effects.find(eEffects::KD3);
+	auto KD = effects.find(eEffects::KD);
+	if(KD1 != effects.end()) {
+		if(DiceRoller::rollGetSuccess(m_BTN, getReflex()) < 1) {
+			m_currentStance = eCreatureStance::Prone;
+		}
+	}
+	if(KD2 != effects.end()) {
+		if(DiceRoller::rollGetSuccess(m_BTN, getReflex()) < 2) {
+			m_currentStance = eCreatureStance::Prone;
+		}
+	}
+	if(KD3 != effects.end()) {
+		if(DiceRoller::rollGetSuccess(m_BTN, getReflex()) < 3) {
+			m_currentStance = eCreatureStance::Prone;
+		}
+	}
+	if(KD != effects.end()) {
+		m_currentStance = eCreatureStance::Prone;
+	}	
 	if (m_bloodLoss >= cBaseBloodLoss)
 	{
 		m_currentState = eCreatureState::Unconscious;
@@ -150,7 +175,9 @@ void Creature::resetCombatPool()
 	const Weapon* weapon = getPrimaryWeapon();
 	int carry = m_combatPool;
 	carry = min(0, carry);
-	m_combatPool = getProficiency(weapon->getType()) + getReflex() + carry - m_AP;
+	m_combatPool = getProficiency(weapon->getType()) + getReflex() + carry;
+	m_combatPool -= static_cast<int>(m_AP);
+	cout << getName() << m_combatPool << endl;
 }
 
 void Creature::addAndResetBonusDice()
@@ -170,7 +197,8 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
 	}
 
 	//replace me
-	m_currentOffense.target = target->getHitLocations()[rand()%target->getHitLocations().size() - 1];
+	m_currentOffense.target =
+		target->getHitLocations()[effolkronium::random_static::get(0, (int)target->getHitLocations().size() - 1)];
 	int dice = m_combatPool / 2 + effolkronium::random_static::get(0, m_combatPool/3)
 		- effolkronium::random_static::get(0, m_combatPool/3);
 
@@ -188,9 +216,11 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
 		m_currentOffense.dice = dice;
 	}
 
-	if(dualRedThrow == true && m_combatPool > 0) {
+	if(dualRedThrow == true && m_combatPool > 0 && rand() % 2 == 1) {
 		m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
 		m_currentDefense.dice = m_combatPool - m_currentOffense.dice;
+
+		//hacky since usually this happens in combatinstance
 		m_combatPool -= m_currentDefense.dice;
 	}
 }
@@ -297,5 +327,6 @@ void Creature::applyArmor()
 			m_armorValues[it].type = max(armor->getType(), m_armorValues[it].type);
 		}
 	}
+
 }
 							 
