@@ -12,8 +12,6 @@ GFXSelector::GFXSelector() : m_shape(sf::Vector2f(cWidth, cHeight))
 void GFXSelector::run(const SelectorObject* selector)
 {
     vector2d position = selector->getPosition();
-	position.x *= cWidth;
-	position.y *= cHeight;
 	m_shape.setPosition(coordsToScreen(sf::Vector2f(position.x, position.y)));
 
     Game::getWindow().draw(m_shape);

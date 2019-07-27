@@ -63,6 +63,9 @@ bool Level::isFreeSpace(int x, int y) const
 	if(x < 0 || y < 0 || x >= m_width || y >= m_height) {
 		return false;
 	}
+	if((*this)(x, y).m_type == eTileType::Wall) {
+		return false;
+	}
 	for(int i = 0; i < m_objects.size(); ++i) {
 		vector2d position = m_objects[i]->getPosition();
 		if(position.x == x && position.y == y && m_objects[i]->hasCollision() == true) {

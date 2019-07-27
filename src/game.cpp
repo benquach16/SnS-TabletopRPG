@@ -23,7 +23,9 @@ CombatManager Game::m_combatManager;
 
 void Game::initialize()
 {
-	m_window.create(sf::VideoMode(1600, 900), "window");
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 8;
+	m_window.create(sf::VideoMode(1600, 900), "window", sf::Style::Default, settings);
 	m_defaultFont.loadFromFile("data/fonts/MorePerfectDOSVGA.ttf");
 	m_currentState = eGameState::Playing;
 }
@@ -44,7 +46,9 @@ void Game::run()
 	GameUI ui;
 
 	Level level(30, 30);
-
+	level(3, 3).m_type = eTileType::Wall;
+	level(4, 3).m_type = eTileType::Wall;
+	level(5, 3).m_type = eTileType::Wall;
 	GFXLevel gfxlevel;
 	level.addObject(playerObject);
 	level.addObject(humanObject);
@@ -75,9 +79,9 @@ void Game::run()
 		aiTick += elapsedTime.asMicroseconds();
 		
 		sf::View v = getWindow().getDefaultView();
-		v.setSize(v.getSize().x, v.getSize().y * 2);
+		v.setSize(v.getSize().x, v.getSize().y*2);
 		//v.setCenter(v.getSize() *.5f);
-		sf::Vector2f center(playerObject->getPosition().x * cWidth, playerObject->getPosition().y * cHeight);
+		sf::Vector2f center(playerObject->getPosition().x, playerObject->getPosition().y);
 		center = coordsToScreen(center);
 		v.setCenter(center.x, center.y + 200);
 		getWindow().setView(v);	
@@ -249,7 +253,7 @@ void Game::run()
 		}
 
 		Log::run();
-		if(tick > 105000) {
+		if(tick > 100000) {
 			if (m_currentState == eGameState::InCombat)
 			{
 				//pause rest of game if player is in combat. combat between two NPCS can happen anytime

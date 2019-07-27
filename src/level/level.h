@@ -5,15 +5,21 @@
 
 #include "../object/object.h"
 
-enum eTileType
+enum eTileMaterial
 {
 	Stone,
-	Wall,
+	Wood,
+};
+enum eTileType
+{
+	Ground,
+	Wall
 };
 
 struct Tile
 {
-	eTileType m_type = eTileType::Stone;
+	eTileType m_type = eTileType::Ground;
+	eTileMaterial m_material = eTileMaterial::Stone;
 };
 
 class Level

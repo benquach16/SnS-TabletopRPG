@@ -21,6 +21,7 @@ private:
 		MainMenu,
 		Playing,
 		SelectionMode,
+		DialogueMode,
 		AttackMode,
 		Inventory,
 		Pickup,
