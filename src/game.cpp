@@ -24,7 +24,7 @@ CombatManager Game::m_combatManager;
 void Game::initialize()
 {
 	m_window.create(sf::VideoMode(1600, 900), "window");
-	m_defaultFont.loadFromFile("data/fonts/Consolas.ttf");
+	m_defaultFont.loadFromFile("data/fonts/MorePerfectDOSVGA.ttf");
 	m_currentState = eGameState::Playing;
 }
 
@@ -57,7 +57,6 @@ void Game::run()
 	
 	Object* pickup = nullptr;
 
-	
 	while (m_window.isOpen())
 	{
 		m_window.clear();
@@ -80,7 +79,7 @@ void Game::run()
 		//v.setCenter(v.getSize() *.5f);
 		sf::Vector2f center(playerObject->getPosition().x * cWidth, playerObject->getPosition().y * cHeight);
 		center = coordsToScreen(center);
-		v.setCenter(center.x, center.y);
+		v.setCenter(center.x, center.y + 200);
 		getWindow().setView(v);	
 		gfxlevel.run(&level, playerObject->getPosition());
 		//temporary until we get graphics queue up and running

@@ -5,7 +5,7 @@
 class GFXObject
 {
 public:
-	virtual void run() = 0;
+	int getZ() const { return m_Z; } 
 protected:
-
+	int m_Z;
 };

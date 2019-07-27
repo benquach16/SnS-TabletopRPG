@@ -615,7 +615,7 @@ void CombatInstance::doResolution()
 			if(defend.manuever == eDefensiveManuevers::ParryLinked) {
 				//resolve offense
 				Offense offense = defender->getQueuedOffense();
-				int linkedOffenseMoS = DiceRoller::rollGetSuccess(defender->getDisadvantagedBTN(), MoS);
+				int linkedOffenseMoS = DiceRoller::rollGetSuccess(defender->getDisadvantagedBTN(), -MoS);
 				cout << "Linked hits: " << linkedOffenseMoS << endl;
 				if(linkedOffenseMoS > 0 && inflictWound(linkedOffenseMoS, offense, attacker) == true) {
 					m_currentState = eCombatState::FinishedCombat;
