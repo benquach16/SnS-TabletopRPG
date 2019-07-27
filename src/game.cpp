@@ -11,6 +11,7 @@
 #include "object/humanobject.h"
 #include "object/selectorobject.h"
 #include "gfxobjects/gfxselector.h"
+#include "gfxobjects/utils.h"
 #include "object/relationmanager.h"
 
 using namespace std;
@@ -29,9 +30,10 @@ void Game::initialize()
 
 void Game::run()
 {
+	//clean me up
 	PlayerObject* playerObject = new PlayerObject;
 	HumanObject* humanObject = new HumanObject;
-
+	HumanObject* humanObject2 = new HumanObject;
 	//instance.initCombat(c1, c2);
 
 	sf::Clock clock;
@@ -41,17 +43,21 @@ void Game::run()
 
 	GameUI ui;
 
-	Level level(20, 20);
+	Level level(30, 30);
 
 	GFXLevel gfxlevel;
 	level.addObject(playerObject);
 	level.addObject(humanObject);
+	level.addObject(humanObject2);
 	humanObject->setPosition(5, 5);
+	humanObject2->setPosition(20, 20);
 	ui.initializeCombatUI(&playerObject->getCombatInstance());
 	SelectorObject selector;
 	GFXSelector gfxSelector;
 	
 	Object* pickup = nullptr;
+
+	
 	while (m_window.isOpen())
 	{
 		m_window.clear();
@@ -69,10 +75,20 @@ void Game::run()
 		tick += elapsedTime.asMicroseconds();
 		aiTick += elapsedTime.asMicroseconds();
 		
-		gfxlevel.run(&level);
-		ui.run(event);
-
-		Log::run();
+		sf::View v = getWindow().getDefaultView();
+		v.setSize(v.getSize().x, v.getSize().y * 2);
+		//v.setCenter(v.getSize() *.5f);
+		sf::Vector2f center(playerObject->getPosition().x * cWidth, playerObject->getPosition().y * cHeight);
+		center = coordsToScreen(center);
+		v.setCenter(center.x, center.y);
+		getWindow().setView(v);	
+		gfxlevel.run(&level, playerObject->getPosition());
+		//temporary until we get graphics queue up and running
+		if(m_currentState == eGameState::AttackMode || m_currentState == eGameState::SelectionMode) {
+			gfxSelector.run(&selector);
+		}
+		getWindow().setView(getWindow().getDefaultView());
+		ui.run(event);		
 		if(m_currentState == eGameState::Playing) {
 			vector2d pos = playerObject->getPosition();
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
@@ -171,7 +187,7 @@ void Game::run()
 					}
 				}
 			}
-			gfxSelector.run(&selector);
+
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::D) {
 				m_currentState = eGameState::Playing;
 			}
@@ -229,8 +245,11 @@ void Game::run()
 				m_currentState = eGameState::Playing;
 			}
 
+		} else if(m_currentState == eGameState::InCombat) {
+			ui.runCombat(event);
 		}
 
+		Log::run();
 		if(tick > 105000) {
 			if (m_currentState == eGameState::InCombat)
 			{
@@ -241,7 +260,7 @@ void Game::run()
 				
 			}
 	
-			m_combatManager.run();
+			//m_combatManager.run();
 			tick = 0;
 		}
 		
@@ -250,4 +269,6 @@ void Game::run()
 		m_window.display();
 		level.cleanup();
 	}
+
+	
 }

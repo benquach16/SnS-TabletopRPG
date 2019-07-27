@@ -28,3 +28,21 @@ std::string raceToString(eCreatureRace race)
 	}
 	return "";
 }
+
+eCreatureFaction stringToFaction(const std::string& str)
+{
+	if(str == "bandit") {
+		return eCreatureFaction::Bandit;
+	} else if (str == "wildlife") {
+		return eCreatureFaction::Wildlife;
+	}
+	return eCreatureFaction::None;
+}
+
+eCreatureRace stringToRace(const std::string& str)
+{
+	if(str == "goblin") {
+		return eCreatureRace::Goblin;
+	}
+	return eCreatureRace::Human;
+}

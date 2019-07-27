@@ -91,7 +91,7 @@
         "AP": 0.0,
         "rigid": false,
         "metal": false,
-        "coverage": ["hands"],
+        "coverage": ["hand"],
         "layer": "cloth",
         "type": "none"
     },

@@ -526,7 +526,7 @@
 				"effects":["drop1"]
 			},
 			"4": {
-				"text":["Pierces deep, but slides along the ribs and misses major organs. Roll for item drop."],
+				"text":["Pierces deep, but slides along the ribs and misses major organs."],
 				"effects":["BL1", "drop2"]
 			},
 			"5": {

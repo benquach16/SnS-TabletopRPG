@@ -7,7 +7,8 @@
 
 enum eTileType
 {
-	Stone
+	Stone,
+	Wall,
 };
 
 struct Tile

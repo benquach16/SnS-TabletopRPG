@@ -1,12 +1,16 @@
 #pragma once
 
 #include "gfxobject.h"
+#include "../object/object.h"
 
 class Level;
 
 class GFXLevel 
 {
 public:
-	void run(const Level* level);
+	GFXLevel();
+	void run(const Level* level, vector2d center);
+private:
+	sf::Texture m_texture;
 
 };

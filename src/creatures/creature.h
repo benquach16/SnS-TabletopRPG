@@ -48,9 +48,9 @@ public:
 	int getReflex() const { return (m_agility + m_cunning)/2; }
 	int getSpeed() const { return (m_agility + m_brawn)/2; }
 
-	int getBTN() const { return m_currentStance == eCreatureStance::Prone ? getDisavantagedBTN() : m_BTN; }
+	int getBTN() const { return m_currentStance == eCreatureStance::Prone ? getDisadvantagedBTN() : m_BTN; }
 	int getAdvantagedBTN() const { return std::max(m_BTN-1, cMinBTN); }
-	int getDisavantagedBTN() const { return std::min(m_BTN + 1, cMaxBTN); }
+	int getDisadvantagedBTN() const { return std::min(m_BTN + 1, cMaxBTN); }
 	int getBloodLoss() const { return m_bloodLoss; }
 	void setBTN(int BTN) { m_BTN = BTN; }
 

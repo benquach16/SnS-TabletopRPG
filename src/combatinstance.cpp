@@ -141,6 +141,11 @@ void CombatInstance::doRollInitiative()
 	m_currentState = eCombatState::RollInitiative;
 }
 
+void CombatInstance::doPreexchangeActions()
+{
+	m_currentState = eCombatState::Offense;
+}
+
 void CombatInstance::doResetState()
 {
 	m_currentState = eCombatState::RollInitiative;
@@ -248,9 +253,11 @@ void CombatInstance::doDualOffenseStealInitiative()
 		//wait until player inputs
 		Player *player = static_cast<Player *>(defender);
 
-		//two staged ui
+		//two staged ui, piggyback off of existing code
+		//this may cause isseus so add another ui state if it does
 		if(player->pollForDefense() == true) {
 			player->reduceCombatPool(player->getQueuedDefense().dice);
+			cout << "Two stage UI" << endl;
 		}
 		if (player->pollForOffense() == false) {
 			m_currentState = eCombatState::DualOffenseStealInitiative;
@@ -280,7 +287,7 @@ void CombatInstance::doDualOffenseStealInitiative()
 				 defender->getPrimaryWeapon()->getName() + " at " + hitLocationToString(defender->getQueuedOffense().target) + " using " +
 				 defender->getQueuedOffense().component->getName() + " with " +
 				 to_string(defender->getQueuedOffense().dice) + " action points");
-
+	switchInitiative();
 	m_currentState = eCombatState::Resolution;
 }
 
@@ -505,7 +512,8 @@ void CombatInstance::doResolution2()
 }
 
 void CombatInstance::doResolution()
-{	
+{
+	cout << "Resolving combat" << endl;
 	Creature* attacker = nullptr;
 	Creature* defender = nullptr;
 	setSides(attacker, defender);
@@ -515,6 +523,7 @@ void CombatInstance::doResolution()
 
 	//determine who was originally attacking
 	if(defend.manuever == eDefensiveManuevers::StealInitiative) {
+		cout << "Dual resolution" << endl;
 		//original attacker gets advantage
 		int side1BTN = (m_side1 == attacker && m_dualRedThrow == false) ? m_side1->getAdvantagedBTN() : m_side1->getBTN();
 
@@ -575,7 +584,8 @@ void CombatInstance::doResolution()
 				switchInitiative();
 			}
 		}
-	} else {	
+	} else {
+		cout << "Normal resolution" << endl;
 		//roll dice
 		int offenseSuccesses = DiceRoller::rollGetSuccess(attacker->getBTN(), attack.dice);
 		int defenseSuccesses = DiceRoller::rollGetSuccess(defender->getBTN(), defend.dice);
@@ -605,15 +615,16 @@ void CombatInstance::doResolution()
 			if(defend.manuever == eDefensiveManuevers::ParryLinked) {
 				//resolve offense
 				Offense offense = defender->getQueuedOffense();
-				int linkedOffenseMoS = DiceRoller::rollGetSuccess(defender->getBTN() + 1, MoS);
+				int linkedOffenseMoS = DiceRoller::rollGetSuccess(defender->getDisadvantagedBTN(), MoS);
+				cout << "Linked hits: " << linkedOffenseMoS << endl;
 				if(linkedOffenseMoS > 0 && inflictWound(linkedOffenseMoS, offense, attacker) == true) {
 					m_currentState = eCombatState::FinishedCombat;
 					return;
 				}
 			}
 			if(defend.manuever == eDefensiveManuevers::Counter) {
-				cout << "bonus: " << defenseSuccesses << endl;
-				defender->setBonusDice(defenseSuccesses);
+				cout << "bonus: " << offenseSuccesses << endl;
+				defender->setBonusDice(offenseSuccesses);
 				writeMessage(defender->getName() + " receives " + to_string(defenseSuccesses) + " action points in their next attack");
 			}
 			writeMessage(defender->getName() + " now has initative, becoming attacker");
@@ -666,6 +677,8 @@ void CombatInstance::doDualOffenseResolve()
 		m_currentState = eCombatState::RollInitiative;
 	}
 	m_dualRedThrow = false;
+	m_side1->clearCreatureManuevers();
+	m_side2->clearCreatureManuevers();
 	m_currentState = death == true ? eCombatState::FinishedCombat : m_currentState;
 }
 
@@ -702,6 +715,9 @@ bool CombatInstance::inflictWound(int MoS, Offense attack, Creature* target, boo
 	bool doBlunt = false;
 	//complicated armor calcs go here
 	finalDamage -= armorAtLocation.AV;
+	if(armorAtLocation.isMetal == true) {
+		cout << "hit metal armor" << endl;
+	}
 	if(armorAtLocation.isMetal == true && attack.component->getType() != eDamageTypes::Blunt && finalDamage > 0) {
 		if(attack.component->hasProperty(eWeaponProperties::MaillePiercing) == false &&
 		   armorAtLocation.type == eArmorTypes::Maille) {
@@ -804,7 +820,7 @@ bool CombatInstance::isDefenderPlayer()
 
 void CombatInstance::run()
 {
-	//cout << (int)(m_currentState) << endl;
+	cout << "CombatState:" << (int)(m_currentState) << endl;
 	switch(m_currentState)
 	{
 	case eCombatState::Uninitialized:
@@ -815,6 +831,8 @@ void CombatInstance::run()
 		break;
 	case eCombatState::RollInitiative:
 		doRollInitiative();
+		break;
+	case eCombatState::PreexchangeActions:
 		break;
 	case eCombatState::ResetState:
 		doResetState();

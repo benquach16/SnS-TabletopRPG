@@ -32,6 +32,7 @@ void CombatUI::resetState()
 void CombatUI::run(sf::Event event)
 {
 	if(m_instance == nullptr) {
+		cout << "this shouldnt happen" << endl;
 		return;
 	}
 
@@ -149,7 +150,6 @@ void CombatUI::run(sf::Event event)
 		return;
 	}
 	if(m_instance->getState() == eCombatState::FinishedCombat) {
-		m_instance = nullptr;
 		return;
 	}
 }

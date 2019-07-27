@@ -188,6 +188,7 @@ void Creature::addAndResetBonusDice()
 
 void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool dualRedThrow)
 {
+	cout << "allin : " << allin << endl;
 	const Weapon* weapon = getPrimaryWeapon();
 
 	m_currentOffense.manuever = eOffensiveManuevers::Thrust;
@@ -230,7 +231,8 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
 {
 	int diceAllocated = attacker->getQueuedOffense().dice;
 
-	if(diceAllocated + 3 < m_combatPool) {
+	constexpr int buffer = 3;
+	if(diceAllocated + buffer < m_combatPool && effolkronium::random_static::get(0, 1) == 1) {
 		m_currentDefense.manuever = eDefensiveManuevers::ParryLinked;
 		m_combatPool -= 1;
 	}
@@ -252,7 +254,7 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
 		return;
 	}
 	int dice = std::min(diceAllocated + effolkronium::random_static::get(0, diceAllocated/3)
-					   - effolkronium::random_static::get(0, diceAllocated/3)
+					   - effolkronium::random_static::get(0, diceAllocated/4)
 					   , m_combatPool);
 	dice = min(m_combatPool, dice);
 	dice = max(dice, 0);
@@ -266,8 +268,10 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
 	int combatPool = attacker->getCombatPool() + attacker->getSpeed();
 
 	int bufferDie = effolkronium::random_static::get(1, 5);
-	if((combatPool * 1.5) + bufferDie < m_combatPool + getSpeed()) {
-		int diff = (getSpeed() - attacker->getSpeed()) * 1.5;
+
+	constexpr float disadvantageMult = 1.5;
+	if((combatPool * disadvantageMult) + bufferDie < m_combatPool + getSpeed()) {
+		int diff = abs((getSpeed() - attacker->getSpeed()) * disadvantageMult);
 		int dice = diff + bufferDie;
 		if(m_combatPool > dice) {
 			outDie = dice;
@@ -300,7 +304,18 @@ eInitiativeRoll Creature::doInitiative()
 
 void Creature::clearCreatureManuevers()
 {
+	
+	m_currentOffense.dice = 0;
+	m_currentOffense.linked = false;
+	m_currentOffense.feint = false;
+	m_currentOffense.component = nullptr;
+	m_currentDefense.manuever = eDefensiveManuevers::Parry;
+	m_currentDefense.dice = 0;
+	m_currentPosition.dice = 0;
 
+	m_hasOffense = false;
+	m_hasDefense = false;
+	m_hasPosition = false;
 }
 
 void Creature::clearArmor()

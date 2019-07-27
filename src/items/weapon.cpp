@@ -55,8 +55,6 @@ WeaponTable::WeaponTable()
 	
 	file >> parsedWeapons;
 
-	int size = parsedWeapons.size();
-
 	for(auto &iter : parsedWeapons.items()) {
 		//cout << i.key() << " : " << i.value() << endl;
 		int id = std::stoi(iter.key());

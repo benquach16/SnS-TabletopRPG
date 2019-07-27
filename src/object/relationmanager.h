@@ -8,6 +8,7 @@ class RelationManager
 {
 public:
 	static constexpr int cHostile = -10;
+	static constexpr int cFriends = 20;
 	
 	static RelationManager* getSingleton() {
 		if(singleton == nullptr) {

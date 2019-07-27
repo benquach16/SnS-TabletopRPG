@@ -12,6 +12,9 @@ RelationManager::RelationManager()
 
 int RelationManager::getRelationship(eCreatureFaction faction1, eCreatureFaction faction2) const
 {
+	if(faction1 == faction2) {
+		return cFriends;
+	}
 	return m_relations.at(factionPair(faction1, faction2));
 }
 

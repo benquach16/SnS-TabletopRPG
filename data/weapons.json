@@ -343,5 +343,40 @@
 				"attack": "swing"
 			}
 		]
+	},
+	"1052": {
+		"name": "Dane Axe",
+		"description": "A sort of proto-polearm, it consists of an axe head mounted on a long shaft.",
+		"length": "long",
+		"type": "polearm",
+		"hands": 2,
+		"cost": 100,
+		"hook": true,
+		"components": [
+			{
+				"name": "Axe point",
+				"damage": 1,
+				"type": "piercing",
+				"attack": "thrust"
+			},
+			{
+				"name": "Axe head",
+				"damage": 3,
+				"attack": "swing",
+				"type": "cutting"
+			},
+			{
+				"name": "Buttend, Thrust",
+				"damage": 1,
+				"type": "blunt",
+				"attack": "thrust"
+			},
+			{
+				"name": "Buttspike, Swing",
+				"damage": 1,
+				"type": "blunt",
+				"attack": "swing"
+			}
+		]
 	}
 }

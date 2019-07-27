@@ -26,23 +26,23 @@ enum class eInitiative : unsigned
 
 enum class eCombatState : unsigned
 {
-	Uninitialized,
-	Initialized,
-	RollInitiative,
-	PreCombat,
-	ResetState, // used only for ui to observe combat manager state
-	DualOffenseStealInitiative,
-	DualOffense1,
-	DualOffense2,
-	DualOffenseSecondInitiative,
-	Offense,
-	StolenOffense,
-	Defense,
-	ParryLinked,
-	StealInitiative,
-	Resolution,
-	DualOffenseResolve,
-	FinishedCombat
+	Uninitialized = 0,
+	Initialized = 1,
+	RollInitiative = 2,
+	PreexchangeActions = 3,
+	ResetState = 4, // used only for ui to observe combat manager state
+	DualOffenseStealInitiative = 5,
+	DualOffense1 = 6,
+	DualOffense2 = 7,
+	DualOffenseSecondInitiative = 8,
+	Offense = 9,
+	StolenOffense = 10,
+	Defense = 11,
+	ParryLinked = 12,
+	StealInitiative = 13,
+	Resolution = 14,
+	DualOffenseResolve = 15,
+	FinishedCombat = 16
 };
 
 class CombatInstance
@@ -63,6 +63,7 @@ public:
 private:
 	void doInitialization();
 	void doRollInitiative();
+	void doPreexchangeActions();
 	void doResetState();
 	void doDualOffense1();
 	void doDualOffenseStealInitiative();

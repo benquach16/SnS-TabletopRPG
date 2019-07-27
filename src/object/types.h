@@ -7,7 +7,8 @@ enum class eCreatureFaction : unsigned
 	Bandit = 2,
 	Wildlife = 3,
 	Kingdom = 4,
-	Count = 5
+	Goblin = 5,
+	Count = 6
 };
 
 enum class eCreatureRace

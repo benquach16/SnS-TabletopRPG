@@ -19,8 +19,9 @@ struct Offense : public Manuever
 	eOffensiveManuevers manuever;
 	bool linked = false;
 	bool feint = false;
+	bool pinpoint = false;
 	eHitLocations target;
-	eBodyParts pinpoint;
+	eBodyParts pinpointTarget;
 	Component* component;
 };
 

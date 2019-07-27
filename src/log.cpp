@@ -51,8 +51,9 @@ void Log::run()
 
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
 		//lots of magic numbers
-		sf::RectangleShape historyBkg(sf::Vector2f(windowSize.x - 100, windowSize.y - 100));
-		historyBkg.setPosition(50, 50);
+		constexpr int cSpace = 50;
+		sf::RectangleShape historyBkg(sf::Vector2f(windowSize.x - cSpace, windowSize.y - cSpace));
+		historyBkg.setPosition(cSpace/2, cSpace/2);
 		historyBkg.setFillColor(sf::Color(12,12,23));
 		historyBkg.setOutlineThickness(3);
 		historyBkg.setOutlineColor(sf::Color(22, 22, 33));
@@ -61,7 +62,7 @@ void Log::run()
 
 		for(int i = 0; i < m_queue.size(); ++i) {
 			sf::Text text = createLogText(m_queue[i].text, m_queue[i].type);
-			text.setPosition(50, 50 + (i * cCharSize));
+			text.setPosition(cSpace/2, cSpace/2 + (i * cCharSize));
 			Game::getWindow().draw(text);
 		}
 	}

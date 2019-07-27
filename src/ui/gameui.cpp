@@ -7,6 +7,11 @@ GameUI::GameUI()
 
 void GameUI::run(sf::Event event)
 {
+
+}
+
+void GameUI::runCombat(sf::Event event)
+{
 	m_combatUI.run(event);
 }
 

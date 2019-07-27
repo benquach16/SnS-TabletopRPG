@@ -1,0 +1,12 @@
+{
+    "bandit" : {
+        "baseChests": [2040, 2045],
+        "baseLegs": [2048, 2044],
+        "helmets": [2050, 2051],
+        "chests": [2041],
+        "leggings": [],
+        "shoes": [2046],
+        "gloves": [2047],
+        "weapons": [1042, 1045, 1046, 1041, 1052]
+    }
+}
