@@ -9,6 +9,7 @@ struct {
 
 void GFXQueue::render()
 {
+	//dumb brute force sort
 	std::sort(m_queuedObjects.begin(), m_queuedObjects.end(), comparator);
 	
 	for(auto i : m_queuedObjects) {

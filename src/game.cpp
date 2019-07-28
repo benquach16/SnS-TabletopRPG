@@ -26,6 +26,7 @@ void Game::initialize()
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 8;
 	m_window.create(sf::VideoMode(1600, 900), "window", sf::Style::Default, settings);
+	m_window.setFramerateLimit(165);
 	m_defaultFont.loadFromFile("data/fonts/MorePerfectDOSVGA.ttf");
 	m_currentState = eGameState::Playing;
 }
@@ -39,21 +40,28 @@ void Game::run()
 	//instance.initCombat(c1, c2);
 
 	sf::Clock clock;
+
 	//main game loop
-	int tick = 0;
-	int aiTick = 0;
+	float tick = 0;
+	float aiTick = 0;
 
 	GameUI ui;
 
-	Level level(30, 30);
-	level(3, 3).m_type = eTileType::Wall;
-	level(4, 3).m_type = eTileType::Wall;
-	level(5, 3).m_type = eTileType::Wall;
+	Level level(40, 40);
+	for(int i = 0; i < 40; i++) {
+		level(i, 0).m_type = eTileType::Wall;
+	}
+
+	for(int i = 2; i < 40; i++) {
+		level(0, i).m_type = eTileType::Wall;
+	}
+	level.generate();
 	GFXLevel gfxlevel;
 	level.addObject(playerObject);
 	level.addObject(humanObject);
 	level.addObject(humanObject2);
-	humanObject->setPosition(5, 5);
+	playerObject->setPosition(1, 1);
+	humanObject->setPosition(6, 6);
 	humanObject2->setPosition(20, 20);
 	ui.initializeCombatUI(&playerObject->getCombatInstance());
 	SelectorObject selector;
@@ -75,8 +83,8 @@ void Game::run()
 		}
 		sf::Time elapsedTime = clock.getElapsedTime();
 		//as milliseconds returns 0, so we have to go more granular
-		tick += elapsedTime.asMicroseconds();
-		aiTick += elapsedTime.asMicroseconds();
+		tick += elapsedTime.asSeconds();
+		aiTick += elapsedTime.asSeconds();
 		
 		sf::View v = getWindow().getDefaultView();
 		v.setSize(v.getSize().x, v.getSize().y*2);
@@ -142,7 +150,7 @@ void Game::run()
 					Log::push("There is nothing here.");
 				}
 			}
-			if(aiTick > 60000) {
+			if(aiTick > 0.3) {
 				level.run();
 				aiTick = 0;
 			}
@@ -253,7 +261,7 @@ void Game::run()
 		}
 
 		Log::run();
-		if(tick > 100000) {
+		if(tick > 0.7) {
 			if (m_currentState == eGameState::InCombat)
 			{
 				//pause rest of game if player is in combat. combat between two NPCS can happen anytime
@@ -267,8 +275,10 @@ void Game::run()
 			tick = 0;
 		}
 		
-		clock.restart();
-
+		float currentTime = clock.restart().asSeconds();
+		float fps = 1.f / currentTime;
+		//cout << "FPS"  << fps << endl;
+		m_window.setTitle(std::to_string(fps));
 		m_window.display();
 		level.cleanup();
 	}

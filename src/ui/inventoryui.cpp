@@ -52,20 +52,25 @@ void InventoryUI::doBackpack(sf::Event event, PlayerObject* player)
 	std::map<int, int> inventory = player->getInventory();
 
 	int count = 0;
-	for(auto it : inventory) {
-		char idx = ('a' + count);
-		const Item* item = ItemTable::getSingleton()->get(it.first);
-		str+= idx;
-		str+= " - " + item->getName() + " x" + to_string(it.second) + '\n';
-		count++;
+	for(auto it = inventory.begin(); it != inventory.end();) {
+		if(it->second == 0) {
+			it = inventory.erase(it);
+		} else {			
+			char idx = ('a' + count);
+			const Item* item = ItemTable::getSingleton()->get(it->first);
+			str+= idx;
+			str+= " - " + item->getName() + " x" + to_string(it->second) + '\n';
+			count++;
 
-		if(event.type == sf::Event::TextEntered) {
-			char c = event.text.unicode;
-			if(c == idx) {
-				m_id = it.first;
-				m_equipped = false;
-				m_uiState = eUiState::Detailed;
+			if(event.type == sf::Event::TextEntered) {
+				char c = event.text.unicode;
+				if(c == idx) {
+					m_id = it->first;
+					m_equipped = false;
+					m_uiState = eUiState::Detailed;
+				}
 			}
+			it++;
 		}
 	}
 	txt.setString(str);

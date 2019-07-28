@@ -1,6 +1,10 @@
 {
     "human": {
-        "first": ["Bjorn", "Henry", "Ian", "Waylon", "Erik", "Mago"],
+        "first": ["Bjorn", "Henry", "Ian", "Waylon", "Erik", "Mago", "Braden", "Sam"],
+        "last": [""]
+    },
+    "goblin": {
+        "first": ["Bjorn", "Henry", "Ian", "Waylon", "Erik", "Mago", "Braden", "Sam"],
         "last": [""]
     }
 }

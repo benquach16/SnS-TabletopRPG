@@ -9,6 +9,8 @@ enum eTileMaterial
 {
 	Stone,
 	Wood,
+	Dirt,
+	Grass
 };
 enum eTileType
 {
@@ -28,6 +30,8 @@ public:
 	Level(int width, int height);
 
 	virtual void run();
+	void generate();
+	void makeRoom();
 	void cleanup();
 
 	Tile& operator()(int x, int y) {

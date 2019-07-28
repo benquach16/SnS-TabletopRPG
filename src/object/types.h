@@ -6,9 +6,11 @@ enum class eCreatureFaction : unsigned
 	Player = 1,
 	Bandit = 2,
 	Wildlife = 3,
-	Kingdom = 4,
-	Goblin = 5,
-	Count = 6
+	EidgenConfederacy = 4,
+	MartellKingdom = 5,
+	UhrEmpire = 6,
+	Goblin = 7,
+	Count = 8
 };
 
 enum class eCreatureRace

@@ -1,7 +1,7 @@
 #include "level.h"
 #include "../object/corpseobject.h"
 #include "../object/creatureobject.h"
-
+#include "../3rdparty/random.hpp"
 
 Level::Level(int width, int height) : m_width(width), m_height(height), m_data(width*height)
 {
@@ -25,6 +25,89 @@ void Level::run()
 			
 		}
 		m_objects[i]->run(this);
+	}
+}
+
+void Level::generate()
+{
+	for(int i = 0; i <5; ++i) {
+		makeRoom();
+	}
+}
+
+void Level::makeRoom()
+{
+	bool canPlace = false;
+	int xlen;
+	int ylen;
+	int xStart;
+	int yStart;
+	while(canPlace == false) {
+		xlen = effolkronium::random_static::get(4, 10);
+		ylen = effolkronium::random_static::get(4, 10);
+		xStart = effolkronium::random_static::get(2, 29);
+		yStart = effolkronium::random_static::get(2, 29);
+
+		//check for existing room
+		bool hasWall = false;
+		for(int x = xStart; x < xlen+xStart; x++) {
+			if((*this)(x, yStart).m_type == eTileType::Wall) {
+				hasWall = true;
+				break;
+			}
+		}
+		for(int y = yStart;y < ylen+yStart; y++) {
+			if((*this)(xStart, y).m_type == eTileType::Wall) {
+				hasWall = true;
+				break;
+			}
+		}
+		for(int x = xStart; x < xlen+xStart; x++) {
+			if((*this)(x, yStart + ylen).m_type == eTileType::Wall) {
+				hasWall = true;
+				break;
+			}
+		}
+		for(int y = yStart; y < ylen+yStart+1; y++) {
+			if((*this)(xStart + xlen, y).m_type == eTileType::Wall) {
+				hasWall = true;
+				break;
+			}
+		}
+
+		canPlace = !hasWall;
+	}
+	
+	for(int x = xStart; x < xlen+xStart; x++) {
+		(*this)(x, yStart).m_type = eTileType::Wall;
+	}
+	for(int y = yStart; y < ylen+yStart; y++) {
+		(*this)(xStart, y).m_type = eTileType::Wall;
+	}
+	
+	for(int x = xStart; x < xlen+xStart; x++) {
+		(*this)(x, yStart + ylen).m_type = eTileType::Wall;
+	}
+
+	for(int y = yStart; y < ylen+yStart+1; y++) {
+		(*this)(xStart + xlen, y).m_type = eTileType::Wall;
+	}
+	int dir = effolkronium::random_static::get(1, 4);
+	int xDoor = effolkronium::random_static::get(xStart, xlen + xStart);
+	int yDoor = effolkronium::random_static::get(yStart + 2, ylen + yStart - 2);	
+	switch(dir) {
+	case 1:
+		(*this)(xDoor, yStart).m_type = eTileType::Ground;
+		break;
+	case 2:
+		(*this)(xStart, yDoor).m_type = eTileType::Ground;
+		break;
+	case 3:
+		(*this)(xDoor, yStart + ylen).m_type = eTileType::Ground;
+		break;
+	case 4:
+		(*this)(xStart + xlen, yDoor).m_type = eTileType::Ground;
+		break;
 	}
 }
 
