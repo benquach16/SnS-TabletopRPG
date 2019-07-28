@@ -1,0 +1,32 @@
+{
+    "low": {
+        "chest": [],
+        "food": [],
+        "weaponChest": [],
+        "armorChest": []
+    },
+    "medium": {
+        "chest": [],
+        "food": [],
+        "weaponChest": [],
+        "armorChest": []
+    },
+    "high": {
+        "chest": [],
+        "food": [],
+        "weaponChest": [],
+        "armorChest": []
+    },
+    "rare": {
+        "chest": [],
+        "food": [],
+        "weaponChest": [],
+        "armorChest": []
+    },
+    "legendary": {
+        "chest": [],
+        "food": [],
+        "weaponChest": [],
+        "armorChest": []
+    }
+}

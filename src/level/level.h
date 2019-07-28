@@ -24,6 +24,12 @@ struct Tile
 	eTileMaterial m_material = eTileMaterial::Stone;
 };
 
+struct Room
+{
+	int x;
+	int y;
+};
+
 class Level
 {
 public:
@@ -32,6 +38,9 @@ public:
 	virtual void run();
 	void generate();
 	void makeRoom();
+	Room carveRoom();
+	Room carveRoom(int xStart, int yStart, int minSizeX, int minSizeY, int maxSizeX, int maxSizeY);
+	void createCorridor(Room room1, Room room2);
 	void cleanup();
 
 	Tile& operator()(int x, int y) {

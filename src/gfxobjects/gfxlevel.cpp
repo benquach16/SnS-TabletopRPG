@@ -152,13 +152,14 @@ void GFXLevel::run(const Level* level, vector2d center)
 	for(int i = 0; i < rLevelObjs.size(); ++i) {
 		vector2d position = rLevelObjs[i]->getPosition();
 		int dist = (position.x - center.x) * (position.x - center.x) + (position.y - center.y) * (position.y - center.y);
-		if(dist > 200)
+		if(dist > 200) {
 			continue;
-
+		}
 		
 		sf::RectangleShape rect(sf::Vector2f(cWidth,cHeight));
 		rect.setFillColor(sf::Color(99, 99, 99, 100));
 		sf::RectangleShape *sprite = new sf::RectangleShape(sf::Vector2f(40, 100));
+		sprite->setFillColor(sf::Color(190, 190, 190));
 		sprite->setTexture(&m_texture);
 
 		sf::Vector2f pos(position.x, position.y);

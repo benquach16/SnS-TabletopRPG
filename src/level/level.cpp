@@ -3,6 +3,9 @@
 #include "../object/creatureobject.h"
 #include "../3rdparty/random.hpp"
 
+using namespace effolkronium;
+using namespace std;
+
 Level::Level(int width, int height) : m_width(width), m_height(height), m_data(width*height)
 {
 		
@@ -30,8 +33,68 @@ void Level::run()
 
 void Level::generate()
 {
+	std::vector<Room> m_rooms;
 	for(int i = 0; i <5; ++i) {
-		makeRoom();
+		//makeRoom();
+	}
+
+	for(int x = 1; x < m_width; ++x) {
+		for(int y = 1; y < m_height; ++y) {
+			(*this)(x,y).m_type = eTileType::Wall;
+		}		
+	}
+
+	m_rooms.push_back(carveRoom(1, 1, 6, 6, 10, 10));
+	
+	for(int i = 0; i < 10; ++i) {
+		m_rooms.push_back(carveRoom());
+		int idx = m_rooms.size() - 1;
+		createCorridor(m_rooms[idx -1], m_rooms[idx]);
+	}
+
+}
+
+Room Level::carveRoom()
+{
+	int xlen = random_static::get(4, 10);
+	int ylen = random_static::get(4, 10);
+	int xStart = random_static::get(2, 29);
+	int yStart = random_static::get(2, 29);
+
+	for(int x = xStart; x < xStart + xlen; ++x) {
+		for(int y = yStart; y < yStart + ylen; ++y) {
+			(*this)(x, y).m_type = eTileType::Ground;
+		}
+	}
+
+	return { random_static::get(xStart + 1, xlen + xStart - 1),
+			 random_static::get(yStart + 1, ylen + yStart - 1)
+	};
+}
+
+Room Level::carveRoom(int xStart, int yStart, int minSizeX, int minSizeY, int maxSizeX, int maxSizeY)
+{
+	int xlen = random_static::get(minSizeX, maxSizeX);
+	int ylen = random_static::get(minSizeY, maxSizeY);
+
+	for(int x = xStart; x < xStart + xlen; ++x) {
+		for(int y = yStart; y < yStart + ylen; ++y) {
+			(*this)(x, y).m_type = eTileType::Ground;
+		}
+	}
+
+	return { random_static::get(xStart + 1, xlen + xStart - 1),
+			 random_static::get(yStart + 1, ylen + yStart - 1)
+	};
+}
+
+void Level::createCorridor(Room room1, Room room2)
+{
+	for(int x = min(room1.x, room2.x); x < max(room1.x, room2.x); ++x) {
+		(*this)(x, room2.y).m_type = eTileType::Ground;		
+	}
+	for(int y = min(room1.y, room2.y); y < max(room1.y, room2.y); ++y) {
+		(*this)(room2.x, y).m_type = eTileType::Ground;		
 	}
 }
 
@@ -50,25 +113,25 @@ void Level::makeRoom()
 
 		//check for existing room
 		bool hasWall = false;
-		for(int x = xStart; x < xlen+xStart; x++) {
+		for(int x = xStart - 1; x < xlen+xStart + 1; x++) {
 			if((*this)(x, yStart).m_type == eTileType::Wall) {
 				hasWall = true;
 				break;
 			}
 		}
-		for(int y = yStart;y < ylen+yStart; y++) {
+		for(int y = yStart - 1;y < ylen+yStart + 1; y++) {
 			if((*this)(xStart, y).m_type == eTileType::Wall) {
 				hasWall = true;
 				break;
 			}
 		}
-		for(int x = xStart; x < xlen+xStart; x++) {
+		for(int x = xStart - 1; x < xlen+xStart + 1; x++) {
 			if((*this)(x, yStart + ylen).m_type == eTileType::Wall) {
 				hasWall = true;
 				break;
 			}
 		}
-		for(int y = yStart; y < ylen+yStart+1; y++) {
+		for(int y = yStart - 1; y < ylen+yStart+1; y++) {
 			if((*this)(xStart + xlen, y).m_type == eTileType::Wall) {
 				hasWall = true;
 				break;
@@ -92,8 +155,10 @@ void Level::makeRoom()
 	for(int y = yStart; y < ylen+yStart+1; y++) {
 		(*this)(xStart + xlen, y).m_type = eTileType::Wall;
 	}
+
+	
 	int dir = effolkronium::random_static::get(1, 4);
-	int xDoor = effolkronium::random_static::get(xStart, xlen + xStart);
+	int xDoor = effolkronium::random_static::get(xStart + 1, xlen + xStart - 1);
 	int yDoor = effolkronium::random_static::get(yStart + 2, ylen + yStart - 2);	
 	switch(dir) {
 	case 1:
@@ -109,6 +174,8 @@ void Level::makeRoom()
 		(*this)(xStart + xlen, yDoor).m_type = eTileType::Ground;
 		break;
 	}
+
+
 }
 
 void Level::cleanup()
