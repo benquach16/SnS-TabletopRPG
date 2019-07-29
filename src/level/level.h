@@ -24,6 +24,13 @@ struct Tile
 	eTileMaterial m_material = eTileMaterial::Stone;
 };
 
+enum eLighting
+{
+	Sunny,
+	Dark,
+	Cave
+};
+
 struct Room
 {
 	int x;
@@ -34,14 +41,18 @@ class Level
 {
 public:
 	Level(int width, int height);
-
+	void load();
 	virtual void run();
 	void generate();
 	void makeRoom();
+	void createHuman(int x, int y);
 	Room carveRoom();
 	Room carveRoom(int xStart, int yStart, int minSizeX, int minSizeY, int maxSizeX, int maxSizeY);
+	Room carveSeperateRoom();
+	void removeIslands();
 	void createCorridor(Room room1, Room room2);
 	void cleanup();
+	void clearObjects();
 
 	Tile& operator()(int x, int y) {
 		assert(x >= 0);

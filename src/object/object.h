@@ -17,7 +17,8 @@ enum class eObjectTypes {
 	Misc,
 	Item,
 	Creature,
-	Corpse
+	Corpse,
+	Chest
 };
 
 class Level;

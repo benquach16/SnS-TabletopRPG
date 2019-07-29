@@ -109,7 +109,8 @@ void InventoryUI::doEquipped(sf::Event event, PlayerObject* player)
 	sf::Text txt;
 	txt.setFont(Game::getDefaultFont());
 	txt.setCharacterSize(cCharSize);
-	string str = "Equipped Armor\n";
+	string str = "Equipped Armor - ";
+	str += to_string(player->getCreatureComponent()->getAP()) + "AP\n";
 	std::vector<int> armorId = player->getCreatureComponent()->getArmorId();
 	int i = 0;
 	for(i = 0; i < armorId.size(); ++i) {

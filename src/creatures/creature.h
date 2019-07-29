@@ -30,6 +30,13 @@ enum class eCreatureState {
 	Unconscious = 3
 };
 
+enum class eCreatureFatigue {
+	Hunger,
+	Thirst,
+	Sleepiness,
+	Stamina
+};
+
 class Creature
 {
 public:
@@ -95,30 +102,7 @@ public:
 
 	bool stealInitiative(const Creature* attacker, int& outDie);
 
-	eInitiativeRoll doInitiative();
-
-	/*
-	struct Offense {
-		eOffensiveManuevers manuever;
-		int dice;
-		bool linked;
-		bool feint;
-		eHitLocations target;
-		eBodyParts pinpoint;
-		Component* component;
-		Offense() : dice(0), linked(false), feint(false), stealInitiative(false), component(nullptr) {}
-	};
-	//this is reused in stealing initiative to hold die allocated to stealing
-	struct Defense {
-		eDefensiveManuevers manuever;
-		bool linked = false;
-		int dice = 0;
-	};
-
-	struct Position {
-		int dice;
-	};
-	*/ 
+	eInitiativeRoll doInitiative(const Creature* opponent);
 
 	Offense getQueuedOffense() const { return m_currentOffense; }
 	Defense getQueuedDefense() const { return m_currentDefense; }
@@ -163,8 +147,11 @@ protected:
 	int m_primaryWeaponId;
 	
 	int m_bloodLoss;
+	bool m_bleeding;
 	int m_BTN;
 	float m_AP;
+
+	std::unordered_map<eCreatureFatigue, int> m_fatigue;
 
 	bool m_isPlayer;
 
@@ -178,6 +165,6 @@ protected:
 	int m_combatPool;
 	int m_bonusDice;
 
-	std::map<eWeaponTypes, int> m_proficiencies;
+	std::unordered_map<eWeaponTypes, int> m_proficiencies;
 	
 };

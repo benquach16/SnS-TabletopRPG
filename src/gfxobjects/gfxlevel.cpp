@@ -45,11 +45,11 @@ void GFXLevel::run(const Level* level, vector2d center)
 	rect.setPosition(pos);
 	m_ground.push(rect);
 
-
-	int minX = center.x - 25;
-	int minY = center.y - 25;
-	int maxX = center.x + 25;
-	int maxY = center.y + 25;
+	constexpr unsigned cRange = 12;
+	int minX = center.x - cRange;
+	int minY = center.y - cRange;
+	int maxX = center.x + cRange;
+	int maxY = center.y + cRange;
 	minX = max(0, minX);
 	minY = max(0, minY);
 	maxX = min(width, maxX);
@@ -58,9 +58,67 @@ void GFXLevel::run(const Level* level, vector2d center)
 		for(int y = minY; y < maxY; ++y) {
 			Tile tile = (*level)(x, y);
 			int dist = (x - center.x) * (x - center.x) + (y - center.y) * (y - center.y);
-			if(dist > 200) {
+			if(dist > cRange*cRange) {
 				continue;
 			}
+
+			
+			int x0 = center.x;
+			int y0 = center.y;
+			int x1 = x;
+			int y1 = y;
+
+			// at some point calc fov
+			/*
+
+			bool steep = (abs(y1 -y0) > abs(x1 - x0));
+			if(steep == true) {
+				swap(x0, y0);
+				swap(x1, y1);
+			}
+
+			int dx = x1 - x0;
+			int dy = abs(y1 - y0);
+
+			float error = dx / 2.0f;
+			int ystep = (y0 < y1) ? 1 : -1;
+			int yprime = y0;
+			bool render = true;
+			for(int xprime = x0; xprime < x1; ++xprime) {
+				if(steep) {
+					sf::RectangleShape rect(sf::Vector2f(cWidth,cHeight));
+					rect.setFillColor(sf::Color(55, 155, 55));
+					sf::Vector2f pos(yprime, xprime);
+					if(xprime > x0 && (*level)(yprime - ystep, xprime-1).m_type == eTileType::Wall) {
+						render = false;
+					}
+					rect.setRotation(45.f);
+					pos = coordsToScreen(pos);
+					rect.setPosition(pos);
+					Game::getWindow().draw(rect);
+				} else {
+					sf::RectangleShape rect(sf::Vector2f(cWidth,cHeight));
+					rect.setFillColor(sf::Color(55, 155, 55));
+					sf::Vector2f pos(xprime, yprime);
+					if(xprime > x0 && (*level)(xprime - 1, yprime).m_type == eTileType::Wall) {
+						render =false;
+					}					
+					rect.setRotation(45.f);
+					pos = coordsToScreen(pos);
+					rect.setPosition(pos);
+					Game::getWindow().draw(rect);
+				}
+				error -= dy;
+				if(error < 0) {
+					yprime += ystep;
+					error += dx;
+				}
+			}
+			if(render == false) {
+				continue;
+			}
+			*/
+
 			if(tile.m_type == eTileType::Ground) {
 				//this code is really slow and unncessary
 				
@@ -149,6 +207,7 @@ void GFXLevel::run(const Level* level, vector2d center)
 
 	const std::vector<Object*> rLevelObjs = level->getObjects();
 
+	std::queue<sf::RectangleShape> m_chars;
 	for(int i = 0; i < rLevelObjs.size(); ++i) {
 		vector2d position = rLevelObjs[i]->getPosition();
 		int dist = (position.x - center.x) * (position.x - center.x) + (position.y - center.y) * (position.y - center.y);
@@ -170,13 +229,15 @@ void GFXLevel::run(const Level* level, vector2d center)
 		pos.x-=15;
 		sprite->setPosition(pos);
 		Game::getWindow().draw(rect);	
-		//Game::getWindow().draw(sprite);
+
 		m_queue.add(GFXObject(sprite, position));
 	}
 
 	m_queue.render();
+
 	while(m_top.empty() == false) {
 		Game::getWindow().draw(m_top.front());
 		m_top.pop();
 	}
+
 }

@@ -35,9 +35,6 @@ void Game::run()
 {
 	//clean me up
 	PlayerObject* playerObject = new PlayerObject;
-	HumanObject* humanObject = new HumanObject;
-	HumanObject* humanObject2 = new HumanObject;
-	//instance.initCombat(c1, c2);
 
 	sf::Clock clock;
 
@@ -58,17 +55,17 @@ void Game::run()
 	level.generate();
 	GFXLevel gfxlevel;
 	level.addObject(playerObject);
-	level.addObject(humanObject);
-	level.addObject(humanObject2);
+
 	playerObject->setPosition(1, 1);
-	humanObject->setPosition(6, 6);
-	humanObject2->setPosition(20, 20);
+
 	ui.initializeCombatUI(&playerObject->getCombatInstance());
 	SelectorObject selector;
 	GFXSelector gfxSelector;
 	
 	Object* pickup = nullptr;
 
+	float zoom = 1.0f;
+	
 	while (m_window.isOpen())
 	{
 		m_window.clear();
@@ -92,6 +89,7 @@ void Game::run()
 		sf::Vector2f center(playerObject->getPosition().x, playerObject->getPosition().y);
 		center = coordsToScreen(center);
 		v.setCenter(center.x, center.y + 200);
+		v.zoom(zoom);
 		getWindow().setView(v);	
 		gfxlevel.run(&level, playerObject->getPosition());
 		//temporary until we get graphics queue up and running
@@ -99,7 +97,13 @@ void Game::run()
 			gfxSelector.run(&selector);
 		}
 		getWindow().setView(getWindow().getDefaultView());
-		ui.run(event);		
+		ui.run(event);
+		if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Equal) {
+			zoom = max(0.6f, zoom - .1f);
+		}
+		if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Hyphen) {
+			zoom = min(1.4f, zoom + 0.1f);
+		}
 		if(m_currentState == eGameState::Playing) {
 			vector2d pos = playerObject->getPosition();
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
@@ -138,9 +142,14 @@ void Game::run()
 				if(object != nullptr) {
 					switch(object->getObjectType()) {
 					case eObjectTypes::Corpse:
-						Log::push("Searching corpse..");
+						Log::push("Searching corpse...");
 						pickup = object;
 						m_currentState = eGameState::Pickup;
+						break;
+					case eObjectTypes::Chest:
+						Log::push("Opening chest...");
+						pickup = object;
+						m_currentState = eGameState::Pickup;						
 						break;
 					case eObjectTypes::Creature:
 						Log::push("There is a creature here. You need to kill them if you want to loot them.");

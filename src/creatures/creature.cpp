@@ -5,11 +5,12 @@
 #include "../dice.h"
 
 using namespace std;
+using namespace effolkronium;
 
 Creature::Creature() : m_BTN(cBaseBTN), m_brawn(1), m_agility(1),
 					   m_cunning(1), m_perception(1), m_will(1), m_primaryWeaponId(0), m_combatPool(0),
 					   m_currentState(eCreatureState::Idle), m_bonusDice(0), m_bloodLoss(0),
-					   m_hasOffense(false), m_hasDefense(false), m_hasPosition(false)
+					   m_hasOffense(false), m_hasDefense(false), m_hasPosition(false), m_bleeding(false)
 {
 	
 }
@@ -199,8 +200,8 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
 
 	//replace me
 	m_currentOffense.target =
-		target->getHitLocations()[effolkronium::random_static::get(0, (int)target->getHitLocations().size() - 1)];
-	int dice = m_combatPool / 2 + effolkronium::random_static::get(0, m_combatPool/3)
+		target->getHitLocations()[random_static::get(0, (int)target->getHitLocations().size() - 1)];
+	int dice = m_combatPool / 2 + random_static::get(0, m_combatPool/3)
 		- effolkronium::random_static::get(0, m_combatPool/3);
 
 	//bound
@@ -217,7 +218,7 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
 		m_currentOffense.dice = dice;
 	}
 
-	if(dualRedThrow == true && m_combatPool > 0 && rand() % 2 == 1) {
+	if(dualRedThrow == true && m_combatPool > 0 && random_static::get(0,1) == 1) {
 		m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
 		m_currentDefense.dice = m_combatPool - m_currentOffense.dice;
 
@@ -232,7 +233,7 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
 	int diceAllocated = attacker->getQueuedOffense().dice;
 
 	constexpr int buffer = 3;
-	if(diceAllocated + buffer < m_combatPool && effolkronium::random_static::get(0, 1) == 1) {
+	if(diceAllocated + buffer < m_combatPool && random_static::get(0, 2) == 0) {
 		m_currentDefense.manuever = eDefensiveManuevers::ParryLinked;
 		m_combatPool -= 1;
 	}
@@ -253,8 +254,8 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
 		m_currentDefense.dice = max(m_currentDefense.dice, 0);
 		return;
 	}
-	int dice = std::min(diceAllocated + effolkronium::random_static::get(0, diceAllocated/3)
-					   - effolkronium::random_static::get(0, diceAllocated/4)
+	int dice = std::min(diceAllocated + random_static::get(0, diceAllocated/3)
+					   - random_static::get(0, diceAllocated/4)
 					   , m_combatPool);
 	dice = min(m_combatPool, dice);
 	dice = max(dice, 0);
@@ -267,9 +268,9 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
 
 	int combatPool = attacker->getCombatPool() + attacker->getSpeed();
 
-	int bufferDie = effolkronium::random_static::get(1, 5);
+	int bufferDie = random_static::get(1, 5);
 
-	constexpr float disadvantageMult = 1.5;
+	constexpr float disadvantageMult = 1.2;
 	if((combatPool * disadvantageMult) + bufferDie < m_combatPool + getSpeed()) {
 		int diff = abs((getSpeed() - attacker->getSpeed()) * disadvantageMult);
 		int dice = diff + bufferDie;
@@ -286,17 +287,31 @@ void Creature::doStolenInitiative(const Creature* defender, bool allin)
 {
 	m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
 	Defense defend = defender->getQueuedDefense();
+	cout << defend.dice << endl;
 	m_currentDefense.dice = min(m_combatPool, defend.dice);
 	if(allin == true) {
 		m_currentDefense.dice = m_combatPool;
 	}
 }
 
-eInitiativeRoll Creature::doInitiative()
+eInitiativeRoll Creature::doInitiative(const Creature* opponent)
 {
 	//do random for now
 	//this should be based on other creatures weapon length and armor and stuff
-	if(effolkronium::random_static::get(0, 1) == 1){
+	
+	int modifiers = 0;
+	const Weapon* opponentWeapon = opponent->getPrimaryWeapon();
+	const Weapon* currentWeapon = getPrimaryWeapon();
+	int reachDiff = static_cast<int>(opponentWeapon->getLength()) - static_cast<int>(currentWeapon->getLength());
+
+	constexpr int cBase = 8;
+	int base = cBase;
+	base += reachDiff;
+	base += opponent->getSpeed() - getSpeed();
+	base += opponent->getCombatPool() - getCombatPool();
+
+	int passiveness = random_static::get(2, 4);
+	if(random_static::get(0, base) < cBase/passiveness){
 		return eInitiativeRoll::Attack;
 	}
 	return eInitiativeRoll::Defend;
@@ -334,8 +349,8 @@ void Creature::applyArmor()
 	clearArmor();
 	for(int i : m_armor) {
 		const Armor* armor = ArmorTable::getSingleton()->get(i);
+		m_AP += armor->getAP();
 		for(auto it : armor->getCoverage()) {
-			m_AP += armor->getAP();
 			m_armorValues[it].AV = max(m_armorValues[it].AV, armor->getAV());
 			m_armorValues[it].isMetal = m_armorValues[it].isMetal || armor->isMetal();
 			m_armorValues[it].isRigid = m_armorValues[it].isRigid || armor->isRigid();

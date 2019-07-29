@@ -11,6 +11,10 @@ Level::Level(int width, int height) : m_width(width), m_height(height), m_data(w
 		
 }
 
+void Level::load()
+{
+}
+
 void Level::run()
 {
 	for(int i = 0; i < m_objects.size(); ++i) {
@@ -34,9 +38,6 @@ void Level::run()
 void Level::generate()
 {
 	std::vector<Room> m_rooms;
-	for(int i = 0; i <5; ++i) {
-		//makeRoom();
-	}
 
 	for(int x = 1; x < m_width; ++x) {
 		for(int y = 1; y < m_height; ++y) {
@@ -46,20 +47,28 @@ void Level::generate()
 
 	m_rooms.push_back(carveRoom(1, 1, 6, 6, 10, 10));
 	
-	for(int i = 0; i < 10; ++i) {
+	for(int i = 0; i < 7; ++i) {
 		m_rooms.push_back(carveRoom());
 		int idx = m_rooms.size() - 1;
-		createCorridor(m_rooms[idx -1], m_rooms[idx]);
+		createCorridor(m_rooms[idx-1], m_rooms[idx]);
+	}
+	for(int i = 0; i < 3; ++i) {
+		m_rooms.push_back(carveSeperateRoom());
+		int idx = m_rooms.size() - 1;
+		createCorridor(m_rooms[idx-1], m_rooms[idx]);
 	}
 
+	//makeRoom();
+	removeIslands();
 }
 
 Room Level::carveRoom()
 {
-	int xlen = random_static::get(4, 10);
-	int ylen = random_static::get(4, 10);
-	int xStart = random_static::get(2, 29);
-	int yStart = random_static::get(2, 29);
+	constexpr int max = 10;
+	int xlen = random_static::get(4, max);
+	int ylen = random_static::get(4, max);
+	int xStart = random_static::get(2, m_width - max - 1);
+	int yStart = random_static::get(2, m_height - max - 1);
 
 	for(int x = xStart; x < xStart + xlen; ++x) {
 		for(int y = yStart; y < yStart + ylen; ++y) {
@@ -88,13 +97,69 @@ Room Level::carveRoom(int xStart, int yStart, int minSizeX, int minSizeY, int ma
 	};
 }
 
+Room Level::carveSeperateRoom()
+{
+	constexpr int cMax = 10;
+	int size = cMax;
+	int xlen, ylen, xStart, yStart;
+
+	bool canPlace =false;
+	unsigned iteration = 0;
+	while(canPlace == false) {
+		if(iteration > 10000) {
+			//lower our standards
+			size = max(size - 1, 2);
+		}
+		bool hasGround = false;
+		xlen = random_static::get(2, size);
+		ylen = random_static::get(2, size);
+		xStart = random_static::get(3, m_width - size - 4);
+		yStart = random_static::get(3, m_height - size - 4);
+
+	   
+		for(int x = xStart - 2; x < xStart + xlen + 2; ++x) {
+			for(int y = yStart - 2; y < yStart + ylen + 2; ++y) {
+				if((*this)(x, y).m_type == eTileType::Ground) {
+					hasGround = true;
+				}
+			}
+		}
+		canPlace = !hasGround;
+		iteration++;
+		cout << "Iteration: " << iteration << endl;
+	}
+
+	for(int x = xStart; x < xStart + xlen; ++x) {
+		for(int y = yStart; y < yStart + ylen; ++y) {
+			(*this)(x, y).m_type = eTileType::Ground;
+		}
+	}
+	return { random_static::get(xStart + 1, xlen + xStart - 1),
+			 random_static::get(yStart + 1, ylen + yStart - 1)
+	};	
+}
+
 void Level::createCorridor(Room room1, Room room2)
 {
-	for(int x = min(room1.x, room2.x); x < max(room1.x, room2.x); ++x) {
-		(*this)(x, room2.y).m_type = eTileType::Ground;		
+	int x = 0;
+	if(room1.x < room2.x) {
+		for(x = room1.x; x < room2.x; ++x) {
+			(*this)(x, room1.y).m_type = eTileType::Ground;			
+		}
+	} else {
+		for(x = room1.x; x >= room2.x; --x) {
+			(*this)(x, room1.y).m_type = eTileType::Ground;			
+		}
 	}
-	for(int y = min(room1.y, room2.y); y < max(room1.y, room2.y); ++y) {
-		(*this)(room2.x, y).m_type = eTileType::Ground;		
+
+	if(room1.y < room2.y) {
+		for(int y = room1.y; y < room2.y; ++y) {
+			(*this)(x, y).m_type = eTileType::Ground;			
+		}
+	} else {
+		for(int y = room1.y; y >= room2.y; --y) {
+			(*this)(x, y).m_type = eTileType::Ground;			
+		}
 	}
 }
 
@@ -106,32 +171,32 @@ void Level::makeRoom()
 	int xStart;
 	int yStart;
 	while(canPlace == false) {
-		xlen = effolkronium::random_static::get(4, 10);
-		ylen = effolkronium::random_static::get(4, 10);
-		xStart = effolkronium::random_static::get(2, 29);
-		yStart = effolkronium::random_static::get(2, 29);
+		xlen = random_static::get(4, 10);
+		ylen = random_static::get(4, 10);
+		xStart = random_static::get(2, 20);
+		yStart = random_static::get(2, 20);
 
 		//check for existing room
 		bool hasWall = false;
-		for(int x = xStart - 1; x < xlen+xStart + 1; x++) {
+		for(int x = xStart - 2; x < xlen+xStart + 2; x++) {
 			if((*this)(x, yStart).m_type == eTileType::Wall) {
 				hasWall = true;
 				break;
 			}
 		}
-		for(int y = yStart - 1;y < ylen+yStart + 1; y++) {
+		for(int y = yStart - 2;y < ylen+yStart + 2; y++) {
 			if((*this)(xStart, y).m_type == eTileType::Wall) {
 				hasWall = true;
 				break;
 			}
 		}
-		for(int x = xStart - 1; x < xlen+xStart + 1; x++) {
+		for(int x = xStart - 2; x < xlen+xStart + 2; x++) {
 			if((*this)(x, yStart + ylen).m_type == eTileType::Wall) {
 				hasWall = true;
 				break;
 			}
 		}
-		for(int y = yStart - 1; y < ylen+yStart+1; y++) {
+		for(int y = yStart - 2; y < ylen+yStart+2; y++) {
 			if((*this)(xStart + xlen, y).m_type == eTileType::Wall) {
 				hasWall = true;
 				break;
@@ -178,12 +243,46 @@ void Level::makeRoom()
 
 }
 
+void Level::removeIslands() {
+	for(int x = 1; x < m_width - 2; ++x) {
+		for(int y = 1; y < m_height - 2; ++y) {
+			if((*this)(x, y).m_type == eTileType::Wall){
+				bool single = true;
+				if((*this)(x - 1, y).m_type == eTileType::Wall) {
+					single = false;
+				}
+				if((*this)(x + 1, y).m_type == eTileType::Wall) {
+					single = false;
+				}
+				if((*this)(x, y - 1).m_type == eTileType::Wall) {
+					single = false;
+				}
+				if((*this)(x, y + 1).m_type == eTileType::Wall) {
+					single = false;
+				}
+
+				if(single == true) {
+					(*this)(x, y).m_type = eTileType::Ground;
+				}
+			}
+		}
+	}
+}
+
 void Level::cleanup()
 {
 	for(int i = 0; i < m_toDelete.size(); ++i) {
 		delete m_toDelete[i];
 	}
 	m_toDelete.clear();
+}
+
+void Level::clearObjects()
+{
+	for(int i = 0; i < m_objects.size(); ++i) {
+		delete m_objects[i];
+	};
+	m_objects.clear();
 }
 
 const Object* Level::getObject(vector2d position)

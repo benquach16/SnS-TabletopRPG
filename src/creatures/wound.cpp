@@ -48,11 +48,11 @@ WoundTable::WoundTable()
 	m_btnTable[eDamageTypes::Blunt] = bluntBtn;
 	m_impactTable[eDamageTypes::Blunt] = bluntImpact;
 	vector<int> piercingBtn = piercingJson["BTN"];
-	vector<int> piercingImpact = bluntJson["impact"];
+	vector<int> piercingImpact = piercingJson["impact"];
 	m_btnTable[eDamageTypes::Piercing] = piercingBtn;
 	m_impactTable[eDamageTypes::Piercing] = piercingImpact;
 	vector<int> cuttingBtn = cuttingJson["BTN"];
-	vector<int> cuttingImpact = bluntJson["impact"];
+	vector<int> cuttingImpact = cuttingJson["impact"];
 	m_btnTable[eDamageTypes::Cutting] = cuttingBtn;
 	m_impactTable[eDamageTypes::Cutting] = cuttingImpact;
 	initWoundTable(eDamageTypes::Blunt, bluntJson);

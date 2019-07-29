@@ -80,8 +80,8 @@ void CombatInstance::doRollInitiative()
 	}
 	
 	//get initiative rolls from both sides to determine roles.
-	eInitiativeRoll side1 = m_side1->doInitiative();
-	eInitiativeRoll side2 = m_side2->doInitiative();
+	eInitiativeRoll side1 = m_side1->doInitiative(m_side2);
+	eInitiativeRoll side2 = m_side2->doInitiative(m_side1);
 	if(m_side1->isPlayer() == true) {
 		Player* player = static_cast<Player*>(m_side1);
 		side1 = player->getInitiative();
@@ -625,7 +625,7 @@ void CombatInstance::doResolution()
 			if(defend.manuever == eDefensiveManuevers::Counter) {
 				cout << "bonus: " << offenseSuccesses << endl;
 				defender->setBonusDice(offenseSuccesses);
-				writeMessage(defender->getName() + " receives " + to_string(defenseSuccesses) + " action points in their next attack");
+				writeMessage(defender->getName() + " receives " + to_string(offenseSuccesses) + " action points in their next attack");
 			}
 			writeMessage(defender->getName() + " now has initative, becoming attacker");
 			switchInitiative();
@@ -681,6 +681,12 @@ void CombatInstance::doDualOffenseResolve()
 	m_side2->clearCreatureManuevers();
 	m_currentState = death == true ? eCombatState::FinishedCombat : m_currentState;
 }
+
+void CombatInstance::doPostCombat()
+{
+	m_currentState = eCombatState::Offense;
+}
+
 
 void CombatInstance::doEndCombat()
 {
@@ -764,6 +770,9 @@ bool CombatInstance::inflictWound(int MoS, Offense attack, Creature* target, boo
 
 	writeMessage(target->getName() + " received a level " + to_string(finalDamage) + " wound to " + bodyPartToString(bodyPart));
 	eDamageTypes finalType = doBlunt == true ? eDamageTypes::Blunt : attack.component->getType();
+	if(finalType == eDamageTypes::Blunt && armorAtLocation.isRigid == true) {
+		finalDamage = min(3, finalDamage);
+	}
 	Wound *wound = WoundTable::getSingleton()->getWound(finalType, bodyPart, finalDamage);
 	writeMessage(wound->getText(), Log::eMessageTypes::Damage);
 	if(wound->getBTN() > target->getBTN())

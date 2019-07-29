@@ -42,7 +42,8 @@ enum class eCombatState : unsigned
 	StealInitiative = 13,
 	Resolution = 14,
 	DualOffenseResolve = 15,
-	FinishedCombat = 16
+	PostCombat = 16,
+	FinishedCombat = 17
 };
 
 class CombatInstance
@@ -79,6 +80,7 @@ private:
 	void doResolution();
 	//this is a special case because if both sides roll to attack since both of their attacks resolve at the same time
 	void doDualOffenseResolve();
+	void doPostCombat();
 	void doEndCombat();
 	void setSides(Creature*& attacker, Creature*& defender);
 
@@ -103,9 +105,4 @@ private:
 
 	Creature* m_side1;
 	Creature* m_side2;
-
-	std::unordered_map<Creature*, std::queue<Manuever*> > m_queues;
-
-	std::queue<Manuever*> m_side1ActionQueue;
-	std::queue<Manuever*> m_side2ActionQueue;
 };

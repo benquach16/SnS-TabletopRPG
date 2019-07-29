@@ -103,7 +103,7 @@
         "AP": 0.0,
         "rigid": false,
         "metal": false,
-        "coverage": ["thigh", "knee", "shin", "groin"],
+        "coverage": ["hip","thigh", "knee", "shin", "groin"],
         "layer": "cloth",
         "type": "none"
     },
@@ -179,7 +179,7 @@
         "rigid": true,
         "metal": true,
         "coverage": [
-            "hands"
+            "hand"
         ],
         "layer": "maille",
         "type": "maille"
@@ -213,7 +213,7 @@
         "rigid": false,
         "metal": true,
         "coverage": [
-            "hips",
+            "hip",
             "groin"
         ],
         "layer": "maille",
@@ -235,5 +235,260 @@
         ],
         "layer": "maille",
         "type": "maille"
+    },
+    "2058": {
+        "name": "Gorget",
+        "description": "A rigid collar made of plate steel to protect the neck",
+        "cost": 900,
+        "AV": 4,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "neck"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2059": {
+        "name": "Ventail",
+        "description": "A maille flap that can be connected to an aventail to cover the face.",
+        "cost": 200,
+        "AV": 3,
+        "AP": 0.25,
+        "rigid": false,
+        "metal": true,
+        "coverage": [
+            "face"
+        ],
+        "layer": "maille",
+        "type": "maille"
+    },
+    "2060": {
+        "name": "Gorget",
+        "description": "A rigid collar made of plate steel to protect the neck",
+        "cost": 200,
+        "AV": 4,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "neck"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2061": {
+        "name": "Plate Cuirass",
+        "description": "A breastplate and plackart made of hardened steel. Amazing plate armor protection at a high price.",
+        "cost": 1400,
+        "AV": 4,
+        "AP": 0,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "abs",
+            "ribs"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2062": {
+        "name": "Plate Pauldrons",
+        "description": "Plate armored shoulder protection. Does not include armpit protection.",
+        "cost": 1400,
+        "AV": 4,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "shoulder"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2063": {
+        "name": "Splinted Spaulders",
+        "description": "Almost as good as plate armor, splinted spaulders provide ample shoulder protection.",
+        "cost": 500,
+        "AV": 3,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "shoulder"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2064": {
+        "name": "Plate Gauntlets",
+        "description": "Plate armored guantlets. Protective enough to block a blow from any bladed weapon.",
+        "cost": 1000,
+        "AV": 4,
+        "AP": 0,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "hand"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2065": {
+        "name": "Plate Rerebraces",
+        "description": "Pieces of harded steel intended to cover the upper arm. Includes couters for elbow protection.",
+        "cost": 1400,
+        "AV": 4,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "upperarm",
+            "elbow"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2066": {
+        "name": "Plate Vambraces",
+        "description": "Hardened steel wrapped around the forearm.",
+        "cost": 1000,
+        "AV": 4,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "forearm"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2067": {
+        "name": "Plate Faulds",
+        "description": "Protection that attaches to a plackart, intended to provide protection for the hips",
+        "cost": 800,
+        "AV": 4,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "hip"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2068": {
+        "name": "Plate Cuisses",
+        "description": "Form of plate armor intended to protect the thigh. Comes with poleyns.",
+        "cost": 1300,
+        "AV": 4,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "thigh",
+            "knee"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2069": {
+        "name": "Plate Poleyns",
+        "description": "A piece of hardened steel designed to protect the knee. Small and easier to make.",
+        "cost": 500,
+        "AV": 4,
+        "AP": 0,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "knee"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2070": {
+        "name": "Plate Greaves",
+        "description": "Protection for the shins. Protects the inside of the leg.",
+        "cost": 800,
+        "AV": 4,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "shin"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2071": {
+        "name": "Plate Sabatons",
+        "description": "Heavily articulated piece of metal armor that covers the feet.",
+        "cost": 1200,
+        "AV": 4,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "foot"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2072": {
+        "name": "Plate Couters",
+        "description": "A type of besagew for the elbow. Can be highly articulated.",
+        "cost": 700,
+        "AV": 4,
+        "AP": 0,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "elbow"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2073": {
+        "name": "Splinted Rerebraces",
+        "description": "Strips of metal attached to leather, designed to wrap around the upper arm.",
+        "cost": 500,
+        "AV": 3,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "elbow"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2074": {
+        "name": "Splinted Vambraces",
+        "description": "Transitional armor piece designed to protect the forearms.",
+        "cost": 500,
+        "AV": 3,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "forearm"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2075": {
+        "name": "Splinted Cuisses",
+        "description": "A form of splinted armor to cover the thighs.",
+        "cost": 500,
+        "AV": 3,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "forearm"
+        ],
+        "layer": "plate",
+        "type": "plate"
     }
 }
