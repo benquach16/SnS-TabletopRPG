@@ -54,7 +54,7 @@ public:
 	void runUI();
 
 	void initCombat(Creature* side1, Creature* side2);
-
+	void forceInitiative(eInitiative initiative);
 	eCombatState getState() const { return m_currentState; }
 	Creature* getSide1() const { return m_side1; }
 	Creature* getSide2() const { return m_side2; }

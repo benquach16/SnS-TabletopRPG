@@ -57,6 +57,12 @@ void CombatInstance::initCombat(Creature* side1, Creature* side2)
 	m_numTempos = 0;
 }
 
+void CombatInstance::forceInitiative(eInitiative initiative)
+{
+	m_initiative = initiative;
+	m_currentState = eCombatState::Offense;
+}	
+
 void CombatInstance::doInitialization()
 {
 	assert(m_side1 != nullptr);
@@ -706,6 +712,7 @@ void CombatInstance::doPostCombat()
 
 	if(m_numTempos > cMinFatigueTempos) {
 		//roll for fatigue
+		
 	}
 	m_numTempos++;
 	
@@ -716,6 +723,8 @@ void CombatInstance::doPostCombat()
 void CombatInstance::doEndCombat()
 {
 	writeMessage("Combat has ended", Log::eMessageTypes::Announcement);
+	m_side1->clearCreatureManuevers();
+	m_side2->clearCreatureManuevers();
 	if(m_side1->isConscious() == true) {
 		m_side1->setIdle();
 	}

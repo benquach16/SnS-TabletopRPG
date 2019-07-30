@@ -57,8 +57,10 @@ void Game::run()
 	playerObject->setPosition(1, 1);
 
 	HumanObject target1;
-	HumanObject target2;	
+	HumanObject target2;
 
+	playerObject->startCombatWith(target1.getCreatureComponent());
+	playerObject->startCombatWith(target2.getCreatureComponent());
 	SelectorObject selector;
 	GFXSelector gfxSelector;
 	

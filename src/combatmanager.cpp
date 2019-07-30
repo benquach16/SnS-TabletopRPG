@@ -6,6 +6,7 @@ using namespace std;
 
 CombatManager::CombatManager(Creature* creature) : m_currentId(0), m_mainCreature(creature)
 {
+	m_isPlayers = creature->isPlayer();
 }
 
 CombatManager::~CombatManager()
@@ -25,11 +26,23 @@ bool CombatManager::run()
 	}
 	
 	if(m_instances.size() == 0) {
+		m_currentId = 0;
 		cout << "no more instances" << endl;
 		return false;
 	}
 	if(m_instances.size() > 1 && m_currentId == 0) {
 		//do positioning roll
+		//force outnumbered side to be defensive
+		//player should always be side 1
+		if(m_isPlayers == true) {
+			for(auto it : m_instances) {
+				if(it->getState() == eCombatState::Initialized) {
+					it->forceInitiative(eInitiative::Side2);
+				}
+				
+			}
+		}
+		
 	}
 	
 	bool change = m_instances[m_currentId]->getState() == eCombatState::PostCombat;
@@ -38,9 +51,13 @@ bool CombatManager::run()
 	if(m_instances[m_currentId]->getState() == eCombatState::Uninitialized) {
 		delete m_instances[m_currentId];
 		m_instances.erase(m_instances.begin() + m_currentId);
+		if(m_currentId == m_instances.size()) {
+			m_currentId--;
+		}
 	}
 	//since we just deleted, make sure we clear if we don't have any more combat
 	if(m_instances.size() == 0) {
+		m_currentId = 0;
 		cout << "no more instances" << endl;
 		return false;
 	}
@@ -67,4 +84,8 @@ CombatInstance* CombatManager::getCurrentInstance() const
 {
 	assert(m_currentId < m_instances.size());
 	return m_instances[m_currentId];
+}
+
+void CombatManager::writeMessage(const std::string& str)
+{
 }
