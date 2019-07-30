@@ -2,8 +2,10 @@
 
 #include "playerobject.h"
 
-PlayerObject::PlayerObject() : CreatureObject(new Player)
+PlayerObject::PlayerObject() : CreatureObject(new Player), m_manager(nullptr)
 {
+	//temp
+	m_manager = new CombatManager(m_creature);
 	m_creature->setWeapon(1040);
 	m_creature->equipArmor(2055);
 	m_creature->equipArmor(2052);
@@ -24,18 +26,18 @@ PlayerObject::PlayerObject() : CreatureObject(new Player)
 
 PlayerObject::~PlayerObject()
 {
-
+	//temp
+	delete m_manager;
 }
 
 void PlayerObject::startCombatWith(Creature* creature)
 {
 	assert(m_instance.getState() == eCombatState::Uninitialized);
 	std::cout << static_cast<int>(creature->getCreatureState()) << std::endl;
-	m_instance.initCombat(m_creature, creature);
+	m_manager->startCombatWith(creature);
 }
 
 bool PlayerObject::runCombat()
 {
-	m_instance.run();
-	return m_instance.getState() != eCombatState::Uninitialized;
+	return m_manager->run();
 }

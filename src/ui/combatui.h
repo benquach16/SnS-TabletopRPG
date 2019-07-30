@@ -6,6 +6,7 @@
 #include "numberinput.h"
 #include "defenseui.h"
 #include "offenseui.h"
+#include "../combatmanager.h"
 
 class CombatInstance;
 
@@ -13,9 +14,8 @@ class CombatUI
 {
 public:
 	CombatUI();
-	void initialize(CombatInstance* instance) { m_instance = instance; }
 	
-	void run(sf::Event event);
+	void run(sf::Event event, const CombatManager* manager);
 
 private:
 	sf::RectangleShape m_combatBkg;
@@ -37,23 +37,27 @@ private:
 		Finished
 	};
 
+	enum class ePositionRollSubState : unsigned {
+		ChooseDice,
+		Finished
+	};
+
 
 	void resetState();
-	void doInitiative();
+	void doInitiative(Player* player, Creature* target);
 	
-	void doStolenOffense(sf::Event event);
-	void doDualRedSteal(sf::Event event);
+	void doStolenOffense(sf::Event event, Player* player);
+	void doDualRedSteal(sf::Event event, Player* player);
 
-	void showSide1Stats();
-	void showSide2Stats();
-
-	CombatInstance *m_instance;
+	void showSide1Stats(const CombatInstance* instance);
+	void showSide2Stats(const CombatInstance* instance);
 
 	NumberInput m_numberInput;
 
 	eInitiativeSubState m_initiativeState;
 	eStolenOffenseSubState m_stolenOffenseState;
 	eDualRedStealSubState m_dualRedState;
+	ePositionRollSubState m_positionState;
 
 	DefenseUI m_defenseUI;
 	OffenseUI m_offenseUI;

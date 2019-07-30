@@ -3,6 +3,7 @@
 #include "creatureobject.h"
 #include "../creatures/player.h"
 #include "../combatinstance.h"
+#include "../combatmanager.h"
 
 class PlayerObject : public CreatureObject
 {
@@ -12,6 +13,7 @@ public:
 	void startCombatWith(Creature* creature);
 	bool runCombat();
 	CombatInstance& getCombatInstance() { return m_instance; }
+	const CombatManager* getCombatManager() { return m_manager; }
 	
 	eCreatureFaction getFaction() const override { return eCreatureFaction::Player; }
 	eCreatureRace getRace() const override { return eCreatureRace::Human; }
@@ -21,6 +23,8 @@ public:
 
 	//never delete player, otherwise there will be a segfault
 	bool deleteMe() const override { return false; }
+	virtual bool preserveBetweenLevels() const { return true; }
 private:
 	CombatInstance m_instance;
+	CombatManager *m_manager;
 };

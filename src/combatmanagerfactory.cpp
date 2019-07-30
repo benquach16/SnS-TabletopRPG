@@ -1,0 +1,2 @@
+#include "combatmanagerfactory.h"
+

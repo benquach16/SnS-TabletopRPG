@@ -1,7 +1,8 @@
 #include "creatureobject.h"
 
 CreatureObject::CreatureObject(Creature* creature) : m_creature(creature),
-													 m_creatureFaction(eCreatureFaction::None)
+													 m_creatureFaction(eCreatureFaction::None),
+													 m_combatManagerId(-1)
 {
 }
 

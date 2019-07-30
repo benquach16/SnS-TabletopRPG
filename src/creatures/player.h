@@ -2,6 +2,8 @@
 
 #include "human.h"
 
+#include <iostream>
+
 class Player : public Human
 {
 public:
@@ -23,9 +25,11 @@ public:
 	void setDefenseDice(int dice) { m_currentDefense.dice = dice; }
 
 	bool pollForOffense();
-	void setOffenseReady() { m_flagOffense = true; }
+	void setOffenseReady() { std::cout << "flagged offense" << std::endl; m_flagOffense = true; }
 	bool pollForDefense();
-	void setDefenseReady() { m_flagDefense = true; }
+	void setDefenseReady() { std::cout << "flagged defense" << std::endl; m_flagDefense = true; }
+
+	void clearCreatureManuevers() override;
 	
 private:
 	eInitiativeRoll m_initiative;

@@ -11,9 +11,12 @@
 
 using namespace std;
 
+constexpr int cMinFatigueTempos = 3;
+
 CombatInstance::CombatInstance(): m_initiative(eInitiative::Side1), m_side1(nullptr), m_side2(nullptr),
-								m_currentTempo(eTempo::First), m_currentState(eCombatState::Uninitialized), 
-								m_currentReach(eLength::Hand), m_dualWhiteTimes(0), m_dualRedThrow(false)
+								  m_currentTempo(eTempo::First), m_currentState(eCombatState::Uninitialized), 
+								  m_currentReach(eLength::Hand), m_dualWhiteTimes(0), m_dualRedThrow(false),
+								  m_numTempos(0)
 {
 }
 
@@ -51,6 +54,7 @@ void CombatInstance::initCombat(Creature* side1, Creature* side2)
 	m_currentTempo = eTempo::First;
 	m_initiative = eInitiative::Side1;
 	m_currentState = eCombatState::Initialized;
+	m_numTempos = 0;
 }
 
 void CombatInstance::doInitialization()
@@ -170,6 +174,8 @@ bool CombatInstance::doOffense()
 		m_currentTempo = eTempo::First;
 		attacker->resetCombatPool();
 		defender->resetCombatPool();
+		attacker->clearCreatureManuevers();
+		defender->clearCreatureManuevers();
 	}
 	
 	const Weapon* offenseWeapon = attacker->getPrimaryWeapon();
@@ -610,8 +616,13 @@ void CombatInstance::doResolution()
 			//nothing happens
 			writeMessage("no net successes");
 		}
-		else if (defend.manuever != eDefensiveManuevers::Dodge) {
-			writeMessage("attack deflected with " + to_string(-MoS) + " successes");
+		else {
+			if(defend.manuever == eDefensiveManuevers::Dodge) {
+				writeMessage("attack dodged with " + to_string(-MoS) + " successes");				
+			}
+			else {
+				writeMessage("attack deflected with " + to_string(-MoS) + " successes");
+			}
 			if(defend.manuever == eDefensiveManuevers::ParryLinked) {
 				//resolve offense
 				Offense offense = defender->getQueuedOffense();
@@ -627,16 +638,15 @@ void CombatInstance::doResolution()
 				defender->setBonusDice(offenseSuccesses);
 				writeMessage(defender->getName() + " receives " + to_string(offenseSuccesses) + " action points in their next attack");
 			}
-			writeMessage(defender->getName() + " now has initative, becoming attacker");
-			switchInitiative();
+			if(defend.manuever != eDefensiveManuevers::Dodge) {
+				writeMessage(defender->getName() + " now has initative, becoming attacker");
+				switchInitiative();
+			}
 		}
 		
 	}
-	m_side1->clearCreatureManuevers();
-	m_side2->clearCreatureManuevers();
-	m_dualRedThrow = false;
-	switchTempo();
-	m_currentState = eCombatState::Offense;
+	
+	m_currentState = eCombatState::PostCombat;
 	
 }
 
@@ -661,11 +671,9 @@ void CombatInstance::doDualOffenseResolve()
 			death = true;
 		}
 	}
-
-	switchTempo();
 	
 	//intiative goes to whoever got more hits
-	m_currentState = eCombatState::Offense;
+	m_currentState = eCombatState::PostCombat;
 	if(MoS > MoS2) {
 		m_currentReach = m_side1->getPrimaryWeapon()->getLength();
 		m_initiative = eInitiative::Side1;
@@ -676,14 +684,31 @@ void CombatInstance::doDualOffenseResolve()
 		//reroll if no one died
 		m_currentState = eCombatState::RollInitiative;
 	}
-	m_dualRedThrow = false;
-	m_side1->clearCreatureManuevers();
-	m_side2->clearCreatureManuevers();
+
 	m_currentState = death == true ? eCombatState::FinishedCombat : m_currentState;
 }
 
 void CombatInstance::doPostCombat()
 {
+	Creature* attacker = nullptr;
+	Creature* defender = nullptr;
+	setSides(attacker, defender);
+
+	Defense defend = defender->getQueuedDefense();
+	if(defend.manuever == eDefensiveManuevers::Dodge) {
+		//allow using 2 dice to take initiative
+	}
+	
+	m_side1->clearCreatureManuevers();
+	m_side2->clearCreatureManuevers();
+	m_dualRedThrow = false;
+	switchTempo();
+
+	if(m_numTempos > cMinFatigueTempos) {
+		//roll for fatigue
+	}
+	m_numTempos++;
+	
 	m_currentState = eCombatState::Offense;
 }
 
@@ -842,6 +867,7 @@ void CombatInstance::run()
 		doRollInitiative();
 		break;
 	case eCombatState::PreexchangeActions:
+		doPreexchangeActions();
 		break;
 	case eCombatState::ResetState:
 		doResetState();
@@ -878,6 +904,9 @@ void CombatInstance::run()
 		break;
 	case eCombatState::DualOffenseResolve:
 		doDualOffenseResolve();
+		break;
+	case eCombatState::PostCombat:
+		doPostCombat();
 		break;
 	case eCombatState::FinishedCombat:
 		doEndCombat();

@@ -11,10 +11,9 @@ class GameUI
 {
 public:
 	GameUI();
-	void initializeCombatUI(CombatInstance* instance) { m_combatUI.initialize(instance); }
 
 	void run(sf::Event event);
-	void runCombat(sf::Event event);
+	void runCombat(sf::Event event, const CombatManager* manager);
 	void runInventory(sf::Event event, PlayerObject* player);
 	void runTrade(sf::Event event, std::map<int, int>& inventory, std::map<int, int>& container);
 private:

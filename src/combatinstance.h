@@ -105,4 +105,6 @@ private:
 
 	Creature* m_side1;
 	Creature* m_side2;
+
+	int m_numTempos;
 };

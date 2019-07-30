@@ -31,6 +31,8 @@ public:
 	void addItem(int id) { m_inventory[id]++; }
 	void removeItem(int id) { m_inventory[id]--; }
 
+	int getCombatManagerId() const { return m_combatManagerId; }
+
 protected:
 	Creature* m_creature;
 	eCreatureFaction m_creatureFaction;
@@ -43,4 +45,6 @@ protected:
 	int m_thirst;
 	int m_hunger;
 	int m_exhaustion;
+
+	int m_combatManagerId;
 };

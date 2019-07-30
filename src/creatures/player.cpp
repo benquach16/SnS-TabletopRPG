@@ -38,3 +38,11 @@ bool Player::pollForDefense()
 	}
 	return ret;
 }
+
+void Player::clearCreatureManuevers()
+{
+	//todo: switch this to the creature base m_hasOffense
+	Creature::clearCreatureManuevers();
+	m_flagDefense = false;
+	m_flagOffense = false;
+}

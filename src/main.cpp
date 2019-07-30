@@ -6,7 +6,8 @@
 
 int main()
 {
-	Game::initialize();
-	Game::run();
+	Game game;
+	game.initialize();
+	game.run();
 
 }

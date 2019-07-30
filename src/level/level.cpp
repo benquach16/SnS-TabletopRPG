@@ -1,6 +1,7 @@
 #include "level.h"
 #include "../object/corpseobject.h"
 #include "../object/creatureobject.h"
+#include "../object/humanobject.h"
 #include "../3rdparty/random.hpp"
 
 using namespace effolkronium;
@@ -37,7 +38,7 @@ void Level::run()
 
 void Level::generate()
 {
-	std::vector<Room> m_rooms;
+	std::vector<Room> rooms;
 
 	for(int x = 1; x < m_width; ++x) {
 		for(int y = 1; y < m_height; ++y) {
@@ -45,21 +46,28 @@ void Level::generate()
 		}		
 	}
 
-	m_rooms.push_back(carveRoom(1, 1, 6, 6, 10, 10));
+	rooms.push_back(carveRoom(1, 1, 6, 6, 10, 10));
 	
 	for(int i = 0; i < 7; ++i) {
-		m_rooms.push_back(carveRoom());
-		int idx = m_rooms.size() - 1;
-		createCorridor(m_rooms[idx-1], m_rooms[idx]);
+		rooms.push_back(carveRoom());
+		int idx = rooms.size() - 1;
+		createCorridor(rooms[idx-1], rooms[idx]);
 	}
 	for(int i = 0; i < 3; ++i) {
-		m_rooms.push_back(carveSeperateRoom());
-		int idx = m_rooms.size() - 1;
-		createCorridor(m_rooms[idx-1], m_rooms[idx]);
+		rooms.push_back(carveSeperateRoom());
+		int idx = rooms.size() - 1;
+		createCorridor(rooms[idx-1], rooms[idx]);
 	}
 
 	//makeRoom();
 	removeIslands();
+
+	//temporary, to add enemies
+	for(auto it : rooms) {
+		HumanObject* object = new HumanObject;
+		object->setPosition(it.x, it.y);
+		m_objects.push_back(object);
+	}
 }
 
 Room Level::carveRoom()
@@ -280,7 +288,9 @@ void Level::cleanup()
 void Level::clearObjects()
 {
 	for(int i = 0; i < m_objects.size(); ++i) {
-		delete m_objects[i];
+		if(m_objects[i]->preserveBetweenLevels()) {
+			delete m_objects[i];
+		}
 	};
 	m_objects.clear();
 }

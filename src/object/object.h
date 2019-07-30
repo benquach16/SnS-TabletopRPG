@@ -33,6 +33,7 @@ public:
 	virtual std::string getDescription() const = 0;
 	virtual eObjectTypes getObjectType() const = 0;
 	virtual bool deleteMe() const { return false; }
+	virtual bool preserveBetweenLevels() const { return false; }
 	virtual void run(const Level *);
 	void setPosition(int x, int y)
 	{

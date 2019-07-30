@@ -21,9 +21,9 @@ void GameUI::run(sf::Event event)
 	Game::getWindow().draw(text);
 }
 
-void GameUI::runCombat(sf::Event event)
+void GameUI::runCombat(sf::Event event, const CombatManager* manager)
 {
-	m_combatUI.run(event);
+	m_combatUI.run(event, manager);
 }
 
 void GameUI::runInventory(sf::Event event, PlayerObject* player)

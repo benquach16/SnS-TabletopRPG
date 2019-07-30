@@ -34,7 +34,13 @@ enum class eOffensiveManuevers : unsigned {
 	Thrust,
 	PinpointThrust,
 	FeintThrust,
-	FeintSwing
+	FeintSwing,
+	Beat
+};
+
+enum class ePositionManuevers : unsigned {
+	Stand,
+	Pickup
 };
 
 static int offenseManueverCost(eOffensiveManuevers manuever) {
@@ -48,9 +54,9 @@ enum class eDefensiveManuevers : unsigned {
 	ParryLinked,
 	DodgeLinked,
 	Counter,
-	
 	Parry,
-	Dodge	
+	Dodge,
+	Expulsion
 };
 
 static int defenseManueverCost(eDefensiveManuevers manuever) {

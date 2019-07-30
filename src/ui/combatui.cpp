@@ -15,7 +15,7 @@ using namespace std;
 constexpr unsigned logHeight = cCharSize * (cLinesDisplayed+1);
 constexpr unsigned rectHeight = cCharSize * 5;
 
-CombatUI::CombatUI() : m_instance(nullptr)
+CombatUI::CombatUI()
 {
 	resetState();
 }
@@ -29,14 +29,16 @@ void CombatUI::resetState()
 	m_dualRedState = eDualRedStealSubState::ChooseInitiative;
 }
 
-void CombatUI::run(sf::Event event)
+void CombatUI::run(sf::Event event, const CombatManager* manager)
 {
-	if(m_instance == nullptr) {
+	if(manager == nullptr) {
 		cout << "this shouldnt happen" << endl;
 		return;
 	}
 
-	if(m_instance->getState() == eCombatState::Uninitialized) {
+	CombatInstance* instance = manager->getCurrentInstance();
+
+	if(instance->getState() == eCombatState::Uninitialized) {
 		return;
 	}
 
@@ -55,106 +57,106 @@ void CombatUI::run(sf::Event event)
 	combatBkg2.setOutlineColor(sf::Color(22, 22, 33));
 	Game::getWindow().draw(combatBkg2);
 
-	showSide1Stats();
-	showSide2Stats();
+	showSide1Stats(instance);
+	showSide2Stats(instance);
 
-	assert(m_instance->getSide1()->isPlayer() == true);
-	Player *player = static_cast<Player *>(m_instance->getSide1());
-	Creature *target = m_instance->getSide2();
+	assert(instance->getSide1()->isPlayer() == true);
+	Player *player = static_cast<Player *>(instance->getSide1());
+	Creature *target = instance->getSide2();
 
 	sf::RectangleShape reachBkg(sf::Vector2f(windowSize.x - 4, cCharSize));
 	reachBkg.setFillColor(sf::Color(12, 12, 23));
 	reachBkg.setPosition(2, windowSize.y - logHeight - rectHeight - cCharSize - 2);
 	reachBkg.setOutlineThickness(2);
 	reachBkg.setOutlineColor(sf::Color(22, 22, 33));
-	int reachCost = static_cast<int>(m_instance->getCurrentReach()) -
+	int reachCost = static_cast<int>(instance->getCurrentReach()) -
 		static_cast<int>(player->getPrimaryWeapon()->getLength());
 	reachCost = abs(reachCost);
 	sf::Text reachTxt;
 	reachTxt.setCharacterSize(cCharSize);
 	reachTxt.setFont(Game::getDefaultFont());
-	reachTxt.setString("Current reach is " + lengthToString(m_instance->getCurrentReach()) + " (" +
+	reachTxt.setString("Current reach is " + lengthToString(instance->getCurrentReach()) + " (" +
 					   to_string(reachCost) + "AP to attack)");
 	reachTxt.setPosition(5, windowSize.y - logHeight - rectHeight - cCharSize - 6);
 	Game::getWindow().draw(reachBkg);
 	Game::getWindow().draw(reachTxt);
 
-	if (m_instance->getState() == eCombatState::Initialized)
+	if (instance->getState() == eCombatState::Initialized)
 	{
 		resetState();
 		return;
 	}
-	if(m_instance->getState() == eCombatState::RollInitiative) {
-		doInitiative();
+	if(instance->getState() == eCombatState::RollInitiative) {
+		doInitiative(player, target);
 		return;
 	}
-	if(m_instance->getState() == eCombatState::ResetState) {
+	if(instance->getState() == eCombatState::ResetState) {
 		resetState();
 		return;
 	}
-	if(m_instance->getState() == eCombatState::Offense && m_instance->isAttackerPlayer() == true) {
+	if(instance->getState() == eCombatState::Offense && instance->isAttackerPlayer() == true) {
 		m_offenseUI.run(event, player, target);
 		return;
 	}
-	if(m_instance->getState() == eCombatState::Defense && m_instance->isDefenderPlayer() == true) {
+	if(instance->getState() == eCombatState::Defense && instance->isDefenderPlayer() == true) {
 		m_defenseUI.run(event, player);
 		return;
 	}
-	if(m_instance->getState() == eCombatState::ParryLinked) {
+	if(instance->getState() == eCombatState::ParryLinked) {
 		m_offenseUI.run(event, player, target, false, true);
 		return;
 	}
-	if(m_instance->getState() == eCombatState::DualOffense1 && m_instance->isAttackerPlayer() == true) {
+	if(instance->getState() == eCombatState::DualOffense1 && instance->isAttackerPlayer() == true) {
 		if(m_dualRedState == eDualRedStealSubState::Finished) {
 			m_offenseUI.run(event, player, target, false);
 		} else {
-			doDualRedSteal(event);
+			doDualRedSteal(event, player);
 		}
 		return;
 	}
-	if(m_instance->getState() == eCombatState::DualOffense2 && m_instance->isAttackerPlayer() == true) {
+	if(instance->getState() == eCombatState::DualOffense2 && instance->isAttackerPlayer() == true) {
 		if(m_dualRedState == eDualRedStealSubState::Finished) {
 			m_offenseUI.run(event, player, target, false);
 		} else {
-			doDualRedSteal(event);
+			doDualRedSteal(event, player);
 		}
 		return;
 	}
-	if(m_instance->getState() == eCombatState::StolenOffense && m_instance->isAttackerPlayer() == true) {
-		doStolenOffense(event);
+	if(instance->getState() == eCombatState::StolenOffense && instance->isAttackerPlayer() == true) {
+		doStolenOffense(event, player);
 		return;
 	}
-	if(m_instance->getState() == eCombatState::DualOffenseStealInitiative && m_instance->isDefenderPlayer() == true) {
+	if(instance->getState() == eCombatState::DualOffenseStealInitiative && instance->isDefenderPlayer() == true) {
 		if(m_stolenOffenseState == eStolenOffenseSubState::Finished) {
 			m_offenseUI.run(event, player, target);
 		} else {
-			doStolenOffense(event);
+			doStolenOffense(event, player);
 		}
 		return;
 	}
-	if(m_instance->getState() == eCombatState::DualOffenseSecondInitiative && m_instance->isDefenderPlayer() == true) {
-		doStolenOffense(event);	
+	if(instance->getState() == eCombatState::DualOffenseSecondInitiative && instance->isDefenderPlayer() == true) {
+		doStolenOffense(event, player);	
 		return;
 	}
-	if(m_instance->getState() == eCombatState::StealInitiative) {
+	if(instance->getState() == eCombatState::StealInitiative) {
 		m_offenseUI.run(event, player, target);
 		return;
 	}
-	if(m_instance->getState() == eCombatState::Resolution) {
+	if(instance->getState() == eCombatState::Resolution) {
 		resetState();
 		m_defenseUI.resetState();
 		return;
 	}
-	if(m_instance->getState() == eCombatState::DualOffenseResolve) {
+	if(instance->getState() == eCombatState::DualOffenseResolve) {
 		resetState();
 		return;
 	}
-	if(m_instance->getState() == eCombatState::FinishedCombat) {
+	if(instance->getState() == eCombatState::FinishedCombat) {
 		return;
 	}
 }
 
-void CombatUI::doInitiative()
+void CombatUI::doInitiative(Player* player, Creature* target)
 {
 	if(m_initiativeState == eInitiativeSubState::ChooseInitiative) {
 		UiCommon::drawTopPanel();
@@ -165,10 +167,6 @@ void CombatUI::doInitiative()
 		text.setString("Choose initiative:\na - Attack \nb - Defend\nc - Inspect target");
 		Game::getWindow().draw(text);
 
-		//temporary, maybe
-		assert(m_instance->getSide1()->isPlayer() == true);
-		Player* player = static_cast<Player*>(m_instance->getSide1());
-		Creature *target = m_instance->getSide2();
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) == true) {
 			player->setInitiative(eInitiativeRoll::Attack);
 			m_initiativeState = eInitiativeSubState::Finished;
@@ -184,7 +182,6 @@ void CombatUI::doInitiative()
 	else if(m_initiativeState == eInitiativeSubState::InspectTarget) {
 		UiCommon::drawTopPanel();
 
-		Creature *target = m_instance->getSide2();
 		sf::Text text;
 		text.setCharacterSize(cCharSize);
 		text.setFont(Game::getDefaultFont());
@@ -196,10 +193,9 @@ void CombatUI::doInitiative()
 	}
 }
 
-void CombatUI::doStolenOffense(sf::Event event)
+void CombatUI::doStolenOffense(sf::Event event, Player* player)
 {
 	UiCommon::drawTopPanel();
-	Player* player = static_cast<Player*>(m_instance->getSide1());
 
 	if(m_stolenOffenseState == eStolenOffenseSubState::ChooseDice) {
 		
@@ -225,11 +221,10 @@ void CombatUI::doStolenOffense(sf::Event event)
 	}
 }
 
-void CombatUI::doDualRedSteal(sf::Event event)
+void CombatUI::doDualRedSteal(sf::Event event, Player* player)
 {
 	UiCommon::drawTopPanel();
 
-	Player* player = static_cast<Player*>(m_instance->getSide1());
 	if(m_dualRedState == eDualRedStealSubState::ChooseInitiative) {
 		sf::Text text;
 		text.setCharacterSize(cCharSize);
@@ -267,12 +262,12 @@ void CombatUI::doDualRedSteal(sf::Event event)
 	}
 }
 
-void CombatUI::showSide1Stats()
+void CombatUI::showSide1Stats(const CombatInstance* instance)
 {
 	auto windowSize = Game::getWindow().getSize();
 
-	assert(m_instance != nullptr);
-	Creature* creature = m_instance->getSide1();
+	assert(instance != nullptr);
+	Creature* creature = instance->getSide1();
 	sf::Text side1Info;
 	side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName() + " - " +
 						lengthToString(creature->getPrimaryWeapon()->getLength()));
@@ -294,12 +289,12 @@ void CombatUI::showSide1Stats()
 	Game::getWindow().draw(ap);
 }
 
-void CombatUI::showSide2Stats()
+void CombatUI::showSide2Stats(const CombatInstance* instance)
 {
 	auto windowSize = Game::getWindow().getSize();
 
-	assert(m_instance != nullptr);
-	Creature* creature = m_instance->getSide2();
+	assert(instance != nullptr);
+	Creature* creature = instance->getSide2();
 	sf::Text side1Info;
 	side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName() + " - " +
 						lengthToString(creature->getPrimaryWeapon()->getLength()));

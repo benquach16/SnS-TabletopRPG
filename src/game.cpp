@@ -16,10 +16,8 @@
 
 using namespace std;
 
-Game::eGameState Game::m_currentState;
 sf::RenderWindow Game::m_window;
 sf::Font Game::m_defaultFont;
-CombatManager Game::m_combatManager;
 
 void Game::initialize()
 {
@@ -58,7 +56,9 @@ void Game::run()
 
 	playerObject->setPosition(1, 1);
 
-	ui.initializeCombatUI(&playerObject->getCombatInstance());
+	HumanObject target1;
+	HumanObject target2;	
+
 	SelectorObject selector;
 	GFXSelector gfxSelector;
 	
@@ -93,7 +93,8 @@ void Game::run()
 		getWindow().setView(v);	
 		gfxlevel.run(&level, playerObject->getPosition());
 		//temporary until we get graphics queue up and running
-		if(m_currentState == eGameState::AttackMode || m_currentState == eGameState::SelectionMode) {
+		if(m_currentState == eGameState::AttackMode || m_currentState == eGameState::SelectionMode ||
+		   m_currentState == eGameState::DialogueMode) {
 			gfxSelector.run(&selector);
 		}
 		getWindow().setView(getWindow().getDefaultView());
@@ -165,6 +166,9 @@ void Game::run()
 			}
 			if(playerObject->isInCombat() == true) {
 				m_currentState = eGameState::InCombat;
+			}
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::K) {
+				m_currentState = eGameState::DialogueMode;
 			}
 			
 		}
@@ -266,7 +270,28 @@ void Game::run()
 			}
 
 		} else if(m_currentState == eGameState::InCombat) {
-			ui.runCombat(event);
+			ui.runCombat(event, playerObject->getCombatManager());
+		} else if(m_currentState == eGameState::DialogueMode) {
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
+				if(selector.getPosition().y < playerObject->getPosition().y+2) {
+					selector.moveDown();
+				}
+			}
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Up) {
+				if(selector.getPosition().y > playerObject->getPosition().y-2) {
+					selector.moveUp();
+				}
+			}
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Left) {
+				if(selector.getPosition().x > playerObject->getPosition().x-2) {
+					selector.moveLeft();
+				}
+			}
+			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Right) {
+				if(selector.getPosition().x < playerObject->getPosition().x+2) {
+					selector.moveRight();
+				}
+			}			
 		}
 
 		Log::run();

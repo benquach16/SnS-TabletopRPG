@@ -75,13 +75,13 @@
 		"hook": false,
 		"components": [
 			{
-				"name": "Spear point, Swing",
+				"name": "Spear blade",
 				"damage": 1,
 				"type": "cutting",
 				"attack": "swing"
 			},
 			{
-				"name": "Spear point, Thrust",
+				"name": "Spear point",
 				"damage": 3,
 				"type": "piercing",
 				"attack": "thrust"

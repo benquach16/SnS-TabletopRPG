@@ -178,6 +178,14 @@ void Creature::resetCombatPool()
 	carry = min(0, carry);
 	m_combatPool = getProficiency(weapon->getType()) + getReflex() + carry;
 	m_combatPool -= static_cast<int>(m_AP);
+
+	//apply fatigue
+	for(auto it : m_fatigue) {
+		m_combatPool -= it.second;
+	}
+
+	//cant go below 0 for CP even if impact took out a lot of dice
+	m_combatPool = max(0, m_combatPool);
 	cout << getName() << m_combatPool << endl;
 }
 
@@ -268,9 +276,12 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
 
 	int combatPool = attacker->getCombatPool() + attacker->getSpeed();
 
-	int bufferDie = random_static::get(1, 5);
+	int bufferDie = random_static::get(3, 5);
 
-	constexpr float disadvantageMult = 1.2;
+	float disadvantageMult = 1.0;
+	float mult = random_static::get(3, 5);
+	mult+=m_BTN - cBaseBTN;
+	disadvantageMult+=(mult/10);
 	if((combatPool * disadvantageMult) + bufferDie < m_combatPool + getSpeed()) {
 		int diff = abs((getSpeed() - attacker->getSpeed()) * disadvantageMult);
 		int dice = diff + bufferDie;

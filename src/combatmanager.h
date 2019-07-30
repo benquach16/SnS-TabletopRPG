@@ -7,12 +7,13 @@
 class CombatManager
 {
 public:
-	CombatManager();
+	CombatManager(Creature* creature);
 	~CombatManager();
-	void run();
-	CombatInstance* initializeCombat(Creature* side1, Creature* side2);
+	bool run();
+	CombatInstance* getCurrentInstance() const;
+	void startCombatWith(Creature* creature);
 private:
-	typedef std::pair<Creature*, Creature*> CreaturePair;
-	
-	std::map<CreaturePair, CombatInstance*> m_instances;
+	std::vector<CombatInstance*> m_instances;
+	int m_currentId;
+	Creature* m_mainCreature;
 };
