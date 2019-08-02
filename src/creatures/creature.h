@@ -104,10 +104,17 @@ public:
 
 	eInitiativeRoll doInitiative(const Creature* opponent);
 
+	void doPositionRoll(const Creature* opponent);
+
 	void doStand();
 
 	Offense getQueuedOffense() const { return m_currentOffense; }
 	Defense getQueuedDefense() const { return m_currentDefense; }
+	Position getQueuedPosition() const { return m_currentPosition; }
+
+	bool getHasOffense() const { return m_hasOffense; }
+	bool getHasDefense() const { return m_hasDefense; }
+	bool getHasPosition() const { return m_hasPosition; }
 
 	virtual void clearCreatureManuevers();
 

@@ -50,10 +50,12 @@ public:
 
 	const std::map<int, int>& getInventory() const { return m_inventory; }
 	std::map<int, int>& getInventoryMutable() { return m_inventory; }
+
+	unsigned getId() const { return m_id; }
 protected:
 	vector2d m_position;
 
 	std::map<int, int> m_inventory;
 	//should be assigned a unique id on creation
-	int m_id;
+	unsigned m_id;
 };

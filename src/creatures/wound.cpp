@@ -63,8 +63,12 @@ WoundTable::WoundTable()
 
 WoundTable::~WoundTable()
 {
-	for(auto it : m_woundTable) {
-		
+	for(auto damage : m_woundTable) {
+		for(auto parts : damage.second) {
+			for(auto levels : parts.second) {
+				delete levels.second;
+			}
+		}
 	}
 }
 

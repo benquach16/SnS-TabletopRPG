@@ -406,8 +406,8 @@
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":["Neck is pierced, severely damaging the carotid artery."],
-				"effects":["BL3"]
+				"text":["Throat implaed, neck possibly broken. Death is almost instant"],
+				"effects":["death"]
 			}
 		},
 		"shoulder": {

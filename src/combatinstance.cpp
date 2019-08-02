@@ -69,10 +69,8 @@ void CombatInstance::doInitialization()
 	assert(m_side2 != nullptr);
 	assert(m_currentState == eCombatState::Initialized);
 	
-	writeMessage("Combat between " + m_side1->getName() + " and " + m_side2->getName(), Log::eMessageTypes::Announcement);
 	writeMessage(m_side1->getName() + " is using " + m_side1->getPrimaryWeapon()->getName() + " and " +
-			  m_side2->getName() + " is using " + m_side2->getPrimaryWeapon()->getName());
-
+				 m_side2->getName() + " is using " + m_side2->getPrimaryWeapon()->getName());
 	//ugly implicit casting
 	m_currentReach = max(m_side1->getPrimaryWeapon()->getLength(), m_side2->getPrimaryWeapon()->getLength());
 	m_dualWhiteTimes = 0;
@@ -185,17 +183,16 @@ bool CombatInstance::doOffense()
 	}
 	
 	const Weapon* offenseWeapon = attacker->getPrimaryWeapon();
-	const Weapon* defenseWeapon = defender->getPrimaryWeapon();
 	
 	int offenseCombatPool = attacker->getCombatPool();
 
 	int reachCost = static_cast<int>(m_currentReach) - static_cast<int>(offenseWeapon->getLength());
-	reachCost = abs(reachCost);
+
 	if(attacker->isPlayer() == true)
 	{
 		//wait until we get input from player
 		Player* player = static_cast<Player*>(attacker);
-		if(player->pollForOffense() == false) {
+		if(player->getHasOffense() == false) {
 			m_currentState = eCombatState::Offense;
 			return false;
 		} 
@@ -203,12 +200,12 @@ bool CombatInstance::doOffense()
 	else {
 		attacker->doOffense(defender, reachCost, false, m_dualRedThrow);
 	}
-	if(reachCost != 0) {
-		writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost) +
-					 " action points", Log::eMessageTypes::Announcement);
-		attacker->reduceOffenseDie(reachCost);
-		attacker->reduceCombatPool(min(reachCost, offenseCombatPool));
-	}
+	if(attacker->getHasOffense() == false) {
+		m_currentState = eCombatState::Offense;
+		return false;
+	}	
+	
+	outputReachCost(reachCost, attacker);
 	Offense attack = attacker->getQueuedOffense();
 	
 	assert(attack.component != nullptr);
@@ -258,20 +255,21 @@ void CombatInstance::doDualOffenseStealInitiative()
 	setSides(attacker, defender);
 
 	const Weapon* defenseWeapon = defender->getPrimaryWeapon();
-
 	int reachCost = static_cast<int>(m_currentReach) - static_cast<int>(defenseWeapon->getLength());
-	reachCost = abs(reachCost);
 	if (defender->isPlayer() == true) {
 		//wait until player inputs
 		Player *player = static_cast<Player *>(defender);
 
 		//two staged ui, piggyback off of existing code
 		//this may cause isseus so add another ui state if it does
-		if(player->pollForDefense() == true) {
+
+		//causes issues with new implementation
+		/*
+		if(player->getHasDefense() == true) {
 			player->reduceCombatPool(player->getQueuedDefense().dice);
 			cout << "Two stage UI" << endl;
-		}
-		if (player->pollForOffense() == false) {
+			}*/
+		if (player->getHasOffense() == false) {
 			m_currentState = eCombatState::DualOffenseStealInitiative;
 			return;
 		}
@@ -286,12 +284,7 @@ void CombatInstance::doDualOffenseStealInitiative()
 	assert(offense.dice <= defender->getCombatPool());
 	defender->reduceCombatPool(offense.dice);
 
-	if(reachCost != 0) {
-		writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost) +
-					 " action points", Log::eMessageTypes::Announcement);
-		defender->reduceOffenseDie(reachCost);
-		defender->reduceCombatPool(min(reachCost, defender->getCombatPool()));
-	}
+	outputReachCost(reachCost, defender);
 	
 	Defense defense = defender->getQueuedDefense();
 	writeMessage(defender->getName() + " allocates " + to_string(defense.dice) + " for initiative");
@@ -341,7 +334,7 @@ void CombatInstance::doDualOffenseSecondInitiative()
 	if (defender->isPlayer() == true) {
 		//wait until player inputs
 		Player *player = static_cast<Player *>(defender);
-		if (player->pollForDefense() == false) {
+		if (player->getHasOffense() == false) {
 			m_currentState = eCombatState::DualOffenseSecondInitiative;
 			return;
 		}
@@ -371,7 +364,7 @@ void CombatInstance::doDefense()
 	if(defender->isPlayer() == true) {
 		//wait until player inputs
 		Player* player = static_cast<Player*>(defender);
-		if(player->pollForDefense() == false) {
+		if(player->getHasDefense() == false) {
 			m_currentState = eCombatState::Defense;
 			return;
 		}
@@ -417,7 +410,7 @@ void CombatInstance::doParryLinked()
 	if(defender->isPlayer() == true) {
 		//wait until player inputs
 		Player* player = static_cast<Player*>(defender);
-		if(player->pollForOffense() == false) {
+		if(player->getHasOffense() == false) {
 			m_currentState = eCombatState::ParryLinked;
 			return;
 		}
@@ -426,6 +419,8 @@ void CombatInstance::doParryLinked()
 	else {
 		defender->doOffense(attacker, reachCost, m_currentTempo == eTempo::Second);		
 	}
+
+	
 	Offense offense = defender->getQueuedOffense();
 
 	writeMessage(defender->getName() + " links defense to counter with " + offense.component->getName());
@@ -451,7 +446,7 @@ void CombatInstance::doStealInitiative()
 	if(defender->isPlayer() == true) {
 		//wait until player inputs
 		Player* player = static_cast<Player*>(defender);
-		if(player->pollForOffense() == false) {
+		if(player->getHasOffense() == false) {
 			m_currentState = eCombatState::StealInitiative;
 			return;
 		}
@@ -476,7 +471,7 @@ void CombatInstance::doStolenOffense()
 	if(attacker->isPlayer() == true) {
 		//wait until player inputs
 		Player* player = static_cast<Player*>(attacker);
-		if(player->pollForDefense() == false) {
+		if(player->getHasDefense() == false) {
 			m_currentState = eCombatState::StolenOffense;
 			return;
 		}
@@ -494,33 +489,14 @@ void CombatInstance::doStolenOffense()
 	const Weapon* defenseWeapon = defender->getPrimaryWeapon();	
 	int reachCost = static_cast<int>(defenseWeapon->getLength()) - static_cast<int>(m_currentReach);
 	reachCost = abs(reachCost);
-	if(reachCost != 0) {
-		
-		writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost) +
-					 " action points", Log::eMessageTypes::Announcement);
-		defender->reduceOffenseDie(reachCost);
-		defender->reduceCombatPool(reachCost);
-		defender->reduceCombatPool(defender->getQueuedOffense().dice);
-	}
+	outputReachCost(reachCost, defender);
 	
+	defender->reduceCombatPool(defender->getQueuedOffense().dice);	
 	writeMessage(defender->getName() + " " + offensiveManueverToString(defender->getQueuedOffense().manuever) + "s with " +
 				 defender->getPrimaryWeapon()->getName() + " at " + hitLocationToString(defender->getQueuedOffense().target) + " using " +
 				 defender->getQueuedOffense().component->getName() + " with " +
 				 to_string(defender->getQueuedOffense().dice) + " action points");	
 	m_currentState = eCombatState::Resolution;
-}
-
-void CombatInstance::doResolution2()
-{
-	Creature* attacker = nullptr;
-	Creature* defender = nullptr;
-	setSides(attacker, defender);
-
-	//resolve all of the effects
-	
-	m_dualRedThrow = false;
-	switchTempo();
-	m_currentState = eCombatState::Offense;
 }
 
 void CombatInstance::doResolution()
@@ -652,7 +628,7 @@ void CombatInstance::doResolution()
 		
 	}
 	
-	m_currentState = eCombatState::PostCombat;
+	m_currentState = eCombatState::PostResolution;
 	
 }
 
@@ -679,7 +655,7 @@ void CombatInstance::doDualOffenseResolve()
 	}
 	
 	//intiative goes to whoever got more hits
-	m_currentState = eCombatState::PostCombat;
+	m_currentState = eCombatState::PostResolution;
 	if(MoS > MoS2) {
 		m_currentReach = m_side1->getPrimaryWeapon()->getLength();
 		m_initiative = eInitiative::Side1;
@@ -694,7 +670,7 @@ void CombatInstance::doDualOffenseResolve()
 	m_currentState = death == true ? eCombatState::FinishedCombat : m_currentState;
 }
 
-void CombatInstance::doPostCombat()
+void CombatInstance::doPostResolution()
 {
 	Creature* attacker = nullptr;
 	Creature* defender = nullptr;
@@ -832,16 +808,21 @@ bool CombatInstance::inflictWound(int MoS, Offense attack, Creature* target, boo
 	return false;
 }
 
+void CombatInstance::forceRefresh()
+{
+	// reset combat pools
+	m_currentTempo = eTempo::First;
+	m_side1->resetCombatPool();
+	m_side2->resetCombatPool();
+}
+
 void CombatInstance::switchTempo()
 {
 	if(m_currentTempo == eTempo::First) {
 		m_currentTempo = eTempo::Second;
 	} else {
-		// reset combat pools
 		writeMessage("Exchange has ended, combat pools have reset");
-		m_currentTempo = eTempo::First;
-		m_side1->resetCombatPool();
-		m_side2->resetCombatPool();
+		forceRefresh();
 	}
 }
 
@@ -914,8 +895,8 @@ void CombatInstance::run()
 	case eCombatState::DualOffenseResolve:
 		doDualOffenseResolve();
 		break;
-	case eCombatState::PostCombat:
-		doPostCombat();
+	case eCombatState::PostResolution:
+		doPostResolution();
 		break;
 	case eCombatState::FinishedCombat:
 		doEndCombat();
@@ -933,5 +914,16 @@ void CombatInstance::writeMessage(const std::string& str, Log::eMessageTypes typ
 	//combat manager is not a singleton, so we can have multiple.
 	//we can choose not to display combatmanager messages if we want to.
 	Log::push(str, type);
+}
+
+void CombatInstance::outputReachCost(int cost, Creature* attacker)
+{
+	int reachCost = abs(cost);
+	if(reachCost != 0) {
+		writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost) +
+					 " action points", Log::eMessageTypes::Announcement);
+		attacker->reduceOffenseDie(reachCost);
+		attacker->reduceCombatPool(min(reachCost, attacker->getCombatPool()));
+	}	
 }
 

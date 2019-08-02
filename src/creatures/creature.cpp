@@ -233,6 +233,8 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
 		//hacky since usually this happens in combatinstance
 		m_combatPool -= m_currentDefense.dice;
 	}
+
+	m_hasOffense = true;
 }
 
 
@@ -268,6 +270,15 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
 	dice = min(m_combatPool, dice);
 	dice = max(dice, 0);
 	m_currentDefense.dice = dice;
+
+	m_hasDefense = true;
+}
+
+void Creature::doPositionRoll(const Creature* opponent)
+{
+	// can be reused for standing up as well
+	m_currentPosition.dice = opponent->getQueuedPosition().dice;
+	m_hasPosition = true;
 }
 
 bool Creature::stealInitiative(const Creature* attacker, int& outDie)

@@ -2,7 +2,7 @@
 
 #include "player.h"
 
-Player::Player() : Human(), m_flagInitiative(false), m_flagOffense(false), m_flagDefense(false)
+Player::Player() : Human(), m_flagInitiative(false)
 {
 }
 
@@ -21,28 +21,9 @@ void Player::setInitiative(eInitiativeRoll initiative)
 	m_flagInitiative = true;
 }
 
-bool Player::pollForOffense()
-{
-	bool ret = m_flagOffense;
-	if(ret == true) {
-		m_flagOffense = false;
-	}
-	return ret;
-}
-
-bool Player::pollForDefense()
-{
-	bool ret = m_flagDefense;
-	if(ret == true) {
-		m_flagDefense = false;
-	}
-	return ret;
-}
-
 void Player::clearCreatureManuevers()
 {
 	//todo: switch this to the creature base m_hasOffense
 	Creature::clearCreatureManuevers();
-	m_flagDefense = false;
-	m_flagOffense = false;
+	m_flagInitiative = false;
 }

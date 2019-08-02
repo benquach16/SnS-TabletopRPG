@@ -40,10 +40,11 @@ enum class eCombatState : unsigned
 	Defense = 11,
 	ParryLinked = 12,
 	StealInitiative = 13,
-	Resolution = 14,
-	DualOffenseResolve = 15,
-	PostCombat = 16,
-	FinishedCombat = 17
+	PostDefense = 14,
+	Resolution = 15,
+	DualOffenseResolve = 16,
+	PostResolution = 17,
+	FinishedCombat = 18
 };
 
 class CombatInstance
@@ -61,6 +62,8 @@ public:
 	eLength getCurrentReach() const { return m_currentReach; }
 	bool isAttackerPlayer();
 	bool isDefenderPlayer();
+	void forceRefresh();
+	void forceTempo(eTempo tempo) { m_currentTempo = tempo; }
 private:
 	void doInitialization();
 	void doRollInitiative();
@@ -76,11 +79,11 @@ private:
 	void doDefense();
 	void doParryLinked();
 	void doStealInitiative();
-	void doResolution2();
+	void doPostDefense();
 	void doResolution();
 	//this is a special case because if both sides roll to attack since both of their attacks resolve at the same time
 	void doDualOffenseResolve();
-	void doPostCombat();
+	void doPostResolution();
 	void doEndCombat();
 	void setSides(Creature*& attacker, Creature*& defender);
 
@@ -89,7 +92,7 @@ private:
 
 	bool inflictWound(int MoS, Offense attack, Creature* target, bool manueverFirst = false);
 	void writeMessage(const std::string& str, Log::eMessageTypes type = Log::eMessageTypes::Standard);
-	void outputReachCost(int cost);
+	void outputReachCost(int cost, Creature* attacker);
 	
 	eCombatState m_currentState;
 

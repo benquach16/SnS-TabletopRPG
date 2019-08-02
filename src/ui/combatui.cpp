@@ -24,6 +24,7 @@ void CombatUI::resetState()
 {
 	m_defenseUI.resetState();
 	m_offenseUI.resetState();
+	m_positionUI.resetState();
 	m_initiativeState = eInitiativeSubState::ChooseInitiative;
 	m_stolenOffenseState = eStolenOffenseSubState::ChooseDice;
 	m_dualRedState = eDualRedStealSubState::ChooseInitiative;
@@ -80,6 +81,11 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
 	reachTxt.setPosition(5, windowSize.y - logHeight - rectHeight - cCharSize - 6);
 	Game::getWindow().draw(reachBkg);
 	Game::getWindow().draw(reachTxt);
+
+	if (manager->getState() == eCombatManagerState::PositioningRoll) {
+		m_positionUI.run(event, player);
+		return;
+	}
 
 	if (instance->getState() == eCombatState::Initialized)
 	{

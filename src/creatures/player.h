@@ -24,10 +24,11 @@ public:
 	void setDefenseManuever(eDefensiveManuevers manuever) { m_currentDefense.manuever = manuever; }
 	void setDefenseDice(int dice) { m_currentDefense.dice = dice; }
 
-	bool pollForOffense();
-	void setOffenseReady() { std::cout << "flagged offense" << std::endl; m_flagOffense = true; }
-	bool pollForDefense();
-	void setDefenseReady() { std::cout << "flagged defense" << std::endl; m_flagDefense = true; }
+	void setPositionDice(int dice) { m_currentPosition.dice = dice; }
+
+	void setOffenseReady() { m_hasOffense = true; }
+	void setDefenseReady() { m_hasDefense = true; }
+	void setPositionReady() { m_hasPosition = true; }
 
 	void clearCreatureManuevers() override;
 	
@@ -36,6 +37,4 @@ private:
 
 	//wrap in fence object?
 	bool m_flagInitiative;
-	bool m_flagOffense;
-	bool m_flagDefense;
 };
