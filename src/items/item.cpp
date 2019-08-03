@@ -4,7 +4,10 @@
 
 #include "../3rdparty/json.hpp"
 #include "armor.h"
+#include "consumable.h"
+#include "effect.h"
 #include "item.h"
+#include "utils.h"
 #include "weapon.h"
 
 ItemTable* ItemTable::singleton = nullptr;
@@ -34,10 +37,31 @@ ItemTable::ItemTable()
         string name = values["name"];
         string description = values["description"];
         int cost = values["cost"];
-        string type = values["type"];
+        eItemType type = stringToItemType(values["type"]);
 
-        Item* item = new Item(name, description, cost);
+        Item* item = nullptr;
 
+        switch (type) {
+        case eItemType::Food: {
+            int hunger = values["hunger"];
+            std::set<Effect*> effects;
+            effects.insert(new HungerEffect(hunger));
+            item = new Consumable(name, description, cost, type, effects);
+            break;
+        }
+        case eItemType::Waterskin: {
+            int thirst = values["thirst"];
+            std::set<Effect*> effects;
+            effects.insert(new ThirstEffect(thirst));
+            item = new Consumable(name, description, cost, type, effects);
+            break;
+        }
+        default: {
+            item = new Item(name, description, cost, type);
+            break;
+        }
+        }
+        assert(item != nullptr);
         assert(m_itemList.find(id) == m_itemList.end());
         m_itemList[id] = item;
     }

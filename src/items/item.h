@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <unordered_map>
 
 #include "../object/nameable.h"
@@ -8,17 +9,19 @@
 
 class Item : public Nameable {
 public:
-    Item(const std::string& name, const std::string& description, int cost)
+    Item(const std::string& name, const std::string& description, int cost, eItemType type)
         : Nameable(name, description)
         , m_cost(cost)
+        , m_type(type)
     {
     }
 
-    virtual eItemType getItemType() const { return eItemType::Item; }
+    virtual eItemType getItemType() const { return m_type; }
     int getCost() const { return m_cost; }
 
 private:
     int m_cost;
+    eItemType m_type;
 };
 
 class Weapon;

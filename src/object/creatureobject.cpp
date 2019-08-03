@@ -1,4 +1,5 @@
 #include "creatureobject.h"
+#include "../items/consumable.h"
 
 CreatureObject::CreatureObject(Creature* creature)
     : m_creature(creature)
@@ -18,4 +19,15 @@ CreatureObject::~CreatureObject()
 void CreatureObject::run(const Level* level)
 {
     m_controller.run(level, this);
+}
+
+void CreatureObject::applyItem(int id)
+{
+    const Item* item = ItemTable::getSingleton()->get(id);
+    assert(item->getItemType() != eItemType::Weapon);
+    assert(item->getItemType() != eItemType::Armor);
+    const Consumable* consumable = static_cast<const Consumable*>(item);
+
+    for (auto it : consumable->getEffects()) {
+    }
 }

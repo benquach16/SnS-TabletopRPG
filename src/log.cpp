@@ -16,14 +16,14 @@ void Log::push(const std::string& str, eMessageTypes type)
 void Log::run()
 {
     auto windowSize = Game::getWindow().getSize();
-
+    const int maxHistory = windowSize.y / cCharSize - 2;
     unsigned rectHeight = cCharSize * (cLinesDisplayed + 1);
     //magic numbers
     sf::RectangleShape logBkg(sf::Vector2f(windowSize.x - 6, rectHeight - 3));
     logBkg.setPosition(3, windowSize.y - rectHeight);
 
-    if (m_queue.size() > cMaxHistory) {
-        unsigned difference = m_queue.size() - cMaxHistory;
+    if (m_queue.size() > maxHistory) {
+        unsigned difference = m_queue.size() - maxHistory;
         for (unsigned i = 0; i < difference; ++i) {
             m_queue.pop_front();
         }

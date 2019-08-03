@@ -1,3 +1,5 @@
+#include <assert.h>
+
 #include "utils.h"
 
 std::string offensiveManueverToString(eOffensiveManuevers manuever)
@@ -176,5 +178,16 @@ eItemType stringToItemType(const std::string& str)
         return eItemType::Food;
     } else if (str == "waterskin") {
         return eItemType::Waterskin;
+    } else if (str == "bedroll") {
+        return eItemType::Bedroll;
+    } else if (str == "armor") {
+        return eItemType::Armor;
+    } else if (str == "weapon") {
+        return eItemType::Weapon;
+    } else if (str == "money") {
+        return eItemType::Money;
+    } else if (str == "bandage") {
+        return eItemType::Bandage;
     }
+    assert(true);
 }

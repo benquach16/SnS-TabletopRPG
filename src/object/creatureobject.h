@@ -30,6 +30,8 @@ public:
     void addItem(int id) { m_inventory[id]++; }
     void removeItem(int id) { m_inventory[id]--; }
 
+    void applyItem(int id);
+
     int getCombatManagerId() const { return m_combatManagerId; }
 
 protected:

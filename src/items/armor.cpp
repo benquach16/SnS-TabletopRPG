@@ -15,7 +15,7 @@ const string filepath = "data/armor.json";
 
 Armor::Armor(const std::string& name, const std::string& description, int AV, float AP, eLayer layer, eArmorTypes type,
     bool rigid, bool metal, std::set<eBodyParts> coverage, int cost)
-    : Item(name, description, cost)
+    : Item(name, description, cost, eItemType::Armor)
     , m_AV(AV)
     , m_AP(AP)
     , m_rigid(rigid)

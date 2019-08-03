@@ -9,12 +9,14 @@
         "name": "Bread",
         "description": "Basic food item that can be found anywhere.",
         "hunger": 2,
+        "morale": 0,
         "type": "food",
         "cost": 2
     },
     "2": {
         "name": "Waterskin",
         "description": "A container for water.",
+        "thirst": 2,
         "type": "waterskin",
         "cost": 5
     },

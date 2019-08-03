@@ -43,8 +43,20 @@ enum class ePositionManuevers : unsigned {
     Pickup
 };
 
+enum class eGrips : unsigned {
+    Standard,
+    Staff,
+    HalfSword
+};
+
 static int offenseManueverCost(eOffensiveManuevers manuever)
 {
+    switch (manuever) {
+    case eOffensiveManuevers::PinpointThrust:
+        return 1;
+    case eOffensiveManuevers::Beat:
+        return 1;
+    }
     return 0;
 }
 
@@ -65,6 +77,8 @@ static int defenseManueverCost(eDefensiveManuevers manuever)
     switch (manuever) {
     case eDefensiveManuevers::ParryLinked:
         return 1;
+    case eDefensiveManuevers::Counter:
+        return 2;
     }
     return 0;
 }
@@ -109,5 +123,7 @@ enum class eItemType {
     Weapon,
     Food,
     Waterskin,
-    Money
+    Bedroll,
+    Money,
+    Bandage
 };

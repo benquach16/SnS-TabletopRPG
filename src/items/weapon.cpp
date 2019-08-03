@@ -12,7 +12,7 @@ using namespace std;
 const string filepath = "data/weapons.json";
 
 Weapon::Weapon(const std::string& name, const std::string& description, eLength length, std::vector<Component*> components, eWeaponTypes type, int cost)
-    : Item(name, description, cost)
+    : Item(name, description, cost, eItemType::Weapon)
     , m_length(length)
     , m_components(components)
     , m_type(type)

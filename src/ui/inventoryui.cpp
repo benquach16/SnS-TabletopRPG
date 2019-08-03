@@ -3,7 +3,9 @@
 #include "../creatures/utils.h"
 #include "../game.h"
 #include "../items/armor.h"
+#include "../items/consumable.h"
 #include "../items/utils.h"
+#include "../log.h"
 #include "../object/creatureobject.h"
 #include "../object/playerobject.h"
 #include "types.h"
@@ -29,6 +31,9 @@ void InventoryUI::run(sf::Event event, PlayerObject* player)
         break;
     case eUiState::Detailed:
         displayDetail(event, player);
+        break;
+    case eUiState::Wounds:
+        doWounds(event, player);
         break;
     case eUiState::Profile:
         doProfile(event, player);
@@ -203,15 +208,16 @@ void InventoryUI::displayDetail(sf::Event event, PlayerObject* player)
                     player->getCreatureComponent()->equipArmor(m_id);
                     player->removeItem(m_id);
                     m_uiState = eUiState::Equipped;
+                    Log::push("You equip the " + item->getName());
                 }
             } else {
                 player->getCreatureComponent()->removeArmor(m_id);
                 player->addItem(m_id);
                 m_uiState = eUiState::Equipped;
+                Log::push("You unequip the " + item->getName());
             }
         }
-    }
-    if (item->getItemType() == eItemType::Weapon) {
+    } else if (item->getItemType() == eItemType::Weapon) {
         const Weapon* weapon = static_cast<const Weapon*>(item);
         str += "Length: " + lengthToString(weapon->getLength()) + '\n';
         str += "Proficiency: " + weaponTypeToString(weapon->getType()) + '\n';
@@ -232,6 +238,13 @@ void InventoryUI::displayDetail(sf::Event event, PlayerObject* player)
             player->getCreatureComponent()->setWeapon(m_id);
             player->removeItem(m_id);
             m_uiState = eUiState::Equipped;
+            Log::push("You equip the " + item->getName());
+        }
+    } else if (item->getItemType() == eItemType::Food) {
+        if (event.type == sf::Event::TextEntered && event.text.unicode == 'e') {
+            player->applyItem(m_id);
+            player->removeItem(m_id);
+            Log::push("You consume the " + item->getName());
         }
     }
     str += '\n';
@@ -240,9 +253,25 @@ void InventoryUI::displayDetail(sf::Event event, PlayerObject* player)
 
     Game::getWindow().draw(txt);
 
-    if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
+    if (event.type == sf::Event::KeyReleased && (event.key.code == sf::Keyboard::Enter || event.key.code == sf::Keyboard::Escape)) {
         m_uiState = eUiState::Backpack;
     }
+}
+
+void InventoryUI::doWounds(sf::Event event, PlayerObject* player)
+{
+    auto windowSize = Game::getWindow().getSize();
+    sf::RectangleShape bkg(sf::Vector2f(windowSize.x / 2, cCharSize * cDisplayLines));
+    bkg.setFillColor(sf::Color(12, 12, 23));
+    bkg.setOutlineThickness(1);
+    bkg.setOutlineColor(sf::Color(22, 22, 33));
+    Game::getWindow().draw(bkg);
+    sf::RectangleShape bkg2(sf::Vector2f(windowSize.x / 2, cCharSize * cDisplayLines));
+    bkg2.setPosition(sf::Vector2f(windowSize.x / 2, 0));
+    bkg2.setFillColor(sf::Color(12, 12, 23));
+    bkg2.setOutlineThickness(1);
+    bkg2.setOutlineColor(sf::Color(22, 22, 33));
+    Game::getWindow().draw(bkg2);
 }
 
 void InventoryUI::doProfile(sf::Event event, PlayerObject* player)
