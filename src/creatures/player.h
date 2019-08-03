@@ -30,6 +30,8 @@ public:
 	void setDefenseReady() { m_hasDefense = true; }
 	void setPositionReady() { m_hasPosition = true; }
 
+	void setDefenseOff() { m_hasDefense = false; }
+
 	void clearCreatureManuevers() override;
 	
 private:

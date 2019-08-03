@@ -264,11 +264,11 @@ void CombatInstance::doDualOffenseStealInitiative()
 		//this may cause isseus so add another ui state if it does
 
 		//causes issues with new implementation
-		/*
+		
 		if(player->getHasDefense() == true) {
 			player->reduceCombatPool(player->getQueuedDefense().dice);
-			cout << "Two stage UI" << endl;
-			}*/
+			player->setDefenseOff();
+		}
 		if (player->getHasOffense() == false) {
 			m_currentState = eCombatState::DualOffenseStealInitiative;
 			return;
