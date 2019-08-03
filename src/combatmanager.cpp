@@ -34,6 +34,7 @@ void CombatManager::cleanup()
 
 bool CombatManager::run(float tick)
 {
+	m_allowNewCreatures = true;
 	if(m_mainCreature->isConscious() == false) {
 		//cleanup, we don't need this anymore
 		cleanup();
@@ -42,23 +43,26 @@ bool CombatManager::run(float tick)
 	if(m_instances.size() == 0) {
 		m_instanceId = 0;
 		m_currentId = 0;
+		cleanup();
 		//cout << "no more instances" << endl;
 		return false;
 	}
 	m_allowNewCreatures = false;
 	switch(m_currentState) {
 	case eCombatManagerState::RunCombat:
-		if(tick > cTick) {
-			doRunCombat();
-		}
+		doRunCombat(tick);
 		break;
 	case eCombatManagerState::PositioningRoll:
-		doPositionRoll();
+		if(tick > cTick) {
+			doPositionRoll();
+		}
 		break;
 	}
+	//second check in case everyone died in previous iteration
 	if(m_instances.size() == 0) {
 		m_currentId = 0;
 		m_instanceId = 0;
+		cleanup();
 		//cout << "no more instances" << endl;
 		return false;
 	}
@@ -66,7 +70,7 @@ bool CombatManager::run(float tick)
 
 }
 
-void CombatManager::doRunCombat()
+void CombatManager::doRunCombat(float tick)
 {	
 	if(m_instances.size() > 1) {		
 		//do positioning roll
@@ -92,6 +96,10 @@ void CombatManager::doRunCombat()
 			}
 		}
 	}
+
+	if(tick <= cTick) {
+		return;
+	}
 	//index into array of indexes for active instances
 	m_currentId = m_instances.size() > 1 ? m_activeInstances[m_instanceId] : 0;
 	
@@ -110,6 +118,7 @@ void CombatManager::doRunCombat()
 			writeMessage("Combatant has been killed, refreshing combat pools");
 		}
 		refreshInstances();
+		m_currentId = 0;
 		m_currentTempo = eTempo::First;
 		
 	}
@@ -167,6 +176,8 @@ void CombatManager::doPositionRoll()
 	if(m_activeInstances.size() == 0) {
 		writeMessage("No combatants kept up with footwork, initiating duel");
 		m_activeInstances.push_back(0);
+	} else {
+		writeMessage(m_mainCreature->getName() + " is engaged with " + to_string(m_activeInstances.size()) + " opponents");
 	}
 	m_instanceId = 0;
 	m_currentId = 0;
@@ -191,6 +202,7 @@ void CombatManager::startCombatWith(Creature* creature)
 		} else {
 			m_side = eOutnumberedSide::Side2;
 		}
+		m_currentId = 0;
 	}
 	writeMessage("Combat started between " + m_mainCreature->getName() + " and " + creature->getName(), Log::eMessageTypes::Announcement);
 

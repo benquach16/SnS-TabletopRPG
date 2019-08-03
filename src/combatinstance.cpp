@@ -514,7 +514,6 @@ void CombatInstance::doResolution()
 		cout << "Dual resolution" << endl;
 		//original attacker gets advantage
 		int side1BTN = (m_side1 == attacker && m_dualRedThrow == false) ? m_side1->getAdvantagedBTN() : m_side1->getBTN();
-
 		int side2BTN = (m_side2 == attacker && m_dualRedThrow == false) ? m_side2->getAdvantagedBTN() : m_side2->getBTN();
 
 		//special case for thrust manuever, get an extra die
@@ -539,6 +538,8 @@ void CombatInstance::doResolution()
 
 		int attackerSuccesses = DiceRoller::rollGetSuccess(attacker->getBTN(),
 													   attacker->getQueuedOffense().dice);
+
+		bool wasStanding = defender->getStance() == eCreatureStance::Standing;
 		if(attackerSuccesses > 0) {
 			if(inflictWound(attackerSuccesses, attacker->getQueuedOffense(), defender, true) == true) {
 				m_currentState = eCombatState::FinishedCombat;
@@ -548,7 +549,14 @@ void CombatInstance::doResolution()
 			writeMessage(attacker->getName() + " had no successes");			
 		}
 
-		if(defender->getQueuedOffense().dice == 0) {
+		bool becameProne = wasStanding == true && defender->getStance() == eCreatureStance::Prone;
+
+		if(becameProne == true) {
+			//if the attack knocked them prone
+			writeMessage(defender->getName() + " was knocked down by the attack, their attack is dropped.");
+			m_currentState = eCombatState::Offense;
+		}
+		else if(defender->getQueuedOffense().dice == 0) {
 			//if the attack wiped out their combat pool, do nothing
 			writeMessage(defender->getName() + " had their action points eliminated by impact, their attack is dropped.");
 			m_currentState = eCombatState::Offense;
@@ -688,7 +696,13 @@ void CombatInstance::doPostResolution()
 
 	if(m_numTempos > cMinFatigueTempos) {
 		//roll for fatigue
-		
+		cout << "fatigue roll" << endl;
+		if(m_side1->rollFatigue() == true) {
+			writeMessage(m_side1->getName() + " has gotten more tired", Log::eMessageTypes::Alert);
+		}
+		if(m_side2->rollFatigue() == true) {
+			writeMessage(m_side2->getName() + " has gotten more tired", Log::eMessageTypes::Alert);
+		}
 	}
 	m_numTempos++;
 	
@@ -714,7 +728,6 @@ void CombatInstance::doEndCombat()
 
 bool CombatInstance::inflictWound(int MoS, Offense attack, Creature* target, bool manueverFirst)
 {
-	
 	eBodyParts bodyPart = WoundTable::getSingleton()->getSwing(attack.target);
 	//any thrust manevuer should trigger this
 	if(attack.manuever == eOffensiveManuevers::Thrust) {
@@ -731,9 +744,6 @@ bool CombatInstance::inflictWound(int MoS, Offense attack, Creature* target, boo
 	bool doBlunt = false;
 	//complicated armor calcs go here
 	finalDamage -= armorAtLocation.AV;
-	if(armorAtLocation.isMetal == true) {
-		cout << "hit metal armor" << endl;
-	}
 	if(armorAtLocation.isMetal == true && attack.component->getType() != eDamageTypes::Blunt && finalDamage > 0) {
 		if(attack.component->hasProperty(eWeaponProperties::MaillePiercing) == false &&
 		   armorAtLocation.type == eArmorTypes::Maille) {
@@ -785,8 +795,7 @@ bool CombatInstance::inflictWound(int MoS, Offense attack, Creature* target, boo
 	}
 	Wound *wound = WoundTable::getSingleton()->getWound(finalType, bodyPart, finalDamage);
 	writeMessage(wound->getText(), Log::eMessageTypes::Damage);
-	if(wound->getBTN() > target->getBTN())
-	{
+	if(wound->getBTN() > target->getBTN()) {
 		writeMessage(target->getName() + " begins to struggle from the pain", Log::eMessageTypes::Alert);
 	}
 	target->inflictWound(wound, manueverFirst);
@@ -844,7 +853,7 @@ bool CombatInstance::isDefenderPlayer()
 
 void CombatInstance::run()
 {
-	cout << "CombatState:" << (int)(m_currentState) << endl;
+	//cout << "CombatState:" << (int)(m_currentState) << endl;
 	switch(m_currentState)
 	{
 	case eCombatState::Uninitialized:

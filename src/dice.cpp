@@ -1,9 +1,8 @@
 #include "dice.h"
-#include <time.h>
-
+#include <iostream>
+using namespace std;
 
 namespace DiceRoller {
-
 	std::vector<int> roll(int number)
 	{
 		std::vector<int> ret;
@@ -16,12 +15,15 @@ namespace DiceRoller {
 	int rollGetSuccess(int BTN, int number)
 	{
 		int count = 0;
+		cout << "roll (btn=" << BTN << "):";
 		for(int i = 0; i < number; ++i) {
-			if(roll() >= BTN) {
+			int r = roll();
+			cout << r << " ";
+			if(r >= BTN) {
 				count++;
 			}
 		}
+		cout << endl;
 		return count;
 	}
-
 };

@@ -184,15 +184,33 @@ void Creature::resetCombatPool()
 		m_combatPool -= it.second;
 	}
 
+	//prone gives us less CP
+	if(m_currentStance == eCreatureStance::Prone) {
+		m_combatPool-=2;
+	}
+
 	//cant go below 0 for CP even if impact took out a lot of dice
 	m_combatPool = max(0, m_combatPool);
-	cout << getName() << m_combatPool << endl;
+	//cout << getName() << m_combatPool << endl;
 }
 
 void Creature::addAndResetBonusDice()
 {
 	m_currentOffense.dice += m_bonusDice;
 	m_bonusDice = 0;
+}
+
+bool Creature::rollFatigue()
+{
+	int requiredSuccesses = 1;
+	requiredSuccesses += m_AP;
+
+	int successes = DiceRoller::rollGetSuccess(getBTN(), getGrit());
+	if(successes < requiredSuccesses) {
+		m_fatigue[eCreatureFatigue::Stamina]++;
+		return true;
+	}
+	return false;
 }
 
 void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool dualRedThrow)

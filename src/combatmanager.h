@@ -15,7 +15,7 @@ enum class eCombatManagerState {
 class CombatManager
 {
 public:
-	static constexpr float cTick = 0.6;
+	static constexpr float cTick = 0.5;
 	CombatManager(Creature* creature);
 	~CombatManager();
 	bool run(float tick);
@@ -29,7 +29,7 @@ private:
 		Side1,
 		Side2
 	};
-	void doRunCombat();
+	void doRunCombat(float tick);
 	void doPositionRoll();
 	void cleanup();
 	void switchInitiative() { m_currentTempo = (m_currentTempo == eTempo::First) ? eTempo::Second : eTempo::First; }
