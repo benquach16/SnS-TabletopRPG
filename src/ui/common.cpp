@@ -6,13 +6,13 @@ constexpr int cHeight = 14;
 
 namespace UiCommon {
 
-	void drawTopPanel()
-	{
-		auto windowSize = Game::getWindow().getSize();
-	
-		static sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize*cHeight));
-		bkg.setFillColor(sf::Color(12, 12, 23));
-		Game::getWindow().draw(bkg);	
-	}
+void drawTopPanel()
+{
+    auto windowSize = Game::getWindow().getSize();
+
+    static sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize * cHeight));
+    bkg.setFillColor(sf::Color(12, 12, 23));
+    Game::getWindow().draw(bkg);
+}
 
 };

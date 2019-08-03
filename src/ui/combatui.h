@@ -3,64 +3,62 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 
-#include "numberinput.h"
+#include "../combatmanager.h"
 #include "defenseui.h"
+#include "numberinput.h"
 #include "offenseui.h"
 #include "positionui.h"
-#include "../combatmanager.h"
 
 class CombatInstance;
 
-class CombatUI
-{
+class CombatUI {
 public:
-	CombatUI();
-	
-	void run(sf::Event event, const CombatManager* manager);
+    CombatUI();
+
+    void run(sf::Event event, const CombatManager* manager);
 
 private:
-	sf::RectangleShape m_combatBkg;
-	
-	enum class eInitiativeSubState : unsigned {
-		ChooseInitiative,
-		InspectTarget,
-		Finished,
-	};
+    sf::RectangleShape m_combatBkg;
 
-	enum class eStolenOffenseSubState : unsigned {
-		ChooseDice,
-		Finished,
-	};
+    enum class eInitiativeSubState : unsigned {
+        ChooseInitiative,
+        InspectTarget,
+        Finished,
+    };
 
-	enum class eDualRedStealSubState : unsigned {
-		ChooseInitiative,
-		ChooseDice,
-		Finished
-	};
+    enum class eStolenOffenseSubState : unsigned {
+        ChooseDice,
+        Finished,
+    };
 
-	enum class ePositionRollSubState : unsigned {
-		ChooseDice,
-		Finished
-	};
+    enum class eDualRedStealSubState : unsigned {
+        ChooseInitiative,
+        ChooseDice,
+        Finished
+    };
 
+    enum class ePositionRollSubState : unsigned {
+        ChooseDice,
+        Finished
+    };
 
-	void resetState();
-	void doInitiative(sf::Event event, Player* player, Creature* target);
-	
-	void doStolenOffense(sf::Event event, Player* player);
-	void doDualRedSteal(sf::Event event, Player* player);
+    void resetState();
+    void doInitiative(sf::Event event, Player* player, Creature* target);
 
-	void showSide1Stats(const CombatInstance* instance);
-	void showSide2Stats(const CombatInstance* instance);
+    void doStolenOffense(sf::Event event, Player* player);
+    void doDualRedSteal(sf::Event event, Player* player);
 
-	NumberInput m_numberInput;
+    void showSide1Stats(const CombatInstance* instance);
+    void showSide2Stats(const CombatInstance* instance);
 
-	eInitiativeSubState m_initiativeState;
-	eStolenOffenseSubState m_stolenOffenseState;
-	eDualRedStealSubState m_dualRedState;
-	ePositionRollSubState m_positionState;
+    NumberInput m_numberInput;
 
-	DefenseUI m_defenseUI;
-	OffenseUI m_offenseUI;
-	PositionUI m_positionUI;
+    eInitiativeSubState m_initiativeState;
+    eStolenOffenseSubState m_stolenOffenseState;
+    eDualRedStealSubState m_dualRedState;
+    ePositionRollSubState m_positionState;
+
+    DefenseUI m_defenseUI;
+    OffenseUI m_offenseUI;
+    PositionUI m_positionUI;
 };

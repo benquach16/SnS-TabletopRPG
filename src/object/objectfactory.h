@@ -1,10 +1,9 @@
 #pragma once
 #include "object.h"
 
-class ObjectFactory
-{
+class ObjectFactory {
 public:
-	Object* get(int id);
+    Object* get(int id);
+
 private:
-	
 };

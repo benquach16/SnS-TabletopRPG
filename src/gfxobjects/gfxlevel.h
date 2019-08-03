@@ -1,17 +1,17 @@
 #pragma once
 
+#include "../object/object.h"
 #include "gfxobject.h"
 #include "gfxqueue.h"
-#include "../object/object.h"
 
 class Level;
 
-class GFXLevel 
-{
+class GFXLevel {
 public:
-	GFXLevel();
-	void run(const Level* level, vector2d center);
+    GFXLevel();
+    void run(const Level* level, vector2d center);
+
 private:
-	sf::Texture m_texture;
-	GFXQueue m_queue;
+    sf::Texture m_texture;
+    GFXQueue m_queue;
 };

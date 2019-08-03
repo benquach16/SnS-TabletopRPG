@@ -1,14 +1,13 @@
 #pragma once
 
 enum eAICombatProfiles {
-	Aggressive,
-	Cautious,
-	Neutral,
+    Aggressive,
+    Cautious,
+    Neutral,
 };
 
-class AICombatController
-{
+class AICombatController {
 public:
-	void doOffense();
-	void doDefense();
+    void doOffense();
+    void doDefense();
 };

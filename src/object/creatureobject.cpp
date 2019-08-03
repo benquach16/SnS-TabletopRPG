@@ -1,20 +1,21 @@
 #include "creatureobject.h"
 
-CreatureObject::CreatureObject(Creature* creature) : m_creature(creature),
-													 m_creatureFaction(eCreatureFaction::None),
-													 m_combatManagerId(-1)
+CreatureObject::CreatureObject(Creature* creature)
+    : m_creature(creature)
+    , m_creatureFaction(eCreatureFaction::None)
+    , m_combatManagerId(-1)
 {
 }
 
 CreatureObject::~CreatureObject()
 {
-	if(m_creature != nullptr) {
-		delete m_creature;
-		m_creature = nullptr;
-	}
+    if (m_creature != nullptr) {
+        delete m_creature;
+        m_creature = nullptr;
+    }
 }
 
 void CreatureObject::run(const Level* level)
 {
-	m_controller.run(level, this);
+    m_controller.run(level, this);
 }

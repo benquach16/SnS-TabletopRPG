@@ -2,6 +2,5 @@
 
 #include "creature.h"
 
-class Goblin : public Creature
-{
+class Goblin : public Creature {
 };

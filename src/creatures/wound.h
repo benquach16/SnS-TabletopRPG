@@ -1,76 +1,74 @@
 #pragma once
-#include <string>
 #include <map>
 #include <memory>
 #include <set>
+#include <string>
 #include <vector>
 
-#include "../items/types.h"
 #include "../3rdparty/json.hpp"
+#include "../items/types.h"
 #include "types.h"
 
-
-class Wound
-{
+class Wound {
 public:
-	Wound(eBodyParts location, std::vector<std::string> text, int level, int btn, int impact, std::set<eEffects> effects);
+    Wound(eBodyParts location, std::vector<std::string> text, int level, int btn, int impact, std::set<eEffects> effects);
 
-	std::string getText() const { return m_text[0]; }
-	int getBTN() const { return m_btn; }
-	int getImpact() const { return m_impact; }
-	int getLevel() const { return m_level; }
-	eBodyParts getLocation() const { return m_location; }
-	bool causesDeath();
-	bool immediateKO();
-	const std::set<eEffects>& getEffects() const { return m_effects; }
+    std::string getText() const { return m_text[0]; }
+    int getBTN() const { return m_btn; }
+    int getImpact() const { return m_impact; }
+    int getLevel() const { return m_level; }
+    eBodyParts getLocation() const { return m_location; }
+    bool causesDeath();
+    bool immediateKO();
+    const std::set<eEffects>& getEffects() const { return m_effects; }
+
 private:
-	eBodyParts m_location;
-	std::vector<std::string> m_text;
-	int m_level;
-	int m_impact;
-	int m_btn;
-	std::set<eEffects> m_effects;
+    eBodyParts m_location;
+    std::vector<std::string> m_text;
+    int m_level;
+    int m_impact;
+    int m_btn;
+    std::set<eEffects> m_effects;
 };
 
-class WoundTable
-{
+class WoundTable {
 public:
-	~WoundTable();
-	eBodyParts getSwing(eHitLocations location);
-	eBodyParts getThrust(eHitLocations location);
+    ~WoundTable();
+    eBodyParts getSwing(eHitLocations location);
+    eBodyParts getThrust(eHitLocations location);
 
-	Wound* getWound(eDamageTypes type, eBodyParts part, int level);
-	
-	static constexpr unsigned cPartsPerLocation = 6;
+    Wound* getWound(eDamageTypes type, eBodyParts part, int level);
 
-	struct woundParts {
-		eBodyParts m_swing[cPartsPerLocation];
-		eBodyParts m_thrust[cPartsPerLocation];
-	};
-	
-	static WoundTable* getSingleton() {
-		if(singleton == nullptr) {
-			singleton = new WoundTable;
-		}
+    static constexpr unsigned cPartsPerLocation = 6;
 
-		return singleton;
-	}
+    struct woundParts {
+        eBodyParts m_swing[cPartsPerLocation];
+        eBodyParts m_thrust[cPartsPerLocation];
+    };
 
-private:	
-	WoundTable();
-	void initHitLocationTable();
-	void initWoundTable(eDamageTypes type, nlohmann::json woundJson);
-	eEffects stringToEffect(const std::string& str);
-	
-	static WoundTable *singleton;
-	
-	std::map<eHitLocations, woundParts> m_hitTable;
+    static WoundTable* getSingleton()
+    {
+        if (singleton == nullptr) {
+            singleton = new WoundTable;
+        }
 
-	//4d associative array for wound table
-	//damage type to body part to wound level
-	std::map<eDamageTypes, std::map<eBodyParts, std::map<int, Wound*> > > m_woundTable;
+        return singleton;
+    }
 
-	std::map<eDamageTypes, std::vector<int> > m_btnTable;
-	std::map<eDamageTypes, std::vector<int> > m_impactTable;
+private:
+    WoundTable();
+    void initHitLocationTable();
+    void initWoundTable(eDamageTypes type, nlohmann::json woundJson);
+    eEffects stringToEffect(const std::string& str);
+
+    static WoundTable* singleton;
+
+    std::map<eHitLocations, woundParts> m_hitTable;
+
+    //4d associative array for wound table
+    //damage type to body part to wound level
+    std::map<eDamageTypes, std::map<eBodyParts, std::map<int, Wound*>>> m_woundTable;
+
+    std::map<eDamageTypes, std::vector<int>> m_btnTable;
+    std::map<eDamageTypes, std::vector<int>> m_impactTable;
 };
-

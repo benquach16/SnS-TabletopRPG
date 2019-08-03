@@ -5,11 +5,10 @@
 
 #include "combatmanager.h"
 
-class CombatManagerFactory
-{
+class CombatManagerFactory {
 public:
+    CombatManager* get(int id);
 
-	CombatManager* get(int id);
 private:
-	std::vector<CombatManager*> m_managers;
+    std::vector<CombatManager*> m_managers;
 };

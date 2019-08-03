@@ -2,8 +2,7 @@
 
 class Creature;
 
-class InspectUI
-{
+class InspectUI {
 public:
-	void run(Creature* creature);
+    void run(Creature* creature);
 };

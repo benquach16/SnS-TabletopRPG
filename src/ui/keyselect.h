@@ -2,13 +2,10 @@
 
 #include "uiobject.h"
 
-class KeySelect : public UIObject
-{
+class KeySelect : public UIObject {
 public:
-	
-	void run(sf::Event event) override;
+    void run(sf::Event event) override;
 
 private:
-	int m_value;
-	
+    int m_value;
 };

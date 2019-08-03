@@ -1,25 +1,22 @@
 #pragma once
 
 enum eAIRoles {
-	Standing,
-	Patrolling,
+    Standing,
+    Patrolling,
 };
 
 class Level;
 class CreatureObject;
 struct vector2d;
 
-class AIController
-{
+class AIController {
 public:
-	AIController();
-	void run(const Level* level, CreatureObject* controlledCreature);
-	void patrol(const Level *level, CreatureObject* controlledCreature);
-	void moveToward(vector2d target, const Level *level, CreatureObject *controlledCreature);
-	int getDistance(vector2d position1, vector2d position2);
+    AIController();
+    void run(const Level* level, CreatureObject* controlledCreature);
+    void patrol(const Level* level, CreatureObject* controlledCreature);
+    void moveToward(vector2d target, const Level* level, CreatureObject* controlledCreature);
+    int getDistance(vector2d position1, vector2d position2);
 
 private:
-	eAIRoles m_role;
-
-	
+    eAIRoles m_role;
 };

@@ -1,6 +1,5 @@
 #pragma once
 
-class CommunicationLayer
-{
+class CommunicationLayer {
 public:
 };

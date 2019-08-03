@@ -1,10 +1,8 @@
 #pragma once
 
 enum eComponents {
-	Inventory
+    Inventory
 };
 
-class Component
-{
-	
+class Component {
 };

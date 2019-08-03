@@ -4,12 +4,11 @@
 
 #include "gfxobject.h"
 
-class GFXCreature
-{
+class GFXCreature {
 public:
-	GFXCreature();
-	~GFXCreature();
+    GFXCreature();
+    ~GFXCreature();
 
 private:
-	Creature* m_creature;
+    Creature* m_creature;
 };

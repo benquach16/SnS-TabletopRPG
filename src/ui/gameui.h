@@ -7,21 +7,20 @@
 class CombatManager;
 class PlayerObject;
 
-class GameUI
-{
+class GameUI {
 public:
-	GameUI();
+    GameUI();
 
-	void run(sf::Event event);
-	void runCombat(sf::Event event, const CombatManager* manager);
-	void runInventory(sf::Event event, PlayerObject* player);
-	void runTrade(sf::Event event, std::map<int, int>& inventory, std::map<int, int>& container);
+    void run(sf::Event event);
+    void runCombat(sf::Event event, const CombatManager* manager);
+    void runInventory(sf::Event event, PlayerObject* player);
+    void runTrade(sf::Event event, std::map<int, int>& inventory, std::map<int, int>& container);
+
 private:
-	enum class eGameUIState {
-		
-		
-	};
-	CombatUI m_combatUI;
-	InventoryUI m_inventoryUI;
-	TradeUI m_tradeUI;
+    enum class eGameUIState {
+
+    };
+    CombatUI m_combatUI;
+    InventoryUI m_inventoryUI;
+    TradeUI m_tradeUI;
 };

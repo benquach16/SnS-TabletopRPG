@@ -1,27 +1,27 @@
 #pragma once
 
-#include "numberinput.h"
 #include "../combatinstance.h"
 #include "../creatures/player.h"
+#include "numberinput.h"
 
-class DefenseUI
-{
+class DefenseUI {
 public:
-	void run(sf::Event event, Player* player);
-	void resetState() { m_currentState = eUiState::ChooseManuever; }
+    void run(sf::Event event, Player* player);
+    void resetState() { m_currentState = eUiState::ChooseManuever; }
+
 private:
-	void doManuever(sf::Event event, Player* player);
-	void doChooseDice(sf::Event event, Player* player);
-	
-	enum class eUiState : unsigned {
-		ChooseManuever,
-		ChooseDice,
-		ChooseLinkedManuever,
-		ChooseLinkedTarget,
-		Finished,
-	};
+    void doManuever(sf::Event event, Player* player);
+    void doChooseDice(sf::Event event, Player* player);
 
-	eUiState m_currentState;
+    enum class eUiState : unsigned {
+        ChooseManuever,
+        ChooseDice,
+        ChooseLinkedManuever,
+        ChooseLinkedTarget,
+        Finished,
+    };
 
-	NumberInput m_numberInput;
+    eUiState m_currentState;
+
+    NumberInput m_numberInput;
 };

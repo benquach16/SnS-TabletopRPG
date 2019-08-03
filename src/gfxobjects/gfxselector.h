@@ -4,11 +4,11 @@
 
 class SelectorObject;
 
-class GFXSelector
-{
+class GFXSelector {
 public:
-	GFXSelector();
-	void run(const SelectorObject *selector);
+    GFXSelector();
+    void run(const SelectorObject* selector);
+
 private:
-	sf::RectangleShape m_shape;
+    sf::RectangleShape m_shape;
 };

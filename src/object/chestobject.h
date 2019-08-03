@@ -2,6 +2,5 @@
 
 #include "object.h"
 
-class ChestObject : public Object
-{
+class ChestObject : public Object {
 };

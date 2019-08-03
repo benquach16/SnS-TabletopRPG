@@ -4,8 +4,8 @@
 
 class Inventory {
 public:
-	Inventory();
+    Inventory();
 
 private:
-	std::unordered_map<int, int> m_inventory;
+    std::unordered_map<int, int> m_inventory;
 };

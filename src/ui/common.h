@@ -1,5 +1,5 @@
 #pragma once
 
 namespace UiCommon {
-	void drawTopPanel();
+void drawTopPanel();
 };

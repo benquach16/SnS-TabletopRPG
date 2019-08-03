@@ -6,16 +6,16 @@ ItemObject::ItemObject()
 
 void ItemObject::addItem(int idx, int count)
 {
-	m_inventory[idx] += count;
+    m_inventory[idx] += count;
 }
 
 std::vector<int> ItemObject::getUniqueItemIds() const
 {
-	std::vector<int> ret;
+    std::vector<int> ret;
 
-	for(auto it: m_inventory) {
-		ret.push_back(it.first);
-	}
+    for (auto it : m_inventory) {
+        ret.push_back(it.first);
+    }
 
-	return ret;
+    return ret;
 }

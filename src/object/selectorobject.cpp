@@ -2,5 +2,4 @@
 
 SelectorObject::SelectorObject()
 {
-	
 }

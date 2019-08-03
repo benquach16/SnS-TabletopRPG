@@ -2,8 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-class UIObject
-{
+class UIObject {
 public:
-	virtual void run(sf::Event event) = 0;
+    virtual void run(sf::Event event) = 0;
 };
