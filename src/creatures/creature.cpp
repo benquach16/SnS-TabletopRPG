@@ -278,6 +278,7 @@ void Creature::doPositionRoll(const Creature* opponent)
 {
 	// can be reused for standing up as well
 	m_currentPosition.dice = opponent->getQueuedPosition().dice;
+	reduceCombatPool(m_currentPosition.dice);
 	m_hasPosition = true;
 }
 

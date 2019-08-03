@@ -29,6 +29,7 @@ void PositionUI::doPositionRoll(sf::Event event, Player* player)
 	if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
 		player->setPositionDice(m_numberInput.getNumber());
 		m_currentState = eUiState::Finished;
+		player->reduceCombatPool(m_numberInput.getNumber());
 		//last one so set flag
 		player->setPositionReady();
 		m_numberInput.reset();

@@ -45,7 +45,7 @@ private:
 
 
 	void resetState();
-	void doInitiative(Player* player, Creature* target);
+	void doInitiative(sf::Event event, Player* player, Creature* target);
 	
 	void doStolenOffense(sf::Event event, Player* player);
 	void doDualRedSteal(sf::Event event, Player* player);

@@ -59,8 +59,8 @@ void Game::run()
 	HumanObject target1;
 	HumanObject target2;
 
-	playerObject->startCombatWith(target1.getCreatureComponent());
-	playerObject->startCombatWith(target2.getCreatureComponent());
+	//playerObject->startCombatWith(target1.getCreatureComponent());
+	//playerObject->startCombatWith(target2.getCreatureComponent());
 	SelectorObject selector;
 	GFXSelector gfxSelector;
 	
@@ -165,6 +165,7 @@ void Game::run()
 			if(aiTick > 0.3) {
 				level.run();
 				aiTick = 0;
+				level.cleanup();
 			}
 			if(playerObject->isInCombat() == true) {
 				m_currentState = eGameState::InCombat;
@@ -273,6 +274,15 @@ void Game::run()
 
 		} else if(m_currentState == eGameState::InCombat) {
 			ui.runCombat(event, playerObject->getCombatManager());
+			if(playerObject->runCombat(tick) == false) {
+				m_currentState = eGameState::Playing;
+			}
+			if(tick > CombatManager::cTick) {
+				//pause rest of game if player is in combat. combat between two NPCS can happen anytime
+
+				level.run();
+				tick = 0;
+			}
 		} else if(m_currentState == eGameState::DialogueMode) {
 			if(event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
 				if(selector.getPosition().y < playerObject->getPosition().y+2) {
@@ -297,26 +307,13 @@ void Game::run()
 		}
 
 		Log::run();
-		if(tick > 0.7) {
-			if (m_currentState == eGameState::InCombat)
-			{
-				//pause rest of game if player is in combat. combat between two NPCS can happen anytime
-				if(playerObject->runCombat() == false) {
-					m_currentState = eGameState::Playing;
-				}
-				
-			}
-	
-			//m_combatManager.run();
-			tick = 0;
-		}
+
 		
 		float currentTime = clock.restart().asSeconds();
 		float fps = 1.f / currentTime;
 		//cout << "FPS"  << fps << endl;
 		m_window.setTitle(std::to_string(fps));
 		m_window.display();
-		level.cleanup();
 	}
 
 	

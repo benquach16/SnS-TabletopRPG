@@ -86,14 +86,12 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
 		m_positionUI.run(event, player);
 		return;
 	}
-
-	if (instance->getState() == eCombatState::Initialized)
-	{
+	if (instance->getState() == eCombatState::Initialized) {
 		resetState();
 		return;
 	}
 	if(instance->getState() == eCombatState::RollInitiative) {
-		doInitiative(player, target);
+		doInitiative(event, player, target);
 		return;
 	}
 	if(instance->getState() == eCombatState::ResetState) {
@@ -162,7 +160,7 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
 	}
 }
 
-void CombatUI::doInitiative(Player* player, Creature* target)
+void CombatUI::doInitiative(sf::Event event, Player* player, Creature* target)
 {
 	if(m_initiativeState == eInitiativeSubState::ChooseInitiative) {
 		UiCommon::drawTopPanel();
@@ -173,16 +171,21 @@ void CombatUI::doInitiative(Player* player, Creature* target)
 		text.setString("Choose initiative:\na - Attack \nb - Defend\nc - Inspect target");
 		Game::getWindow().draw(text);
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) == true) {
-			player->setInitiative(eInitiativeRoll::Attack);
-			m_initiativeState = eInitiativeSubState::Finished;
-		}
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::B) == true) {
-			player->setInitiative(eInitiativeRoll::Defend);
-			m_initiativeState = eInitiativeSubState::Finished;
-		}
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::C) == true) {
-			m_initiativeState = eInitiativeSubState::InspectTarget;
+		if(event.type == sf::Event::TextEntered) {
+			char c = event.text.unicode;
+			switch(c) {
+			case 'a':
+				player->setInitiative(eInitiativeRoll::Attack);
+				m_initiativeState = eInitiativeSubState::Finished;
+				break;
+			case 'b':
+				player->setInitiative(eInitiativeRoll::Defend);
+				m_initiativeState = eInitiativeSubState::Finished;
+				break;
+			case 'c':
+				m_initiativeState = eInitiativeSubState::InspectTarget;
+				break;
+			}
 		}
 	} 
 	else if(m_initiativeState == eInitiativeSubState::InspectTarget) {

@@ -47,7 +47,7 @@ void InventoryUI::doBackpack(sf::Event event, PlayerObject* player)
 	txt.setFont(Game::getDefaultFont());
 	txt.setCharacterSize(cCharSize);
 
-	string str = "Backpack (1 - Backpack, 2 - Equipment, 3 - Profile):\n";
+	string str = "Inventory (1 - Backpack, 2 - Equipment, 3 - Wounds, 4 - Profile):\n";
 	
 	std::map<int, int> inventory = player->getInventory();
 
@@ -180,7 +180,7 @@ void InventoryUI::displayDetail(sf::Event event, PlayerObject* player)
 
 	string str;
 	const Item* item = ItemTable::getSingleton()->get(m_id);
-	str += "Selected Item (E to equip/use, D to drop)\n";
+	str += "Selected Item (E to equip/use, D to drop)\n\n";
 	str += item->getName() + '\n';
 	str += item->getDescription() + '\n';
 	str += "Type: " + itemTypeToString(item->getItemType()) + '\n';

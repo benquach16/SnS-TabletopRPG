@@ -42,7 +42,7 @@ class Level
 public:
 	Level(int width, int height);
 	void load();
-	virtual void run();
+	void run();
 	void generate();
 	void makeRoom();
 	void createHuman(int x, int y);

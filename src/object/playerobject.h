@@ -11,7 +11,7 @@ public:
 	PlayerObject();
 	~PlayerObject();
 	void startCombatWith(Creature* creature);
-	bool runCombat();
+	bool runCombat(float tick);
 	CombatInstance& getCombatInstance() { return m_instance; }
 	const CombatManager* getCombatManager() { return m_manager; }
 	

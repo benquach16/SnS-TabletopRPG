@@ -33,11 +33,10 @@ PlayerObject::~PlayerObject()
 void PlayerObject::startCombatWith(Creature* creature)
 {
 	assert(m_instance.getState() == eCombatState::Uninitialized);
-	std::cout << static_cast<int>(creature->getCreatureState()) << std::endl;
 	m_manager->startCombatWith(creature);
 }
 
-bool PlayerObject::runCombat()
+bool PlayerObject::runCombat(float tick)
 {
-	return m_manager->run();
+	return m_manager->run(tick);
 }
