@@ -18,6 +18,8 @@ public:
     void setOffenseDice(int dice) { m_currentOffense.dice = dice; }
     void setOffenseComponent(Component* component) { m_currentOffense.component = component; }
     void setOffenseTarget(eHitLocations location) { m_currentOffense.target = location; }
+    void setOffensePinpointTarget(eBodyParts part) { m_currentOffense.pinpointTarget = part; }
+    void setOffensePinpoint() { m_currentOffense.pinpoint = true; }
     void setOffenseLinked() { m_currentOffense.linked = true; }
 
     void setDefenseManuever(eDefensiveManuevers manuever) { m_currentDefense.manuever = manuever; }

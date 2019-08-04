@@ -34,7 +34,7 @@
     },
     "5": {
         "name": "Bandages",
-        "description": "Strips of linen used to staunch bleeding. Does not heal wounds.",
+        "description": "Strips of linen used to staunch bleeding. Only heals level 1 wounds.",
         "type": "bandage",
         "cost": 5
     }

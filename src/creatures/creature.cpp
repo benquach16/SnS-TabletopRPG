@@ -24,6 +24,7 @@ Creature::Creature()
     , m_hasPosition(false)
     , m_bleeding(false)
 {
+    m_fatigue[eCreatureFatigue::Stamina] = 0;
 }
 
 const Weapon* Creature::getPrimaryWeapon() const
@@ -73,12 +74,15 @@ void Creature::inflictWound(Wound* wound, bool manueverFirst)
     auto BL3 = effects.find(eEffects::BL3);
     if (BL1 != effects.end()) {
         m_bloodLoss++;
+        m_bleeding = true;
     }
     if (BL2 != effects.end()) {
         m_bloodLoss += 2;
+        m_bleeding = true;
     }
     if (BL3 != effects.end()) {
         m_bloodLoss += 3;
+        m_bleeding = true;
     }
     auto KO1 = effects.find(eEffects::KO1);
     auto KO2 = effects.find(eEffects::KO2);

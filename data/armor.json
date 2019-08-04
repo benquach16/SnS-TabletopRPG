@@ -259,7 +259,7 @@
         "rigid": false,
         "metal": true,
         "coverage": [
-            "face"
+            "chin"
         ],
         "layer": "maille",
         "type": "maille"
@@ -487,6 +487,21 @@
         "metal": true,
         "coverage": [
             "forearm"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2076": {
+        "name": "Gorget with Bevor",
+        "description": "A gorget with a bevor to protect the lower face/chin.",
+        "cost": 1000,
+        "AV": 4,
+        "AP": 0.5,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "neck",
+            "chin"
         ],
         "layer": "plate",
         "type": "plate"

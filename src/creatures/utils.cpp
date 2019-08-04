@@ -7,6 +7,8 @@ std::string bodyPartToString(eBodyParts part)
         return "Crown";
     case eBodyParts::Face:
         return "Face";
+    case eBodyParts::Chin:
+        return "Chin";
     case eBodyParts::Neck:
         return "Neck";
     case eBodyParts::Shoulder:
@@ -55,6 +57,8 @@ eBodyParts stringToBodyPart(const std::string& str)
         return eBodyParts::Crown;
     } else if (str == "face") {
         return eBodyParts::Face;
+    } else if (str == "chin") {
+        return eBodyParts::Chin;
     } else if (str == "neck") {
         return eBodyParts::Neck;
     } else if (str == "shoulder") {
@@ -96,6 +100,8 @@ std::string hitLocationToString(eHitLocations location)
         return "Head";
     case eHitLocations::Chest:
         return "Chest";
+    case eHitLocations::Neck:
+        return "Neck";
     case eHitLocations::Arm:
         return "Arm";
     case eHitLocations::Belly:

@@ -36,9 +36,6 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool allowStealIniti
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
     string str = "Choose attack:\na - Swing\nb - Thrust\nc - Pinpoint Thrust (2AP)\nd - Feint swing (2AP)\ne - Feint thrust (2AP)\nf - Beat (1AP)\ng - Hook (1AP)\nh - Inspect Target";
-    if (allowStealInitiative == true) {
-        str += "\ni - Steal Initiative";
-    }
     text.setString(str);
     Game::getWindow().draw(text);
 

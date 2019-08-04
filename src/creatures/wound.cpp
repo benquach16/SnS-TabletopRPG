@@ -83,8 +83,9 @@ void WoundTable::initWoundTable(eDamageTypes type, nlohmann::json woundJson)
         string key = iter.key();
 
         //ignore BTN and impact tables
-        if (key == "BTN" || key == "impact")
+        if (key == "BTN" || key == "impact") {
             continue;
+        }
         eBodyParts bodyPart = stringToBodyPart(key);
         auto values = iter.value();
         for (int i = 1; i <= woundLevels; ++i) {
@@ -120,8 +121,33 @@ void WoundTable::initHitLocationTable()
     m_hitTable[eHitLocations::Head].m_thrust[1] = eBodyParts::Crown;
     m_hitTable[eHitLocations::Head].m_thrust[2] = eBodyParts::Face;
     m_hitTable[eHitLocations::Head].m_thrust[3] = eBodyParts::Face;
-    m_hitTable[eHitLocations::Head].m_thrust[4] = eBodyParts::Face;
+    m_hitTable[eHitLocations::Head].m_thrust[4] = eBodyParts::Chin;
     m_hitTable[eHitLocations::Head].m_thrust[5] = eBodyParts::Neck;
+
+    m_partsTable[eHitLocations::Head].push_back(eBodyParts::Crown);
+    m_partsTable[eHitLocations::Head].push_back(eBodyParts::Face);
+    m_partsTable[eHitLocations::Head].push_back(eBodyParts::Neck);
+    m_partsTable[eHitLocations::Head].push_back(eBodyParts::Chin);
+
+    //Neck
+    m_hitTable[eHitLocations::Neck].m_swing[0] = eBodyParts::Shoulder;
+    m_hitTable[eHitLocations::Neck].m_swing[1] = eBodyParts::Shoulder;
+    m_hitTable[eHitLocations::Neck].m_swing[2] = eBodyParts::Neck;
+    m_hitTable[eHitLocations::Neck].m_swing[3] = eBodyParts::Neck;
+    m_hitTable[eHitLocations::Neck].m_swing[4] = eBodyParts::Chin;
+    m_hitTable[eHitLocations::Neck].m_swing[5] = eBodyParts::Face;
+
+    m_hitTable[eHitLocations::Neck].m_thrust[0] = eBodyParts::Ribs;
+    m_hitTable[eHitLocations::Neck].m_thrust[1] = eBodyParts::Ribs;
+    m_hitTable[eHitLocations::Neck].m_thrust[2] = eBodyParts::Neck;
+    m_hitTable[eHitLocations::Neck].m_thrust[3] = eBodyParts::Neck;
+    m_hitTable[eHitLocations::Neck].m_thrust[4] = eBodyParts::Chin;
+    m_hitTable[eHitLocations::Neck].m_thrust[5] = eBodyParts::Face;
+
+    m_partsTable[eHitLocations::Neck].push_back(eBodyParts::Ribs);
+    m_partsTable[eHitLocations::Neck].push_back(eBodyParts::Face);
+    m_partsTable[eHitLocations::Neck].push_back(eBodyParts::Neck);
+    m_partsTable[eHitLocations::Neck].push_back(eBodyParts::Chin);
 
     //chest
     m_hitTable[eHitLocations::Chest].m_swing[0] = eBodyParts::Neck;
@@ -138,6 +164,10 @@ void WoundTable::initHitLocationTable()
     m_hitTable[eHitLocations::Chest].m_thrust[4] = eBodyParts::Abs;
     m_hitTable[eHitLocations::Chest].m_thrust[5] = eBodyParts::Abs;
 
+    m_partsTable[eHitLocations::Chest].push_back(eBodyParts::Ribs);
+    m_partsTable[eHitLocations::Chest].push_back(eBodyParts::Armpit);
+    m_partsTable[eHitLocations::Chest].push_back(eBodyParts::Abs);
+
     //arms
     m_hitTable[eHitLocations::Arm].m_swing[0] = eBodyParts::Shoulder;
     m_hitTable[eHitLocations::Arm].m_swing[1] = eBodyParts::Shoulder;
@@ -152,6 +182,13 @@ void WoundTable::initHitLocationTable()
     m_hitTable[eHitLocations::Arm].m_thrust[3] = eBodyParts::Elbow;
     m_hitTable[eHitLocations::Arm].m_thrust[4] = eBodyParts::Forearm;
     m_hitTable[eHitLocations::Arm].m_thrust[5] = eBodyParts::Hand;
+
+    m_partsTable[eHitLocations::Arm].push_back(eBodyParts::Shoulder);
+    m_partsTable[eHitLocations::Arm].push_back(eBodyParts::Armpit);
+    m_partsTable[eHitLocations::Arm].push_back(eBodyParts::UpperArm);
+    m_partsTable[eHitLocations::Arm].push_back(eBodyParts::Elbow);
+    m_partsTable[eHitLocations::Arm].push_back(eBodyParts::Forearm);
+    m_partsTable[eHitLocations::Arm].push_back(eBodyParts::Hand);
 
     //belly
     m_hitTable[eHitLocations::Belly].m_swing[0] = eBodyParts::Ribs;
@@ -168,6 +205,11 @@ void WoundTable::initHitLocationTable()
     m_hitTable[eHitLocations::Belly].m_thrust[4] = eBodyParts::Hip;
     m_hitTable[eHitLocations::Belly].m_thrust[5] = eBodyParts::Groin;
 
+    m_partsTable[eHitLocations::Belly].push_back(eBodyParts::Ribs);
+    m_partsTable[eHitLocations::Belly].push_back(eBodyParts::Abs);
+    m_partsTable[eHitLocations::Belly].push_back(eBodyParts::Groin);
+    m_partsTable[eHitLocations::Belly].push_back(eBodyParts::Hip);
+
     //thigh
     m_hitTable[eHitLocations::Thigh].m_swing[0] = eBodyParts::Hip;
     m_hitTable[eHitLocations::Thigh].m_swing[1] = eBodyParts::Hip;
@@ -183,6 +225,13 @@ void WoundTable::initHitLocationTable()
     m_hitTable[eHitLocations::Thigh].m_thrust[4] = eBodyParts::Knee;
     m_hitTable[eHitLocations::Thigh].m_thrust[5] = eBodyParts::Shin;
 
+    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Abs);
+    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Hip);
+    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Groin);
+    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Thigh);
+    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Knee);
+    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Shin);
+
     //shin
     m_hitTable[eHitLocations::Shin].m_swing[0] = eBodyParts::Thigh;
     m_hitTable[eHitLocations::Shin].m_swing[1] = eBodyParts::Knee;
@@ -197,6 +246,11 @@ void WoundTable::initHitLocationTable()
     m_hitTable[eHitLocations::Shin].m_thrust[3] = eBodyParts::Shin;
     m_hitTable[eHitLocations::Shin].m_thrust[4] = eBodyParts::Shin;
     m_hitTable[eHitLocations::Shin].m_thrust[5] = eBodyParts::Foot;
+
+    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Thigh);
+    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Knee);
+    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Shin);
+    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Foot);
 }
 
 eEffects WoundTable::stringToEffect(const std::string& str)
@@ -240,11 +294,15 @@ eBodyParts WoundTable::getSwing(eHitLocations location)
     //dice returns an actual dice roll 1-6, so we have to offset by 1
     int roll = DiceRoller::roll() - 1;
     eBodyParts part = m_hitTable[location].m_swing[roll];
-    if (part == eBodyParts::SecondLocationHead) {
+    if (part == eBodyParts::Face) {
+        roll = DiceRoller::roll();
+        if(roll <= DiceRoller::cDiceSides/2) {
+            part = eBodyParts::Chin;
+        }
+    } else if (part == eBodyParts::SecondLocationHead) {
         roll = DiceRoller::roll() - 1;
         return m_hitTable[eHitLocations::Head].m_swing[roll];
-    }
-    if (part == eBodyParts::SecondLocationArm) {
+    } else if (part == eBodyParts::SecondLocationArm) {
         roll = DiceRoller::roll() - 1;
         return m_hitTable[eHitLocations::Arm].m_swing[roll];
     }

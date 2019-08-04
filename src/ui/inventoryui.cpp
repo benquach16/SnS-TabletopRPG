@@ -61,7 +61,7 @@ void InventoryUI::doBackpack(sf::Event event, PlayerObject* player)
 
     int count = 0;
     for (auto it = inventory.begin(); it != inventory.end();) {
-        if (it->second == 0) {
+        if (it->second <= 0) {
             it = inventory.erase(it);
         } else {
             char idx = ('a' + count);
@@ -297,11 +297,26 @@ void InventoryUI::doProfile(sf::Event event, PlayerObject* player)
     ap.setFont(Game::getDefaultFont());
     string str = "Success rate: " + to_string(creature->getSuccessRate()) + "%" + '\n' + "Blood loss: " + to_string(creature->getBloodLoss()) + '\n';
 
+    str += "Thirst: " + to_string(player->getThirst()) + '\n';
+    str += "Hunger: " + to_string(player->getHunger()) + '\n';
+    str += "Exhaustion: " + to_string(player->getExhaustion()) + '\n';
+    str += "Combat Fatigue: " + to_string(player->getFatigue()) + '\n';
     const std::vector<Wound*> wounds = creature->getWounds();
     for (auto i : wounds) {
         str += "Level " + to_string(i->getLevel()) + " wound at " + bodyPartToString(i->getLocation()) + '\n';
     }
     ap.setString(str);
+
+    if (player->getBleeding() == true) {
+        sf::Text bleeding;
+        bleeding.setPosition(sf::Vector2f(ap.getLocalBounds().width, cCharSize));
+        bleeding.setString("Bleeding!");
+        bleeding.setCharacterSize(cCharSize);
+        bleeding.setFont(Game::getDefaultFont());
+        bleeding.setFillColor(sf::Color::Red);
+        bleeding.setStyle(sf::Text::Bold);
+        Game::getWindow().draw(bleeding);
+    }
 
     sf::Text stats;
     stats.setCharacterSize(cCharSize);

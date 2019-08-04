@@ -22,15 +22,12 @@ HumanObject::HumanObject()
         }
         m_inventory[i]++;
     }
-    //m_creature->equipArmor(2041); //chainmail
-    //m_creature->equipArmor(2051); //maille coif
     m_creature->setName(EquipmentManager::getSingleton()->getRandomName(eCreatureRace::Human));
 
     m_inventory[0] = effolkronium::random_static::get(1, 25);
-    //m_inventory[1041] = 1;
     m_inventory[weaponId] = 1;
-    //m_inventory[2041] = 1;
-    //m_inventory[2051] = 1;
+
+    m_inventory[5] = 3;
 
     m_creatureFaction = eCreatureFaction::Bandit;
 }

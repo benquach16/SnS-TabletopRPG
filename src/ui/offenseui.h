@@ -23,6 +23,7 @@ private:
         ChooseDice,
         ChooseTarget,
         PinpointThrust,
+        ChooseFeint,
         Finished,
     };
 

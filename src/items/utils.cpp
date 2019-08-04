@@ -118,6 +118,9 @@ std::string itemTypeToString(eItemType type)
     case eItemType::Money:
         return "Money";
         break;
+    case eItemType::Bandage:
+        return "Bandage";
+        break;
     }
     return "";
 }

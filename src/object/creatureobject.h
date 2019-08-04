@@ -34,6 +34,13 @@ public:
 
     int getCombatManagerId() const { return m_combatManagerId; }
 
+    int getThirst() const { return m_thirst; }
+    int getHunger() const { return m_hunger; }
+    int getExhaustion() const { return m_exhaustion; }
+    int getFatigue() const;
+
+    bool getBleeding() const { return m_creature->getBleeding(); }
+
 protected:
     Creature* m_creature;
     eCreatureFaction m_creatureFaction;

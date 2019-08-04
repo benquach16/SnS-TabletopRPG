@@ -42,6 +42,26 @@
 				"effects": ["death"]
 			}
 		},
+		"chin": {
+			"1": {
+				"text": ["Bruised jaw."]
+			},
+			"2": {
+				"text": ["Solid blow. Will leave a shiner.","Solid blow. Split a lip.","Solid blow. Caused a nosebleed."]
+			},
+			"3": {
+				"text": ["Fractured jaw. Several teeth shattered."],
+				"effects": ["KO1"]
+			},
+			"4": {
+				"text": ["Face mangled. Shattered jaw.", "Face mangled. Shattered cheekbone.", "Face mangled. Eye damaged."],
+				"effects": ["KO2", "BL1"]
+			},
+			"5": {
+				"text": ["Blow to the jaw breaks the neck. Death is immediate."],
+				"effects": ["death"]
+			}
+		},
 		"neck": {
 			"1": {
 				"text": ["Barely connects."]
@@ -390,6 +410,27 @@
 				"effects":["death"]
 			}
 		},
+		"chin": {
+			"1": {
+				"text":["Grazed jaw."]
+			},
+			"2": {
+				"text":["Grazed cheek. Surprising amount of blood."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Jaw fractured, cheek ripped open."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Jaw completely shattered, many teeth destroyed."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":["Brainstem pierced. Death is instantaneous."],
+				"effects":["death"]
+			}
+		},
 		"neck": {
 			"1": {
 				"text":["Just a sting."]
@@ -406,7 +447,7 @@
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":["Throat implaed, neck possibly broken. Death is almost instant"],
+				"text":["Throat implaed, neck possibly broken. Death is almost instantaneous."],
 				"effects":["death"]
 			}
 		},
@@ -740,6 +781,27 @@
 			},
 			"5": {
 				"text":["Cerebellum destroyed in a fountain of blood. Instant death."],
+				"effects":["death"]
+			}
+		},
+		"chin": {
+			"1": {
+				"text":["Small cut on cheek, some blood."]
+			},
+			"2": {
+				"text":["Handsome scar on cheek, some blood."],
+				"effects": ["BL1"]
+			},
+			"3": {
+				"text":["Cleaves through cheek, slicing oepn tongue."],
+				"effects":["BL1", "KO1"]
+			},
+			"4": {
+				"text":["Mouth completely split open. Lots of blood."],
+				"effects":["BL2", "KO2"]
+			},
+			"5": {
+				"text":["Head almost decapitated above the jaw. Instant death."],
 				"effects":["death"]
 			}
 		},

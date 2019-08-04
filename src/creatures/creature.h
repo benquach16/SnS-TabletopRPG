@@ -136,6 +136,10 @@ public:
     void setIdle() { m_currentState = eCreatureState::Idle; }
     void kill() { m_currentState = eCreatureState::Dead; }
 
+    int getFatigue() const { return m_fatigue.at(eCreatureFatigue::Stamina); }
+
+    bool getBleeding() const { return m_bleeding; }
+
     bool rollFatigue();
 
 protected:

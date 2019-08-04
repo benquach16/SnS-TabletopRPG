@@ -1,8 +1,10 @@
 #pragma once
+
 #include <map>
 #include <memory>
 #include <set>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "../3rdparty/json.hpp"
@@ -37,6 +39,8 @@ public:
     eBodyParts getSwing(eHitLocations location);
     eBodyParts getThrust(eHitLocations location);
 
+    std::vector<eBodyParts> getUniqueParts(eHitLocations location) const { return m_partsTable.at(location); }
+
     Wound* getWound(eDamageTypes type, eBodyParts part, int level);
 
     static constexpr unsigned cPartsPerLocation = 6;
@@ -63,7 +67,8 @@ private:
 
     static WoundTable* singleton;
 
-    std::map<eHitLocations, woundParts> m_hitTable;
+    std::unordered_map<eHitLocations, woundParts> m_hitTable;
+    std::unordered_map<eHitLocations, std::vector<eBodyParts>> m_partsTable;
 
     //4d associative array for wound table
     //damage type to body part to wound level
