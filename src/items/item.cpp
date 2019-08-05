@@ -28,7 +28,7 @@ ItemTable::ItemTable()
         int id = stoi(iter.key());
         auto values = iter.value();
 
-        //asert valid json
+        // asert valid json
         assert(values["name"].is_null() == false);
         assert(values["description"].is_null() == false);
         assert(values["cost"].is_null() == false);
@@ -76,14 +76,14 @@ const Item* ItemTable::get(int id) const
 
 void ItemTable::addWeapon(int id, Weapon* weapon)
 {
-    //IDs should not overlap. Even across different JSON files
+    // IDs should not overlap. Even across different JSON files
     assert(m_itemList.find(id) == m_itemList.end());
     m_itemList[id] = weapon;
 }
 
 void ItemTable::addArmor(int id, Armor* armor)
 {
-    //IDs should not overlap.
+    // IDs should not overlap.
     assert(m_itemList.find(id) == m_itemList.end());
     m_itemList[id] = armor;
 }

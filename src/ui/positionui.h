@@ -10,10 +10,7 @@ public:
 
 private:
     void doPositionRoll(sf::Event event, Player* player);
-    enum class eUiState : unsigned {
-        ChooseDice,
-        Finished
-    };
+    enum class eUiState : unsigned { ChooseDice, Finished };
 
     NumberInput m_numberInput;
     eUiState m_currentState;

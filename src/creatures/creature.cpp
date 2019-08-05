@@ -37,8 +37,9 @@ const Weapon* Creature::getPrimaryWeapon() const
 eLength Creature::getCurrentReach() const
 {
     const Weapon* weapon = getPrimaryWeapon();
-    //ugly
-    return static_cast<eLength>(static_cast<int>(weapon->getLength()) - gripReachDifference(m_currentGrip));
+    // ugly
+    return static_cast<eLength>(
+        static_cast<int>(weapon->getLength()) - gripReachDifference(m_currentGrip));
 }
 
 std::vector<const Armor*> Creature::getArmor() const
@@ -153,17 +154,14 @@ int Creature::getSuccessRate() const
     return static_cast<int>(val);
 }
 
-ArmorSegment Creature::getArmorAtPart(eBodyParts part)
-{
-    return m_armorValues[part];
-}
+ArmorSegment Creature::getArmorAtPart(eBodyParts part) { return m_armorValues[part]; }
 
 void Creature::equipArmor(int id)
 {
     const Armor* armor = ArmorTable::getSingleton()->get(id);
     assert(armor != nullptr);
 
-    //make sure it doesnt overlap with another armor
+    // make sure it doesnt overlap with another armor
     for (int i : m_armor) {
         const Armor* equippedArmor = ArmorTable::getSingleton()->get(i);
         assert(armor->isOverlapping(equippedArmor) == false);
@@ -194,26 +192,26 @@ void Creature::removeArmor(int id)
 
 void Creature::resetCombatPool()
 {
-    //carryover impact damage across tempos
+    // carryover impact damage across tempos
     const Weapon* weapon = getPrimaryWeapon();
     int carry = m_combatPool;
     carry = min(0, carry);
     m_combatPool = getProficiency(weapon->getType()) + getReflex() + carry;
     m_combatPool -= static_cast<int>(m_AP);
 
-    //apply fatigue
+    // apply fatigue
     for (auto it : m_fatigue) {
         m_combatPool -= it.second;
     }
 
-    //prone gives us less CP
+    // prone gives us less CP
     if (m_currentStance == eCreatureStance::Prone) {
         m_combatPool -= 2;
     }
 
-    //cant go below 0 for CP even if impact took out a lot of dice
+    // cant go below 0 for CP even if impact took out a lot of dice
     m_combatPool = max(0, m_combatPool);
-    //cout << getName() << m_combatPool << endl;
+    // cout << getName() << m_combatPool << endl;
 }
 
 void Creature::addAndResetBonusDice()
@@ -250,16 +248,18 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
         m_currentOffense.manuever = eOffensiveManuevers::Swing;
     }
 
-    //replace me
-    m_currentOffense.target = target->getHitLocations()[random_static::get(0, (int)target->getHitLocations().size() - 1)];
+    // replace me
+    m_currentOffense.target
+        = target
+              ->getHitLocations()[random_static::get(0, (int)target->getHitLocations().size() - 1)];
     int dice = m_combatPool / 2 + random_static::get(0, m_combatPool / 3)
         - effolkronium::random_static::get(0, m_combatPool / 3);
 
-    //bound
+    // bound
     dice += reachCost;
     dice = max(0, dice);
     dice = min(dice, m_combatPool);
-    //never issue 0 dice for attack
+    // never issue 0 dice for attack
     if (m_combatPool > 0 && dice == 0) {
         dice = 1;
     }
@@ -273,8 +273,8 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
         m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
         m_currentDefense.dice = m_combatPool - m_currentOffense.dice;
 
-        //hacky since usually this happens in combatinstance
-        //m_combatPool -= m_currentDefense.dice;
+        // hacky since usually this happens in combatinstance
+        // m_combatPool -= m_currentDefense.dice;
         reduceCombatPool(m_currentDefense.dice);
     }
     reduceCombatPool(m_currentOffense.dice);
@@ -300,7 +300,7 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
         return;
     }
     if (isLastTempo == true) {
-        //use all dice because we're going to refresh anyway
+        // use all dice because we're going to refresh anyway
         m_currentDefense.dice = m_combatPool;
         m_currentDefense.dice = max(m_currentDefense.dice, 0);
         return;
@@ -346,9 +346,7 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
     return false;
 }
 
-void Creature::doPrecombat()
-{
-}
+void Creature::doPrecombat() {}
 
 void Creature::doStolenInitiative(const Creature* defender, bool allin)
 {
@@ -364,13 +362,14 @@ void Creature::doStolenInitiative(const Creature* defender, bool allin)
 
 eInitiativeRoll Creature::doInitiative(const Creature* opponent)
 {
-    //do random for now
-    //this should be based on other creatures weapon length and armor and stuff
+    // do random for now
+    // this should be based on other creatures weapon length and armor and stuff
 
     int modifiers = 0;
     const Weapon* opponentWeapon = opponent->getPrimaryWeapon();
     const Weapon* currentWeapon = getPrimaryWeapon();
-    int reachDiff = static_cast<int>(opponentWeapon->getLength()) - static_cast<int>(currentWeapon->getLength());
+    int reachDiff = static_cast<int>(opponentWeapon->getLength())
+        - static_cast<int>(currentWeapon->getLength());
 
     constexpr int cBase = 8;
     int base = cBase;

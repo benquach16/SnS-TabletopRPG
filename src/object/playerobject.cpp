@@ -6,7 +6,7 @@ PlayerObject::PlayerObject()
     : CreatureObject(new Player)
     , m_manager(nullptr)
 {
-    //temp
+    // temp
     m_manager = new CombatManager(m_creature);
     m_creature->setWeapon(1040);
     m_creature->equipArmor(2055);
@@ -29,7 +29,7 @@ PlayerObject::PlayerObject()
 
 PlayerObject::~PlayerObject()
 {
-    //temp
+    // temp
     delete m_manager;
 }
 
@@ -39,7 +39,4 @@ void PlayerObject::startCombatWith(Creature* creature)
     m_manager->startCombatWith(creature);
 }
 
-bool PlayerObject::runCombat(float tick)
-{
-    return m_manager->run(tick);
-}
+bool PlayerObject::runCombat(float tick) { return m_manager->run(tick); }

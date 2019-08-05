@@ -1,11 +1,7 @@
 #pragma once
 #include "../items/types.h"
 
-enum class eManueverTypes {
-    Offense,
-    Defense,
-    Position
-};
+enum class eManueverTypes { Offense, Defense, Position };
 
 struct Manuever {
     virtual eManueverTypes getType() = 0;

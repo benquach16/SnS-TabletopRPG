@@ -17,8 +17,8 @@ int RelationManager::getRelationship(eCreatureFaction faction1, eCreatureFaction
     return m_relations.at(factionPair(faction1, faction2));
 }
 
-void RelationManager::setRelationship(eCreatureFaction faction1, eCreatureFaction faction2,
-    int value)
+void RelationManager::setRelationship(
+    eCreatureFaction faction1, eCreatureFaction faction2, int value)
 {
     // do it both ways since there is no unique pair class
     m_relations[factionPair(faction1, faction2)] = value;

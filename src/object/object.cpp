@@ -5,10 +5,6 @@ Object::Object()
 {
 }
 
-Object::~Object()
-{
-}
+Object::~Object() {}
 
-void Object::run(const Level* level)
-{
-}
+void Object::run(const Level* level) {}

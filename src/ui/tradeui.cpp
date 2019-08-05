@@ -45,7 +45,7 @@ void TradeUI::run(sf::Event event, std::map<int, int>& inventory, std::map<int, 
                 inventoryStr += " - ";
                 count++;
                 bool remove = false;
-                //fun nesting
+                // fun nesting
                 if (event.type == sf::Event::TextEntered) {
                     char c = event.text.unicode;
                     if (c == idx) {
@@ -110,6 +110,4 @@ void TradeUI::run(sf::Event event, std::map<int, int>& inventory, std::map<int, 
     }
 }
 
-void TradeUI::displayContainer(sf::Event, std::map<int, int>& inventory, std::string& str)
-{
-}
+void TradeUI::displayContainer(sf::Event, std::map<int, int>& inventory, std::string& str) {}

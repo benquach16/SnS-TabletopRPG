@@ -15,10 +15,7 @@ using namespace std;
 constexpr unsigned logHeight = cCharSize * (cLinesDisplayed + 1);
 constexpr unsigned rectHeight = cCharSize * 5;
 
-CombatUI::CombatUI()
-{
-    resetState();
-}
+CombatUI::CombatUI() { resetState(); }
 
 void CombatUI::resetState()
 {
@@ -71,12 +68,14 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
     reachBkg.setPosition(2, windowSize.y - logHeight - rectHeight - cCharSize - 2);
     reachBkg.setOutlineThickness(2);
     reachBkg.setOutlineColor(sf::Color(22, 22, 33));
-    int reachCost = static_cast<int>(instance->getCurrentReach()) - static_cast<int>(player->getCurrentReach());
+    int reachCost = static_cast<int>(instance->getCurrentReach())
+        - static_cast<int>(player->getCurrentReach());
     reachCost = abs(reachCost);
     sf::Text reachTxt;
     reachTxt.setCharacterSize(cCharSize);
     reachTxt.setFont(Game::getDefaultFont());
-    reachTxt.setString("Current reach is " + lengthToString(instance->getCurrentReach()) + " (" + to_string(reachCost) + "AP to attack)");
+    reachTxt.setString("Current reach is " + lengthToString(instance->getCurrentReach()) + " ("
+        + to_string(reachCost) + "AP to attack)");
     reachTxt.setPosition(5, windowSize.y - logHeight - rectHeight - cCharSize - 6);
     Game::getWindow().draw(reachBkg);
     Game::getWindow().draw(reachTxt);
@@ -113,7 +112,8 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
         m_offenseUI.run(event, player, target, false, true);
         return;
     }
-    if (instance->getState() == eCombatState::DualOffense1 && instance->isAttackerPlayer() == true) {
+    if (instance->getState() == eCombatState::DualOffense1
+        && instance->isAttackerPlayer() == true) {
         if (m_dualRedState == eDualRedStealSubState::Finished) {
             m_offenseUI.run(event, player, target, false);
         } else {
@@ -121,7 +121,8 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
         }
         return;
     }
-    if (instance->getState() == eCombatState::DualOffense2 && instance->isAttackerPlayer() == true) {
+    if (instance->getState() == eCombatState::DualOffense2
+        && instance->isAttackerPlayer() == true) {
         if (m_dualRedState == eDualRedStealSubState::Finished) {
             m_offenseUI.run(event, player, target, false);
         } else {
@@ -129,11 +130,13 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
         }
         return;
     }
-    if (instance->getState() == eCombatState::StolenOffense && instance->isAttackerPlayer() == true) {
+    if (instance->getState() == eCombatState::StolenOffense
+        && instance->isAttackerPlayer() == true) {
         doStolenOffense(event, player);
         return;
     }
-    if (instance->getState() == eCombatState::DualOffenseStealInitiative && instance->isDefenderPlayer() == true) {
+    if (instance->getState() == eCombatState::DualOffenseStealInitiative
+        && instance->isDefenderPlayer() == true) {
         if (m_stolenOffenseState == eStolenOffenseSubState::Finished) {
             m_offenseUI.run(event, player, target);
         } else {
@@ -141,7 +144,8 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
         }
         return;
     }
-    if (instance->getState() == eCombatState::DualOffenseSecondInitiative && instance->isDefenderPlayer() == true) {
+    if (instance->getState() == eCombatState::DualOffenseSecondInitiative
+        && instance->isDefenderPlayer() == true) {
         doStolenOffense(event, player);
         return;
     }
@@ -213,14 +217,15 @@ void CombatUI::doStolenOffense(sf::Event event, Player* player)
         sf::Text text;
         text.setCharacterSize(cCharSize);
         text.setFont(Game::getDefaultFont());
-        text.setString("Initiative roll, allocate action points (" + std::to_string(player->getCombatPool()) + " action points left):");
+        text.setString("Initiative roll, allocate action points ("
+            + std::to_string(player->getCombatPool()) + " action points left):");
 
         Game::getWindow().draw(text);
 
         if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
             player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
             player->setDefenseDice(m_numberInput.getNumber());
-            //last one so set flag
+            // last one so set flag
             player->setDefenseReady();
             player->reduceCombatPool(m_numberInput.getNumber());
             m_numberInput.reset();
@@ -254,7 +259,8 @@ void CombatUI::doDualRedSteal(sf::Event event, Player* player)
         sf::Text text;
         text.setCharacterSize(cCharSize);
         text.setFont(Game::getDefaultFont());
-        text.setString("Initiative roll, allocate action points (" + std::to_string(player->getCombatPool()) + " action points left):");
+        text.setString("Initiative roll, allocate action points ("
+            + std::to_string(player->getCombatPool()) + " action points left):");
 
         Game::getWindow().draw(text);
 
@@ -262,7 +268,7 @@ void CombatUI::doDualRedSteal(sf::Event event, Player* player)
             player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
             player->setDefenseDice(m_numberInput.getNumber());
             player->reduceCombatPool(m_numberInput.getNumber());
-            //last one so set flag
+            // last one so set flag
             player->setDefenseReady();
             m_numberInput.reset();
             m_dualRedState = eDualRedStealSubState::Finished;
@@ -281,7 +287,8 @@ void CombatUI::showSide1Stats(const CombatInstance* instance)
     assert(instance != nullptr);
     Creature* creature = instance->getSide1();
     sf::Text side1Info;
-    side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName() + " - " + lengthToString(creature->getCurrentReach()));
+    side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName()
+        + " - " + lengthToString(creature->getCurrentReach()));
     side1Info.setCharacterSize(cCharSize);
     side1Info.setFont(Game::getDefaultFont());
     side1Info.setPosition(6, windowSize.y - logHeight - rectHeight);
@@ -292,7 +299,9 @@ void CombatUI::showSide1Stats(const CombatInstance* instance)
     ap.setCharacterSize(cCharSize);
     ap.setFont(Game::getDefaultFont());
     ap.setPosition(6, windowSize.y - logHeight - rectHeight + cCharSize);
-    ap.setString("Action Points : " + to_string(creature->getCombatPool()) + " - Success rate: " + to_string(creature->getSuccessRate()) + "%" + '\n' + "Blood loss: " + to_string(creature->getBloodLoss()) + '\n' + stanceToString(creature->getStance()));
+    ap.setString("Action Points : " + to_string(creature->getCombatPool())
+        + " - Success rate: " + to_string(creature->getSuccessRate()) + "%" + '\n' + "Blood loss: "
+        + to_string(creature->getBloodLoss()) + '\n' + stanceToString(creature->getStance()));
 
     Game::getWindow().draw(ap);
 }
@@ -304,7 +313,8 @@ void CombatUI::showSide2Stats(const CombatInstance* instance)
     assert(instance != nullptr);
     Creature* creature = instance->getSide2();
     sf::Text side1Info;
-    side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName() + " - " + lengthToString(creature->getCurrentReach()));
+    side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName()
+        + " - " + lengthToString(creature->getCurrentReach()));
     side1Info.setCharacterSize(cCharSize);
     side1Info.setFont(Game::getDefaultFont());
     side1Info.setPosition(windowSize.x / 2 + 5, windowSize.y - logHeight - rectHeight);
@@ -315,7 +325,9 @@ void CombatUI::showSide2Stats(const CombatInstance* instance)
     ap.setCharacterSize(cCharSize);
     ap.setFont(Game::getDefaultFont());
     ap.setPosition(windowSize.x / 2 + 5, windowSize.y - logHeight - rectHeight + cCharSize);
-    ap.setString("Action Points : " + to_string(creature->getCombatPool()) + " - Success rate: " + to_string(creature->getSuccessRate()) + "%" + '\n' + "Blood loss: " + to_string(creature->getBloodLoss()) + '\n' + stanceToString(creature->getStance()));
+    ap.setString("Action Points : " + to_string(creature->getCombatPool())
+        + " - Success rate: " + to_string(creature->getSuccessRate()) + "%" + '\n' + "Blood loss: "
+        + to_string(creature->getBloodLoss()) + '\n' + stanceToString(creature->getStance()));
 
     Game::getWindow().draw(ap);
 }

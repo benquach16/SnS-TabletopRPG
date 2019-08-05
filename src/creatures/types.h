@@ -61,7 +61,4 @@ enum class eEffects {
     Death,
 };
 
-enum class eCreatureStance {
-    Standing,
-    Prone
-};
+enum class eCreatureStance { Standing, Prone };

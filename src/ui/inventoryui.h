@@ -16,13 +16,7 @@ public:
     void displayDetail(sf::Event event, PlayerObject* player);
 
 private:
-    enum eUiState {
-        Backpack,
-        Equipped,
-        Detailed,
-        Wounds,
-        Profile
-    };
+    enum eUiState { Backpack, Equipped, Detailed, Wounds, Profile };
     bool m_equipped;
     eUiState m_uiState;
     int m_id;

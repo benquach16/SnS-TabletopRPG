@@ -20,7 +20,7 @@ public:
     bool isPlayer() const override { return true; }
     void run(const Level* level) override {}
 
-    //never delete player, otherwise there will be a segfault
+    // never delete player, otherwise there will be a segfault
     bool deleteMe() const override { return false; }
     virtual bool preserveBetweenLevels() const { return true; }
 

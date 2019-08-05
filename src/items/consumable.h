@@ -7,7 +7,8 @@
 
 class Consumable : public Item {
 public:
-    Consumable(const std::string& name, const std::string& description, int cost, eItemType type, std::set<ItemEffect*> effects);
+    Consumable(const std::string& name, const std::string& description, int cost, eItemType type,
+        std::set<ItemEffect*> effects);
     ~Consumable();
     void apply();
 

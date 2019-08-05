@@ -6,13 +6,7 @@
 
 #include "types.h"
 
-enum class eRank : unsigned {
-    Recruit,
-    Soldier,
-    Veteran,
-    Knight,
-    Lord
-};
+enum class eRank : unsigned { Recruit, Soldier, Veteran, Knight, Lord };
 
 class EquipmentManager {
 public:

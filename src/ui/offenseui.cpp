@@ -5,7 +5,8 @@
 
 using namespace std;
 
-void OffenseUI::run(sf::Event event, Player* player, Creature* target, bool allowStealInitiative, bool linkedParry)
+void OffenseUI::run(
+    sf::Event event, Player* player, Creature* target, bool allowStealInitiative, bool linkedParry)
 {
     switch (m_currentState) {
     case eUiState::ChooseManuever:
@@ -35,7 +36,9 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool allowStealIniti
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    string str = "Choose attack:\na - Swing\nb - Thrust\nc - Pinpoint Thrust (2AP)\nd - Feint swing (2AP)\ne - Feint thrust (2AP)\nf - Beat (1AP)\ng - Hook (1AP)\nh - Inspect Target";
+    string str = "Choose attack:\na - Swing\nb - Thrust\nc - Pinpoint Thrust "
+                 "(2AP)\nd - Feint swing (2AP)\ne - Feint thrust (2AP)\nf - "
+                 "Beat (1AP)\ng - Hook (1AP)\nh - Inspect Target";
     text.setString(str);
     Game::getWindow().draw(text);
 
@@ -55,7 +58,7 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool allowStealIniti
                 m_currentState = eUiState::ChooseComponent;
                 player->reduceCombatPool(2);
             } else {
-                //need 2 dice
+                // need 2 dice
             }
         }
         if (c == 'd') {
@@ -114,7 +117,8 @@ void OffenseUI::doComponent(sf::Event event, Player* player)
     text.setFont(Game::getDefaultFont());
     std::string str("Choose weapon component:\n");
 
-    if (player->getQueuedOffense().manuever == eOffensiveManuevers::Swing || player->getQueuedOffense().manuever == eOffensiveManuevers::FeintSwing) {
+    if (player->getQueuedOffense().manuever == eOffensiveManuevers::Swing
+        || player->getQueuedOffense().manuever == eOffensiveManuevers::FeintSwing) {
         for (int i = 0; i < weapon->getSwingComponents().size(); ++i) {
             char idx = ('a' + i);
 
@@ -157,7 +161,8 @@ void OffenseUI::doDice(sf::Event event, Player* player)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setString("Allocate action points (" + std::to_string(player->getCombatPool()) + " action points left):");
+    text.setString("Allocate action points (" + std::to_string(player->getCombatPool())
+        + " action points left):");
 
     Game::getWindow().draw(text);
 
@@ -166,7 +171,7 @@ void OffenseUI::doDice(sf::Event event, Player* player)
         player->setOffenseDice(dice);
         player->reduceCombatPool(dice);
         m_currentState = eUiState::Finished;
-        //last one so set flag
+        // last one so set flag
         player->setOffenseReady();
         m_numberInput.reset();
     }
@@ -183,7 +188,8 @@ void OffenseUI::doTarget(sf::Event event, Player* player, bool linkedParry)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setString("Choose target location:\na - Head\nb - Chest\nc - Arms\nd - Belly\ne - Thigh\nf - Shin\n");
+    text.setString("Choose target location:\na - Head\nb - Chest\nc - Arms\nd "
+                   "- Belly\ne - Thigh\nf - Shin\n");
     if (event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
         if (c == 'a') {
@@ -205,14 +211,15 @@ void OffenseUI::doTarget(sf::Event event, Player* player, bool linkedParry)
             player->setOffenseTarget(eHitLocations::Shin);
             m_currentState = eUiState::ChooseDice;
         }
-        //if player chose pinpoit thrust allow them to pick a specific location
-        if (player->getQueuedOffense().manuever == eOffensiveManuevers::PinpointThrust && m_currentState == eUiState::ChooseDice) {
+        // if player chose pinpoit thrust allow them to pick a specific location
+        if (player->getQueuedOffense().manuever == eOffensiveManuevers::PinpointThrust
+            && m_currentState == eUiState::ChooseDice) {
         }
-        //the uistate comparision is a hacky way to repurpose it
+        // the uistate comparision is a hacky way to repurpose it
         if (linkedParry == true && m_currentState == eUiState::ChooseDice) {
             player->setOffenseDice(0);
             m_currentState = eUiState::Finished;
-            //linked parry so set flag
+            // linked parry so set flag
             player->setOffenseReady();
         }
     }

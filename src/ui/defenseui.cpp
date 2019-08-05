@@ -24,7 +24,9 @@ void DefenseUI::doManuever(sf::Event event, Player* player)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setString("Choose defense:\na - Parry\nb - Dodge\nc - Linked Parry (1AP)\nd - Steal Initiative\ne - Counter (2AP)\nf - Mobile Dodge (1AP)\ng - Expulsion (1AP)");
+    text.setString("Choose defense:\na - Parry\nb - Dodge\nc - Linked Parry "
+                   "(1AP)\nd - Steal Initiative\ne - Counter (2AP)\nf - Mobile "
+                   "Dodge (1AP)\ng - Expulsion (1AP)");
     Game::getWindow().draw(text);
     if (event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
@@ -37,7 +39,7 @@ void DefenseUI::doManuever(sf::Event event, Player* player)
             m_currentState = eUiState::ChooseDice;
         }
         if (c == 'c') {
-            //costs 1 die
+            // costs 1 die
             if (player->getCombatPool() <= 0) {
                 Log::push("Requires 1 action point");
             } else {
@@ -69,7 +71,8 @@ void DefenseUI::doChooseDice(sf::Event event, Player* player)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setString("Allocate action points (" + std::to_string(player->getCombatPool()) + " action points left):");
+    text.setString("Allocate action points (" + std::to_string(player->getCombatPool())
+        + " action points left):");
     Game::getWindow().draw(text);
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
@@ -77,7 +80,7 @@ void DefenseUI::doChooseDice(sf::Event event, Player* player)
         player->setDefenseDice(m_numberInput.getNumber());
         player->reduceCombatPool(m_numberInput.getNumber());
         m_currentState = eUiState::Finished;
-        //last one so set flag
+        // last one so set flag
         player->setDefenseReady();
         m_numberInput.reset();
     }

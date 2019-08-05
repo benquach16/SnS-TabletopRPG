@@ -20,7 +20,7 @@ public:
     static void run();
 
 private:
-    //helper funcs
+    // helper funcs
     static sf::Text createLogText(const std::string& str, eMessageTypes type);
     static std::deque<message> m_queue;
 };

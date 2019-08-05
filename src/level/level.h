@@ -5,27 +5,15 @@
 
 #include "../object/object.h"
 
-enum eTileMaterial {
-    Stone,
-    Wood,
-    Dirt,
-    Grass
-};
-enum eTileType {
-    Ground,
-    Wall
-};
+enum eTileMaterial { Stone, Wood, Dirt, Grass };
+enum eTileType { Ground, Wall };
 
 struct Tile {
     eTileType m_type = eTileType::Ground;
     eTileMaterial m_material = eTileMaterial::Stone;
 };
 
-enum eLighting {
-    Sunny,
-    Dark,
-    Cave
-};
+enum eLighting { Sunny, Dark, Cave };
 
 struct Room {
     int x;

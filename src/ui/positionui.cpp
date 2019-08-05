@@ -21,7 +21,8 @@ void PositionUI::doPositionRoll(sf::Event event, Player* player)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setString("Allocate action points for positioning roll (" + std::to_string(player->getCombatPool()) + " action points left):");
+    text.setString("Allocate action points for positioning roll ("
+        + std::to_string(player->getCombatPool()) + " action points left):");
 
     Game::getWindow().draw(text);
 
@@ -29,7 +30,7 @@ void PositionUI::doPositionRoll(sf::Event event, Player* player)
         player->setPositionDice(m_numberInput.getNumber());
         m_currentState = eUiState::Finished;
         player->reduceCombatPool(m_numberInput.getNumber());
-        //last one so set flag
+        // last one so set flag
         player->setPositionReady();
         m_numberInput.reset();
     }

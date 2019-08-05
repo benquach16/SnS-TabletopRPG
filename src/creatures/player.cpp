@@ -25,7 +25,7 @@ void Player::setInitiative(eInitiativeRoll initiative)
 
 void Player::clearCreatureManuevers()
 {
-    //todo: switch this to the creature base m_hasOffense
+    // todo: switch this to the creature base m_hasOffense
     Creature::clearCreatureManuevers();
     m_flagInitiative = false;
 }

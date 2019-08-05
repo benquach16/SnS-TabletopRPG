@@ -1,13 +1,8 @@
-//this is for item effects, specifically
+// this is for item effects, specifically
 
 #pragma once
 
-enum class eItemEffect {
-    Thirst,
-    Hunger,
-    Morale,
-    Stamina
-};
+enum class eItemEffect { Thirst, Hunger, Morale, Stamina };
 
 class ItemEffect {
 public:

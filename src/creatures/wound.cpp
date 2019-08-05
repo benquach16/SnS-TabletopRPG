@@ -14,7 +14,8 @@ WoundTable* WoundTable::singleton = nullptr;
 
 constexpr int woundLevels = 5;
 
-Wound::Wound(eBodyParts location, std::vector<std::string> text, int level, int btn, int impact, std::set<eEffects> effects)
+Wound::Wound(eBodyParts location, std::vector<std::string> text, int level, int btn, int impact,
+    std::set<eEffects> effects)
     : m_location(location)
     , m_text(text)
     , m_level(level)
@@ -82,7 +83,7 @@ void WoundTable::initWoundTable(eDamageTypes type, nlohmann::json woundJson)
     for (auto& iter : woundJson.items()) {
         string key = iter.key();
 
-        //ignore BTN and impact tables
+        // ignore BTN and impact tables
         if (key == "BTN" || key == "impact") {
             continue;
         }
@@ -109,7 +110,7 @@ void WoundTable::initWoundTable(eDamageTypes type, nlohmann::json woundJson)
 
 void WoundTable::initHitLocationTable()
 {
-    //Head
+    // Head
     m_hitTable[eHitLocations::Head].m_swing[0] = eBodyParts::Crown;
     m_hitTable[eHitLocations::Head].m_swing[1] = eBodyParts::Crown;
     m_hitTable[eHitLocations::Head].m_swing[2] = eBodyParts::Crown;
@@ -129,7 +130,7 @@ void WoundTable::initHitLocationTable()
     m_partsTable[eHitLocations::Head].push_back(eBodyParts::Neck);
     m_partsTable[eHitLocations::Head].push_back(eBodyParts::Chin);
 
-    //Neck
+    // Neck
     m_hitTable[eHitLocations::Neck].m_swing[0] = eBodyParts::Shoulder;
     m_hitTable[eHitLocations::Neck].m_swing[1] = eBodyParts::Shoulder;
     m_hitTable[eHitLocations::Neck].m_swing[2] = eBodyParts::Neck;
@@ -149,7 +150,7 @@ void WoundTable::initHitLocationTable()
     m_partsTable[eHitLocations::Neck].push_back(eBodyParts::Neck);
     m_partsTable[eHitLocations::Neck].push_back(eBodyParts::Chin);
 
-    //chest
+    // chest
     m_hitTable[eHitLocations::Chest].m_swing[0] = eBodyParts::Neck;
     m_hitTable[eHitLocations::Chest].m_swing[1] = eBodyParts::Shoulder;
     m_hitTable[eHitLocations::Chest].m_swing[2] = eBodyParts::Ribs;
@@ -168,7 +169,7 @@ void WoundTable::initHitLocationTable()
     m_partsTable[eHitLocations::Chest].push_back(eBodyParts::Armpit);
     m_partsTable[eHitLocations::Chest].push_back(eBodyParts::Abs);
 
-    //arms
+    // arms
     m_hitTable[eHitLocations::Arm].m_swing[0] = eBodyParts::Shoulder;
     m_hitTable[eHitLocations::Arm].m_swing[1] = eBodyParts::Shoulder;
     m_hitTable[eHitLocations::Arm].m_swing[2] = eBodyParts::UpperArm;
@@ -190,7 +191,7 @@ void WoundTable::initHitLocationTable()
     m_partsTable[eHitLocations::Arm].push_back(eBodyParts::Forearm);
     m_partsTable[eHitLocations::Arm].push_back(eBodyParts::Hand);
 
-    //belly
+    // belly
     m_hitTable[eHitLocations::Belly].m_swing[0] = eBodyParts::Ribs;
     m_hitTable[eHitLocations::Belly].m_swing[1] = eBodyParts::Abs;
     m_hitTable[eHitLocations::Belly].m_swing[2] = eBodyParts::Abs;
@@ -210,7 +211,7 @@ void WoundTable::initHitLocationTable()
     m_partsTable[eHitLocations::Belly].push_back(eBodyParts::Groin);
     m_partsTable[eHitLocations::Belly].push_back(eBodyParts::Hip);
 
-    //thigh
+    // thigh
     m_hitTable[eHitLocations::Thigh].m_swing[0] = eBodyParts::Hip;
     m_hitTable[eHitLocations::Thigh].m_swing[1] = eBodyParts::Hip;
     m_hitTable[eHitLocations::Thigh].m_swing[2] = eBodyParts::Thigh;
@@ -232,7 +233,7 @@ void WoundTable::initHitLocationTable()
     m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Knee);
     m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Shin);
 
-    //shin
+    // shin
     m_hitTable[eHitLocations::Shin].m_swing[0] = eBodyParts::Thigh;
     m_hitTable[eHitLocations::Shin].m_swing[1] = eBodyParts::Knee;
     m_hitTable[eHitLocations::Shin].m_swing[2] = eBodyParts::Shin;
@@ -291,7 +292,7 @@ eEffects WoundTable::stringToEffect(const std::string& str)
 
 eBodyParts WoundTable::getSwing(eHitLocations location)
 {
-    //dice returns an actual dice roll 1-6, so we have to offset by 1
+    // dice returns an actual dice roll 1-6, so we have to offset by 1
     int roll = DiceRoller::roll() - 1;
     eBodyParts part = m_hitTable[location].m_swing[roll];
     if (part == eBodyParts::Face) {
@@ -311,7 +312,7 @@ eBodyParts WoundTable::getSwing(eHitLocations location)
 
 eBodyParts WoundTable::getThrust(eHitLocations location)
 {
-    //dice returns an actual dice roll 1-6, so we have to offset by 1
+    // dice returns an actual dice roll 1-6, so we have to offset by 1
     int roll = DiceRoller::roll() - 1;
     return m_hitTable[location].m_thrust[roll];
 }

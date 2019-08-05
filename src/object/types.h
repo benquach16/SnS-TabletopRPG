@@ -12,7 +12,4 @@ enum class eCreatureFaction : unsigned {
     Count = 8
 };
 
-enum class eCreatureRace {
-    Human,
-    Goblin
-};
+enum class eCreatureRace { Human, Goblin };

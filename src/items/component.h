@@ -4,16 +4,20 @@
 #include <set>
 #include <string>
 
-//components of weapons
-//axe heads, spear heads, buttspikes...
+// components of weapons
+// axe heads, spear heads, buttspikes...
 class Component {
 public:
-    Component(std::string name, int damage, eDamageTypes type, eAttacks attack, std::set<eWeaponProperties> properties);
+    Component(std::string name, int damage, eDamageTypes type, eAttacks attack,
+        std::set<eWeaponProperties> properties);
     std::string getName() const { return m_name; }
     int getDamage() const { return m_damage; }
     eDamageTypes getType() const { return m_damageType; }
     eAttacks getAttack() const { return m_attack; }
-    bool hasProperty(eWeaponProperties prop) const { return m_properties.find(prop) != m_properties.end(); }
+    bool hasProperty(eWeaponProperties prop) const
+    {
+        return m_properties.find(prop) != m_properties.end();
+    }
     const std::set<eWeaponProperties>& getProperties() const { return m_properties; }
 
 private:

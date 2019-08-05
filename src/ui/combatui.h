@@ -32,16 +32,9 @@ private:
         Finished,
     };
 
-    enum class eDualRedStealSubState : unsigned {
-        ChooseInitiative,
-        ChooseDice,
-        Finished
-    };
+    enum class eDualRedStealSubState : unsigned { ChooseInitiative, ChooseDice, Finished };
 
-    enum class ePositionRollSubState : unsigned {
-        ChooseDice,
-        Finished
-    };
+    enum class ePositionRollSubState : unsigned { ChooseDice, Finished };
 
     void resetState();
     void doInitiative(sf::Event event, Player* player, Creature* target);

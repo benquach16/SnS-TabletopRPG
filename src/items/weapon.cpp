@@ -11,7 +11,8 @@ using namespace std;
 
 const string filepath = "data/weapons.json";
 
-Weapon::Weapon(const std::string& name, const std::string& description, eLength length, std::vector<Component*> components, eWeaponTypes type, int cost)
+Weapon::Weapon(const std::string& name, const std::string& description, eLength length,
+    std::vector<Component*> components, eWeaponTypes type, int cost)
     : Item(name, description, cost, eItemType::Weapon)
     , m_length(length)
     , m_components(components)
@@ -58,13 +59,13 @@ WeaponTable::WeaponTable()
     file >> parsedWeapons;
 
     for (auto& iter : parsedWeapons.items()) {
-        //cout << i.key() << " : " << i.value() << endl;
+        // cout << i.key() << " : " << i.value() << endl;
         int id = std::stoi(iter.key());
         auto values = iter.value();
 
         auto componentJson = values["components"];
 
-        //assert valid json
+        // assert valid json
         assert(values["name"].is_null() == false);
         assert(values["description"].is_null() == false);
         assert(values["length"].is_null() == false);
@@ -82,7 +83,7 @@ WeaponTable::WeaponTable()
         vector<Component*> weaponComponents;
 
         for (int i = 0; i < componentJson.size(); ++i) {
-            //cout << components[i] << endl;
+            // cout << components[i] << endl;
             assert(componentJson[i]["name"].is_null() == false);
             assert(componentJson[i]["damage"].is_null() == false);
             assert(componentJson[i]["type"].is_null() == false);
@@ -94,9 +95,9 @@ WeaponTable::WeaponTable()
             eAttacks attack = convertAttackFromStr(componentJson[i]["attack"]);
             std::set<eWeaponProperties> properties;
 
-            //check for component properties
+            // check for component properties
             if (componentJson[i]["properties"].is_null() == false) {
-                //is an array
+                // is an array
                 auto propertiesJson = componentJson[i]["properties"];
                 for (int j = 0; j < propertiesJson.size(); ++j) {
                     eWeaponProperties property = convertPropertiesFromStr(propertiesJson[j]);
@@ -104,12 +105,14 @@ WeaponTable::WeaponTable()
                 }
             }
 
-            Component* component = new Component(componentName, damage, damageType, attack, properties);
+            Component* component
+                = new Component(componentName, damage, damageType, attack, properties);
 
             weaponComponents.push_back(component);
         }
 
-        Weapon* weapon = new Weapon(weaponName, description, length, weaponComponents, weaponType, cost);
+        Weapon* weapon
+            = new Weapon(weaponName, description, length, weaponComponents, weaponType, cost);
         assert(m_weaponsList.find(id) == m_weaponsList.end());
         m_weaponsList[id] = weapon;
         ItemTable::getSingleton()->addWeapon(id, weapon);

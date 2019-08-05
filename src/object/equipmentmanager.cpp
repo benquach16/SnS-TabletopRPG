@@ -83,32 +83,32 @@ std::vector<int> EquipmentManager::getRandomArmors(eCreatureFaction faction) con
     Loadout loadout = it->second;
     std::vector<int> ret;
     if (loadout.baseChests.size() > 0) {
-        ret.push_back(
-            loadout.baseChests[effolkronium::random_static::get(0, static_cast<int>(loadout.baseChests.size()) - 1)]);
+        ret.push_back(loadout.baseChests[effolkronium::random_static::get(
+            0, static_cast<int>(loadout.baseChests.size()) - 1)]);
     }
     if (loadout.baseLegs.size() > 0) {
-        ret.push_back(
-            loadout.baseLegs[effolkronium::random_static::get(0, static_cast<int>(loadout.baseLegs.size()) - 1)]);
+        ret.push_back(loadout.baseLegs[effolkronium::random_static::get(
+            0, static_cast<int>(loadout.baseLegs.size()) - 1)]);
     }
     if (loadout.chests.size() > 0) {
-        ret.push_back(
-            loadout.helmets[effolkronium::random_static::get(0, static_cast<int>(loadout.helmets.size()) - 1)]);
+        ret.push_back(loadout.helmets[effolkronium::random_static::get(
+            0, static_cast<int>(loadout.helmets.size()) - 1)]);
     }
     if (loadout.chests.size() > 0) {
-        ret.push_back(
-            loadout.chests[effolkronium::random_static::get(0, static_cast<int>(loadout.chests.size()) - 1)]);
+        ret.push_back(loadout.chests[effolkronium::random_static::get(
+            0, static_cast<int>(loadout.chests.size()) - 1)]);
     }
     if (loadout.leggings.size() > 0) {
-        ret.push_back(
-            loadout.leggings[effolkronium::random_static::get(0, static_cast<int>(loadout.leggings.size()) - 1)]);
+        ret.push_back(loadout.leggings[effolkronium::random_static::get(
+            0, static_cast<int>(loadout.leggings.size()) - 1)]);
     }
     if (loadout.gloves.size() > 0) {
-        ret.push_back(
-            loadout.gloves[effolkronium::random_static::get(0, static_cast<int>(loadout.gloves.size()) - 1)]);
+        ret.push_back(loadout.gloves[effolkronium::random_static::get(
+            0, static_cast<int>(loadout.gloves.size()) - 1)]);
     }
     if (loadout.shoes.size() > 0) {
-        ret.push_back(
-            loadout.shoes[effolkronium::random_static::get(0, static_cast<int>(loadout.shoes.size()) - 1)]);
+        ret.push_back(loadout.shoes[effolkronium::random_static::get(
+            0, static_cast<int>(loadout.shoes.size()) - 1)]);
     }
     return ret;
 }

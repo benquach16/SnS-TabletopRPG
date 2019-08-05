@@ -21,10 +21,7 @@ CreatureObject::~CreatureObject()
     }
 }
 
-void CreatureObject::run(const Level* level)
-{
-    m_controller.run(level, this);
-}
+void CreatureObject::run(const Level* level) { m_controller.run(level, this); }
 
 void CreatureObject::applyItem(int id)
 {
@@ -46,7 +43,4 @@ void CreatureObject::applyItem(int id)
     }
 }
 
-int CreatureObject::getFatigue() const
-{
-    return m_creature->getFatigue();
-}
+int CreatureObject::getFatigue() const { return m_creature->getFatigue(); }

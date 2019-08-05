@@ -13,7 +13,7 @@ public:
     void setInitiative(eInitiativeRoll initiative);
     eInitiativeRoll getInitiative() { return m_initiative; }
 
-    //players make their offence piecemeal
+    // players make their offence piecemeal
     void setOffenseManuever(eOffensiveManuevers manuever) { m_currentOffense.manuever = manuever; }
     void setOffenseDice(int dice) { m_currentOffense.dice = dice; }
     void setOffenseComponent(Component* component) { m_currentOffense.component = component; }
@@ -30,14 +30,13 @@ public:
     void setOffenseReady() { m_hasOffense = true; }
     void setDefenseReady() { m_hasDefense = true; }
     void setPositionReady() { m_hasPosition = true; }
-
-    void setDefenseOff() { m_hasDefense = false; }
+    void setPrecombatReady() { m_hasPrecombat = true; }
 
     void clearCreatureManuevers() override;
 
 private:
     eInitiativeRoll m_initiative;
 
-    //wrap in fence object?
+    // wrap in fence object?
     bool m_flagInitiative;
 };

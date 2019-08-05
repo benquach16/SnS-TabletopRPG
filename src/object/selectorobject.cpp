@@ -1,5 +1,3 @@
 #include "selectorobject.h"
 
-SelectorObject::SelectorObject()
-{
-}
+SelectorObject::SelectorObject() {}

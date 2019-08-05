@@ -1,13 +1,8 @@
 #include "itemobject.h"
 
-ItemObject::ItemObject()
-{
-}
+ItemObject::ItemObject() {}
 
-void ItemObject::addItem(int idx, int count)
-{
-    m_inventory[idx] += count;
-}
+void ItemObject::addItem(int idx, int count) { m_inventory[idx] += count; }
 
 std::vector<int> ItemObject::getUniqueItemIds() const
 {

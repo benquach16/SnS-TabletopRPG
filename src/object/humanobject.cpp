@@ -10,10 +10,11 @@ using namespace std;
 HumanObject::HumanObject()
     : CreatureObject(new Human)
 {
-    //m_creature->setWeapon(1041); //arming sword
+    // m_creature->setWeapon(1041); //arming sword
     int weaponId = EquipmentManager::getSingleton()->getRandomWeapon(eCreatureFaction::Bandit);
     m_creature->setWeapon(weaponId);
-    std::vector<int> armor = EquipmentManager::getSingleton()->getRandomArmors(eCreatureFaction::Bandit);
+    std::vector<int> armor
+        = EquipmentManager::getSingleton()->getRandomArmors(eCreatureFaction::Bandit);
     for (auto i : armor) {
         if (m_creature->canEquipArmor(i)) {
             m_creature->equipArmor(i);
@@ -32,14 +33,13 @@ HumanObject::HumanObject()
     m_creatureFaction = eCreatureFaction::Bandit;
 }
 
-HumanObject::~HumanObject()
-{
-}
+HumanObject::~HumanObject() {}
 
 std::string HumanObject::getDescription() const
 {
     std::string ret;
-    ret += m_creature->getName() + ", human " + factionToString(m_creatureFaction) + " armed with " + m_creature->getPrimaryWeapon()->getName();
+    ret += m_creature->getName() + ", human " + factionToString(m_creatureFaction) + " armed with "
+        + m_creature->getPrimaryWeapon()->getName();
 
     return ret;
 }

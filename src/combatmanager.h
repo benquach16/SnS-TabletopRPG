@@ -7,10 +7,7 @@
 #include "combatinstance.h"
 #include "creatures/creature.h"
 
-enum class eCombatManagerState {
-    RunCombat,
-    PositioningRoll
-};
+enum class eCombatManagerState { RunCombat, PositioningRoll };
 
 class CombatManager {
 public:
@@ -24,17 +21,17 @@ public:
     eCombatManagerState getState() const { return m_currentState; }
 
 private:
-    enum class eOutnumberedSide {
-        None,
-        Side1,
-        Side2
-    };
+    enum class eOutnumberedSide { None, Side1, Side2 };
     void doRunCombat(float tick);
     void doPositionRoll();
     void cleanup();
-    void switchInitiative() { m_currentTempo = (m_currentTempo == eTempo::First) ? eTempo::Second : eTempo::First; }
+    void switchInitiative()
+    {
+        m_currentTempo = (m_currentTempo == eTempo::First) ? eTempo::Second : eTempo::First;
+    }
     void refreshInstances();
-    void writeMessage(const std::string& str, Log::eMessageTypes type = Log::eMessageTypes::Standard);
+    void writeMessage(
+        const std::string& str, Log::eMessageTypes type = Log::eMessageTypes::Standard);
 
     std::vector<CombatInstance*> m_instances;
     std::set<Creature*> m_queuedCreatures;

@@ -12,15 +12,9 @@
 #include "items/types.h"
 #include "log.h"
 
-enum class eTempo : unsigned {
-    First,
-    Second
-};
+enum class eTempo : unsigned { First, Second };
 
-enum class eInitiative : unsigned {
-    Side1,
-    Side2
-};
+enum class eInitiative : unsigned { Side1, Side2 };
 
 enum class eCombatState : unsigned {
     Uninitialized = 0,
@@ -71,24 +65,29 @@ private:
     void doDualOffense2();
     void doDualOffenseSecondInitiative();
     void doStolenOffense();
-    //doOffense has a return type to poll player input for dual offense
+    // doOffense has a return type to poll player input for dual offense
     bool doOffense();
     void doDefense();
     void doParryLinked();
     void doStealInitiative();
     void doPostDefense();
     void doResolution();
-    //this is a special case because if both sides roll to attack since both of their attacks resolve at the same time
+    // this is a special case because if both sides roll to attack since both of
+    // their attacks resolve at the same time
     void doDualOffenseResolve();
     void doPostResolution();
     void doEndCombat();
     void setSides(Creature*& attacker, Creature*& defender);
 
-    void switchInitiative() { m_initiative = m_initiative == eInitiative::Side1 ? eInitiative::Side2 : eInitiative::Side1; }
+    void switchInitiative()
+    {
+        m_initiative = m_initiative == eInitiative::Side1 ? eInitiative::Side2 : eInitiative::Side1;
+    }
     void switchTempo();
 
     bool inflictWound(int MoS, Offense attack, Creature* target, bool manueverFirst = false);
-    void writeMessage(const std::string& str, Log::eMessageTypes type = Log::eMessageTypes::Standard);
+    void writeMessage(
+        const std::string& str, Log::eMessageTypes type = Log::eMessageTypes::Standard);
     void outputReachCost(int cost, Creature* attacker);
 
     eCombatState m_currentState;

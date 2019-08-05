@@ -18,8 +18,7 @@ public:
     }
 
     int getRelationship(eCreatureFaction faction1, eCreatureFaction faction2) const;
-    void setRelationship(eCreatureFaction faction1, eCreatureFaction faction2,
-        int value);
+    void setRelationship(eCreatureFaction faction1, eCreatureFaction faction2, int value);
     void setHateAll(eCreatureFaction faction);
 
 private:

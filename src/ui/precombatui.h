@@ -9,14 +9,10 @@ public:
     void resetState() { m_currentState = eUiState::ChooseFavoring; }
 
 private:
-    void doFavoring(sf::Event event);
-    void doChooseGrip(sf::Event event);
-    enum class eUiState : unsigned {
-        ChooseFavoring,
-        ChooseFavorLocations,
-        ChooseGrip,
-        Finished
-    };
+    void doFavoring(sf::Event event, Player* player);
+    void doFavorLocation(sf::Event event, Player* player);
+    void doChooseGrip(sf::Event event, Player* player);
+    enum class eUiState : unsigned { ChooseFavoring, ChooseFavorLocations, ChooseGrip, Finished };
 
     eUiState m_currentState;
 };

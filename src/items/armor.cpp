@@ -13,8 +13,8 @@ using namespace std;
 
 const string filepath = "data/armor.json";
 
-Armor::Armor(const std::string& name, const std::string& description, int AV, float AP, eLayer layer, eArmorTypes type,
-    bool rigid, bool metal, std::set<eBodyParts> coverage, int cost)
+Armor::Armor(const std::string& name, const std::string& description, int AV, float AP,
+    eLayer layer, eArmorTypes type, bool rigid, bool metal, std::set<eBodyParts> coverage, int cost)
     : Item(name, description, cost, eItemType::Armor)
     , m_AV(AV)
     , m_AP(AP)
@@ -28,7 +28,7 @@ Armor::Armor(const std::string& name, const std::string& description, int AV, fl
 
 bool Armor::isOverlapping(const Armor* armor) const
 {
-    //layered armor is OK
+    // layered armor is OK
     if (m_layer != armor->m_layer) {
         return false;
     }
@@ -52,7 +52,7 @@ ArmorTable::ArmorTable()
         int id = std::stoi(iter.key());
         auto values = iter.value();
 
-        //asert valid json
+        // asert valid json
         assert(values["name"].is_null() == false);
         assert(values["description"].is_null() == false);
         assert(values["cost"].is_null() == false);
@@ -81,7 +81,8 @@ ArmorTable::ArmorTable()
             coverage.insert(part);
         }
 
-        Armor* armor = new Armor(name, description, AV, AP, layer, type, rigid, metal, coverage, cost);
+        Armor* armor
+            = new Armor(name, description, AV, AP, layer, type, rigid, metal, coverage, cost);
         m_armorList[id] = armor;
         ItemTable::getSingleton()->addArmor(id, armor);
     }

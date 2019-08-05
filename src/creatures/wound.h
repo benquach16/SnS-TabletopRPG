@@ -13,7 +13,8 @@
 
 class Wound {
 public:
-    Wound(eBodyParts location, std::vector<std::string> text, int level, int btn, int impact, std::set<eEffects> effects);
+    Wound(eBodyParts location, std::vector<std::string> text, int level, int btn, int impact,
+        std::set<eEffects> effects);
 
     std::string getText() const { return m_text[0]; }
     int getBTN() const { return m_btn; }
@@ -39,7 +40,10 @@ public:
     eBodyParts getSwing(eHitLocations location);
     eBodyParts getThrust(eHitLocations location);
 
-    std::vector<eBodyParts> getUniqueParts(eHitLocations location) const { return m_partsTable.at(location); }
+    std::vector<eBodyParts> getUniqueParts(eHitLocations location) const
+    {
+        return m_partsTable.at(location);
+    }
 
     Wound* getWound(eDamageTypes type, eBodyParts part, int level);
 
@@ -70,8 +74,8 @@ private:
     std::unordered_map<eHitLocations, woundParts> m_hitTable;
     std::unordered_map<eHitLocations, std::vector<eBodyParts>> m_partsTable;
 
-    //4d associative array for wound table
-    //damage type to body part to wound level
+    // 4d associative array for wound table
+    // damage type to body part to wound level
     std::map<eDamageTypes, std::map<eBodyParts, std::map<int, Wound*>>> m_woundTable;
 
     std::map<eDamageTypes, std::vector<int>> m_btnTable;

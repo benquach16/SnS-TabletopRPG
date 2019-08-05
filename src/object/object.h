@@ -16,13 +16,7 @@ struct vector2d {
     }
 };
 
-enum class eObjectTypes {
-    Misc,
-    Item,
-    Creature,
-    Corpse,
-    Chest
-};
+enum class eObjectTypes { Misc, Item, Creature, Corpse, Chest };
 
 class Level;
 
@@ -59,6 +53,6 @@ protected:
     vector2d m_position;
 
     std::map<int, int> m_inventory;
-    //should be assigned a unique id on creation
+    // should be assigned a unique id on creation
     unsigned m_id;
 };

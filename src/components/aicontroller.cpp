@@ -12,7 +12,7 @@ AIController::AIController()
 
 void AIController::run(const Level* level, CreatureObject* controlledCreature)
 {
-    //dont run world ai for creatures in combat or are dead
+    // dont run world ai for creatures in combat or are dead
     if (controlledCreature->isInCombat() == true || controlledCreature->isConscious() == false)
         return;
 
@@ -27,12 +27,12 @@ void AIController::run(const Level* level, CreatureObject* controlledCreature)
 
         if (object->getObjectType() == eObjectTypes::Creature) {
             CreatureObject* creature = static_cast<CreatureObject*>(object);
-            int relationship = RelationManager::getSingleton()->getRelationship(controlledCreature->getFaction(),
-                creature->getFaction());
+            int relationship = RelationManager::getSingleton()->getRelationship(
+                controlledCreature->getFaction(), creature->getFaction());
 
-            //dont attack dead people
+            // dont attack dead people
             if (relationship <= RelationManager::cHostile && creature->isConscious() == true) {
-                //get distance
+                // get distance
                 int dist = getDistance(object->getPosition(), controlledCreature->getPosition());
                 if (dist < minDist) {
                     minDist = dist;
@@ -46,7 +46,7 @@ void AIController::run(const Level* level, CreatureObject* controlledCreature)
         if (minDist > 2) {
             moveToward(target->getPosition(), level, controlledCreature);
         } else {
-            //init combat
+            // init combat
             if (target->isPlayer() == true) {
                 PlayerObject* playerObject = static_cast<PlayerObject*>(target);
                 playerObject->startCombatWith(controlledCreature->getCreatureComponent());
@@ -96,7 +96,8 @@ int AIController::getDistance(vector2d position1, vector2d position2)
     return ret;
 }
 
-void AIController::moveToward(vector2d target, const Level* level, CreatureObject* controlledCreature)
+void AIController::moveToward(
+    vector2d target, const Level* level, CreatureObject* controlledCreature)
 {
     vector2d position = controlledCreature->getPosition();
     int diffX = position.x - target.x;

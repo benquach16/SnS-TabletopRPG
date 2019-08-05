@@ -2,16 +2,15 @@
 #include "../game.h"
 #include "types.h"
 
-GameUI::GameUI()
-{
-}
+GameUI::GameUI() {}
 
 void GameUI::run(sf::Event event)
 {
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setString("I - Inventory\nP - Pickup\nD - Look at object\nA - Attack\nT - Talk\nR - Rest\n");
+    text.setString("I - Inventory\nP - Pickup\nD - Look at object\nA - "
+                   "Attack\nT - Talk\nR - Rest\n");
     sf::FloatRect backgroundRect = text.getLocalBounds();
     backgroundRect.width += 5;
     sf::RectangleShape background(sf::Vector2f(backgroundRect.width, backgroundRect.height));

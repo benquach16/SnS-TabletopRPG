@@ -31,12 +31,12 @@ void Game::initialize()
 
 void Game::run()
 {
-    //clean me up
+    // clean me up
     PlayerObject* playerObject = new PlayerObject;
 
     sf::Clock clock;
 
-    //main game loop
+    // main game loop
     float tick = 0;
     float aiTick = 0;
 
@@ -59,8 +59,8 @@ void Game::run()
     HumanObject target1;
     HumanObject target2;
 
-    //playerObject->startCombatWith(target1.getCreatureComponent());
-    //playerObject->startCombatWith(target2.getCreatureComponent());
+    // playerObject->startCombatWith(target1.getCreatureComponent());
+    // playerObject->startCombatWith(target2.getCreatureComponent());
     SelectorObject selector;
     GFXSelector gfxSelector;
 
@@ -79,21 +79,22 @@ void Game::run()
             }
         }
         sf::Time elapsedTime = clock.getElapsedTime();
-        //as milliseconds returns 0, so we have to go more granular
+        // as milliseconds returns 0, so we have to go more granular
         tick += elapsedTime.asSeconds();
         aiTick += elapsedTime.asSeconds();
 
         sf::View v = getWindow().getDefaultView();
         v.setSize(v.getSize().x, v.getSize().y * 2);
-        //v.setCenter(v.getSize() *.5f);
+        // v.setCenter(v.getSize() *.5f);
         sf::Vector2f center(playerObject->getPosition().x, playerObject->getPosition().y);
         center = coordsToScreen(center);
         v.setCenter(center.x, center.y + 200);
         v.zoom(zoom);
         getWindow().setView(v);
         gfxlevel.run(&level, playerObject->getPosition());
-        //temporary until we get graphics queue up and running
-        if (m_currentState == eGameState::AttackMode || m_currentState == eGameState::SelectionMode || m_currentState == eGameState::DialogueMode) {
+        // temporary until we get graphics queue up and running
+        if (m_currentState == eGameState::AttackMode || m_currentState == eGameState::SelectionMode
+            || m_currentState == eGameState::DialogueMode) {
             gfxSelector.run(&selector);
         }
         getWindow().setView(getWindow().getDefaultView());
@@ -152,7 +153,8 @@ void Game::run()
                         m_currentState = eGameState::Pickup;
                         break;
                     case eObjectTypes::Creature:
-                        Log::push("There is a creature here. You need to kill them if you want to loot them.");
+                        Log::push("There is a creature here. You need to kill "
+                                  "them if you want to loot them.");
                         break;
                     }
                 } else {
@@ -192,17 +194,19 @@ void Game::run()
                     std::cout << "Something here" << std::endl;
                     Log::push("You see " + object->getDescription());
                     if (object->getObjectType() == eObjectTypes::Creature) {
-                        const CreatureObject* creatureObj = static_cast<const CreatureObject*>(object);
-                        //don't do anything more for player
+                        const CreatureObject* creatureObj
+                            = static_cast<const CreatureObject*>(object);
+                        // don't do anything more for player
                         if (creatureObj->isPlayer() == false) {
                             if (creatureObj->isConscious() == false) {
                                 Log::push("They are unconscious", Log::eMessageTypes::Announcement);
                             }
-                            int relation = RelationManager::getSingleton()->getRelationship(eCreatureFaction::Player,
-                                creatureObj->getFaction());
+                            int relation = RelationManager::getSingleton()->getRelationship(
+                                eCreatureFaction::Player, creatureObj->getFaction());
 
                             if (relation <= RelationManager::cHostile) {
-                                Log::push(creatureObj->getName() + " is hostile to you", Log::eMessageTypes::Damage);
+                                Log::push(creatureObj->getName() + " is hostile to you",
+                                    Log::eMessageTypes::Damage);
                             }
                         }
                     }
@@ -237,7 +241,8 @@ void Game::run()
                 const Object* object = level.getObject(selector.getPosition());
                 if (object != nullptr) {
                     if (object->getObjectType() == eObjectTypes::Creature) {
-                        const CreatureObject* creatureObject = static_cast<const CreatureObject*>(object);
+                        const CreatureObject* creatureObject
+                            = static_cast<const CreatureObject*>(object);
                         if (creatureObject->isConscious() == true) {
                             playerObject->startCombatWith(creatureObject->getCreatureComponent());
                             m_currentState = eGameState::InCombat;
@@ -269,7 +274,8 @@ void Game::run()
                 m_currentState = eGameState::Playing;
             }
             if (tick > CombatManager::cTick) {
-                //pause rest of game if player is in combat. combat between two NPCS can happen anytime
+                // pause rest of game if player is in combat. combat between two
+                // NPCS can happen anytime
 
                 level.run();
                 tick = 0;
@@ -301,7 +307,7 @@ void Game::run()
 
         float currentTime = clock.restart().asSeconds();
         float fps = 1.f / currentTime;
-        //cout << "FPS"  << fps << endl;
+        // cout << "FPS"  << fps << endl;
         m_window.setTitle(std::to_string(fps));
         m_window.display();
     }

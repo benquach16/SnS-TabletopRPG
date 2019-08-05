@@ -20,10 +20,7 @@ CombatManager::CombatManager(Creature* creature)
     m_isPlayers = creature->isPlayer();
 }
 
-CombatManager::~CombatManager()
-{
-    cleanup();
-}
+CombatManager::~CombatManager() { cleanup(); }
 
 void CombatManager::cleanup()
 {
@@ -41,7 +38,7 @@ bool CombatManager::run(float tick)
 {
     m_allowNewCreatures = true;
     if (m_mainCreature->isConscious() == false) {
-        //cleanup, we don't need this anymore
+        // cleanup, we don't need this anymore
         cleanup();
         return false;
     }
@@ -52,7 +49,7 @@ bool CombatManager::run(float tick)
         for (auto it : m_queuedCreatures) {
             startCombatWith(it);
         }
-        //cout << "no more instances" << endl;
+        // cout << "no more instances" << endl;
         return false;
     }
     m_allowNewCreatures = false;
@@ -67,12 +64,12 @@ bool CombatManager::run(float tick)
         break;
     }
 
-    //second check in case everyone died in previous iteration
+    // second check in case everyone died in previous iteration
     if (m_instances.size() == 0) {
         m_currentId = 0;
         m_instanceId = 0;
         cleanup();
-        //cout << "no more instances" << endl;
+        // cout << "no more instances" << endl;
         return false;
     }
     return true;
@@ -81,24 +78,24 @@ bool CombatManager::run(float tick)
 void CombatManager::doRunCombat(float tick)
 {
     if (m_instances.size() > 1) {
-        //do positioning roll
+        // do positioning roll
         if (m_instanceId == 0 && m_positionDone == false && m_currentTempo == eTempo::First) {
             m_currentState = eCombatManagerState::PositioningRoll;
             return;
         }
-        //force tempo
-        //activeinstances should be populated at this time
+        // force tempo
+        // activeinstances should be populated at this time
         assert(m_activeInstances.size() > 0);
         m_currentId = m_activeInstances[m_instanceId];
         m_instances[m_currentId]->forceTempo(eTempo::First);
 
-        //force outnumbered side to be defensive
-        //player should always be side 1
+        // force outnumbered side to be defensive
+        // player should always be side 1
         if (m_isPlayers == true) {
             for (auto it : m_instances) {
-                //bug : this state causes ui skips, make a seperate state
+                // bug : this state causes ui skips, make a seperate state
                 if (it->getState() == eCombatState::RollInitiative) {
-                    //it->forceInitiative(eInitiative::Side2);
+                    // it->forceInitiative(eInitiative::Side2);
                 }
             }
         }
@@ -107,7 +104,7 @@ void CombatManager::doRunCombat(float tick)
     if (tick <= cTick) {
         return;
     }
-    //index into array of indexes for active instances
+    // index into array of indexes for active instances
     m_currentId = m_instances.size() > 1 ? m_activeInstances[m_instanceId] : 0;
 
     bool change = m_instances[m_currentId]->getState() == eCombatState::PostResolution;
@@ -128,7 +125,8 @@ void CombatManager::doRunCombat(float tick)
         m_currentId = 0;
         m_currentTempo = eTempo::First;
     }
-    //since we just deleted, make sure we clear if we don't have any more combat
+    // since we just deleted, make sure we clear if we don't have any more
+    // combat
     if (m_activeInstances.size() == 0) {
         m_instanceId = 0;
     }
@@ -138,7 +136,8 @@ void CombatManager::doRunCombat(float tick)
             m_instanceId++;
         } else {
             if (m_currentTempo == eTempo::Second && m_instances.size() > 1) {
-                writeMessage("Exchanges have ended, combat pools for all combatants have reset");
+                writeMessage("Exchanges have ended, combat pools for all "
+                             "combatants have reset");
                 refreshInstances();
             }
             if (m_currentTempo == eTempo::Second) {
@@ -157,7 +156,7 @@ void CombatManager::doRunCombat(float tick)
 
 void CombatManager::doPositionRoll()
 {
-    //do player
+    // do player
     if (m_mainCreature->getHasPosition() == false) {
         m_currentState = eCombatManagerState::PositioningRoll;
         return;
@@ -168,22 +167,26 @@ void CombatManager::doPositionRoll()
         it->getSide2()->doPositionRoll(m_mainCreature);
     }
 
-    //now roll
-    int mainSuccesses = DiceRoller::rollGetSuccess(m_mainCreature->getBTN(), m_mainCreature->getQueuedPosition().dice);
+    // now roll
+    int mainSuccesses = DiceRoller::rollGetSuccess(
+        m_mainCreature->getBTN(), m_mainCreature->getQueuedPosition().dice);
     for (int i = 0; i < m_instances.size(); ++i) {
         Creature* creature = m_instances[i]->getSide2();
-        int successes = DiceRoller::rollGetSuccess(creature->getBTN(), creature->getQueuedPosition().dice);
+        int successes
+            = DiceRoller::rollGetSuccess(creature->getBTN(), creature->getQueuedPosition().dice);
         if (successes >= mainSuccesses) {
-            writeMessage(creature->getName() + " kept up with " + m_mainCreature->getName() + "'s footwork");
+            writeMessage(
+                creature->getName() + " kept up with " + m_mainCreature->getName() + "'s footwork");
             m_activeInstances.push_back(i);
         }
     }
-    //have to have at least one
+    // have to have at least one
     if (m_activeInstances.size() == 0) {
         writeMessage("No combatants kept up with footwork, initiating duel");
         m_activeInstances.push_back(0);
     } else {
-        writeMessage(m_mainCreature->getName() + " is engaged with " + to_string(m_activeInstances.size()) + " opponents");
+        writeMessage(m_mainCreature->getName() + " is engaged with "
+            + to_string(m_activeInstances.size()) + " opponents");
     }
     m_instanceId = 0;
     m_currentId = 0;
@@ -196,16 +199,17 @@ void CombatManager::startCombatWith(Creature* creature)
     if (m_instances.size() >= cMaxEngaged) {
         return;
     }
-    //don't allow a new creature to enter in the middle of an exchange
+    // don't allow a new creature to enter in the middle of an exchange
     if (m_allowNewCreatures == false) {
         m_queuedCreatures.insert(creature);
         return;
     }
 
-    //if a creature initiatives combat against another creature, but is not the main creature then we spin up another combatmanger
+    // if a creature initiatives combat against another creature, but is not the
+    // main creature then we spin up another combatmanger
     CombatInstance* instance = new CombatInstance;
     if (m_instances.size() == 1) {
-        //ptr compares are gross, do ID compares
+        // ptr compares are gross, do ID compares
         if (creature == m_instances[0]->getSide1()) {
             m_side = eOutnumberedSide::Side1;
         } else {
@@ -213,7 +217,9 @@ void CombatManager::startCombatWith(Creature* creature)
         }
         m_currentId = 0;
     }
-    writeMessage("Combat started between " + m_mainCreature->getName() + " and " + creature->getName(), Log::eMessageTypes::Announcement);
+    writeMessage(
+        "Combat started between " + m_mainCreature->getName() + " and " + creature->getName(),
+        Log::eMessageTypes::Announcement);
 
     instance->initCombat(m_mainCreature, creature);
     m_instances.push_back(instance);
@@ -234,7 +240,7 @@ void CombatManager::refreshInstances()
 
 void CombatManager::writeMessage(const std::string& str, Log::eMessageTypes type)
 {
-    //combat manager is not a singleton, so we can have multiple.
-    //we can choose not to display combatmanager messages if we want to.
+    // combat manager is not a singleton, so we can have multiple.
+    // we can choose not to display combatmanager messages if we want to.
     Log::push(str, type);
 }

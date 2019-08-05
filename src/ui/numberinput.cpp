@@ -36,7 +36,4 @@ void NumberInput::run(sf::Event event)
     Game::getWindow().draw(m_text);
 }
 
-void NumberInput::setPosition(sf::Vector2f position)
-{
-    m_text.setPosition(position);
-}
+void NumberInput::setPosition(sf::Vector2f position) { m_text.setPosition(position); }

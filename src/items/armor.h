@@ -17,8 +17,8 @@ struct ArmorSegment {
 
 class Armor : public Item {
 public:
-    Armor(const std::string& name, const std::string& description, int AV, float AP, eLayer layer, eArmorTypes type,
-        bool rigid, bool metal, std::set<eBodyParts> coverage, int cost);
+    Armor(const std::string& name, const std::string& description, int AV, float AP, eLayer layer,
+        eArmorTypes type, bool rigid, bool metal, std::set<eBodyParts> coverage, int cost);
     int getAV() const { return m_AV; }
     float getAP() const { return m_AP; }
 

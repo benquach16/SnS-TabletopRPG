@@ -8,7 +8,8 @@
 
 class Weapon : public Item {
 public:
-    Weapon(const std::string& name, const std::string& description, eLength length, std::vector<Component*> components, eWeaponTypes type, int cost);
+    Weapon(const std::string& name, const std::string& description, eLength length,
+        std::vector<Component*> components, eWeaponTypes type, int cost);
     ~Weapon();
     eItemType getItemType() const override { return eItemType::Weapon; }
 
@@ -17,7 +18,7 @@ public:
     const std::vector<Component*>& getComponents() const { return m_components; }
     std::vector<Component*> getThrustComponents() const { return m_thrustComponents; }
     std::vector<Component*> getSwingComponents() const { return m_swingComponents; }
-    //convinence functions
+    // convinence functions
     Component* getBestAttack() const;
 
 private:

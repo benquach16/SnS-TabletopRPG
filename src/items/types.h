@@ -11,18 +11,9 @@ enum class eWeaponTypes : unsigned {
     Firearms
 };
 
-enum class eDamageTypes {
-    Blunt,
-    Piercing,
-    Cutting
-};
+enum class eDamageTypes { Blunt, Piercing, Cutting };
 
-enum class eWeaponProperties {
-    Crushing,
-    Hook,
-    MaillePiercing,
-    PlatePiercing
-};
+enum class eWeaponProperties { Crushing, Hook, MaillePiercing, PlatePiercing };
 
 enum class eAttacks {
     Thrust,
@@ -38,17 +29,9 @@ enum class eOffensiveManuevers : unsigned {
     Beat
 };
 
-enum class ePositionManuevers : unsigned {
-    Stand,
-    Pickup
-};
+enum class ePositionManuevers : unsigned { Stand, Pickup };
 
-enum class eGrips : unsigned {
-    Standard,
-    Staff,
-    HalfSword,
-    Overhand
-};
+enum class eGrips : unsigned { Standard, Staff, HalfSword, Overhand };
 
 static int gripReachDifference(eGrips grip)
 {
@@ -75,7 +58,7 @@ static int offenseManueverCost(eOffensiveManuevers manuever)
 }
 
 enum class eDefensiveManuevers : unsigned {
-    //special manuevers used to tell combatmanager about special events
+    // special manuevers used to tell combatmanager about special events
     NoDefense,
     StealInitiative,
     ParryLinked,
@@ -114,30 +97,10 @@ enum class eInitiativeRoll : unsigned {
     Defend,
 };
 
-enum class eMaterials : unsigned {
-    Iron
-};
+enum class eMaterials : unsigned { Iron };
 
-enum class eLayer : unsigned {
-    Cloth = 0,
-    Maille = 1,
-    Plate = 2,
-    Surcoat = 3
-};
+enum class eLayer : unsigned { Cloth = 0, Maille = 1, Plate = 2, Surcoat = 3 };
 
-enum class eArmorTypes : unsigned {
-    None = 0,
-    Maille = 1,
-    Plate = 2
-};
+enum class eArmorTypes : unsigned { None = 0, Maille = 1, Plate = 2 };
 
-enum class eItemType {
-    Item,
-    Armor,
-    Weapon,
-    Food,
-    Waterskin,
-    Bedroll,
-    Money,
-    Bandage
-};
+enum class eItemType { Item, Armor, Weapon, Food, Waterskin, Bedroll, Money, Bandage };

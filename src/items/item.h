@@ -41,9 +41,9 @@ public:
     const Item* get(int id) const;
 
 private:
-    //would it be better just to have all items/armors/weapons in the same json and stored here?
-    //probably, it would aovid this weird bit setting indexes
-    //but i already wrote this code so i have to live with it
+    // would it be better just to have all items/armors/weapons in the same json
+    // and stored here? probably, it would aovid this weird bit setting indexes
+    // but i already wrote this code so i have to live with it
     friend class ArmorTable;
     friend class WeaponTable;
     void addWeapon(int id, Weapon* weapon);

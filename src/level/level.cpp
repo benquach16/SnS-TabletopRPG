@@ -14,9 +14,7 @@ Level::Level(int width, int height)
 {
 }
 
-void Level::load()
-{
-}
+void Level::load() {}
 
 void Level::run()
 {
@@ -25,7 +23,8 @@ void Level::run()
             Object* object = m_objects[i];
             if (object->getObjectType() == eObjectTypes::Creature) {
                 CreatureObject* creatureObject = static_cast<CreatureObject*>(object);
-                CorpseObject* corpse = new CorpseObject(creatureObject->getCreatureComponent()->getName());
+                CorpseObject* corpse
+                    = new CorpseObject(creatureObject->getCreatureComponent()->getName());
                 corpse->setPosition(creatureObject->getPosition());
                 corpse->setInventory(creatureObject->getInventory());
                 m_objects.push_back(corpse);
@@ -60,10 +59,10 @@ void Level::generate()
         createCorridor(rooms[idx - 1], rooms[idx]);
     }
 
-    //makeRoom();
+    // makeRoom();
     removeIslands();
 
-    //temporary, to add enemies
+    // temporary, to add enemies
     for (auto it : rooms) {
         HumanObject* object = new HumanObject;
         object->setPosition(it.x, it.y);
@@ -89,7 +88,8 @@ Room Level::carveRoom()
         random_static::get(yStart + 1, ylen + yStart - 1) };
 }
 
-Room Level::carveRoom(int xStart, int yStart, int minSizeX, int minSizeY, int maxSizeX, int maxSizeY)
+Room Level::carveRoom(
+    int xStart, int yStart, int minSizeX, int minSizeY, int maxSizeX, int maxSizeY)
 {
     int xlen = random_static::get(minSizeX, maxSizeX);
     int ylen = random_static::get(minSizeY, maxSizeY);
@@ -114,7 +114,7 @@ Room Level::carveSeperateRoom()
     unsigned iteration = 0;
     while (canPlace == false) {
         if (iteration > 10000) {
-            //lower our standards
+            // lower our standards
             size = max(size - 1, 2);
         }
         bool hasGround = false;
@@ -181,7 +181,7 @@ void Level::makeRoom()
         xStart = random_static::get(2, 20);
         yStart = random_static::get(2, 20);
 
-        //check for existing room
+        // check for existing room
         bool hasWall = false;
         for (int x = xStart - 2; x < xlen + xStart + 2; x++) {
             if ((*this)(x, yStart).m_type == eTileType::Wall) {
@@ -305,7 +305,8 @@ Object* Level::getObjectMutable(vector2d position, const Object* exclude)
 {
     for (int i = 0; i < m_objects.size(); ++i) {
         vector2d objectPosition = m_objects[i]->getPosition();
-        if (position.x == objectPosition.x && position.y == objectPosition.y && exclude != m_objects[i]) {
+        if (position.x == objectPosition.x && position.y == objectPosition.y
+            && exclude != m_objects[i]) {
             return m_objects[i];
         }
     }
