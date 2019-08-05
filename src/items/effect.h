@@ -2,53 +2,55 @@
 
 #pragma once
 
-enum class eEffect {
+enum class eItemEffect {
     Thirst,
     Hunger,
     Morale,
     Stamina
 };
 
-class Effect {
+class ItemEffect {
 public:
-    Effect() {}
-    virtual eEffect getType() const = 0;
+    ItemEffect(int value)
+        : m_value(value)
+    {
+    }
+    virtual eItemEffect getType() const = 0;
+    int getValue() const { return m_value; }
 
 private:
-    eEffect m_type;
+    int m_value;
 };
 
-class ThirstEffect : public Effect {
+class ThirstEffect : public ItemEffect {
 public:
     ThirstEffect(int thirst)
-        : m_thirst(thirst)
+        : ItemEffect(thirst)
     {
     }
-    eEffect getType() const override { return eEffect::Thirst; }
-
-private:
-    int m_thirst;
+    eItemEffect getType() const override { return eItemEffect::Thirst; }
 };
 
-class HungerEffect : public Effect {
+class HungerEffect : public ItemEffect {
 public:
     HungerEffect(int hunger)
-        : m_hunger(hunger)
+        : ItemEffect(hunger)
     {
     }
-    eEffect getType() const override { return eEffect::Thirst; }
+    eItemEffect getType() const override { return eItemEffect::Thirst; }
+    int getHunger() const { return m_hunger; }
 
 private:
     int m_hunger;
 };
 
-class StaminaEffect : public Effect {
+class StaminaEffect : public ItemEffect {
 public:
     StaminaEffect(int stamina)
-        : m_stamina(stamina)
+        : ItemEffect(stamina)
     {
     }
-    eEffect getType() const override { return eEffect::Stamina; }
+    eItemEffect getType() const override { return eItemEffect::Stamina; }
 
 private:
     int m_stamina;

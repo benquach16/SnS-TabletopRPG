@@ -8,6 +8,7 @@
 #include "numberinput.h"
 #include "offenseui.h"
 #include "positionui.h"
+#include "precombatui.h"
 
 class CombatInstance;
 
@@ -61,4 +62,5 @@ private:
     DefenseUI m_defenseUI;
     OffenseUI m_offenseUI;
     PositionUI m_positionUI;
+    PrecombatUI m_precombatUI;
 };

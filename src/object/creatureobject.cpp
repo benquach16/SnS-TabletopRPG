@@ -1,6 +1,8 @@
 #include "creatureobject.h"
 #include "../items/consumable.h"
 
+using namespace std;
+
 CreatureObject::CreatureObject(Creature* creature)
     : m_creature(creature)
     , m_creatureFaction(eCreatureFaction::None)
@@ -33,9 +35,12 @@ void CreatureObject::applyItem(int id)
 
     for (auto it : consumable->getEffects()) {
         switch (it->getType()) {
-        case eEffect::Thirst:
+        case eItemEffect::Thirst: {
+            m_thirst = max(0, m_thirst - it->getValue());
             break;
-        case eEffect::Hunger:
+        }
+        case eItemEffect::Hunger:
+            m_hunger = max(0, m_hunger - it->getValue());
             break;
         }
     }

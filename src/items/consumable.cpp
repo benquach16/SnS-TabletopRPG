@@ -1,6 +1,6 @@
 #include "consumable.h"
 
-Consumable::Consumable(const std::string& name, const std::string& description, int cost, eItemType type, std::set<Effect*> effects)
+Consumable::Consumable(const std::string& name, const std::string& description, int cost, eItemType type, std::set<ItemEffect*> effects)
     : Item(name, description, cost, type)
     , m_effects(effects)
 {

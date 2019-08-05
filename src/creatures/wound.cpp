@@ -296,7 +296,7 @@ eBodyParts WoundTable::getSwing(eHitLocations location)
     eBodyParts part = m_hitTable[location].m_swing[roll];
     if (part == eBodyParts::Face) {
         roll = DiceRoller::roll();
-        if(roll <= DiceRoller::cDiceSides/2) {
+        if (roll <= DiceRoller::cDiceSides / 2) {
             part = eBodyParts::Chin;
         }
     } else if (part == eBodyParts::SecondLocationHead) {

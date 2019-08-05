@@ -25,6 +25,7 @@ void CombatUI::resetState()
     m_defenseUI.resetState();
     m_offenseUI.resetState();
     m_positionUI.resetState();
+    m_precombatUI.resetState();
     m_initiativeState = eInitiativeSubState::ChooseInitiative;
     m_stolenOffenseState = eStolenOffenseSubState::ChooseDice;
     m_dualRedState = eDualRedStealSubState::ChooseInitiative;
@@ -70,7 +71,7 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
     reachBkg.setPosition(2, windowSize.y - logHeight - rectHeight - cCharSize - 2);
     reachBkg.setOutlineThickness(2);
     reachBkg.setOutlineColor(sf::Color(22, 22, 33));
-    int reachCost = static_cast<int>(instance->getCurrentReach()) - static_cast<int>(player->getPrimaryWeapon()->getLength());
+    int reachCost = static_cast<int>(instance->getCurrentReach()) - static_cast<int>(player->getCurrentReach());
     reachCost = abs(reachCost);
     sf::Text reachTxt;
     reachTxt.setCharacterSize(cCharSize);
@@ -90,6 +91,10 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
     }
     if (instance->getState() == eCombatState::RollInitiative) {
         doInitiative(event, player, target);
+        return;
+    }
+    if (instance->getState() == eCombatState::PreexchangeActions) {
+        m_precombatUI.run(event, player);
         return;
     }
     if (instance->getState() == eCombatState::ResetState) {
@@ -217,6 +222,7 @@ void CombatUI::doStolenOffense(sf::Event event, Player* player)
             player->setDefenseDice(m_numberInput.getNumber());
             //last one so set flag
             player->setDefenseReady();
+            player->reduceCombatPool(m_numberInput.getNumber());
             m_numberInput.reset();
             m_stolenOffenseState = eStolenOffenseSubState::Finished;
         }
@@ -275,7 +281,7 @@ void CombatUI::showSide1Stats(const CombatInstance* instance)
     assert(instance != nullptr);
     Creature* creature = instance->getSide1();
     sf::Text side1Info;
-    side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName() + " - " + lengthToString(creature->getPrimaryWeapon()->getLength()));
+    side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName() + " - " + lengthToString(creature->getCurrentReach()));
     side1Info.setCharacterSize(cCharSize);
     side1Info.setFont(Game::getDefaultFont());
     side1Info.setPosition(6, windowSize.y - logHeight - rectHeight);
@@ -298,7 +304,7 @@ void CombatUI::showSide2Stats(const CombatInstance* instance)
     assert(instance != nullptr);
     Creature* creature = instance->getSide2();
     sf::Text side1Info;
-    side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName() + " - " + lengthToString(creature->getPrimaryWeapon()->getLength()));
+    side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName() + " - " + lengthToString(creature->getCurrentReach()));
     side1Info.setCharacterSize(cCharSize);
     side1Info.setFont(Game::getDefaultFont());
     side1Info.setPosition(windowSize.x / 2 + 5, windowSize.y - logHeight - rectHeight);

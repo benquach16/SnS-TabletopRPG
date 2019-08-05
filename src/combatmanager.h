@@ -14,7 +14,8 @@ enum class eCombatManagerState {
 
 class CombatManager {
 public:
-    static constexpr float cTick = 0.5;
+    static constexpr float cTick = 0.8;
+    static constexpr int cMaxEngaged = 5;
     CombatManager(Creature* creature);
     ~CombatManager();
     bool run(float tick);

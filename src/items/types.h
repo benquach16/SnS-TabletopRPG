@@ -46,14 +46,28 @@ enum class ePositionManuevers : unsigned {
 enum class eGrips : unsigned {
     Standard,
     Staff,
-    HalfSword
+    HalfSword,
+    Overhand
 };
+
+static int gripReachDifference(eGrips grip)
+{
+    switch (grip) {
+    case eGrips::Staff:
+        return 2;
+    case eGrips::HalfSword:
+        return 1;
+    case eGrips::Overhand:
+        return 1;
+    }
+    return 0;
+}
 
 static int offenseManueverCost(eOffensiveManuevers manuever)
 {
     switch (manuever) {
     case eOffensiveManuevers::PinpointThrust:
-        return 1;
+        return 2;
     case eOffensiveManuevers::Beat:
         return 1;
     }

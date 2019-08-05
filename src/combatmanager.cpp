@@ -49,6 +49,9 @@ bool CombatManager::run(float tick)
         m_instanceId = 0;
         m_currentId = 0;
         cleanup();
+        for (auto it : m_queuedCreatures) {
+            startCombatWith(it);
+        }
         //cout << "no more instances" << endl;
         return false;
     }
@@ -63,6 +66,7 @@ bool CombatManager::run(float tick)
         }
         break;
     }
+
     //second check in case everyone died in previous iteration
     if (m_instances.size() == 0) {
         m_currentId = 0;
@@ -169,7 +173,7 @@ void CombatManager::doPositionRoll()
     for (int i = 0; i < m_instances.size(); ++i) {
         Creature* creature = m_instances[i]->getSide2();
         int successes = DiceRoller::rollGetSuccess(creature->getBTN(), creature->getQueuedPosition().dice);
-        if (successes > mainSuccesses) {
+        if (successes >= mainSuccesses) {
             writeMessage(creature->getName() + " kept up with " + m_mainCreature->getName() + "'s footwork");
             m_activeInstances.push_back(i);
         }
@@ -189,6 +193,9 @@ void CombatManager::doPositionRoll()
 
 void CombatManager::startCombatWith(Creature* creature)
 {
+    if (m_instances.size() >= cMaxEngaged) {
+        return;
+    }
     //don't allow a new creature to enter in the middle of an exchange
     if (m_allowNewCreatures == false) {
         m_queuedCreatures.insert(creature);

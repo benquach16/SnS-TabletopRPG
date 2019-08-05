@@ -76,7 +76,7 @@ void CombatInstance::doInitialization()
 
     writeMessage(m_side1->getName() + " is using " + m_side1->getPrimaryWeapon()->getName() + " and " + m_side2->getName() + " is using " + m_side2->getPrimaryWeapon()->getName());
     //ugly implicit casting
-    m_currentReach = max(m_side1->getPrimaryWeapon()->getLength(), m_side2->getPrimaryWeapon()->getLength());
+    m_currentReach = max(m_side1->getCurrentReach(), m_side2->getCurrentReach());
     m_dualWhiteTimes = 0;
     m_currentState = eCombatState::RollInitiative;
 }
@@ -114,7 +114,7 @@ void CombatInstance::doRollInitiative()
             } else {
                 writeMessage(m_side2->getName() + " takes initiative");
             }
-            m_currentState = eCombatState::Offense;
+            m_currentState = eCombatState::PreexchangeActions;
             return;
         }
         m_dualWhiteTimes++;
@@ -123,12 +123,12 @@ void CombatInstance::doRollInitiative()
     } else if (side1 == eInitiativeRoll::Attack && side2 == eInitiativeRoll::Defend) {
         writeMessage(m_side1->getName() + " chose to attack and " + m_side2->getName() + " is defending");
         m_initiative = eInitiative::Side1;
-        m_currentState = eCombatState::Offense;
+        m_currentState = eCombatState::PreexchangeActions;
         return;
     } else if (side1 == eInitiativeRoll::Defend && side2 == eInitiativeRoll::Attack) {
         writeMessage(m_side2->getName() + " chose to attack and " + m_side1->getName() + " is defending");
         m_initiative = eInitiative::Side2;
-        m_currentState = eCombatState::Offense;
+        m_currentState = eCombatState::PreexchangeActions;
         return;
     } else if (side1 == eInitiativeRoll::Attack && side2 == eInitiativeRoll::Attack) {
         writeMessage("Both sides chose to attack, no defense can be done by either side.");
@@ -155,6 +155,15 @@ void CombatInstance::doRollInitiative()
 
 void CombatInstance::doPreexchangeActions()
 {
+    if (m_side1->isPlayer() == true) {
+        if (m_side1->getHasPrecombat() == false) {
+            m_currentState = eCombatState::PreexchangeActions;
+            return;
+        }
+    } else {
+        m_side1->doPrecombat();
+    }
+    m_side2->doPrecombat();
     m_currentState = eCombatState::Offense;
 }
 
@@ -172,25 +181,27 @@ bool CombatInstance::doOffense()
     Creature* defender = nullptr;
     setSides(attacker, defender);
 
-    if (attacker->getCombatPool() <= 0 && defender->getCombatPool() > 0) {
-        writeMessage(attacker->getName() + " has no more action points! Initiative swaps to defender");
-        switchInitiative();
-        setSides(attacker, defender);
-    }
-    if (attacker->getCombatPool() <= 0 && defender->getCombatPool() <= 0) {
-        writeMessage("Neither side has any action points left, starting new exchange and resetting combat pools");
-        m_currentTempo = eTempo::First;
-        attacker->resetCombatPool();
-        defender->resetCombatPool();
-        attacker->clearCreatureManuevers();
-        defender->clearCreatureManuevers();
+    if (attacker->getHasOffense() == false) {
+        if (attacker->getCombatPool() <= 0 && defender->getCombatPool() > 0) {
+            writeMessage(attacker->getName() + " has no more action points! Initiative swaps to defender");
+            switchInitiative();
+            setSides(attacker, defender);
+        }
+        if (attacker->getCombatPool() <= 0 && defender->getCombatPool() <= 0) {
+            writeMessage("Neither side has any action points left, starting new exchange and resetting combat pools");
+            m_currentTempo = eTempo::First;
+            attacker->resetCombatPool();
+            defender->resetCombatPool();
+            attacker->clearCreatureManuevers();
+            defender->clearCreatureManuevers();
+        }
     }
 
     const Weapon* offenseWeapon = attacker->getPrimaryWeapon();
 
     int offenseCombatPool = attacker->getCombatPool();
 
-    int reachCost = static_cast<int>(m_currentReach) - static_cast<int>(offenseWeapon->getLength());
+    int reachCost = static_cast<int>(m_currentReach) - static_cast<int>(attacker->getCurrentReach());
 
     if (attacker->isPlayer() == true) {
         //wait until we get input from player
@@ -211,9 +222,6 @@ bool CombatInstance::doOffense()
     Offense attack = attacker->getQueuedOffense();
 
     assert(attack.component != nullptr);
-    assert(attack.dice <= offenseCombatPool);
-    assert(attack.dice >= 0);
-    attacker->reduceCombatPool(attack.dice);
 
     attacker->addAndResetBonusDice();
 
@@ -253,8 +261,7 @@ void CombatInstance::doDualOffenseStealInitiative()
     Creature* defender = nullptr;
     setSides(attacker, defender);
 
-    const Weapon* defenseWeapon = defender->getPrimaryWeapon();
-    int reachCost = static_cast<int>(m_currentReach) - static_cast<int>(defenseWeapon->getLength());
+    int reachCost = static_cast<int>(m_currentReach) - static_cast<int>(defender->getCurrentReach());
     if (defender->isPlayer() == true) {
         //wait until player inputs
         Player* player = static_cast<Player*>(defender);
@@ -263,11 +270,6 @@ void CombatInstance::doDualOffenseStealInitiative()
         //this may cause isseus so add another ui state if it does
 
         //causes issues with new implementation
-
-        if (player->getHasDefense() == true) {
-            player->reduceCombatPool(player->getQueuedDefense().dice);
-            player->setDefenseOff();
-        }
         if (player->getHasOffense() == false) {
             m_currentState = eCombatState::DualOffenseStealInitiative;
             return;
@@ -279,8 +281,6 @@ void CombatInstance::doDualOffenseStealInitiative()
     }
 
     Offense offense = defender->getQueuedOffense();
-    assert(offense.dice <= defender->getCombatPool());
-    defender->reduceCombatPool(offense.dice);
 
     outputReachCost(reachCost, defender);
 
@@ -338,7 +338,6 @@ void CombatInstance::doDualOffenseSecondInitiative()
         defender->doStolenInitiative(attacker, true);
         //hacky way because of how dice is removed for now
         Defense defense = defender->getQueuedDefense();
-        defender->reduceCombatPool(defense.dice);
     }
 
     Defense defense = defender->getQueuedDefense();
@@ -368,9 +367,6 @@ void CombatInstance::doDefense()
     }
 
     Defense defend = defender->getQueuedDefense();
-    assert(defend.dice <= defenseCombatPool);
-    assert(defend.dice >= 0);
-    defender->reduceCombatPool(defend.dice);
     if (defend.manuever == eDefensiveManuevers::StealInitiative) {
         //need both sides to attempt to allocate dice
         m_currentState = eCombatState::StealInitiative;
@@ -393,10 +389,7 @@ void CombatInstance::doParryLinked()
     Creature* defender = nullptr;
     setSides(attacker, defender);
 
-    const Weapon* defenseWeapon = defender->getPrimaryWeapon();
-
-    int defenseCombatPool = defender->getProficiency(defenseWeapon->getType()) + defender->getReflex();
-    int reachCost = static_cast<int>(defenseWeapon->getLength()) - static_cast<int>(m_currentReach);
+    int reachCost = static_cast<int>(defender->getCurrentReach()) - static_cast<int>(m_currentReach);
     reachCost = abs(reachCost);
     if (defender->isPlayer() == true) {
         //wait until player inputs
@@ -426,9 +419,7 @@ void CombatInstance::doStealInitiative()
 
     //then input manuever
     Defense defend = defender->getQueuedDefense();
-    const Weapon* offenseWeapon = attacker->getPrimaryWeapon();
-    const Weapon* defenseWeapon = defender->getPrimaryWeapon();
-    int reachCost = static_cast<int>(defenseWeapon->getLength()) - static_cast<int>(m_currentReach);
+    int reachCost = static_cast<int>(defender->getCurrentReach()) - static_cast<int>(m_currentReach);
     reachCost = abs(reachCost);
     //do dice to steal initiative first
     //this polls for offense since the initiative steal is stored inside the defense struct
@@ -466,17 +457,11 @@ void CombatInstance::doStolenOffense()
         attacker->doStolenInitiative(defender);
     }
 
-    assert(attacker->getQueuedDefense().dice <= attacker->getCombatPool());
-    attacker->reduceCombatPool(attacker->getQueuedDefense().dice);
-
     writeMessage(attacker->getName() + " allocates " + to_string(attacker->getQueuedDefense().dice) + " action points to contest initiative steal");
-    const Weapon* offenseWeapon = attacker->getPrimaryWeapon();
-    const Weapon* defenseWeapon = defender->getPrimaryWeapon();
-    int reachCost = static_cast<int>(defenseWeapon->getLength()) - static_cast<int>(m_currentReach);
+    int reachCost = static_cast<int>(defender->getCurrentReach()) - static_cast<int>(m_currentReach);
     reachCost = abs(reachCost);
     outputReachCost(reachCost, defender);
 
-    defender->reduceCombatPool(defender->getQueuedOffense().dice);
     writeMessage(defender->getName() + " " + offensiveManueverToString(defender->getQueuedOffense().manuever) + "s with " + defender->getPrimaryWeapon()->getName() + " at " + hitLocationToString(defender->getQueuedOffense().target) + " using " + defender->getQueuedOffense().component->getName() + " with " + to_string(defender->getQueuedOffense().dice) + " action points");
     m_currentState = eCombatState::Resolution;
 }

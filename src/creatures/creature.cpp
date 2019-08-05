@@ -23,6 +23,8 @@ Creature::Creature()
     , m_hasDefense(false)
     , m_hasPosition(false)
     , m_bleeding(false)
+    , m_hasPrecombat(false)
+    , m_currentGrip(eGrips::Standard)
 {
     m_fatigue[eCreatureFatigue::Stamina] = 0;
 }
@@ -30,6 +32,13 @@ Creature::Creature()
 const Weapon* Creature::getPrimaryWeapon() const
 {
     return WeaponTable::getSingleton()->get(m_primaryWeaponId);
+}
+
+eLength Creature::getCurrentReach() const
+{
+    const Weapon* weapon = getPrimaryWeapon();
+    //ugly
+    return static_cast<eLength>(static_cast<int>(weapon->getLength()) - gripReachDifference(m_currentGrip));
 }
 
 std::vector<const Armor*> Creature::getArmor() const
@@ -231,6 +240,10 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
     cout << "allin : " << allin << endl;
     const Weapon* weapon = getPrimaryWeapon();
 
+    if (target->getCombatPool() <= 0) {
+        allin = true;
+    }
+
     m_currentOffense.manuever = eOffensiveManuevers::Thrust;
     m_currentOffense.component = weapon->getBestAttack();
     if (m_currentOffense.component->getAttack() == eAttacks::Swing) {
@@ -261,9 +274,10 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
         m_currentDefense.dice = m_combatPool - m_currentOffense.dice;
 
         //hacky since usually this happens in combatinstance
-        m_combatPool -= m_currentDefense.dice;
+        //m_combatPool -= m_currentDefense.dice;
+        reduceCombatPool(m_currentDefense.dice);
     }
-
+    reduceCombatPool(m_currentOffense.dice);
     m_hasOffense = true;
 }
 
@@ -297,7 +311,7 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
     dice = min(m_combatPool, dice);
     dice = max(dice, 0);
     m_currentDefense.dice = dice;
-
+    reduceCombatPool(m_currentDefense.dice);
     m_hasDefense = true;
 }
 
@@ -332,6 +346,10 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
     return false;
 }
 
+void Creature::doPrecombat()
+{
+}
+
 void Creature::doStolenInitiative(const Creature* defender, bool allin)
 {
     m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
@@ -341,6 +359,7 @@ void Creature::doStolenInitiative(const Creature* defender, bool allin)
     if (allin == true) {
         m_currentDefense.dice = m_combatPool;
     }
+    reduceCombatPool(m_currentDefense.dice);
 }
 
 eInitiativeRoll Creature::doInitiative(const Creature* opponent)

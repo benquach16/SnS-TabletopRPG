@@ -162,7 +162,9 @@ void OffenseUI::doDice(sf::Event event, Player* player)
     Game::getWindow().draw(text);
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
-        player->setOffenseDice(m_numberInput.getNumber());
+        int dice = m_numberInput.getNumber();
+        player->setOffenseDice(dice);
+        player->reduceCombatPool(dice);
         m_currentState = eUiState::Finished;
         //last one so set flag
         player->setOffenseReady();

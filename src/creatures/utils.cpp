@@ -127,3 +127,14 @@ std::string stanceToString(eCreatureStance stance)
     }
     return "";
 }
+
+bool isLimb(eHitLocations location)
+{
+    switch (location) {
+    case eHitLocations::Arm:
+    case eHitLocations::Thigh:
+    case eHitLocations::Shin:
+        return true;
+    }
+    return false;
+}

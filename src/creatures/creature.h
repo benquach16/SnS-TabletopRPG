@@ -62,6 +62,7 @@ public:
 
     const Weapon* getPrimaryWeapon() const;
     int getPrimaryWeaponId() const { return m_primaryWeaponId; }
+    eLength getCurrentReach() const;
     std::vector<const Armor*> getArmor() const;
     const std::vector<int>& getArmorId() const { return m_armor; }
     void setWeapon(int id);
@@ -101,6 +102,7 @@ public:
     // AI functions
     //move these to ai combat controller
     virtual bool isPlayer() { return false; }
+    void doPrecombat();
     void doOffense(const Creature* target, int reachCost, bool allin = false, bool dualRedThrow = false);
 
     void doDefense(const Creature* attacker, bool isLastTempo);
@@ -122,6 +124,7 @@ public:
     bool getHasOffense() const { return m_hasOffense; }
     bool getHasDefense() const { return m_hasDefense; }
     bool getHasPosition() const { return m_hasPosition; }
+    bool getHasPrecombat() const { return m_hasPrecombat; }
 
     virtual void clearCreatureManuevers();
 
@@ -163,11 +166,13 @@ protected:
     bool m_hasOffense;
     bool m_hasDefense;
     bool m_hasPosition;
+    bool m_hasPrecombat;
 
     std::vector<Manuever*> m_secondaryManuevers;
 
     //index
     int m_primaryWeaponId;
+    eGrips m_currentGrip;
 
     int m_bloodLoss;
     bool m_bleeding;

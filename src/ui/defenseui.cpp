@@ -73,7 +73,9 @@ void DefenseUI::doChooseDice(sf::Event event, Player* player)
     Game::getWindow().draw(text);
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
+
         player->setDefenseDice(m_numberInput.getNumber());
+        player->reduceCombatPool(m_numberInput.getNumber());
         m_currentState = eUiState::Finished;
         //last one so set flag
         player->setDefenseReady();

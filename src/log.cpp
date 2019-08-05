@@ -16,7 +16,7 @@ void Log::push(const std::string& str, eMessageTypes type)
 void Log::run()
 {
     auto windowSize = Game::getWindow().getSize();
-    const int maxHistory = windowSize.y / cCharSize - 2;
+    const int maxHistory = (windowSize.y - 100) / cCharSize - 2;
     unsigned rectHeight = cCharSize * (cLinesDisplayed + 1);
     //magic numbers
     sf::RectangleShape logBkg(sf::Vector2f(windowSize.x - 6, rectHeight - 3));

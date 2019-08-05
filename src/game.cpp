@@ -251,7 +251,6 @@ void Game::run()
             if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::A) {
                 m_currentState = eGameState::Playing;
             }
-            gfxSelector.run(&selector);
         } else if (m_currentState == eGameState::Inventory) {
             ui.runInventory(event, playerObject);
             if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::I) {
