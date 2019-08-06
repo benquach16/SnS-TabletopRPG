@@ -386,7 +386,6 @@ eInitiativeRoll Creature::doInitiative(const Creature* opponent)
 
 void Creature::clearCreatureManuevers()
 {
-
     m_currentOffense.dice = 0;
     m_currentOffense.linked = false;
     m_currentOffense.feint = false;
@@ -398,6 +397,9 @@ void Creature::clearCreatureManuevers()
     m_hasOffense = false;
     m_hasDefense = false;
     m_hasPosition = false;
+    m_hasPrecombat = false;
+
+    m_favoredLocations.clear();
 }
 
 void Creature::clearArmor()

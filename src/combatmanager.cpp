@@ -179,6 +179,7 @@ void CombatManager::doPositionRoll()
                 creature->getName() + " kept up with " + m_mainCreature->getName() + "'s footwork");
             m_activeInstances.push_back(i);
         }
+        creature->clearCreatureManuevers();
     }
     // have to have at least one
     if (m_activeInstances.size() == 0) {

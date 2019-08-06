@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <map>
+#include <set>
 #include <queue>
 #include <unordered_map>
 #include <vector>
@@ -54,6 +55,7 @@ public:
     const Weapon* getPrimaryWeapon() const;
     int getPrimaryWeaponId() const { return m_primaryWeaponId; }
     eLength getCurrentReach() const;
+    void setGrip(eGrips grip) { m_currentGrip = grip; }
     std::vector<const Armor*> getArmor() const;
     const std::vector<int>& getArmorId() const { return m_armor; }
     void setWeapon(int id);
@@ -149,6 +151,7 @@ protected:
     void applyArmor();
 
     std::vector<eHitLocations> m_hitLocations;
+    std::set<eHitLocations> m_favoredLocations;
     std::map<eBodyParts, ArmorSegment> m_armorValues;
     std::vector<Wound*> m_wounds;
     std::vector<int> m_armor;

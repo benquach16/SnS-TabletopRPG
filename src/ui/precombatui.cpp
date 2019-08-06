@@ -82,22 +82,30 @@ void PrecombatUI::doChooseGrip(sf::Event event, Player* player)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setString("Switch Grip?\na - Standard\nb - Staff Grip\nc - Overhead");
-    Game::getWindow().draw(text);
-
+    const Weapon* weapon = player->getPrimaryWeapon();
+    if(weapon->getType() == eWeaponTypes::Polearms) {
+        text.setString("Switch Grip?\na - Standard\nb - Staff Grip\nc - Overhead");
+    } else if(weapon->getType() == eWeaponTypes::Longswords) {
+        text.setString("Switch Grip?\na - Standard\nb - Half Sword");
+    } else {
+        player->setPrecombatReady();
+    }
     Game::getWindow().draw(text);
 
     if (event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
         switch (c) {
         case 'a':
+            player->setGrip(eGrips::Standard);
             player->setPrecombatReady();
             break;
         case 'b':
-            m_currentState = eUiState::ChooseFavorLocations;
+            player->setGrip(eGrips::Staff);
+            player->setPrecombatReady();
             break;
         case 'c':
-            m_currentState = eUiState::ChooseGrip;
+            player->setGrip(eGrips::Standard);
+            player->setPrecombatReady();
             break;
         }
     }
