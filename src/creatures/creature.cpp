@@ -366,10 +366,8 @@ eInitiativeRoll Creature::doInitiative(const Creature* opponent)
     // this should be based on other creatures weapon length and armor and stuff
 
     int modifiers = 0;
-    const Weapon* opponentWeapon = opponent->getPrimaryWeapon();
-    const Weapon* currentWeapon = getPrimaryWeapon();
-    int reachDiff = static_cast<int>(opponentWeapon->getLength())
-        - static_cast<int>(currentWeapon->getLength());
+    int reachDiff = static_cast<int>(opponent->getCurrentReach())
+        - static_cast<int>(getCurrentReach());
 
     constexpr int cBase = 8;
     int base = cBase;
@@ -378,7 +376,7 @@ eInitiativeRoll Creature::doInitiative(const Creature* opponent)
     base += opponent->getCombatPool() - getCombatPool();
 
     int passiveness = random_static::get(2, 4);
-    if (random_static::get(0, base) < cBase / passiveness) {
+    if (random_static::get(0, base) < (cBase / passiveness)) {
         return eInitiativeRoll::Attack;
     }
     return eInitiativeRoll::Defend;

@@ -1,6 +1,6 @@
 #include "precombatui.h"
-#include "../game.h"
 #include "../creatures/utils.h"
+#include "../game.h"
 #include "common.h"
 #include "types.h"
 
@@ -39,6 +39,7 @@ void PrecombatUI::doFavoring(sf::Event event, Player* player)
         switch (c) {
         case 'a':
             player->setPrecombatReady();
+            m_currentState = eUiState::Finished;
             break;
         case 'b':
             m_currentState = eUiState::ChooseFavorLocations;
@@ -57,9 +58,9 @@ void PrecombatUI::doFavorLocation(sf::Event event, Player* player)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    
+
     std::string str = "Choose location:\n";
-    
+
     const std::vector<eHitLocations> locations = player->getHitLocations();
     for (int i = 0; i < locations.size(); ++i) {
         char idx = ('a' + i);
@@ -74,7 +75,7 @@ void PrecombatUI::doFavorLocation(sf::Event event, Player* player)
                 m_currentState = eUiState::ChooseGrip;
             }
         }
-    }   
+    }
     text.setString(str);
     Game::getWindow().draw(text);
 }
@@ -95,14 +96,17 @@ void PrecombatUI::doChooseGrip(sf::Event event, Player* player)
             case 'a':
                 player->setGrip(eGrips::Standard);
                 player->setPrecombatReady();
+                m_currentState = eUiState::Finished;
                 break;
             case 'b':
                 player->setGrip(eGrips::Staff);
                 player->setPrecombatReady();
+                m_currentState = eUiState::Finished;
                 break;
             case 'c':
                 player->setGrip(eGrips::Standard);
                 player->setPrecombatReady();
+                m_currentState = eUiState::Finished;
                 break;
             }
         }
@@ -115,15 +119,18 @@ void PrecombatUI::doChooseGrip(sf::Event event, Player* player)
             case 'a':
                 player->setGrip(eGrips::Standard);
                 player->setPrecombatReady();
+                m_currentState = eUiState::Finished;
                 break;
             case 'b':
                 player->setGrip(eGrips::HalfSword);
                 player->setPrecombatReady();
+                m_currentState = eUiState::Finished;
                 break;
             }
         }
     } else {
         player->setPrecombatReady();
+        m_currentState = eUiState::Finished;
     }
     Game::getWindow().draw(text);
 }

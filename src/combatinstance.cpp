@@ -551,6 +551,7 @@ void CombatInstance::doResolution()
         setSides(attacker, defender);
         writeMessage(attacker->getName() + " has taken the initiative!");
 
+        cout << "attack roll" << endl;
         int attackerSuccesses
             = DiceRoller::rollGetSuccess(attacker->getBTN(), attacker->getQueuedOffense().dice);
 
@@ -572,12 +573,14 @@ void CombatInstance::doResolution()
             writeMessage(
                 defender->getName() + " was knocked down by the attack, their attack is dropped.");
             m_currentState = eCombatState::Offense;
-        } else if (defender->getQueuedOffense().dice == 0) {
+            m_currentReach = attacker->getPrimaryWeapon()->getLength();
+        } else if (defender->getQueuedOffense().dice <= 0) {
             // if the attack wiped out their combat pool, do nothing
             writeMessage(defender->getName()
                 + " had their action points eliminated by impact, their attack "
                   "is dropped.");
             m_currentState = eCombatState::Offense;
+            m_currentReach = attacker->getPrimaryWeapon()->getLength();
         } else {
             int defendSuccesses
                 = DiceRoller::rollGetSuccess(defender->getBTN(), defender->getQueuedOffense().dice);
@@ -747,7 +750,7 @@ bool CombatInstance::inflictWound(int MoS, Offense attack, Creature* target, boo
     // any thrust manevuer should trigger this
     if (attack.manuever == eOffensiveManuevers::Thrust) {
         bodyPart = WoundTable::getSingleton()->getThrust(attack.target);
-    } else if(attack.manuever == eOffensiveManuevers::PinpointThrust) {
+    } else if (attack.manuever == eOffensiveManuevers::PinpointThrust) {
         bodyPart = attack.pinpointTarget;
     }
 

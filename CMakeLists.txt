@@ -9,6 +9,7 @@ set(SOURCES
     ./src/game.cpp
     ./src/combatinstance.cpp
     ./src/combatmanager.cpp
+    ./src/combatmanagerfactory.cpp
     ./src/dice.cpp
     ./src/log.cpp
     ./src/components/aicontroller.cpp
@@ -39,8 +40,14 @@ set(SOURCES
     ./src/ui/combatui.cpp
     ./src/ui/offenseui.cpp
     ./src/ui/defenseui.cpp
+    ./src/ui/precombatui.cpp
+    ./src/ui/inventoryui.cpp
+    ./src/ui/positionui.cpp
     ./src/ui/common.cpp
+    ./src/ui/numberinput.cpp
+    ./src/ui/tradeui.cpp
     ./src/gfxobjects/gfxlevel.cpp
+    ./src/gfxobjects/gfxobject.cpp
     ./src/gfxobjects/gfxqueue.cpp
     ./src/gfxobjects/gfxselector.cpp
     ./src/gfxobjects/utils.cpp

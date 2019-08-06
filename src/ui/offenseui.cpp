@@ -210,8 +210,8 @@ void OffenseUI::doTarget(sf::Event event, Player* player, bool linkedParry, Crea
             // if player chose pinpoit thrust allow them to pick a specific location
             if (player->getQueuedOffense().manuever == eOffensiveManuevers::PinpointThrust
                 && m_currentState == eUiState::ChooseDice) {
-                    m_currentState = eUiState::PinpointThrust;
-                    return;
+                m_currentState = eUiState::PinpointThrust;
+                return;
             }
             // the uistate comparision is a hacky way to repurpose it
             if (linkedParry == true && m_currentState == eUiState::ChooseDice) {
@@ -240,19 +240,18 @@ void OffenseUI::doPinpointThrust(sf::Event event, Player* player)
 
     std::vector<eBodyParts> parts = WoundTable::getSingleton()->getUniqueParts(location);
 
-    for(int i = 0; i < parts.size(); ++i) {
+    for (int i = 0; i < parts.size(); ++i) {
         char idx = ('a' + i);
 
         str += idx;
         str += " - " + bodyPartToString(parts[i]) + '\n';
 
-        if(event.type == sf::Event::TextEntered) {
+        if (event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;
-            if(c == idx) {
+            if (c == idx) {
                 player->setOffensePinpointTarget(parts[i]);
                 m_currentState = eUiState::ChooseDice;
             }
-
         }
     }
 
