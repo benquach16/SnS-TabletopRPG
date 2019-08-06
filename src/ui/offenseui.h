@@ -13,7 +13,7 @@ private:
     void doManuever(sf::Event event, Player* player, bool allowStealInitiative = false);
     void doComponent(sf::Event event, Player* player);
     void doDice(sf::Event event, Player* player);
-    void doTarget(sf::Event event, Player* player, bool linkedParry);
+    void doTarget(sf::Event event, Player* player, bool linkedParry, Creature* target);
     void doInspect(sf::Event event, Creature* target);
     void doPinpointThrust(sf::Event event, Player* player);
 

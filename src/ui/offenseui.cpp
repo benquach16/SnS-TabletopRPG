@@ -1,4 +1,5 @@
 #include "offenseui.h"
+#include "../creatures/utils.h"
 #include "../game.h"
 #include "common.h"
 #include "types.h"
@@ -19,7 +20,7 @@ void OffenseUI::run(
         doDice(event, player);
         break;
     case eUiState::ChooseTarget:
-        doTarget(event, player, linkedParry);
+        doTarget(event, player, linkedParry, target);
         break;
     case eUiState::InspectTarget:
         doInspect(event, target);
@@ -181,49 +182,43 @@ void OffenseUI::doDice(sf::Event event, Player* player)
     m_numberInput.setPosition(sf::Vector2f(0, cCharSize));
 }
 
-void OffenseUI::doTarget(sf::Event event, Player* player, bool linkedParry)
+void OffenseUI::doTarget(sf::Event event, Player* player, bool linkedParry, Creature* target)
 {
     UiCommon::drawTopPanel();
 
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setString("Choose target location:\na - Head\nb - Chest\nc - Arms\nd "
-                   "- Belly\ne - Thigh\nf - Shin\n");
-    if (event.type == sf::Event::TextEntered) {
-        char c = event.text.unicode;
-        if (c == 'a') {
-            player->setOffenseTarget(eHitLocations::Head);
-            m_currentState = eUiState::ChooseDice;
-        } else if (c == 'b') {
-            player->setOffenseTarget(eHitLocations::Chest);
-            m_currentState = eUiState::ChooseDice;
-        } else if (c == 'c') {
-            player->setOffenseTarget(eHitLocations::Arm);
-            m_currentState = eUiState::ChooseDice;
-        } else if (c == 'd') {
-            player->setOffenseTarget(eHitLocations::Belly);
-            m_currentState = eUiState::ChooseDice;
-        } else if (c == 'e') {
-            player->setOffenseTarget(eHitLocations::Thigh);
-            m_currentState = eUiState::ChooseDice;
-        } else if (c == 'f') {
-            player->setOffenseTarget(eHitLocations::Shin);
-            m_currentState = eUiState::ChooseDice;
-        }
-        // if player chose pinpoit thrust allow them to pick a specific location
-        if (player->getQueuedOffense().manuever == eOffensiveManuevers::PinpointThrust
-            && m_currentState == eUiState::ChooseDice) {
-        }
-        // the uistate comparision is a hacky way to repurpose it
-        if (linkedParry == true && m_currentState == eUiState::ChooseDice) {
-            player->setOffenseDice(0);
-            m_currentState = eUiState::Finished;
-            // linked parry so set flag
-            player->setOffenseReady();
+
+    std::string str = "Choose target location:\n";
+    const std::vector<eHitLocations> locations = target->getHitLocations();
+
+    for (int i = 0; i < locations.size(); ++i) {
+        char idx = ('a' + i);
+
+        str += idx;
+        str += " - " + hitLocationToString(locations[i]) + '\n';
+
+        if (event.type == sf::Event::TextEntered) {
+            char c = event.text.unicode;
+            if (c == idx) {
+                player->setOffenseTarget(locations[i]);
+                m_currentState = eUiState::ChooseDice;
+            }
+            // if player chose pinpoit thrust allow them to pick a specific location
+            if (player->getQueuedOffense().manuever == eOffensiveManuevers::PinpointThrust
+                && m_currentState == eUiState::ChooseDice) {
+            }
+            // the uistate comparision is a hacky way to repurpose it
+            if (linkedParry == true && m_currentState == eUiState::ChooseDice) {
+                player->setOffenseDice(0);
+                m_currentState = eUiState::Finished;
+                // linked parry so set flag
+                player->setOffenseReady();
+            }
         }
     }
-
+    text.setString(str);
     Game::getWindow().draw(text);
 }
 

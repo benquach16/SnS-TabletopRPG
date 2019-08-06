@@ -83,30 +83,43 @@ void PrecombatUI::doChooseGrip(sf::Event event, Player* player)
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
     const Weapon* weapon = player->getPrimaryWeapon();
-    if(weapon->getType() == eWeaponTypes::Polearms) {
+    if (weapon->getType() == eWeaponTypes::Polearms) {
         text.setString("Switch Grip?\na - Standard\nb - Staff Grip\nc - Overhead");
-    } else if(weapon->getType() == eWeaponTypes::Longswords) {
+        if (event.type == sf::Event::TextEntered) {
+            char c = event.text.unicode;
+            switch (c) {
+            case 'a':
+                player->setGrip(eGrips::Standard);
+                player->setPrecombatReady();
+                break;
+            case 'b':
+                player->setGrip(eGrips::Staff);
+                player->setPrecombatReady();
+                break;
+            case 'c':
+                player->setGrip(eGrips::Standard);
+                player->setPrecombatReady();
+                break;
+            }
+        }
+    } else if (weapon->getType() == eWeaponTypes::Longswords
+        || weapon->getType() == eWeaponTypes::Swords) {
         text.setString("Switch Grip?\na - Standard\nb - Half Sword");
+        if (event.type == sf::Event::TextEntered) {
+            char c = event.text.unicode;
+            switch (c) {
+            case 'a':
+                player->setGrip(eGrips::Standard);
+                player->setPrecombatReady();
+                break;
+            case 'b':
+                player->setGrip(eGrips::HalfSword);
+                player->setPrecombatReady();
+                break;
+            }
+        }
     } else {
         player->setPrecombatReady();
     }
     Game::getWindow().draw(text);
-
-    if (event.type == sf::Event::TextEntered) {
-        char c = event.text.unicode;
-        switch (c) {
-        case 'a':
-            player->setGrip(eGrips::Standard);
-            player->setPrecombatReady();
-            break;
-        case 'b':
-            player->setGrip(eGrips::Staff);
-            player->setPrecombatReady();
-            break;
-        case 'c':
-            player->setGrip(eGrips::Standard);
-            player->setPrecombatReady();
-            break;
-        }
-    }
 }

@@ -9,8 +9,8 @@
 
 #include <iostream>
 #include <map>
-#include <set>
 #include <queue>
+#include <set>
 #include <unordered_map>
 #include <vector>
 
@@ -91,6 +91,7 @@ public:
         m_currentOffense.dice = std::max(0, m_currentOffense.dice);
     }
     const std::vector<eHitLocations>& getHitLocations() const { return m_hitLocations; }
+    const std::set<eHitLocations>& getFavoredLocations() const { return m_favoredLocations; }
 
     // AI functions
     // move these to ai combat controller
