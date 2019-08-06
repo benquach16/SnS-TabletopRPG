@@ -25,6 +25,9 @@ void OffenseUI::run(
     case eUiState::InspectTarget:
         doInspect(event, target);
         break;
+    case eUiState::PinpointThrust:
+        doPinpointThrust(event, player);
+        break;
     case eUiState::Finished:
         break;
     }
@@ -39,7 +42,7 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool allowStealIniti
     text.setFont(Game::getDefaultFont());
     string str = "Choose attack:\na - Swing\nb - Thrust\nc - Pinpoint Thrust "
                  "(2AP)\nd - Feint swing (2AP)\ne - Feint thrust (2AP)\nf - "
-                 "Beat (1AP)\ng - Hook (1AP)\nh - Inspect Target";
+                 "Beat (1AP)\ng - Hook (1AP)\nh - Wrap (1AP)\ni - Inspect Target";
     text.setString(str);
     Game::getWindow().draw(text);
 
@@ -55,11 +58,12 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool allowStealIniti
         }
         if (c == 'c') {
             if (player->getCombatPool() > 2) {
-                player->setOffenseManuever(eOffensiveManuevers::Thrust);
+                player->setOffenseManuever(eOffensiveManuevers::PinpointThrust);
                 m_currentState = eUiState::ChooseComponent;
                 player->reduceCombatPool(2);
             } else {
                 // need 2 dice
+                Log::push("2 AP needed.");
             }
         }
         if (c == 'd') {
@@ -68,6 +72,7 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool allowStealIniti
                 m_currentState = eUiState::ChooseComponent;
                 player->reduceCombatPool(2);
             } else {
+                Log::push("2 AP needed.");
             }
         }
         if (c == 'e') {
@@ -76,14 +81,11 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool allowStealIniti
                 m_currentState = eUiState::ChooseComponent;
                 player->reduceCombatPool(2);
             } else {
+                Log::push("2 AP needed.");
             }
         }
-        if (c == 'h') {
+        if (c == 'i') {
             m_currentState = eUiState::InspectTarget;
-        }
-        if (c == 'i' && allowStealInitiative == true) {
-            player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
-            cout << "set" << endl;
         }
     }
 }
@@ -208,6 +210,8 @@ void OffenseUI::doTarget(sf::Event event, Player* player, bool linkedParry, Crea
             // if player chose pinpoit thrust allow them to pick a specific location
             if (player->getQueuedOffense().manuever == eOffensiveManuevers::PinpointThrust
                 && m_currentState == eUiState::ChooseDice) {
+                    m_currentState = eUiState::PinpointThrust;
+                    return;
             }
             // the uistate comparision is a hacky way to repurpose it
             if (linkedParry == true && m_currentState == eUiState::ChooseDice) {
@@ -215,6 +219,7 @@ void OffenseUI::doTarget(sf::Event event, Player* player, bool linkedParry, Crea
                 m_currentState = eUiState::Finished;
                 // linked parry so set flag
                 player->setOffenseReady();
+                return;
             }
         }
     }
@@ -229,9 +234,28 @@ void OffenseUI::doPinpointThrust(sf::Event event, Player* player)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
+
+    string str = "Choose body part to pinpoint:\n";
     eHitLocations location = player->getQueuedOffense().target;
 
-    if (event.type == sf::Event::TextEntered) {
-        char c = event.text.unicode;
+    std::vector<eBodyParts> parts = WoundTable::getSingleton()->getUniqueParts(location);
+
+    for(int i = 0; i < parts.size(); ++i) {
+        char idx = ('a' + i);
+
+        str += idx;
+        str += " - " + bodyPartToString(parts[i]) + '\n';
+
+        if(event.type == sf::Event::TextEntered) {
+            char c = event.text.unicode;
+            if(c == idx) {
+                player->setOffensePinpointTarget(parts[i]);
+                m_currentState = eUiState::ChooseDice;
+            }
+
+        }
     }
+
+    text.setString(str);
+    Game::getWindow().draw(text);
 }

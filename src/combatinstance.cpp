@@ -742,10 +742,13 @@ void CombatInstance::doEndCombat()
 
 bool CombatInstance::inflictWound(int MoS, Offense attack, Creature* target, bool manueverFirst)
 {
+
     eBodyParts bodyPart = WoundTable::getSingleton()->getSwing(attack.target);
     // any thrust manevuer should trigger this
     if (attack.manuever == eOffensiveManuevers::Thrust) {
         bodyPart = WoundTable::getSingleton()->getThrust(attack.target);
+    } else if(attack.manuever == eOffensiveManuevers::PinpointThrust) {
+        bodyPart = attack.pinpointTarget;
     }
 
     int finalDamage = MoS + attack.component->getDamage();

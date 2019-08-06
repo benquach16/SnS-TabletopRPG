@@ -1,5 +1,6 @@
 #include "precombatui.h"
 #include "../game.h"
+#include "../creatures/utils.h"
 #include "common.h"
 #include "types.h"
 
@@ -56,23 +57,26 @@ void PrecombatUI::doFavorLocation(sf::Event event, Player* player)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setString("Choose location");
-    Game::getWindow().draw(text);
+    
+    std::string str = "Choose location:\n";
+    
+    const std::vector<eHitLocations> locations = player->getHitLocations();
+    for (int i = 0; i < locations.size(); ++i) {
+        char idx = ('a' + i);
 
-    if (event.type == sf::Event::TextEntered) {
-        char c = event.text.unicode;
-        switch (c) {
-        case 'a':
-            player->setPrecombatReady();
-            break;
-        case 'b':
-            m_currentState = eUiState::ChooseFavorLocations;
-            break;
-        case 'c':
-            m_currentState = eUiState::ChooseGrip;
-            break;
+        str += idx;
+        str += " - " + hitLocationToString(locations[i]) + '\n';
+
+        if (event.type == sf::Event::TextEntered) {
+            char c = event.text.unicode;
+            if (c == idx) {
+                player->reduceCombatPool(1);
+                m_currentState = eUiState::ChooseGrip;
+            }
         }
-    }
+    }   
+    text.setString(str);
+    Game::getWindow().draw(text);
 }
 
 void PrecombatUI::doChooseGrip(sf::Event event, Player* player)

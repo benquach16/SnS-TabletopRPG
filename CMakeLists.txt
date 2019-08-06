@@ -11,22 +11,39 @@ set(SOURCES
     ./src/combatmanager.cpp
     ./src/dice.cpp
     ./src/log.cpp
+    ./src/components/aicontroller.cpp
     ./src/creatures/creature.cpp
     ./src/creatures/human.cpp
     ./src/creatures/player.cpp
     ./src/creatures/wound.cpp
     ./src/creatures/utils.cpp
     ./src/items/item.cpp
+    ./src/items/armor.cpp
     ./src/items/weapon.cpp
     ./src/items/component.cpp
+    ./src/items/consumable.cpp
+    ./src/items/utils.cpp
     ./src/level/level.cpp
     ./src/object/object.cpp
+    ./src/object/corpseobject.cpp
     ./src/object/creatureobject.cpp
     ./src/object/playerobject.cpp
     ./src/object/humanobject.cpp
+    ./src/object/selectorobject.cpp
+    ./src/object/itemobject.cpp
+    ./src/object/objectfactory.cpp
+    ./src/object/relationmanager.cpp
+    ./src/object/utils.cpp
+    ./src/object/equipmentmanager.cpp
     ./src/ui/gameui.cpp
     ./src/ui/combatui.cpp
+    ./src/ui/offenseui.cpp
+    ./src/ui/defenseui.cpp
+    ./src/ui/common.cpp
     ./src/gfxobjects/gfxlevel.cpp
+    ./src/gfxobjects/gfxqueue.cpp
+    ./src/gfxobjects/gfxselector.cpp
+    ./src/gfxobjects/utils.cpp
     )
 set(DIRS
     ./src
