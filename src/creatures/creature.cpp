@@ -220,6 +220,17 @@ void Creature::addAndResetBonusDice()
     m_bonusDice = 0;
 }
 
+const std::vector<eHitLocations> Creature::getHitLocations() const
+{
+    std::vector<eHitLocations> ret;
+    for (auto it : m_hitLocations) {
+        if (m_favoredLocations.find(it) == m_favoredLocations.end()) {
+            ret.push_back(it);
+        }
+    }
+    return ret;
+}
+
 bool Creature::rollFatigue()
 {
     int requiredSuccesses = 1;
@@ -346,7 +357,17 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
     return false;
 }
 
-void Creature::doPrecombat() {}
+void Creature::doPrecombat()
+{
+    /*
+        if(m_combatPool > 1) {
+        m_favoredLocations.insert(eHitLocations::Head);
+        reduceCombatPool(1);
+    }
+     */
+
+    m_hasPrecombat = true;
+}
 
 void Creature::doStolenInitiative(const Creature* defender, bool allin)
 {
@@ -366,8 +387,8 @@ eInitiativeRoll Creature::doInitiative(const Creature* opponent)
     // this should be based on other creatures weapon length and armor and stuff
 
     int modifiers = 0;
-    int reachDiff = static_cast<int>(opponent->getCurrentReach())
-        - static_cast<int>(getCurrentReach());
+    int reachDiff
+        = static_cast<int>(opponent->getCurrentReach()) - static_cast<int>(getCurrentReach());
 
     constexpr int cBase = 8;
     int base = cBase;

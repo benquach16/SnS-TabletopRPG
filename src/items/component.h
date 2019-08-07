@@ -8,6 +8,11 @@
 // axe heads, spear heads, buttspikes...
 class Component {
 public:
+    struct grip {
+        eGrips grip;
+        bool linked = false;
+    };
+
     Component(std::string name, int damage, eDamageTypes type, eAttacks attack,
         std::set<eWeaponProperties> properties);
     std::string getName() const { return m_name; }

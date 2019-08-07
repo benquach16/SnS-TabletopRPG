@@ -90,7 +90,7 @@ public:
         m_currentOffense.dice -= num;
         m_currentOffense.dice = std::max(0, m_currentOffense.dice);
     }
-    const std::vector<eHitLocations>& getHitLocations() const { return m_hitLocations; }
+    const std::vector<eHitLocations> getHitLocations() const;
     const std::set<eHitLocations>& getFavoredLocations() const { return m_favoredLocations; }
 
     // AI functions

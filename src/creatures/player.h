@@ -30,6 +30,7 @@ public:
     void setOffenseReady() { m_hasOffense = true; }
     void setDefenseReady() { m_hasDefense = true; }
     void setPositionReady() { m_hasPosition = true; }
+    void addFavored(eHitLocations location) { m_favoredLocations.insert(location); }
     void setPrecombatReady() { m_hasPrecombat = true; }
 
     void clearCreatureManuevers() override;

@@ -23,3 +23,8 @@ std::string weaponTypeToString(eWeaponTypes type);
 std::string weaponPropToString(eWeaponProperties prop);
 
 eItemType stringToItemType(const std::string& str);
+
+inline int operator-(eLength length1, eLength length2)
+{
+    return static_cast<int>(length1) - static_cast<int>(length2);
+}

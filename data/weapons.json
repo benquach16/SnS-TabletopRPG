@@ -13,32 +13,65 @@
 				"damage": 2,
 				"type": "piercing",
 				"attack": "thrust",
-				"properties": [ "maillepiercing" ]
+				"properties": [ "maillepiercing" ],
+				"grips": [
+					{
+						"grip": "standard"
+					}
+				]
 			},
 			{
 				"name": "Axe head",
 				"damage": 3,
 				"attack": "swing",
-				"type": "cutting"
+				"type": "cutting",
+				"grips": [
+					{
+						"grip": "standard"
+					},
+					{
+						"grip": "staff"
+					}
+				]
 			},
 			{
 				"name": "Hammer head",
 				"damage": 2,
 				"type": "blunt",
 				"attack": "swing",
-				"properties": [ "crushing" ]
+				"properties": [ "crushing" ],
+				"grips": [
+					{
+						"grip": "standard"
+					},
+					{
+						"grip": "staff"
+					}
+				]
 			},
 			{
 				"name": "Buttspike, Thrust",
 				"damage": 1,
 				"type": "piercing",
-				"attack": "thrust"
+				"attack": "thrust",
+				"grips": [
+					{
+						"grip": "staff",
+						"linked": true
+					}
+				]
 			},		
 			{
 				"name": "Buttspike, Swing",
 				"damage": 1,
 				"type": "blunt",
-				"attack": "swing"
+				"attack": "swing",
+				"grips": [
+					{
+						"grip": "staff",
+						"linked": true
+					}
+				]
 			}
 		]
 	},

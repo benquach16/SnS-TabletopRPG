@@ -72,6 +72,7 @@ void PrecombatUI::doFavorLocation(sf::Event event, Player* player)
             char c = event.text.unicode;
             if (c == idx) {
                 player->reduceCombatPool(1);
+                player->addFavored(locations[i]);
                 m_currentState = eUiState::ChooseGrip;
             }
         }

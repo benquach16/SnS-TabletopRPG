@@ -173,7 +173,7 @@ void CombatInstance::doPreexchangeActions()
     m_side2->doPrecombat();
 
     // check if grip causes combatants to move closer
-
+    m_currentReach = max(m_side1->getCurrentReach(), m_side2->getCurrentReach());
     if (m_dualRedThrow == true) {
         m_currentState = eCombatState::DualOffense1;
     } else {
@@ -214,8 +214,7 @@ bool CombatInstance::doOffense()
 
     int offenseCombatPool = attacker->getCombatPool();
 
-    int reachCost
-        = static_cast<int>(m_currentReach) - static_cast<int>(attacker->getCurrentReach());
+    int reachCost = m_currentReach - attacker->getCurrentReach();
 
     if (attacker->isPlayer() == true) {
         // wait until we get input from player
@@ -279,8 +278,7 @@ void CombatInstance::doDualOffenseStealInitiative()
     Creature* defender = nullptr;
     setSides(attacker, defender);
 
-    int reachCost
-        = static_cast<int>(m_currentReach) - static_cast<int>(defender->getCurrentReach());
+    int reachCost = m_currentReach - defender->getCurrentReach();
     if (defender->isPlayer() == true) {
         // wait until player inputs
         Player* player = static_cast<Player*>(defender);
@@ -419,8 +417,7 @@ void CombatInstance::doParryLinked()
     Creature* defender = nullptr;
     setSides(attacker, defender);
 
-    int reachCost
-        = static_cast<int>(defender->getCurrentReach()) - static_cast<int>(m_currentReach);
+    int reachCost = defender->getCurrentReach() - m_currentReach;
     reachCost = abs(reachCost);
     if (defender->isPlayer() == true) {
         // wait until player inputs
@@ -451,8 +448,7 @@ void CombatInstance::doStealInitiative()
 
     // then input manuever
     Defense defend = defender->getQueuedDefense();
-    int reachCost
-        = static_cast<int>(defender->getCurrentReach()) - static_cast<int>(m_currentReach);
+    int reachCost = defender->getCurrentReach() - m_currentReach;
     reachCost = abs(reachCost);
     // do dice to steal initiative first
     // this polls for offense since the initiative steal is stored inside the
@@ -494,8 +490,7 @@ void CombatInstance::doStolenOffense()
 
     writeMessage(attacker->getName() + " allocates " + to_string(attacker->getQueuedDefense().dice)
         + " action points to contest initiative steal");
-    int reachCost
-        = static_cast<int>(defender->getCurrentReach()) - static_cast<int>(m_currentReach);
+    int reachCost = defender->getCurrentReach() - m_currentReach;
     reachCost = abs(reachCost);
     outputReachCost(reachCost, defender);
 
@@ -531,10 +526,10 @@ void CombatInstance::doResolution()
 
         // special case for thrust manuever, get an extra die
         int side1Dice = (m_side1->getQueuedOffense().manuever == eOffensiveManuevers::Thrust)
-            ? m_side1->getQueuedDefense().dice + 1
+            ? m_side1->getQueuedDefense().dice + 2
             : m_side1->getQueuedDefense().dice;
         int side2Dice = (m_side2->getQueuedOffense().manuever == eOffensiveManuevers::Thrust)
-            ? m_side2->getQueuedDefense().dice + 1
+            ? m_side2->getQueuedDefense().dice + 2
             : m_side2->getQueuedDefense().dice;
 
         int side1InitiativeSuccesses
@@ -557,7 +552,8 @@ void CombatInstance::doResolution()
 
         bool wasStanding = defender->getStance() == eCreatureStance::Standing;
         if (attackerSuccesses > 0) {
-            if (inflictWound(attackerSuccesses, attacker->getQueuedOffense(), defender, true)
+            if (inflictWound(
+                    attacker, attackerSuccesses, attacker->getQueuedOffense(), defender, true)
                 == true) {
                 m_currentState = eCombatState::FinishedCombat;
                 return;
@@ -585,8 +581,8 @@ void CombatInstance::doResolution()
             int defendSuccesses
                 = DiceRoller::rollGetSuccess(defender->getBTN(), defender->getQueuedOffense().dice);
             if (defendSuccesses > 0) {
-
-                if (inflictWound(defendSuccesses, defender->getQueuedOffense(), attacker) == true) {
+                if (inflictWound(defender, defendSuccesses, defender->getQueuedOffense(), attacker)
+                    == true) {
                     m_currentState = eCombatState::FinishedCombat;
                     return;
                 }
@@ -615,7 +611,7 @@ void CombatInstance::doResolution()
                 writeMessage(attacker->getName() + " feints their attack and receives "
                     + to_string(defenseSuccesses) + " action points on their next attack");
             } else {
-                if (inflictWound(MoS, attack, defender) == true) {
+                if (inflictWound(attacker, MoS, attack, defender) == true) {
                     m_currentState = eCombatState::FinishedCombat;
                     return;
                 }
@@ -636,8 +632,10 @@ void CombatInstance::doResolution()
                 int linkedOffenseMoS
                     = DiceRoller::rollGetSuccess(defender->getDisadvantagedBTN(), -MoS);
                 cout << "Linked hits: " << linkedOffenseMoS << endl;
+                int reachCost = abs(defender->getCurrentReach() - m_currentReach);
+                linkedOffenseMoS -= reachCost;
                 if (linkedOffenseMoS > 0
-                    && inflictWound(linkedOffenseMoS, offense, attacker) == true) {
+                    && inflictWound(defender, linkedOffenseMoS, offense, attacker) == true) {
                     m_currentState = eCombatState::FinishedCombat;
                     return;
                 }
@@ -670,12 +668,12 @@ void CombatInstance::doDualOffenseResolve()
     // resolve both
     bool death = false;
     if (MoS > 0) {
-        if (inflictWound(MoS, attack, m_side2) == true) {
+        if (inflictWound(m_side1, MoS, attack, m_side2) == true) {
             death = true;
         }
     }
     if (MoS2 > 0) {
-        if (inflictWound(MoS2, attack2, m_side1) == true) {
+        if (inflictWound(m_side2, MoS2, attack2, m_side1) == true) {
             death = true;
         }
     }
@@ -743,7 +741,8 @@ void CombatInstance::doEndCombat()
     m_currentState = eCombatState::Uninitialized;
 }
 
-bool CombatInstance::inflictWound(int MoS, Offense attack, Creature* target, bool manueverFirst)
+bool CombatInstance::inflictWound(
+    Creature* attacker, int MoS, Offense attack, Creature* target, bool manueverFirst)
 {
 
     eBodyParts bodyPart = WoundTable::getSingleton()->getSwing(attack.target);
