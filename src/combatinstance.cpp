@@ -568,14 +568,14 @@ void CombatInstance::doResolution()
             writeMessage(
                 defender->getName() + " was knocked down by the attack, their attack is dropped.");
             m_currentState = eCombatState::Offense;
-            m_currentReach = attacker->getPrimaryWeapon()->getLength();
+            m_currentReach = attacker->getCurrentReach();
         } else if (defender->getQueuedOffense().dice <= 0) {
             // if the attack wiped out their combat pool, do nothing
             writeMessage(defender->getName()
                 + " had their action points eliminated by impact, their attack "
                   "is dropped.");
             m_currentState = eCombatState::Offense;
-            m_currentReach = attacker->getPrimaryWeapon()->getLength();
+            m_currentReach = attacker->getCurrentReach();
         } else {
             int defendSuccesses
                 = DiceRoller::rollGetSuccess(defender->getBTN(), defender->getQueuedOffense().dice);
@@ -588,9 +588,9 @@ void CombatInstance::doResolution()
             } else {
                 writeMessage(defender->getName() + " had no successes");
             }
-            m_currentReach = attacker->getPrimaryWeapon()->getLength();
+            m_currentReach = attacker->getCurrentReach();
             if (defendSuccesses > attackerSuccesses) {
-                m_currentReach = defender->getPrimaryWeapon()->getLength();
+                m_currentReach = defender->getCurrentReach();
                 writeMessage(defender->getName() + " had more successes, taking initiative");
                 switchInitiative();
             }
@@ -614,7 +614,7 @@ void CombatInstance::doResolution()
                     return;
                 }
             }
-            m_currentReach = attacker->getPrimaryWeapon()->getLength();
+            m_currentReach = attacker->getCurrentReach();
         } else if (MoS == 0) {
             // this is pretty non against rules, but a feint shouldnt be able to have this effect
             if (attack.feint == true) {
@@ -686,10 +686,10 @@ void CombatInstance::doDualOffenseResolve()
     // intiative goes to whoever got more hits
     m_currentState = eCombatState::PostResolution;
     if (MoS > MoS2) {
-        m_currentReach = m_side1->getPrimaryWeapon()->getLength();
+        m_currentReach = m_side1->getCurrentReach();
         m_initiative = eInitiative::Side1;
     } else if (MoS < MoS2) {
-        m_currentReach = m_side2->getPrimaryWeapon()->getLength();
+        m_currentReach = m_side2->getCurrentReach();
         m_initiative = eInitiative::Side2;
     } else {
         // reroll if no one died

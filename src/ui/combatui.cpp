@@ -288,7 +288,7 @@ void CombatUI::showSide1Stats(const CombatInstance* instance)
     Creature* creature = instance->getSide1();
     sf::Text side1Info;
     side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName()
-        + " - " + lengthToString(creature->getCurrentReach()));
+                        + " - " + lengthToString(creature->getCurrentReach()) + " - " + gripToString(creature->getGrip()) + " grip");
     side1Info.setCharacterSize(cCharSize);
     side1Info.setFont(Game::getDefaultFont());
     side1Info.setPosition(6, windowSize.y - logHeight - rectHeight);
@@ -314,7 +314,7 @@ void CombatUI::showSide2Stats(const CombatInstance* instance)
     Creature* creature = instance->getSide2();
     sf::Text side1Info;
     side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName()
-        + " - " + lengthToString(creature->getCurrentReach()));
+        + " - " + lengthToString(creature->getCurrentReach()) + " - " + gripToString(creature->getGrip()) + " grip");
     side1Info.setCharacterSize(cCharSize);
     side1Info.setFont(Game::getDefaultFont());
     side1Info.setPosition(windowSize.x / 2 + 5, windowSize.y - logHeight - rectHeight);

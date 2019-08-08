@@ -195,3 +195,19 @@ eGrips stringToGrip(const std::string& str)
     }
     return eGrips::Standard;
 }
+
+std::string gripToString(eGrips grip)
+{
+    switch(grip) {
+    case eGrips::Standard:
+        return "Standard";
+    case eGrips::HalfSword:
+        return "Half-Sword";
+    case eGrips::Staff:
+        return "Staff";
+    case eGrips::Overhand:
+        return "Overhead";
+    default:
+        return "";
+    }
+}
