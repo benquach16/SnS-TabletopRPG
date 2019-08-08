@@ -60,12 +60,15 @@ void Creature::setWeapon(int idx)
 void Creature::inflictWound(Wound* wound, bool manueverFirst)
 {
     if (manueverFirst == true) {
-        if (wound->getImpact() > m_currentOffense.dice) {
-            int diff = wound->getImpact() - m_currentOffense.dice;
+        m_currentOffense.dice -= wound->getImpact();
+        if (m_currentOffense.dice < 0) {
+            int diff = abs(m_currentOffense.dice);
             m_currentOffense.dice = 0;
-            m_combatPool -= diff;
-        } else {
-            m_currentOffense.dice -= wound->getImpact();
+            m_currentPosition.dice -= diff;
+            if (m_currentPosition.dice < 0) {
+                m_combatPool -= -m_currentPosition.dice;
+                m_currentPosition.dice = 0;
+            }
         }
     } else {
         m_combatPool -= wound->getImpact();
@@ -308,6 +311,7 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
     if (stealInitiative(attacker, stealDie) == true) {
         m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
         m_currentDefense.dice = stealDie;
+        reduceCombatPool(m_currentDefense.dice);
         return;
     }
     if (isLastTempo == true) {
@@ -345,6 +349,7 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
     float disadvantageMult = 1.0;
     float mult = random_static::get(3, 5);
     mult += m_BTN - cBaseBTN;
+    mult += attacker->getQueuedOffense().manuever == eOffensiveManuevers::Thrust ? 2 : 0;
     disadvantageMult += (mult / 10);
     if ((combatPool * disadvantageMult) + bufferDie < m_combatPool + getSpeed()) {
         int diff = abs((getSpeed() - attacker->getSpeed()) * disadvantageMult);

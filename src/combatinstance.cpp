@@ -49,7 +49,6 @@ void CombatInstance::initCombat(Creature* side1, Creature* side2)
     m_side1->resetCombatPool();
     m_side2 = side2;
     m_side2->resetCombatPool();
-
     m_side1->setInCombat();
     m_side2->setInCombat();
 
@@ -605,8 +604,7 @@ void CombatInstance::doResolution()
         int MoS = offenseSuccesses - defenseSuccesses;
 
         if (MoS > 0) {
-            if (attack.manuever == eOffensiveManuevers::FeintThrust
-                || attack.manuever == eOffensiveManuevers::FeintSwing) {
+            if (attack.feint == true) {
                 attacker->setBonusDice(defenseSuccesses);
                 writeMessage(attacker->getName() + " feints their attack and receives "
                     + to_string(defenseSuccesses) + " action points on their next attack");
@@ -618,8 +616,15 @@ void CombatInstance::doResolution()
             }
             m_currentReach = attacker->getPrimaryWeapon()->getLength();
         } else if (MoS == 0) {
-            // nothing happens
-            writeMessage("no net successes");
+            // this is pretty non against rules, but a feint shouldnt be able to have this effect
+            if (attack.feint == true) {
+                attacker->setBonusDice(defenseSuccesses);
+                writeMessage(attacker->getName() + " feints their attack and receives "
+                    + to_string(defenseSuccesses) + " action points on their next attack");
+            } else {
+                // nothing happens
+                writeMessage("no net successes");
+            }
         } else {
             if (defend.manuever == eDefensiveManuevers::Dodge) {
                 writeMessage("attack dodged with " + to_string(-MoS) + " successes");

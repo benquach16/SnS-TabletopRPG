@@ -9,12 +9,10 @@ std::string offensiveManueverToString(eOffensiveManuevers manuever)
         return "Swing";
     case eOffensiveManuevers::Thrust:
         return "Thrust";
-    case eOffensiveManuevers::FeintSwing:
-        return "Swing";
-    case eOffensiveManuevers::FeintThrust:
-        return "Thrust";
     case eOffensiveManuevers::PinpointThrust:
         return "Pinpoint Thrust";
+    case eOffensiveManuevers::Beat:
+        return "Beat";
     }
     return "";
 }
@@ -26,8 +24,9 @@ std::string defensiveManueverToString(eDefensiveManuevers manuever)
         return "Parry";
     case eDefensiveManuevers::Dodge:
         return "Dodge";
+    default:
+        return "";
     }
-    return "";
 }
 
 std::string damageTypeToString(eDamageTypes type)
@@ -70,8 +69,9 @@ std::string lengthToString(eLength length)
     case eLength::Ludicrous:
         return "Ludicrous";
         break;
+    default:
+        return "";
     }
-    return "";
 }
 
 eLayer stringToArmorLayer(const std::string& str)
@@ -104,27 +104,23 @@ std::string itemTypeToString(eItemType type)
     switch (type) {
     case eItemType::Item:
         return "Item";
-        break;
     case eItemType::Armor:
         return "Armor";
-        break;
     case eItemType::Weapon:
         return "Weapon";
-        break;
     case eItemType::Food:
         return "Food";
-        break;
     case eItemType::Waterskin:
         return "Waterskin";
-        break;
     case eItemType::Money:
         return "Money";
-        break;
     case eItemType::Bandage:
         return "Bandage";
-        break;
+    case eItemType::Bedroll:
+        return "Bedroll";
+    default:
+        return "";
     }
-    return "";
 }
 
 std::string weaponTypeToString(eWeaponTypes type)
@@ -132,31 +128,23 @@ std::string weaponTypeToString(eWeaponTypes type)
     switch (type) {
     case eWeaponTypes::Brawling:
         return "Brawling";
-        break;
     case eWeaponTypes::Swords:
         return "Swords";
-        break;
     case eWeaponTypes::Longswords:
         return "Longswords";
-        break;
     case eWeaponTypes::Polearms:
         return "Polearms";
-        break;
     case eWeaponTypes::Mass:
         return "Mass Weapons";
-        break;
     case eWeaponTypes::Bows:
         return "Bows";
-        break;
     case eWeaponTypes::Crossbows:
         return "Crossbows";
-        break;
     case eWeaponTypes::Firearms:
         return "Firearms";
-        break;
+    default:
+        return "";
     }
-
-    return "";
 }
 
 std::string weaponPropToString(eWeaponProperties prop)
@@ -164,15 +152,13 @@ std::string weaponPropToString(eWeaponProperties prop)
     switch (prop) {
     case eWeaponProperties::Crushing:
         return "Crushing";
-        break;
     case eWeaponProperties::MaillePiercing:
         return "Maille Piercing";
-        break;
     case eWeaponProperties::PlatePiercing:
         return "Plate Piercing";
-        break;
+    default:
+        return "";
     }
-    return "";
 }
 
 eItemType stringToItemType(const std::string& str)
@@ -195,4 +181,17 @@ eItemType stringToItemType(const std::string& str)
         return eItemType::Bandage;
     }
     assert(true);
+    return eItemType::Item;
+}
+
+eGrips stringToGrip(const std::string& str)
+{
+    if (str == "staff") {
+        return eGrips::Staff;
+    } else if (str == "overhand") {
+        return eGrips::Overhand;
+    } else if (str == "halfsword") {
+        return eGrips::HalfSword;
+    }
+    return eGrips::Standard;
 }

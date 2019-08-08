@@ -24,6 +24,10 @@ std::string weaponPropToString(eWeaponProperties prop);
 
 eItemType stringToItemType(const std::string& str);
 
+eGrips stringToGrip(const std::string& str);
+
+std::string gripToString(eGrips grip);
+
 inline int operator-(eLength length1, eLength length2)
 {
     return static_cast<int>(length1) - static_cast<int>(length2);

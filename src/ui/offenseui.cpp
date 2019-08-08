@@ -13,6 +13,9 @@ void OffenseUI::run(
     case eUiState::ChooseManuever:
         doManuever(event, player, allowStealInitiative);
         break;
+    case eUiState::ChooseFeint:
+        doFeint(event, player);
+        break;
     case eUiState::ChooseComponent:
         doComponent(event, player);
         break;
@@ -40,9 +43,17 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool allowStealIniti
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    string str = "Choose attack:\na - Swing\nb - Thrust\nc - Pinpoint Thrust "
-                 "(2AP)\nd - Feint swing (2AP)\ne - Feint thrust (2AP)\nf - "
-                 "Beat (1AP)\ng - Hook (1AP)\nh - Wrap (1AP)\ni - Inspect Target";
+    bool halfPrice = player->getGrip() == eGrips::Staff || player->getGrip() == eGrips::HalfSword;
+    string str = "Choose attack:\na - Swing\nb - Thrust\nc - Pinpoint Thrust (";
+    int pinpointCost = 2;
+    if(halfPrice == true) {
+        str += "1";
+        pinpointCost = 1;
+    } else {
+        str += "2";
+    }
+
+    str += "AP)\nd - Beat (1AP)\ne - Hook (1AP)\nf - Wrap (1AP)\ng - Inspect Target";
     text.setString(str);
     Game::getWindow().draw(text);
 
@@ -50,42 +61,46 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool allowStealIniti
         char c = event.text.unicode;
         if (c == 'a') {
             player->setOffenseManuever(eOffensiveManuevers::Swing);
-            m_currentState = eUiState::ChooseComponent;
+            m_currentState = eUiState::ChooseFeint;
         }
         if (c == 'b') {
             player->setOffenseManuever(eOffensiveManuevers::Thrust);
-            m_currentState = eUiState::ChooseComponent;
+            m_currentState = eUiState::ChooseFeint;
         }
         if (c == 'c') {
-            if (player->getCombatPool() > 2) {
+            if (player->getCombatPool() > pinpointCost) {
                 player->setOffenseManuever(eOffensiveManuevers::PinpointThrust);
-                m_currentState = eUiState::ChooseComponent;
-                player->reduceCombatPool(2);
+                m_currentState = eUiState::ChooseFeint;
+                player->reduceCombatPool(pinpointCost);
             } else {
                 // need 2 dice
-                Log::push("2 AP needed.");
+                Log::push(to_string(pinpointCost) + " AP needed.");
             }
         }
-        if (c == 'd') {
-            if (player->getCombatPool() > 2) {
-                player->setOffenseManuever(eOffensiveManuevers::FeintSwing);
-                m_currentState = eUiState::ChooseComponent;
-                player->reduceCombatPool(2);
-            } else {
-                Log::push("2 AP needed.");
-            }
-        }
-        if (c == 'e') {
-            if (player->getCombatPool() > 2) {
-                player->setOffenseManuever(eOffensiveManuevers::FeintThrust);
-                m_currentState = eUiState::ChooseComponent;
-                player->reduceCombatPool(2);
-            } else {
-                Log::push("2 AP needed.");
-            }
-        }
-        if (c == 'i') {
+        if (c == 'g') {
             m_currentState = eUiState::InspectTarget;
+        }
+    }
+}
+
+void OffenseUI::doFeint(sf::Event event, Player* player)
+{
+    UiCommon::drawTopPanel();
+    sf::Text text;
+    text.setCharacterSize(cCharSize);
+    text.setFont(Game::getDefaultFont());
+    text.setString("Feint attack? (2AP)\na - No\nb - Yes");
+    Game::getWindow().draw(text);
+
+    if (event.type == sf::Event::TextEntered) {
+        char c = event.text.unicode;
+        if (c == 'a') {
+            m_currentState = eUiState::ChooseComponent;
+        }
+        if (c == 'b') {
+            player->setOffenseFeint();
+            player->reduceCombatPool(2);
+            m_currentState = eUiState::ChooseComponent;
         }
     }
 }
@@ -120,8 +135,7 @@ void OffenseUI::doComponent(sf::Event event, Player* player)
     text.setFont(Game::getDefaultFont());
     std::string str("Choose weapon component:\n");
 
-    if (player->getQueuedOffense().manuever == eOffensiveManuevers::Swing
-        || player->getQueuedOffense().manuever == eOffensiveManuevers::FeintSwing) {
+    if (player->getQueuedOffense().manuever == eOffensiveManuevers::Swing) {
         for (int i = 0; i < weapon->getSwingComponents().size(); ++i) {
             char idx = ('a' + i);
 

@@ -31,4 +31,5 @@ private:
     eDamageTypes m_damageType;
     eAttacks m_attack;
     std::set<eWeaponProperties> m_properties;
+    std::set<grip> m_grips;
 };

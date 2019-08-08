@@ -21,6 +21,7 @@ public:
     void setOffensePinpointTarget(eBodyParts part) { m_currentOffense.pinpointTarget = part; }
     void setOffensePinpoint() { m_currentOffense.pinpoint = true; }
     void setOffenseLinked() { m_currentOffense.linked = true; }
+    void setOffenseFeint() { m_currentOffense.feint = true; }
 
     void setDefenseManuever(eDefensiveManuevers manuever) { m_currentDefense.manuever = manuever; }
     void setDefenseDice(int dice) { m_currentDefense.dice = dice; }

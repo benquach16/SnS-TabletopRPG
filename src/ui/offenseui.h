@@ -11,6 +11,7 @@ public:
 
 private:
     void doManuever(sf::Event event, Player* player, bool allowStealInitiative = false);
+    void doFeint(sf::Event event, Player* player);
     void doComponent(sf::Event event, Player* player);
     void doDice(sf::Event event, Player* player);
     void doTarget(sf::Event event, Player* player, bool linkedParry, Creature* target);
@@ -19,12 +20,12 @@ private:
 
     enum class eUiState : unsigned {
         ChooseManuever,
+        ChooseFeint,
         InspectTarget,
         ChooseComponent,
         ChooseDice,
         ChooseTarget,
         PinpointThrust,
-        ChooseFeint,
         Finished,
     };
 
