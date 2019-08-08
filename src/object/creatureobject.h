@@ -26,7 +26,7 @@ public:
     const std::string getName() const { return m_creature->getName(); }
     virtual eCreatureFaction getFaction() const { return m_creatureFaction; }
     virtual eCreatureRace getRace() const = 0;
-    virtual eObjectTypes getObjectType() const { return eObjectTypes::Creature; }
+    eObjectTypes getObjectType() const override { return eObjectTypes::Creature; }
     virtual bool isPlayer() const { return false; }
     bool isInCombat() const { return m_creature->getCreatureState() == eCreatureState::InCombat; }
     void kill() const { m_creature->kill(); }

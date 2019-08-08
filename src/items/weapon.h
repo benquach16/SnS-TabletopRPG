@@ -27,6 +27,7 @@ private:
     std::vector<Component*> m_components;
     std::vector<Component*> m_thrustComponents;
     std::vector<Component*> m_swingComponents;
+    std::unordered_map<eGrips, std::vector<Component*>> m_comps;
     eWeaponTypes m_type;
 };
 

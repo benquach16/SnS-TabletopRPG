@@ -71,7 +71,7 @@ static int defenseManueverCost(eDefensiveManuevers manuever)
         return 1;
     case eDefensiveManuevers::Counter:
         return 2;
-    default :
+    default:
         return 0;
     }
 }

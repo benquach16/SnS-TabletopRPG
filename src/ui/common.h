@@ -2,4 +2,4 @@
 
 namespace UiCommon {
 void drawTopPanel();
-};
+}

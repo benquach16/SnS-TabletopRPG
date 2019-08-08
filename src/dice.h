@@ -15,4 +15,4 @@ inline int roll() { return effolkronium::random_static::get(1, cDiceSides); }
 std::vector<int> roll(int number);
 int rollGetSuccess(int BTN, int number);
 
-};
+}

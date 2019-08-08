@@ -46,7 +46,7 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool allowStealIniti
     bool halfPrice = player->getGrip() == eGrips::Staff || player->getGrip() == eGrips::HalfSword;
     string str = "Choose attack:\na - Swing\nb - Thrust\nc - Pinpoint Thrust (";
     int pinpointCost = 2;
-    if(halfPrice == true) {
+    if (halfPrice == true) {
         str += "1";
         pinpointCost = 1;
     } else {

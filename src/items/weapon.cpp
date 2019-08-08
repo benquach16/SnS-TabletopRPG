@@ -95,7 +95,6 @@ WeaponTable::WeaponTable()
             eDamageTypes damageType = convertDamageFromStr(componentJson[i]["type"]);
             eAttacks attack = convertAttackFromStr(componentJson[i]["attack"]);
             std::set<eWeaponProperties> properties;
-            std::set<Component::grip> grips;
 
             // check for component properties
             if (componentJson[i]["properties"].is_null() == false) {
@@ -111,8 +110,6 @@ WeaponTable::WeaponTable()
             if (componentJson[i]["grips"].is_null() == false) {
                 auto gripsJson = componentJson[i]["grips"];
                 for (int j = 0; j < gripsJson.size(); ++j) {
-                    // eGrips grip = stringToGrip(gripsJson[j]);
-                    // bool linked;
                 }
             } else {
                 // add standard grip

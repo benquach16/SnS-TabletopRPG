@@ -247,11 +247,11 @@ void CombatUI::doDualRedSteal(sf::Event event, Player* player)
         text.setCharacterSize(cCharSize);
         text.setFont(Game::getDefaultFont());
         text.setString("Steal Initiative?\na - Yes\nb - No");
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) == true) {
+        if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::A) {
             player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
             m_dualRedState = eDualRedStealSubState::ChooseDice;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::B) == true) {
+        if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::B) {
             m_dualRedState = eDualRedStealSubState::Finished;
         }
         Game::getWindow().draw(text);
@@ -288,7 +288,8 @@ void CombatUI::showSide1Stats(const CombatInstance* instance)
     Creature* creature = instance->getSide1();
     sf::Text side1Info;
     side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName()
-                        + " - " + lengthToString(creature->getCurrentReach()) + " - " + gripToString(creature->getGrip()) + " grip");
+        + " - " + lengthToString(creature->getCurrentReach()) + " - "
+        + gripToString(creature->getGrip()) + " grip");
     side1Info.setCharacterSize(cCharSize);
     side1Info.setFont(Game::getDefaultFont());
     side1Info.setPosition(6, windowSize.y - logHeight - rectHeight);
@@ -314,7 +315,8 @@ void CombatUI::showSide2Stats(const CombatInstance* instance)
     Creature* creature = instance->getSide2();
     sf::Text side1Info;
     side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName()
-        + " - " + lengthToString(creature->getCurrentReach()) + " - " + gripToString(creature->getGrip()) + " grip");
+        + " - " + lengthToString(creature->getCurrentReach()) + " - "
+        + gripToString(creature->getGrip()) + " grip");
     side1Info.setCharacterSize(cCharSize);
     side1Info.setFont(Game::getDefaultFont());
     side1Info.setPosition(windowSize.x / 2 + 5, windowSize.y - logHeight - rectHeight);

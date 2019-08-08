@@ -3,16 +3,12 @@
 #include "types.h"
 #include <set>
 #include <string>
+#include <unordered_map>
 
 // components of weapons
 // axe heads, spear heads, buttspikes...
 class Component {
 public:
-    struct grip {
-        eGrips grip;
-        bool linked = false;
-    };
-
     Component(std::string name, int damage, eDamageTypes type, eAttacks attack,
         std::set<eWeaponProperties> properties);
     std::string getName() const { return m_name; }
@@ -24,6 +20,7 @@ public:
         return m_properties.find(prop) != m_properties.end();
     }
     const std::set<eWeaponProperties>& getProperties() const { return m_properties; }
+    bool isLinked(eGrips grip) const { return m_grips.at(grip); }
 
 private:
     std::string m_name;
@@ -31,5 +28,5 @@ private:
     eDamageTypes m_damageType;
     eAttacks m_attack;
     std::set<eWeaponProperties> m_properties;
-    std::set<grip> m_grips;
+    std::unordered_map<eGrips, bool> m_grips;
 };

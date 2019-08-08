@@ -15,4 +15,4 @@ void drawTopPanel()
     Game::getWindow().draw(bkg);
 }
 
-};
+} //namespace UiCommon

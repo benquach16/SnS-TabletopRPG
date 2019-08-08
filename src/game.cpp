@@ -43,11 +43,11 @@ void Game::run()
     GameUI ui;
 
     Level level(40, 40);
-    for (int i = 0; i < 40; i++) {
+    for (unsigned i = 0; i < 40; i++) {
         level(i, 0).m_type = eTileType::Wall;
     }
 
-    for (int i = 2; i < 40; i++) {
+    for (unsigned i = 2; i < 40; i++) {
         level(0, i).m_type = eTileType::Wall;
     }
     level.generate();

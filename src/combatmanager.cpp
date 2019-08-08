@@ -170,7 +170,7 @@ void CombatManager::doPositionRoll()
     // now roll
     int mainSuccesses = DiceRoller::rollGetSuccess(
         m_mainCreature->getBTN(), m_mainCreature->getQueuedPosition().dice);
-    for (int i = 0; i < m_instances.size(); ++i) {
+    for (unsigned i = 0; i < m_instances.size(); ++i) {
         Creature* creature = m_instances[i]->getSide2();
         int successes
             = DiceRoller::rollGetSuccess(creature->getBTN(), creature->getQueuedPosition().dice);

@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <iostream>
 
+#include "3rdparty/random.hpp"
 #include "combatinstance.h"
 #include "creatures/player.h"
 #include "creatures/utils.h"
@@ -692,8 +693,9 @@ void CombatInstance::doDualOffenseResolve()
         m_currentReach = m_side2->getCurrentReach();
         m_initiative = eInitiative::Side2;
     } else {
-        // reroll if no one died
-        m_currentState = eCombatState::RollInitiative;
+        // random
+        m_initiative
+            = effolkronium::random_static::get(1, 2) == 2 ? eInitiative::Side2 : eInitiative::Side1;
     }
 
     m_currentState = death == true ? eCombatState::FinishedCombat : m_currentState;
@@ -756,6 +758,12 @@ bool CombatInstance::inflictWound(
         bodyPart = WoundTable::getSingleton()->getThrust(attack.target);
     } else if (attack.manuever == eOffensiveManuevers::PinpointThrust) {
         bodyPart = attack.pinpointTarget;
+    } else if (attack.manuever == eOffensiveManuevers::Swing) {
+        // swings in these grips do less damage, unless its a linked component
+        eGrips grip = attacker->getGrip();
+        if (grip == eGrips::HalfSword || grip == eGrips::Staff) {
+            MoS -= 1;
+        }
     }
 
     int finalDamage = MoS + attack.component->getDamage();
@@ -923,6 +931,8 @@ void CombatInstance::run()
         break;
     case eCombatState::Defense:
         doDefense();
+        break;
+    case eCombatState::PostDefense:
         break;
     case eCombatState::ParryLinked:
         doParryLinked();

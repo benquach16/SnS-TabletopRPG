@@ -22,7 +22,7 @@ public:
 
     // never delete player, otherwise there will be a segfault
     bool deleteMe() const override { return false; }
-    virtual bool preserveBetweenLevels() const { return true; }
+    bool preserveBetweenLevels() const override { return true; }
 
 private:
     CombatInstance m_instance;

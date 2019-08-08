@@ -198,7 +198,7 @@ eGrips stringToGrip(const std::string& str)
 
 std::string gripToString(eGrips grip)
 {
-    switch(grip) {
+    switch (grip) {
     case eGrips::Standard:
         return "Standard";
     case eGrips::HalfSword:

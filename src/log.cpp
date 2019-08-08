@@ -13,7 +13,7 @@ void Log::push(const std::string& str, eMessageTypes type) { m_queue.push_back({
 void Log::run()
 {
     auto windowSize = Game::getWindow().getSize();
-    const int maxHistory = (windowSize.y - 100) / cCharSize - 2;
+    const unsigned maxHistory = (windowSize.y - 100) / cCharSize - 2;
     unsigned rectHeight = cCharSize * (cLinesDisplayed + 1);
     // magic numbers
     static sf::RectangleShape logBkg(sf::Vector2f(windowSize.x - 6, rectHeight - 3));
@@ -33,9 +33,9 @@ void Log::run()
     Game::getWindow().draw(logBkg);
 
     // only display last cLinesDisplayed elements of m_queue
-    int size = min(static_cast<unsigned>(m_queue.size()), cLinesDisplayed);
-    for (int i = 0; i < size; ++i) {
-        int index = m_queue.size() > cLinesDisplayed ? (i + (m_queue.size() - cLinesDisplayed)) : i;
+    unsigned size = min(static_cast<unsigned>(m_queue.size()), cLinesDisplayed);
+    for (unsigned i = 0; i < size; ++i) {
+        unsigned index = m_queue.size() > cLinesDisplayed ? (i + (m_queue.size() - cLinesDisplayed)) : i;
 
         sf::Text text = createLogText(m_queue[index].text, m_queue[index].type);
 

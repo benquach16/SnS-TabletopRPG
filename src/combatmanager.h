@@ -35,9 +35,9 @@ private:
 
     std::vector<CombatInstance*> m_instances;
     std::set<Creature*> m_queuedCreatures;
-    std::vector<int> m_activeInstances;
-    int m_currentId;
-    int m_instanceId;
+    std::vector<unsigned> m_activeInstances;
+    unsigned m_currentId;
+    unsigned m_instanceId;
     bool m_positionDone;
     bool m_allowNewCreatures;
     Creature* m_mainCreature;

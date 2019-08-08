@@ -265,7 +265,7 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
     // replace me
     m_currentOffense.target
         = target
-              ->getHitLocations()[random_static::get(0, (int)target->getHitLocations().size() - 1)];
+        ->getHitLocations()[random_static::get(0, static_cast<int>(target->getHitLocations().size()) - 1)];
     int dice = m_combatPool / 2 + random_static::get(0, m_combatPool / 3)
         - effolkronium::random_static::get(0, m_combatPool / 3);
 
@@ -289,8 +289,10 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
 
         // hacky since usually this happens in combatinstance
         // m_combatPool -= m_currentDefense.dice;
+        assert(m_currentDefense.dice <= m_combatPool || m_currentDefense.dice == 0);
         reduceCombatPool(m_currentDefense.dice);
     }
+    assert(m_currentOffense.dice <= m_combatPool || m_currentOffense.dice == 0);
     reduceCombatPool(m_currentOffense.dice);
     m_hasOffense = true;
 }
@@ -302,7 +304,7 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
     constexpr int buffer = 3;
     if (diceAllocated + buffer < m_combatPool && random_static::get(0, 2) == 0) {
         m_currentDefense.manuever = eDefensiveManuevers::ParryLinked;
-        m_combatPool -= 1;
+        reduceCombatPool(1);
     } else {
         m_currentDefense.manuever = eDefensiveManuevers::Parry;
     }
@@ -311,6 +313,7 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
     if (stealInitiative(attacker, stealDie) == true) {
         m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
         m_currentDefense.dice = stealDie;
+        assert(m_currentDefense.dice <= m_combatPool || m_currentDefense.dice == 0);
         reduceCombatPool(m_currentDefense.dice);
         return;
     }
@@ -326,6 +329,7 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
     dice = min(m_combatPool, dice);
     dice = max(dice, 0);
     m_currentDefense.dice = dice;
+    assert(m_currentDefense.dice <= m_combatPool || m_currentDefense.dice == 0);
     reduceCombatPool(m_currentDefense.dice);
     m_hasDefense = true;
 }
@@ -333,7 +337,10 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
 void Creature::doPositionRoll(const Creature* opponent)
 {
     // can be reused for standing up as well
-    m_currentPosition.dice = opponent->getQueuedPosition().dice;
+    int dice = opponent->getQueuedPosition().dice;
+    m_currentPosition.dice
+        = dice + random_static::get(0, dice / 3) - random_static::get(0, dice / 4);
+    assert(m_currentPosition.dice <= m_combatPool);
     reduceCombatPool(m_currentPosition.dice);
     m_hasPosition = true;
 }
@@ -383,6 +390,7 @@ void Creature::doStolenInitiative(const Creature* defender, bool allin)
     if (allin == true) {
         m_currentDefense.dice = m_combatPool;
     }
+    assert(m_currentDefense.dice <= m_combatPool || m_currentDefense.dice == 0);
     reduceCombatPool(m_currentDefense.dice);
 }
 
