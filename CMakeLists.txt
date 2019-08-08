@@ -65,7 +65,7 @@ set(DIRS
     )
 add_executable(RPG ${SOURCES})
 if(WIN32)
-    set(SFML_ROOT "C:/SFML")
+    set(SFML_DIR "C:/SFML-2.5.1/lib/cmake/SFML")
 endif()
 
 find_package(SFML REQUIRED COMPONENTS graphics window system)
