@@ -715,7 +715,6 @@ void CombatInstance::doPostResolution()
     m_side1->clearCreatureManuevers();
     m_side2->clearCreatureManuevers();
     m_dualRedThrow = false;
-    switchTempo();
 
     if (m_numTempos > cMinFatigueTempos) {
         // roll for fatigue
@@ -729,7 +728,13 @@ void CombatInstance::doPostResolution()
     }
     m_numTempos++;
 
-    m_currentState = eCombatState::PreexchangeActions;
+    //only preexchangeactions after a refresh
+    if(m_currentTempo == eTempo::Second) {
+        m_currentState = eCombatState::PreexchangeActions;
+    } else {
+        m_currentState = eCombatState::Offense;
+    }
+    switchTempo();
 }
 
 void CombatInstance::doEndCombat()
