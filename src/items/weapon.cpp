@@ -30,8 +30,8 @@ Weapon::Weapon(const std::string& name, const std::string& description, eLength 
 
     for (auto it : components) {
         std::set<eGrips> grips = it->getGrips();
-        for(auto grip : grips) {
-            switch(it->getAttack()) {
+        for (auto grip : grips) {
+            switch (it->getAttack()) {
             case eAttacks::Thrust:
                 m_thrust[grip].push_back(it);
                 break;

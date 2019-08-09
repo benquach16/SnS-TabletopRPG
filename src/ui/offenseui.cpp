@@ -45,12 +45,13 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool allowStealIniti
     text.setFont(Game::getDefaultFont());
     bool halfPrice = player->getGrip() == eGrips::Staff || player->getGrip() == eGrips::HalfSword;
     string str = "Choose attack:\na - Swing\nb - Thrust\nc - Pinpoint Thrust (";
-    int pinpointCost = 2;
+    int pinpointCost = offenseManueverCost(eOffensiveManuevers::PinpointThrust);
     if (halfPrice == true) {
         str += "1";
         pinpointCost = 1;
     } else {
-        str += "2";
+        str += to_string(pinpointCost);
+        ;
     }
 
     str += "AP)\nd - Beat (1AP)\ne - Hook (1AP)\nf - Wrap (1AP)\ng - Inspect Target";

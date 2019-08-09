@@ -24,6 +24,8 @@ CombatInstance::CombatInstance()
     , m_dualWhiteTimes(0)
     , m_dualRedThrow(false)
     , m_numTempos(0)
+    , m_inWind(false)
+    , m_inGrapple(false)
 {
 }
 
@@ -212,8 +214,6 @@ bool CombatInstance::doOffense()
 
     const Weapon* offenseWeapon = attacker->getPrimaryWeapon();
 
-    int offenseCombatPool = attacker->getCombatPool();
-
     int reachCost = m_currentReach - attacker->getCurrentReach();
 
     if (attacker->isPlayer() == true) {
@@ -303,12 +303,10 @@ void CombatInstance::doDualOffenseStealInitiative()
 
     Defense defense = defender->getQueuedDefense();
     writeMessage(defender->getName() + " allocates " + to_string(defense.dice) + " for initiative");
-    writeMessage(defender->getName() + " "
-        + offensiveManueverToString(defender->getQueuedOffense().manuever) + "s with "
-        + defender->getPrimaryWeapon()->getName() + " at "
-        + hitLocationToString(defender->getQueuedOffense().target) + " using "
-        + defender->getQueuedOffense().component->getName() + " with "
-        + to_string(defender->getQueuedOffense().dice) + " action points");
+    writeMessage(defender->getName() + " " + offensiveManueverToString(offense.manuever) + "s with "
+        + defender->getPrimaryWeapon()->getName() + " at " + hitLocationToString(offense.target)
+        + " using " + offense.component->getName() + " with " + to_string(offense.dice)
+        + " action points");
     switchInitiative();
     m_currentState = eCombatState::Resolution;
 }
@@ -360,8 +358,6 @@ void CombatInstance::doDualOffenseSecondInitiative()
     } else {
         // confusing nomenclature
         defender->doStolenInitiative(attacker, true);
-        // hacky way because of how dice is removed for now
-        Defense defense = defender->getQueuedDefense();
     }
 
     Defense defense = defender->getQueuedDefense();
@@ -378,8 +374,6 @@ void CombatInstance::doDefense()
 
     const Weapon* defenseWeapon = defender->getPrimaryWeapon();
 
-    int defenseCombatPool
-        = defender->getProficiency(defenseWeapon->getType()) + defender->getReflex();
     if (defender->isPlayer() == true) {
         // wait until player inputs
         Player* player = static_cast<Player*>(defender);
@@ -517,6 +511,7 @@ void CombatInstance::doResolution()
     if (defend.manuever == eDefensiveManuevers::StealInitiative) {
         cout << "Dual resolution" << endl;
         // original attacker gets advantage
+        // ptr compares bad
         int side1BTN = (m_side1 == attacker && m_dualRedThrow == false)
             ? m_side1->getAdvantagedBTN()
             : m_side1->getBTN();
@@ -525,11 +520,12 @@ void CombatInstance::doResolution()
             : m_side2->getBTN();
 
         // special case for thrust manuever, get an extra die
+        constexpr unsigned cThrustDie = 2;
         int side1Dice = (m_side1->getQueuedOffense().manuever == eOffensiveManuevers::Thrust)
-            ? m_side1->getQueuedDefense().dice + 2
+            ? m_side1->getQueuedDefense().dice + cThrustDie
             : m_side1->getQueuedDefense().dice;
         int side2Dice = (m_side2->getQueuedOffense().manuever == eOffensiveManuevers::Thrust)
-            ? m_side2->getQueuedDefense().dice + 2
+            ? m_side2->getQueuedDefense().dice + cThrustDie
             : m_side2->getQueuedDefense().dice;
 
         int side1InitiativeSuccesses
@@ -537,7 +533,6 @@ void CombatInstance::doResolution()
         int side2InitiativeSuccesses
             = DiceRoller::rollGetSuccess(side2BTN, side2Dice + m_side2->getSpeed());
 
-        Creature* originalAttackerPtr = attacker;
         if (side1InitiativeSuccesses > side2InitiativeSuccesses) {
             m_initiative = eInitiative::Side1;
         } else {
@@ -763,8 +758,12 @@ bool CombatInstance::inflictWound(
     } else if (attack.manuever == eOffensiveManuevers::Swing) {
         // swings in these grips do less damage, unless its a linked component
         eGrips grip = attacker->getGrip();
-        if ((grip == eGrips::HalfSword || grip == eGrips::Staff)
+        if ((grip == eGrips::HalfSword || grip == eGrips::Staff || grip == eGrips::Overhand)
             && attack.component->isLinked(grip) == false) {
+            //overhand swings should be VERY bad
+            if(grip == eGrips::Overhand) {
+                MoS -= 1;
+            }
             MoS -= 1;
         }
     }

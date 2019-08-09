@@ -156,6 +156,9 @@ void Game::run()
                         Log::push("There is a creature here. You need to kill "
                                   "them if you want to loot them.");
                         break;
+                    default:
+                        Log::push("Nothing to loot");
+                        break;
                     }
                 } else {
                     Log::push("There is nothing here.");

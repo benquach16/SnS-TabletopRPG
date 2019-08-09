@@ -14,6 +14,9 @@ void DefenseUI::run(sf::Event event, Player* player)
         break;
     case eUiState::Finished:
         break;
+    default:
+        assert(true);
+        break;
     }
 }
 
@@ -25,8 +28,7 @@ void DefenseUI::doManuever(sf::Event event, Player* player)
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
     text.setString("Choose defense:\na - Parry\nb - Dodge\nc - Linked Parry "
-                   "(1AP)\nd - Steal Initiative\ne - Counter (2AP)\nf - Mobile "
-                   "Dodge (1AP)\ng - Expulsion (1AP)");
+                   "(1AP)\nd - Steal Initiative\ne - Counter (2AP)\nf - Expulsion (1AP)");
     Game::getWindow().draw(text);
     if (event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
@@ -40,11 +42,12 @@ void DefenseUI::doManuever(sf::Event event, Player* player)
         }
         if (c == 'c') {
             // costs 1 die
-            if (player->getCombatPool() <= 0) {
+            int cost = defenseManueverCost(eDefensiveManuevers::ParryLinked);
+            if (player->getCombatPool() < cost) {
                 Log::push("Requires 1 action point");
             } else {
                 player->setDefenseManuever(eDefensiveManuevers::ParryLinked);
-                player->reduceCombatPool(1);
+                player->reduceCombatPool(cost);
                 m_currentState = eUiState::ChooseDice;
             }
         }
@@ -53,11 +56,12 @@ void DefenseUI::doManuever(sf::Event event, Player* player)
             m_currentState = eUiState::ChooseDice;
         }
         if (c == 'e') {
-            if (player->getCombatPool() <= 1) {
+            int cost = defenseManueverCost(eDefensiveManuevers::Counter);
+            if (player->getCombatPool() < cost) {
                 Log::push("Requires 2 action points");
             } else {
                 player->setDefenseManuever(eDefensiveManuevers::Counter);
-                player->reduceCombatPool(2);
+                player->reduceCombatPool(cost);
                 m_currentState = eUiState::ChooseDice;
             }
         }

@@ -94,20 +94,17 @@ private:
         const std::string& str, Log::eMessageTypes type = Log::eMessageTypes::Standard);
     void outputReachCost(int cost, Creature* attacker);
 
-    eCombatState m_currentState;
-
-    eLength m_currentReach;
-
-    eTempo m_currentTempo;
     eInitiative m_initiative;
+    Creature* m_side1;
+    Creature* m_side2;
+    eTempo m_currentTempo;
+    eCombatState m_currentState;
+    eLength m_currentReach;
 
     int m_dualWhiteTimes;
     bool m_dualRedThrow;
+    int m_numTempos;
+
     bool m_inWind;
     bool m_inGrapple;
-
-    Creature* m_side1;
-    Creature* m_side2;
-
-    int m_numTempos;
 };

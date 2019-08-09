@@ -20,13 +20,13 @@ enum class eAttacks {
     Swing,
 };
 
-enum class eOffensiveManuevers : unsigned { Swing, Thrust, PinpointThrust, Beat };
+enum class eOffensiveManuevers : unsigned { Swing, Thrust, PinpointThrust, Beat, Mordhau, Hook };
 
 enum class ePositionManuevers : unsigned { Stand, Pickup };
 
 enum class eGrips : unsigned { Standard, Staff, HalfSword, Overhand };
 
-static int gripReachDifference(eGrips grip)
+inline int gripReachDifference(eGrips grip)
 {
     switch (grip) {
     case eGrips::Staff:
@@ -40,12 +40,14 @@ static int gripReachDifference(eGrips grip)
     }
 }
 
-static int offenseManueverCost(eOffensiveManuevers manuever)
+inline int offenseManueverCost(eOffensiveManuevers manuever)
 {
     switch (manuever) {
     case eOffensiveManuevers::PinpointThrust:
         return 2;
+    case eOffensiveManuevers::Hook:
     case eOffensiveManuevers::Beat:
+    case eOffensiveManuevers::Mordhau:
         return 1;
     default:
         return 0;
@@ -64,7 +66,7 @@ enum class eDefensiveManuevers : unsigned {
     Expulsion
 };
 
-static int defenseManueverCost(eDefensiveManuevers manuever)
+inline int defenseManueverCost(eDefensiveManuevers manuever)
 {
     switch (manuever) {
     case eDefensiveManuevers::ParryLinked:

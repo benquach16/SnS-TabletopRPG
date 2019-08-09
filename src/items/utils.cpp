@@ -13,8 +13,9 @@ std::string offensiveManueverToString(eOffensiveManuevers manuever)
         return "Pinpoint Thrust";
     case eOffensiveManuevers::Beat:
         return "Beat";
+    default:
+        return "";
     }
-    return "";
 }
 
 std::string defensiveManueverToString(eDefensiveManuevers manuever)

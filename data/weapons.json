@@ -13,20 +13,52 @@
 				"damage": 2,
 				"type": "piercing",
 				"attack": "thrust",
-				"properties": [ "maillepiercing" ]
+				"properties": [ "maillepiercing" ],
+				"grips": [
+					{
+						"grip": "staff"
+					},
+					{
+						"grip": "standard"
+					}
+				]				
 			},
 			{
 				"name": "Axe head",
 				"damage": 3,
 				"attack": "swing",
-				"type": "cutting"
+				"type": "cutting",
+				"grips": [
+					{
+						"grip": "staff"
+					},
+					{
+						"grip": "standard"
+					},
+					{
+						"grip": "overhand",
+						"linked": true
+					}
+				]		
 			},
 			{
 				"name": "Hammer head",
 				"damage": 2,
 				"type": "blunt",
 				"attack": "swing",
-				"properties": [ "crushing" ]
+				"properties": [ "crushing" ],
+				"grips": [
+					{
+						"grip": "staff"
+					},
+					{
+						"grip": "standard"
+					},
+					{
+						"grip": "overhand",
+						"linked": true
+					}
+				]	
 			},
 			{
 				"name": "Buttspike, Thrust",
@@ -37,6 +69,9 @@
 					{
 						"grip": "staff",
 						"linked": true
+					},
+					{
+						"grip": "overhand"
 					}
 				]
 			},		
@@ -49,6 +84,9 @@
 					{
 						"grip": "staff",
 						"linked": true
+					},
+					{
+						"grip": "overhand"
 					}
 				]
 			}
@@ -90,25 +128,59 @@
 				"name": "Spear blade",
 				"damage": 1,
 				"type": "cutting",
-				"attack": "swing"
+				"attack": "swing",
+				"grips": [
+					{
+						"grip": "staff"
+					},
+					{
+						"grip": "standard"
+					}
+				]	
 			},
 			{
 				"name": "Spear point",
 				"damage": 3,
 				"type": "piercing",
-				"attack": "thrust"
+				"attack": "thrust",
+				"grips": [
+					{
+						"grip": "staff"
+					},
+					{
+						"grip": "standard"
+					}
+				]
 			},
 			{
 				"name": "Buttend, Thrust",
 				"damage": 1,
 				"type": "blunt",
-				"attack": "thrust"
+				"attack": "thrust",
+				"grips": [
+					{
+						"grip": "staff",
+						"linked": true
+					},
+					{
+						"grip": "overhand"
+					}
+				]
 			},		
 			{
 				"name": "Buttend, Swing",
 				"damage": 1,
 				"type": "blunt",
-				"attack": "swing"
+				"attack": "swing",
+				"grips": [
+					{
+						"grip": "staff",
+						"linked": true
+					},
+					{
+						"grip": "overhand"
+					}
+				]
 			}
 		]
 	},
@@ -131,7 +203,8 @@
 				"name": "Blade, Thrust",
 				"damage": 0,
 				"type": "piercing",
-				"attack": "thrust"
+				"attack": "thrust",
+				"properties": [ "maillepiercing" ]
 			}
 		]
 	},
@@ -149,32 +222,82 @@
 				"damage": 3,
 				"type": "piercing",
 				"attack": "thrust",
-				"properties": [ "maillepiercing" ]
+				"properties": [ "maillepiercing" ],
+				"grips": [
+					{
+						"grip": "staff"
+					},
+					{
+						"grip": "standard"
+					}
+				]				
 			},
 			{
 				"name": "Axe head",
 				"damage": 3,
 				"attack": "swing",
-				"type": "cutting"
+				"type": "cutting",
+				"grips": [
+					{
+						"grip": "staff"
+					},
+					{
+						"grip": "standard"
+					},
+					{
+						"grip": "overhand",
+						"linked": true
+					}
+				]		
 			},
 			{
 				"name": "Hammer head",
 				"damage": 2,
 				"type": "blunt",
 				"attack": "swing",
-				"properties": [ "crushing" ]
+				"properties": [ "crushing" ],
+				"grips": [
+					{
+						"grip": "staff"
+					},
+					{
+						"grip": "standard"
+					},
+					{
+						"grip": "overhand",
+						"linked": true
+					}
+				]	
 			},
 			{
 				"name": "Buttspike, Thrust",
 				"damage": 2,
 				"type": "piercing",
-				"attack": "thrust"
+				"attack": "thrust",
+				"grips": [
+					{
+						"grip": "staff",
+						"linked": true
+					},
+					{
+						"grip": "overhand"
+					}
+				]
 			},		
 			{
 				"name": "Buttspike, Swing",
 				"damage": 1,
 				"type": "blunt",
-				"attack": "swing"
+				"attack": "swing",
+				"grips": [
+					{
+						"grip": "staff",
+						"linked": true
+					},
+					{
+						"grip": "overhand"
+					}
+				]
 			}
 		]
 	},
@@ -244,6 +367,36 @@
 				"damage": 1,
 				"type": "blunt",
 				"attack": "thrust"
+			},
+			{
+				"name": "Buttend, Thrust",
+				"damage": 1,
+				"type": "blunt",
+				"attack": "thrust",
+				"grips": [
+					{
+						"grip": "staff",
+						"linked": true
+					},
+					{
+						"grip": "overhand"
+					}
+				]
+			},		
+			{
+				"name": "Buttend, Swing",
+				"damage": 1,
+				"type": "blunt",
+				"attack": "swing",
+				"grips": [
+					{
+						"grip": "staff",
+						"linked": true
+					},
+					{
+						"grip": "overhand"
+					}
+				]
 			}
 		]
 	},
