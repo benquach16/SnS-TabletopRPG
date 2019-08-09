@@ -35,7 +35,8 @@ void Log::run()
     // only display last cLinesDisplayed elements of m_queue
     unsigned size = min(static_cast<unsigned>(m_queue.size()), cLinesDisplayed);
     for (unsigned i = 0; i < size; ++i) {
-        unsigned index = m_queue.size() > cLinesDisplayed ? (i + (m_queue.size() - cLinesDisplayed)) : i;
+        unsigned index
+            = m_queue.size() > cLinesDisplayed ? (i + (m_queue.size() - cLinesDisplayed)) : i;
 
         sf::Text text = createLogText(m_queue[index].text, m_queue[index].type);
 

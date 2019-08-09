@@ -55,6 +55,9 @@ public:
     void forceRefresh();
     void forceTempo(eTempo tempo) { m_currentTempo = tempo; }
 
+    bool getInGrapple();
+    bool getInWind();
+
 private:
     void doInitialization();
     void doRollInitiative();

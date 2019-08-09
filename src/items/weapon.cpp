@@ -27,6 +27,23 @@ Weapon::Weapon(const std::string& name, const std::string& description, eLength 
             m_swingComponents.push_back(components[i]);
         }
     }
+
+    for (auto it : components) {
+        std::set<eGrips> grips = it->getGrips();
+        for(auto grip : grips) {
+            switch(it->getAttack()) {
+            case eAttacks::Thrust:
+                m_thrust[grip].push_back(it);
+                break;
+            case eAttacks::Swing:
+                m_swing[grip].push_back(it);
+                break;
+            default:
+                assert(true);
+                break;
+            }
+        }
+    }
 }
 
 Weapon::~Weapon()
@@ -35,6 +52,7 @@ Weapon::~Weapon()
         delete m_components[i];
     }
     m_components.clear();
+    // don't delete other components, they have shared pointers
 }
 
 Component* Weapon::getBestAttack() const
@@ -95,6 +113,7 @@ WeaponTable::WeaponTable()
             eDamageTypes damageType = convertDamageFromStr(componentJson[i]["type"]);
             eAttacks attack = convertAttackFromStr(componentJson[i]["attack"]);
             std::set<eWeaponProperties> properties;
+            std::unordered_map<eGrips, bool> grips;
 
             // check for component properties
             if (componentJson[i]["properties"].is_null() == false) {
@@ -110,14 +129,31 @@ WeaponTable::WeaponTable()
             if (componentJson[i]["grips"].is_null() == false) {
                 auto gripsJson = componentJson[i]["grips"];
                 for (int j = 0; j < gripsJson.size(); ++j) {
+                    eGrips grip = stringToGrip(gripsJson[j]["grip"]);
+                    bool linked = false;
+                    if (gripsJson[j]["linked"].is_null() == false) {
+                        linked = true;
+                    }
+                    grips[grip] = linked;
                 }
             } else {
                 // add standard grip
-                // grips.insert({ eGrips::Standard, false });
+                grips[eGrips::Standard] = false;
+                switch (weaponType) {
+                case eWeaponTypes::Polearms:
+                    grips[eGrips::Staff] = false;
+                    grips[eGrips::Overhand] = false;
+                    break;
+                case eWeaponTypes::Longswords:
+                case eWeaponTypes::Swords:
+                    grips[eGrips::HalfSword] = false;
+                default:
+                    break;
+                }
             }
 
             Component* component
-                = new Component(componentName, damage, damageType, attack, properties);
+                = new Component(componentName, damage, damageType, attack, properties, grips);
 
             weaponComponents.push_back(component);
         }

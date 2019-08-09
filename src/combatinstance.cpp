@@ -635,8 +635,10 @@ void CombatInstance::doResolution()
             if (defend.manuever == eDefensiveManuevers::ParryLinked) {
                 // resolve offense
                 Offense offense = defender->getQueuedOffense();
-                int linkedOffenseMoS
-                    = DiceRoller::rollGetSuccess(defender->getDisadvantagedBTN(), -MoS);
+                bool linked = offense.component->isLinked(defender->getGrip());
+                int BTN = linked == true ? defender->getBTN() : defender->getDisadvantagedBTN();
+                cout << "linked" << linked << endl;
+                int linkedOffenseMoS = DiceRoller::rollGetSuccess(BTN, -MoS);
                 cout << "Linked hits: " << linkedOffenseMoS << endl;
                 int reachCost = abs(defender->getCurrentReach() - m_currentReach);
                 linkedOffenseMoS -= reachCost;
@@ -729,7 +731,7 @@ void CombatInstance::doPostResolution()
     }
     m_numTempos++;
 
-    m_currentState = eCombatState::Offense;
+    m_currentState = eCombatState::PreexchangeActions;
 }
 
 void CombatInstance::doEndCombat()
@@ -761,7 +763,8 @@ bool CombatInstance::inflictWound(
     } else if (attack.manuever == eOffensiveManuevers::Swing) {
         // swings in these grips do less damage, unless its a linked component
         eGrips grip = attacker->getGrip();
-        if (grip == eGrips::HalfSword || grip == eGrips::Staff) {
+        if ((grip == eGrips::HalfSword || grip == eGrips::Staff)
+            && attack.component->isLinked(grip) == false) {
             MoS -= 1;
         }
     }
