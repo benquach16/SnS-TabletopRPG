@@ -125,30 +125,54 @@ WeaponTable::WeaponTable()
                 }
             }
 
-            // we have specialized grips
-            if (componentJson[i]["grips"].is_null() == false) {
-                auto gripsJson = componentJson[i]["grips"];
-                for (int j = 0; j < gripsJson.size(); ++j) {
-                    eGrips grip = stringToGrip(gripsJson[j]["grip"]);
-                    bool linked = false;
-                    if (gripsJson[j]["linked"].is_null() == false) {
-                        linked = true;
-                    }
-                    grips[grip] = linked;
-                }
-            } else {
-                // add standard grip
+            bool addStandardGrips = true;
+            // templatize polearm components for smaller jsons
+            if (componentJson[i]["buttspike"].is_null() == false) {
+                grips[eGrips::Staff] = true;
+                grips[eGrips::Overhand] = false;
+                addStandardGrips = false;
+            }
+
+            if (componentJson[i]["polearmhead"].is_null() == false) {
                 grips[eGrips::Standard] = false;
-                switch (weaponType) {
-                case eWeaponTypes::Polearms:
-                    grips[eGrips::Staff] = false;
-                    grips[eGrips::Overhand] = false;
-                    break;
-                case eWeaponTypes::Longswords:
-                case eWeaponTypes::Swords:
-                    grips[eGrips::HalfSword] = false;
-                default:
-                    break;
+                grips[eGrips::Staff] = false;
+                grips[eGrips::Overhand] = true;
+                addStandardGrips = false;
+            }
+
+            if (componentJson[i]["polearmspike"].is_null() == false) {
+                grips[eGrips::Standard] = false;
+                grips[eGrips::Staff] = false;
+                addStandardGrips = false;
+            }
+
+            // we have specialized grips. most grip info should come from templates (polearm grips,
+            // swords, etc), so this should not be a common code path
+            if (addStandardGrips == true) {
+                if (componentJson[i]["grips"].is_null() == false) {
+                    auto gripsJson = componentJson[i]["grips"];
+                    for (int j = 0; j < gripsJson.size(); ++j) {
+                        eGrips grip = stringToGrip(gripsJson[j]["grip"]);
+                        bool linked = false;
+                        if (gripsJson[j]["linked"].is_null() == false) {
+                            linked = true;
+                        }
+                        grips[grip] = linked;
+                    }
+                } else {
+                    // add standard grip
+                    grips[eGrips::Standard] = false;
+                    switch (weaponType) {
+                    case eWeaponTypes::Polearms:
+                        grips[eGrips::Staff] = false;
+                        grips[eGrips::Overhand] = false;
+                        break;
+                    case eWeaponTypes::Longswords:
+                    case eWeaponTypes::Swords:
+                        grips[eGrips::HalfSword] = false;
+                    default:
+                        break;
+                    }
                 }
             }
 

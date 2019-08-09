@@ -42,7 +42,6 @@ class CombatInstance {
 public:
     CombatInstance();
     void run();
-    void runUI();
 
     void initCombat(Creature* side1, Creature* side2);
     void forceInitiative(eInitiative initiative);

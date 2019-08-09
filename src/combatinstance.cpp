@@ -175,7 +175,10 @@ void CombatInstance::doPreexchangeActions()
     m_side2->doPrecombat();
 
     // check if grip causes combatants to move closer
-    m_currentReach = max(m_side1->getCurrentReach(), m_side2->getCurrentReach());
+    eLength length = max(m_side1->getCurrentReach(), m_side2->getCurrentReach());
+    if(length < m_currentReach) {
+        m_currentReach = length;
+    }
     if (m_dualRedThrow == true) {
         m_currentState = eCombatState::DualOffense1;
     } else {
@@ -509,7 +512,6 @@ void CombatInstance::doResolution()
 
     // determine who was originally attacking
     if (defend.manuever == eDefensiveManuevers::StealInitiative) {
-        cout << "Dual resolution" << endl;
         // original attacker gets advantage
         // ptr compares bad
         int side1BTN = (m_side1 == attacker && m_dualRedThrow == false)
@@ -592,7 +594,6 @@ void CombatInstance::doResolution()
             }
         }
     } else {
-        cout << "Normal resolution" << endl;
         // roll dice
         int offenseSuccesses = DiceRoller::rollGetSuccess(attacker->getBTN(), attack.dice);
         int defenseSuccesses = DiceRoller::rollGetSuccess(defender->getBTN(), defend.dice);
@@ -632,11 +633,13 @@ void CombatInstance::doResolution()
                 Offense offense = defender->getQueuedOffense();
                 bool linked = offense.component->isLinked(defender->getGrip());
                 int BTN = linked == true ? defender->getBTN() : defender->getDisadvantagedBTN();
-                cout << "linked" << linked << endl;
-                int linkedOffenseMoS = DiceRoller::rollGetSuccess(BTN, -MoS);
-                cout << "Linked hits: " << linkedOffenseMoS << endl;
+
                 int reachCost = abs(defender->getCurrentReach() - m_currentReach);
-                linkedOffenseMoS -= reachCost;
+                cout << "linked" << linked << endl;
+                MoS = (-MoS) - reachCost;
+                int linkedOffenseMoS = DiceRoller::rollGetSuccess(BTN, MoS);
+                cout << "Linked hits: " << linkedOffenseMoS << endl;
+
                 if (linkedOffenseMoS > 0
                     && inflictWound(defender, linkedOffenseMoS, offense, attacker) == true) {
                     m_currentState = eCombatState::FinishedCombat;
@@ -748,7 +751,9 @@ void CombatInstance::doEndCombat()
 bool CombatInstance::inflictWound(
     Creature* attacker, int MoS, Offense attack, Creature* target, bool manueverFirst)
 {
-
+    bool doBlunt = false;
+    eDamageTypes damageType = attack.component->getType();
+    
     eBodyParts bodyPart = WoundTable::getSingleton()->getSwing(attack.target);
     // any thrust manevuer should trigger this
     if (attack.manuever == eOffensiveManuevers::Thrust) {
@@ -760,12 +765,15 @@ bool CombatInstance::inflictWound(
         eGrips grip = attacker->getGrip();
         if ((grip == eGrips::HalfSword || grip == eGrips::Staff || grip == eGrips::Overhand)
             && attack.component->isLinked(grip) == false) {
-            //overhand swings should be VERY bad
-            if(grip == eGrips::Overhand) {
+            // overhand swings should be VERY bad
+            if (grip == eGrips::Overhand) {
                 MoS -= 1;
             }
             MoS -= 1;
         }
+    } else if(attack.manuever == eOffensiveManuevers::Mordhau) {
+        damageType = eDamageTypes::Blunt;
+        MoS++;
     }
 
     int finalDamage = MoS + attack.component->getDamage();
@@ -776,10 +784,10 @@ bool CombatInstance::inflictWound(
         writeMessage(
             target->getName() + "'s armor reduced wound level by " + to_string(armorAtLocation.AV));
     }
-    bool doBlunt = false;
+
     // complicated armor calcs go here
     finalDamage -= armorAtLocation.AV;
-    if (armorAtLocation.isMetal == true && attack.component->getType() != eDamageTypes::Blunt
+    if (armorAtLocation.isMetal == true && damageType != eDamageTypes::Blunt
         && finalDamage > 0) {
         if (attack.component->hasProperty(eWeaponProperties::MaillePiercing) == false
             && armorAtLocation.type == eArmorTypes::Maille) {
@@ -828,7 +836,8 @@ bool CombatInstance::inflictWound(
         + bodyPartToString(bodyPart));
     eDamageTypes finalType = doBlunt == true ? eDamageTypes::Blunt : attack.component->getType();
     if (finalType == eDamageTypes::Blunt && armorAtLocation.isRigid == true) {
-        finalDamage = min(3, finalDamage);
+        constexpr int cMaxRigid = 3;
+        finalDamage = min(cMaxRigid, finalDamage);
     }
     Wound* wound = WoundTable::getSingleton()->getWound(finalType, bodyPart, finalDamage);
     writeMessage(wound->getText(), Log::eMessageTypes::Damage);
@@ -953,8 +962,6 @@ void CombatInstance::run()
         break;
     }
 }
-
-void CombatInstance::runUI() { Game::getWindow(); }
 
 void CombatInstance::writeMessage(const std::string& str, Log::eMessageTypes type)
 {

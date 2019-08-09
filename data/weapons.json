@@ -14,32 +14,14 @@
 				"type": "piercing",
 				"attack": "thrust",
 				"properties": [ "maillepiercing" ],
-				"grips": [
-					{
-						"grip": "staff"
-					},
-					{
-						"grip": "standard"
-					}
-				]				
+				"polearmspike": true			
 			},
 			{
 				"name": "Axe head",
 				"damage": 3,
 				"attack": "swing",
 				"type": "cutting",
-				"grips": [
-					{
-						"grip": "staff"
-					},
-					{
-						"grip": "standard"
-					},
-					{
-						"grip": "overhand",
-						"linked": true
-					}
-				]		
+				"polearmhead": true
 			},
 			{
 				"name": "Hammer head",
@@ -47,48 +29,21 @@
 				"type": "blunt",
 				"attack": "swing",
 				"properties": [ "crushing" ],
-				"grips": [
-					{
-						"grip": "staff"
-					},
-					{
-						"grip": "standard"
-					},
-					{
-						"grip": "overhand",
-						"linked": true
-					}
-				]	
+				"polearmhead": true
 			},
 			{
 				"name": "Buttspike, Thrust",
 				"damage": 1,
 				"type": "piercing",
 				"attack": "thrust",
-				"grips": [
-					{
-						"grip": "staff",
-						"linked": true
-					},
-					{
-						"grip": "overhand"
-					}
-				]
+				"buttspike": true
 			},		
 			{
 				"name": "Buttspike, Swing",
 				"damage": 1,
 				"type": "blunt",
 				"attack": "swing",
-				"grips": [
-					{
-						"grip": "staff",
-						"linked": true
-					},
-					{
-						"grip": "overhand"
-					}
-				]
+				"buttspike": true
 			}
 		]
 	},
@@ -129,58 +84,28 @@
 				"damage": 1,
 				"type": "cutting",
 				"attack": "swing",
-				"grips": [
-					{
-						"grip": "staff"
-					},
-					{
-						"grip": "standard"
-					}
-				]	
+				"polearmhead": true
 			},
 			{
 				"name": "Spear point",
 				"damage": 3,
 				"type": "piercing",
 				"attack": "thrust",
-				"grips": [
-					{
-						"grip": "staff"
-					},
-					{
-						"grip": "standard"
-					}
-				]
+				"polearmspike": true
 			},
 			{
 				"name": "Buttend, Thrust",
 				"damage": 1,
 				"type": "blunt",
 				"attack": "thrust",
-				"grips": [
-					{
-						"grip": "staff",
-						"linked": true
-					},
-					{
-						"grip": "overhand"
-					}
-				]
+				"buttspike": true
 			},		
 			{
 				"name": "Buttend, Swing",
 				"damage": 1,
 				"type": "blunt",
 				"attack": "swing",
-				"grips": [
-					{
-						"grip": "staff",
-						"linked": true
-					},
-					{
-						"grip": "overhand"
-					}
-				]
+				"buttspike": true
 			}
 		]
 	},
@@ -223,32 +148,14 @@
 				"type": "piercing",
 				"attack": "thrust",
 				"properties": [ "maillepiercing" ],
-				"grips": [
-					{
-						"grip": "staff"
-					},
-					{
-						"grip": "standard"
-					}
-				]				
+				"polearmspike": true			
 			},
 			{
 				"name": "Axe head",
 				"damage": 3,
 				"attack": "swing",
 				"type": "cutting",
-				"grips": [
-					{
-						"grip": "staff"
-					},
-					{
-						"grip": "standard"
-					},
-					{
-						"grip": "overhand",
-						"linked": true
-					}
-				]		
+				"polearmhead": true
 			},
 			{
 				"name": "Hammer head",
@@ -256,48 +163,21 @@
 				"type": "blunt",
 				"attack": "swing",
 				"properties": [ "crushing" ],
-				"grips": [
-					{
-						"grip": "staff"
-					},
-					{
-						"grip": "standard"
-					},
-					{
-						"grip": "overhand",
-						"linked": true
-					}
-				]	
+				"polearmhead": true
 			},
 			{
 				"name": "Buttspike, Thrust",
 				"damage": 2,
 				"type": "piercing",
 				"attack": "thrust",
-				"grips": [
-					{
-						"grip": "staff",
-						"linked": true
-					},
-					{
-						"grip": "overhand"
-					}
-				]
+				"buttspike": true
 			},		
 			{
 				"name": "Buttspike, Swing",
 				"damage": 1,
 				"type": "blunt",
 				"attack": "swing",
-				"grips": [
-					{
-						"grip": "staff",
-						"linked": true
-					},
-					{
-						"grip": "overhand"
-					}
-				]
+				"buttspike": true
 			}
 		]
 	},
@@ -360,43 +240,29 @@
 				"name": "Staff, Swing",
 				"damage": 1,
 				"type": "blunt",
-				"attack": "swing"
+				"attack": "swing",
+				"polearmhead": true
 			},
 			{
 				"name": "Staff, Thrust",
 				"damage": 1,
 				"type": "blunt",
-				"attack": "thrust"
+				"attack": "thrust",
+				"polearmspike": true
 			},
 			{
 				"name": "Buttend, Thrust",
 				"damage": 1,
 				"type": "blunt",
 				"attack": "thrust",
-				"grips": [
-					{
-						"grip": "staff",
-						"linked": true
-					},
-					{
-						"grip": "overhand"
-					}
-				]
+				"buttspike": true
 			},		
 			{
 				"name": "Buttend, Swing",
 				"damage": 1,
 				"type": "blunt",
 				"attack": "swing",
-				"grips": [
-					{
-						"grip": "staff",
-						"linked": true
-					},
-					{
-						"grip": "overhand"
-					}
-				]
+				"buttspike": true
 			}
 		]
 	},
@@ -414,32 +280,37 @@
 				"damage": 2,
 				"type": "piercing",
 				"attack": "thrust",
-				"properties": [ "maillepiercing" ]
+				"properties": [ "maillepiercing" ],
+				"polearmspike": true
 			},
 			{
 				"name": "Axe head",
 				"damage": 3,
 				"attack": "swing",
-				"type": "cutting"
+				"type": "cutting",
+				"polearmhead": true
 			},
 			{
 				"name": "Beak",
 				"damage": 1,
 				"type": "piercing",
 				"attack": "swing",
-				"properties": [ "platepiercing" ]
+				"properties": [ "platepiercing" ],
+				"polearmhead": true
 			},
 			{
 				"name": "Buttspike, Thrust",
 				"damage": 2,
 				"type": "piercing",
-				"attack": "thrust"
+				"attack": "thrust",
+				"buttspike": true
 			},		
 			{
 				"name": "Buttspike, Swing",
 				"damage": 1,
 				"type": "blunt",
-				"attack": "swing"
+				"attack": "swing",
+				"buttspike": true
 			}
 		]
 	},
@@ -480,32 +351,37 @@
 				"damage": 3,
 				"type": "piercing",
 				"attack": "thrust",
-				"properties": [ "maillepiercing" ]
+				"properties": [ "maillepiercing" ],
+				"polearmspike": true
 			},
 			{
 				"name": "Axe head",
 				"damage": 4,
 				"attack": "swing",
-				"type": "cutting"
+				"type": "cutting",
+				"polearmhead": true
 			},
 			{
 				"name": "Hammer head",
 				"damage": 3,
 				"type": "blunt",
 				"attack": "swing",
-				"properties": [ "crushing" ]
+				"properties": [ "crushing" ],
+				"polearmhead": true
 			},
 			{
 				"name": "Buttspike, Thrust",
 				"damage": 2,
 				"type": "piercing",
-				"attack": "thrust"
+				"attack": "thrust",
+				"buttspike": true
 			},		
 			{
 				"name": "Buttspike, Swing",
 				"damage": 2,
 				"type": "blunt",
-				"attack": "swing"
+				"attack": "swing",
+				"buttspike": true
 			}
 		]
 	},
@@ -534,13 +410,15 @@
 				"name": "Buttend, Thrust",
 				"damage": 1,
 				"type": "blunt",
-				"attack": "thrust"
+				"attack": "thrust",
+				"buttspike": true
 			},
 			{
 				"name": "Buttspike, Swing",
 				"damage": 1,
 				"type": "blunt",
-				"attack": "swing"
+				"attack": "swing",
+				"buttspike": true
 			}
 		]
 	}
