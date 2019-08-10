@@ -336,19 +336,20 @@
 				"type": "cutting"
 			},
 			{
-				"name": "Pommel, Swing",
-				"damage": 1,
-				"attack": "swing",
-				"type": "blunt",
-				"pommel": true
-			},
-			{
 				"name": "Pommel, Thrust",
 				"damage": 1,
 				"attack": "thrust",
 				"type": "blunt",
 				"pommel": true
+			},
+			{
+				"name": "Pommel, Swing",
+				"damage": 1,
+				"attack": "swing",
+				"type": "blunt",
+				"pommel": true
 			}
+			
 
 		]
 	},

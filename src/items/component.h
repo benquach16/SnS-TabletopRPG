@@ -21,7 +21,7 @@ public:
         return (m_properties.find(prop) != m_properties.end());
     }
     const std::set<eWeaponProperties>& getProperties() const { return m_properties; }
-    bool isLinked(eGrips grip) const { return m_grips.at(grip); }
+    bool isLinked(eGrips grip) const;
     std::set<eGrips> getGrips() const;
     bool isPommel() const { return m_pommel; }
 private:

@@ -82,6 +82,7 @@ void CombatManager::doRunCombat(float tick)
         m_instances[m_currentId]->forceTempo(eTempo::First);
     }
 
+    //ugly but needed for ui
     if (tick <= cTick) {
         return;
     }
@@ -100,11 +101,11 @@ void CombatManager::doRunCombat(float tick)
         }
         if (m_instances.size() > 1) {
             writeMessage("Combatant has been killed, refreshing combat pools");
+            refreshInstances();
+            m_doPositionRoll = true;
         }
-        refreshInstances();
         m_currentId = 0;
         m_currentTempo = eTempo::First;
-        m_doPositionRoll = true;
     }
     // since we just deleted, make sure we clear if we don't have any more
     // combat

@@ -12,6 +12,16 @@ Component::Component(std::string name, int damage, eDamageTypes type, eAttacks a
 {
 }
 
+bool Component::isLinked(eGrips grip) const
+{
+    auto it = m_grips.find(grip);
+    //if we couldn't find it, either its because of bad code or its a pommel, so return value for pommel
+    if(it == m_grips.end()) {
+        return true;
+    }
+    return it->second;
+}
+
 std::set<eGrips> Component::getGrips() const
 {
     std::set<eGrips> ret;

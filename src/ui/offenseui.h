@@ -10,7 +10,7 @@ public:
     void resetState() { m_currentState = eUiState::ChooseManuever; }
 
 private:
-    void doManuever(sf::Event event, Player* player, bool allowStealInitiative = false);
+    void doManuever(sf::Event event, Player* player, bool linkedParry = false);
     void doFeint(sf::Event event, Player* player);
     void doComponent(sf::Event event, Player* player);
     void doDice(sf::Event event, Player* player);
