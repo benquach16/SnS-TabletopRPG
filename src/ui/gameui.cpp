@@ -7,7 +7,7 @@ GameUI::GameUI()
     m_helpText.setCharacterSize(cCharSize);
     m_helpText.setFont(Game::getDefaultFont());
     m_helpText.setString("I - Inventory\nP - Pickup\nD - Look at object\nA - "
-                         "Attack\nT - Talk\nR - Rest\n");
+                         "Attack\nK - Talk\nR - Rest\n");
 }
 
 void GameUI::run(sf::Event event)

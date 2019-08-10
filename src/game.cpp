@@ -56,13 +56,11 @@ void Game::run()
 
     playerObject->setPosition(1, 1);
 
-    HumanObject target1;
-    HumanObject target2;
-
     SelectorObject selector;
     GFXSelector gfxSelector;
 
     Object* pickup = nullptr;
+    CreatureObject* talking = nullptr;
 
     float zoom = 1.0f;
 
@@ -170,9 +168,6 @@ void Game::run()
             if (playerObject->isInCombat() == true) {
                 m_currentState = eGameState::InCombat;
             }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::K) {
-                m_currentState = eGameState::DialogueMode;
-            }
 
         } else if (m_currentState == eGameState::SelectionMode) {
             if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
@@ -186,6 +181,20 @@ void Game::run()
             }
             if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Right) {
                 selector.moveRight();
+            }
+            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::K) {
+                Object* object = level.getObjectMutable(selector.getPosition(), playerObject);
+                if (object != nullptr) {
+                    if (object->getObjectType() == eObjectTypes::Creature) {
+                        CreatureObject* creatureObject = static_cast<CreatureObject*>(object);
+                        if (creatureObject->isConscious() == true) {
+                            talking = creatureObject;
+                            m_currentState = eGameState::DialogueMode;
+                        } else {
+                            Log::push("You can't talk to an unconscious creature");
+                        }
+                    }
+                }
             }
             if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
                 const Object* object = level.getObject(selector.getPosition());
@@ -281,26 +290,8 @@ void Game::run()
                 tick = 0;
             }
         } else if (m_currentState == eGameState::DialogueMode) {
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
-                if (selector.getPosition().y < playerObject->getPosition().y + 2) {
-                    selector.moveDown();
-                }
-            }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Up) {
-                if (selector.getPosition().y > playerObject->getPosition().y - 2) {
-                    selector.moveUp();
-                }
-            }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Left) {
-                if (selector.getPosition().x > playerObject->getPosition().x - 2) {
-                    selector.moveLeft();
-                }
-            }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Right) {
-                if (selector.getPosition().x < playerObject->getPosition().x + 2) {
-                    selector.moveRight();
-                }
-            }
+            assert(talking != nullptr);
+            ui.runDialog(event, playerObject, talking);
         }
 
         Log::run();

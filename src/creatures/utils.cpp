@@ -1,3 +1,5 @@
+#include <assert.h>
+
 #include "utils.h"
 
 std::string bodyPartToString(eBodyParts part)
@@ -47,8 +49,9 @@ std::string bodyPartToString(eBodyParts part)
         return "Wing";
     case eBodyParts::Tail:
         return "Tail";
+    default:
+        return "";
     }
-    return "";
 }
 
 eBodyParts stringToBodyPart(const std::string& str)
@@ -124,6 +127,9 @@ std::string stanceToString(eCreatureStance stance)
         return "Standing";
     case eCreatureStance::Prone:
         return "Prone";
+    default:
+        assert(true);
+        return "";
     }
     return "";
 }
@@ -135,6 +141,7 @@ bool isLimb(eHitLocations location)
     case eHitLocations::Thigh:
     case eHitLocations::Shin:
         return true;
+    default:
+        return false;
     }
-    return false;
 }

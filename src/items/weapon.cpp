@@ -62,7 +62,8 @@ Component* Weapon::getBestAttack() const
 
     Component* ret = m_components[0];
     for (int i = 1; i < m_components.size(); ++i) {
-        if (m_components[i]->getDamage() > ret->getDamage() && m_components[i]->isPommel() == false) {
+        if (m_components[i]->getDamage() > ret->getDamage()
+            && m_components[i]->isPommel() == false) {
             ret = m_components[i];
         }
     }
@@ -73,8 +74,8 @@ Component* Weapon::getBestAttack() const
 Component* Weapon::getPommelStrike() const
 {
     Component* ret = nullptr;
-    for(auto it : m_components) {
-        if(it->isPommel() == true) {
+    for (auto it : m_components) {
+        if (it->isPommel() == true) {
             ret = it;
         }
     }

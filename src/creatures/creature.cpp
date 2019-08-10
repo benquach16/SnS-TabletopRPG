@@ -25,6 +25,7 @@ Creature::Creature()
     , m_bleeding(false)
     , m_hasPrecombat(false)
     , m_currentGrip(eGrips::Standard)
+    , m_currentStance(eCreatureStance::Standing)
 {
     m_fatigue[eCreatureFatigue::Stamina] = 0;
 }
@@ -38,8 +39,12 @@ eLength Creature::getCurrentReach() const
 {
     const Weapon* weapon = getPrimaryWeapon();
     // ugly
-    return static_cast<eLength>(
-        static_cast<int>(weapon->getLength()) - gripReachDifference(m_currentGrip));
+    int reach = static_cast<int>(weapon->getLength()) - gripReachDifference(m_currentGrip);
+    if (m_currentStance == eCreatureStance::Prone) {
+        reach -= 2;
+    }
+    reach = max(0, reach);
+    return static_cast<eLength>(reach);
 }
 
 std::vector<const Armor*> Creature::getArmor() const
@@ -55,6 +60,20 @@ void Creature::setWeapon(int idx)
 {
     const Weapon* weapon = WeaponTable::getSingleton()->get(idx);
     m_primaryWeaponId = idx;
+}
+
+void Creature::inflictImpact(int impact)
+{
+    m_currentOffense.dice -= impact;
+    if (m_currentOffense.dice < 0) {
+        int diff = abs(m_currentOffense.dice);
+        m_currentOffense.dice = 0;
+        m_currentPosition.dice -= diff;
+        if (m_currentPosition.dice < 0) {
+            m_combatPool -= -m_currentPosition.dice;
+            m_currentPosition.dice = 0;
+        }
+    }
 }
 
 void Creature::inflictWound(Wound* wound, bool manueverFirst)
@@ -150,7 +169,7 @@ void Creature::inflictWound(Wound* wound, bool manueverFirst)
 int Creature::getSuccessRate() const
 {
     float sides = static_cast<float>(DiceRoller::cDiceSides);
-    float btn = static_cast<float>(DiceRoller::cDiceSides - m_BTN) + 1.f;
+    float btn = static_cast<float>(DiceRoller::cDiceSides - getBTN()) + 1.f;
 
     float val = btn / sides;
     val *= 100;
@@ -339,6 +358,8 @@ void Creature::doPositionRoll(const Creature* opponent)
     int dice = opponent->getQueuedPosition().dice;
     m_currentPosition.dice
         = dice + random_static::get(0, dice / 3) - random_static::get(0, dice / 4);
+    m_currentPosition.dice = min(m_combatPool, m_currentPosition.dice);
+    m_currentPosition.dice = max(0, m_currentPosition.dice);
     assert(m_currentPosition.dice <= m_combatPool);
     reduceCombatPool(m_currentPosition.dice);
     m_hasPosition = true;

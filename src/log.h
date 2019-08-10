@@ -11,6 +11,7 @@ public:
         Standard,
         Alert,
         Damage,
+        Dialogue,
     };
     struct message {
         std::string text;

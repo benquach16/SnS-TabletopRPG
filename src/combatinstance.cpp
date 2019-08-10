@@ -49,14 +49,12 @@ void CombatInstance::initCombat(Creature* side1, Creature* side2)
     assert(m_currentState == eCombatState::Uninitialized);
 
     m_side1 = side1;
-    m_side1->resetCombatPool();
     m_side2 = side2;
-    m_side2->resetCombatPool();
     m_side1->setInCombat();
     m_side2->setInCombat();
 
-    m_side1->setStand();
-    m_side2->setStand();
+    // m_side1->setStand();
+    // m_side2->setStand();
 
     m_currentTempo = eTempo::First;
     m_initiative = eInitiative::Side1;
@@ -75,7 +73,8 @@ void CombatInstance::doInitialization()
     assert(m_side1 != nullptr);
     assert(m_side2 != nullptr);
     assert(m_currentState == eCombatState::Initialized);
-
+    m_side1->resetCombatPool();
+    m_side2->resetCombatPool();
     writeMessage(m_side1->getName() + " is using " + m_side1->getPrimaryWeapon()->getName()
         + " and " + m_side2->getName() + " is using " + m_side2->getPrimaryWeapon()->getName());
     // ugly implicit casting
@@ -756,6 +755,18 @@ void CombatInstance::doEndCombat()
 bool CombatInstance::inflictWound(
     Creature* attacker, int MoS, Offense attack, Creature* target, bool manueverFirst)
 {
+    if (attack.manuever == eOffensiveManuevers::Hook) {
+        writeMessage(target->getName() + " loses " + to_string(MoS) + " action points from impact",
+            Log::eMessageTypes::Alert);
+        target->inflictImpact(MoS);
+        if (MoS >= 3) {
+            writeMessage(target->getName() + " has been hooked and thrown prone!",
+                Log::eMessageTypes::Alert);
+            target->setProne();
+        }
+        return false;
+    }
+
     bool doBlunt = false;
     eDamageTypes damageType = attack.component->getType();
 

@@ -66,6 +66,7 @@ public:
 
     int getProficiency(eWeaponTypes type) { return m_proficiencies[type]; }
 
+    void inflictImpact(int impact);
     void inflictWound(Wound* wound, bool manueverFirst = false);
     const std::vector<Wound*>& getWounds() const { return m_wounds; }
     int getSuccessRate() const;

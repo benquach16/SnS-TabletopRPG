@@ -86,15 +86,16 @@ inline int defenseManueverCost(eDefensiveManuevers manuever)
 }
 
 enum class eLength : unsigned {
-    Hand = 0,
-    Close = 1,
-    Short = 2,
-    Medium = 3,
-    Long = 4,
-    VeryLong = 5,
-    Extended = 6,
-    Extreme = 7,
-    Ludicrous = 8
+    Half = 0,
+    Hand = 1,
+    Close = 2,
+    Short = 3,
+    Medium = 4,
+    Long = 5,
+    VeryLong = 6,
+    Extended = 7,
+    Extreme = 8,
+    Ludicrous = 9
 };
 
 enum class eInitiativeRoll : unsigned {

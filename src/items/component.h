@@ -24,6 +24,7 @@ public:
     bool isLinked(eGrips grip) const;
     std::set<eGrips> getGrips() const;
     bool isPommel() const { return m_pommel; }
+
 private:
     std::string m_name;
     int m_damage;

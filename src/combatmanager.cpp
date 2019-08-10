@@ -44,7 +44,6 @@ bool CombatManager::run(float tick)
         m_instanceId = 0;
         m_currentId = 0;
         cleanup();
-        // cout << "no more instances" << endl;
         return false;
     }
     switch (m_currentState) {
@@ -66,7 +65,6 @@ bool CombatManager::run(float tick)
         m_currentId = 0;
         m_instanceId = 0;
         cleanup();
-        // cout << "no more instances" << endl;
         return false;
     }
     return true;
@@ -82,7 +80,7 @@ void CombatManager::doRunCombat(float tick)
         m_instances[m_currentId]->forceTempo(eTempo::First);
     }
 
-    //ugly but needed for ui
+    // ugly but needed for ui
     if (tick <= cTick) {
         return;
     }
@@ -93,7 +91,7 @@ void CombatManager::doRunCombat(float tick)
 
     m_instances[m_currentId]->run();
 
-    if (m_instances[m_currentId]->getState() == eCombatState::Uninitialized) {
+    if (m_instances[m_currentId]->getState() == eCombatState::FinishedCombat) {
         delete m_instances[m_currentId];
         m_instances.erase(m_instances.begin() + m_currentId);
         if (m_instanceId == m_activeInstances.size()) {
@@ -123,8 +121,9 @@ void CombatManager::doRunCombat(float tick)
                 refreshInstances();
                 m_doPositionRoll = true;
             }
-
-            switchInitiative();
+            if(m_instances.size() > 1) {
+                switchInitiative();
+            }
             m_instanceId = 0;
         }
     }
@@ -202,6 +201,7 @@ void CombatManager::startCombatWith(Creature* creature)
 
 CombatInstance* CombatManager::getCurrentInstance() const
 {
+    assert(m_instances.size() > 0);
     assert(m_currentId < m_instances.size());
     return m_instances[m_currentId];
 }

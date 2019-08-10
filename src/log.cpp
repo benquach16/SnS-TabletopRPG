@@ -8,7 +8,20 @@ using namespace std;
 
 std::deque<Log::message> Log::m_queue = std::deque<Log::message>();
 
-void Log::push(const std::string& str, eMessageTypes type) { m_queue.push_back({ str, type }); }
+void Log::push(const std::string& str, eMessageTypes type)
+{
+    // split if the string is too long
+    auto windowSize = Game::getWindow().getSize();
+    int width = str.size() * cCharWidth;
+    if (width > windowSize.x) {
+        int diff = width - windowSize.x;
+        int count = diff / cCharWidth;
+        m_queue.push_back({ str.substr(0, count), type });
+        m_queue.push_back({ str.substr(count, str.size() - count), type });
+    } else {
+        m_queue.push_back({ str, type });
+    }
+}
 
 void Log::run()
 {
@@ -72,18 +85,23 @@ sf::Text Log::createLogText(const std::string& str, eMessageTypes type)
 
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    if (type == eMessageTypes::Announcement) {
+    switch (type) {
+    case eMessageTypes::Announcement:
         text.setFillColor(sf::Color::Yellow);
-    }
-    if (type == eMessageTypes::Standard) {
+        break;
+    case eMessageTypes::Standard:
         text.setFillColor(sf::Color::White);
-    }
-    if (type == eMessageTypes::Alert) {
+        break;
+    case eMessageTypes::Alert:
         text.setFillColor(sf::Color::Cyan);
-    }
-    if (type == eMessageTypes::Damage) {
+        break;
+    case eMessageTypes::Damage:
         text.setFillColor(sf::Color::Red);
         text.setStyle(sf::Text::Bold);
+        break;
+    case eMessageTypes::Dialogue:
+        text.setFillColor(sf::Color::Green);
+        break;
     }
     return text;
 }

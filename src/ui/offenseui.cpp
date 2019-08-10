@@ -57,7 +57,7 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool linkedParry)
 
     int mordhauCost = offenseManueverCost(eOffensiveManuevers::Mordhau);
     bool freeMordhau = player->getGrip() == eGrips::HalfSword;
-    if(freeMordhau == true) {
+    if (freeMordhau == true) {
         str += "0";
         mordhauCost = 0;
     } else {
@@ -96,13 +96,13 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool linkedParry)
             if (player->getPrimaryWeapon()->getType() == eWeaponTypes::Swords
                 || player->getPrimaryWeapon()->getType() == eWeaponTypes::Longswords) {
 
-                if(player->getCombatPool() >= mordhauCost) {
+                if (player->getCombatPool() >= mordhauCost) {
                     player->reduceCombatPool(mordhauCost);
                     const Weapon* weapon = player->getPrimaryWeapon();
                     player->setOffenseManuever(eOffensiveManuevers::Mordhau);
                     player->setOffenseComponent(weapon->getPommelStrike());
                     player->setOffenseTarget(eHitLocations::Head);
-                    if(linkedParry == true) {
+                    if (linkedParry == true) {
                         player->setOffenseReady();
                         m_currentState = eUiState::Finished;
                     } else {
@@ -176,7 +176,8 @@ void OffenseUI::doComponent(sf::Event event, Player* player)
     text.setFont(Game::getDefaultFont());
     std::string str("Choose weapon component:\n");
     eGrips grip = player->getGrip();
-    if (player->getQueuedOffense().manuever == eOffensiveManuevers::Swing) {
+    if (player->getQueuedOffense().manuever == eOffensiveManuevers::Swing
+        || player->getQueuedOffense().manuever == eOffensiveManuevers::Hook) {
         for (int i = 0; i < weapon->getSwingComponents(grip).size(); ++i) {
             char idx = ('a' + i);
 
