@@ -8,7 +8,7 @@ PlayerObject::PlayerObject()
 {
     // temp
     m_manager = new CombatManager(m_creature);
-    m_creature->setWeapon(1040);
+    m_creature->setWeapon(1050);
     m_creature->equipArmor(2055);
     m_creature->equipArmor(2052);
     m_creature->equipArmor(2044);

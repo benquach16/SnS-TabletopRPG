@@ -2,21 +2,27 @@
 #include "../game.h"
 #include "types.h"
 
-GameUI::GameUI() {}
+GameUI::GameUI()
+{
+    m_helpText.setCharacterSize(cCharSize);
+    m_helpText.setFont(Game::getDefaultFont());
+    m_helpText.setString("I - Inventory\nP - Pickup\nD - Look at object\nA - "
+                         "Attack\nT - Talk\nR - Rest\n");
+}
 
 void GameUI::run(sf::Event event)
 {
-    sf::Text text;
-    text.setCharacterSize(cCharSize);
-    text.setFont(Game::getDefaultFont());
-    text.setString("I - Inventory\nP - Pickup\nD - Look at object\nA - "
-                   "Attack\nT - Talk\nR - Rest\n");
-    sf::FloatRect backgroundRect = text.getLocalBounds();
+    sf::FloatRect backgroundRect = m_helpText.getLocalBounds();
     backgroundRect.width += 5;
-    sf::RectangleShape background(sf::Vector2f(backgroundRect.width, backgroundRect.height));
-    background.setFillColor(sf::Color(50, 50, 50, 30));
-    Game::getWindow().draw(background);
-    Game::getWindow().draw(text);
+    m_bkg.setSize(sf::Vector2f(backgroundRect.width, backgroundRect.height));
+    m_bkg.setFillColor(sf::Color(50, 50, 50, 30));
+    Game::getWindow().draw(m_bkg);
+    Game::getWindow().draw(m_helpText);
+}
+
+void GameUI::runDialog(sf::Event event, PlayerObject* player, CreatureObject* creature)
+{
+    m_dialogueUI.run(event, player, creature);
 }
 
 void GameUI::runCombat(sf::Event event, const CombatManager* manager)

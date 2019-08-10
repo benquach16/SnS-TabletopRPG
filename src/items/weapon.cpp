@@ -57,15 +57,28 @@ Weapon::~Weapon()
 
 Component* Weapon::getBestAttack() const
 {
+    // should make sure that we can even use in a particular grip
     assert(m_components.size() > 0);
 
     Component* ret = m_components[0];
     for (int i = 1; i < m_components.size(); ++i) {
-        if (m_components[i]->getDamage() > ret->getDamage()) {
+        if (m_components[i]->getDamage() > ret->getDamage() && m_components[i]->isPommel() == false) {
             ret = m_components[i];
         }
     }
 
+    return ret;
+}
+
+Component* Weapon::getPommelStrike() const
+{
+    Component* ret = nullptr;
+    for(auto it : m_components) {
+        if(it->isPommel() == true) {
+            ret = it;
+        }
+    }
+    assert(ret != nullptr);
     return ret;
 }
 
@@ -145,6 +158,11 @@ WeaponTable::WeaponTable()
                 grips[eGrips::Staff] = false;
                 addStandardGrips = false;
             }
+            bool pommel = false;
+            if (componentJson[i]["pommel"].is_null() == false) {
+                addStandardGrips = false;
+                pommel = true;
+            }
 
             // we have specialized grips. most grip info should come from templates (polearm grips,
             // swords, etc), so this should not be a common code path
@@ -176,8 +194,8 @@ WeaponTable::WeaponTable()
                 }
             }
 
-            Component* component
-                = new Component(componentName, damage, damageType, attack, properties, grips);
+            Component* component = new Component(
+                componentName, damage, damageType, attack, properties, grips, pommel);
 
             weaponComponents.push_back(component);
         }

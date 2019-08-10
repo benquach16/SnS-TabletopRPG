@@ -51,24 +51,25 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool allowStealIniti
         pinpointCost = 1;
     } else {
         str += to_string(pinpointCost);
-        ;
     }
 
-    str += "AP)\nd - Beat (1AP)\ne - Hook (1AP)\nf - Wrap (1AP)\ng - Inspect Target";
+    str += "AP)\nd - Beat (1AP)\ne - Hook\nf - Wrap (1AP)\ng - Slam\nh - Mordhau(1AP)\ni - Inspect "
+           "Target";
     text.setString(str);
     Game::getWindow().draw(text);
 
     if (event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
-        if (c == 'a') {
+        switch (c) {
+        case 'a':
             player->setOffenseManuever(eOffensiveManuevers::Swing);
             m_currentState = eUiState::ChooseFeint;
-        }
-        if (c == 'b') {
+            break;
+        case 'b':
             player->setOffenseManuever(eOffensiveManuevers::Thrust);
             m_currentState = eUiState::ChooseFeint;
-        }
-        if (c == 'c') {
+            break;
+        case 'c':
             if (player->getCombatPool() > pinpointCost) {
                 player->setOffenseManuever(eOffensiveManuevers::PinpointThrust);
                 m_currentState = eUiState::ChooseFeint;
@@ -77,9 +78,28 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool allowStealIniti
                 // need 2 dice
                 Log::push(to_string(pinpointCost) + " AP needed.");
             }
-        }
-        if (c == 'g') {
+            break;
+        case 'e':
+            player->setOffenseManuever(eOffensiveManuevers::Hook);
+            m_currentState = eUiState::ChooseFeint;
+            break;
+        case 'h':
+            if (player->getPrimaryWeapon()->getType() == eWeaponTypes::Swords
+                || player->getPrimaryWeapon()->getType() == eWeaponTypes::Longswords) {
+                player->setOffenseManuever(eOffensiveManuevers::Mordhau);
+                const Weapon* weapon = player->getPrimaryWeapon();
+                player->setOffenseComponent(weapon->getPommelStrike());
+                player->setOffenseTarget(eHitLocations::Head);
+                m_currentState = eUiState::ChooseDice;
+            } else {
+                Log::push("You need a sword to use this manuever");
+            }
+            break;
+        case 'i':
             m_currentState = eUiState::InspectTarget;
+            break;
+        default:
+            break;
         }
     }
 }

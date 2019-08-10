@@ -21,6 +21,8 @@ public:
     // convinence functions
     Component* getBestAttack() const;
 
+    Component* getPommelStrike() const;
+
 private:
     Weapon();
     eLength m_length;

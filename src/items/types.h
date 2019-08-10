@@ -20,7 +20,15 @@ enum class eAttacks {
     Swing,
 };
 
-enum class eOffensiveManuevers : unsigned { Swing, Thrust, PinpointThrust, Beat, Mordhau, Hook };
+enum class eOffensiveManuevers : unsigned {
+    Swing,
+    Thrust,
+    PinpointThrust,
+    Beat,
+    Mordhau,
+    Hook,
+    Slam
+};
 
 enum class ePositionManuevers : unsigned { Stand, Pickup };
 
@@ -45,7 +53,6 @@ inline int offenseManueverCost(eOffensiveManuevers manuever)
     switch (manuever) {
     case eOffensiveManuevers::PinpointThrust:
         return 2;
-    case eOffensiveManuevers::Hook:
     case eOffensiveManuevers::Beat:
     case eOffensiveManuevers::Mordhau:
         return 1;

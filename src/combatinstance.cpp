@@ -176,7 +176,7 @@ void CombatInstance::doPreexchangeActions()
 
     // check if grip causes combatants to move closer
     eLength length = max(m_side1->getCurrentReach(), m_side2->getCurrentReach());
-    if(length < m_currentReach) {
+    if (length < m_currentReach) {
         m_currentReach = length;
     }
     if (m_dualRedThrow == true) {
@@ -728,8 +728,8 @@ void CombatInstance::doPostResolution()
     }
     m_numTempos++;
 
-    //only preexchangeactions after a refresh
-    if(m_currentTempo == eTempo::Second) {
+    // only preexchangeactions after a refresh
+    if (m_currentTempo == eTempo::Second) {
         m_currentState = eCombatState::PreexchangeActions;
     } else {
         m_currentState = eCombatState::Offense;
@@ -758,7 +758,7 @@ bool CombatInstance::inflictWound(
 {
     bool doBlunt = false;
     eDamageTypes damageType = attack.component->getType();
-    
+
     eBodyParts bodyPart = WoundTable::getSingleton()->getSwing(attack.target);
     // any thrust manevuer should trigger this
     if (attack.manuever == eOffensiveManuevers::Thrust) {
@@ -776,7 +776,7 @@ bool CombatInstance::inflictWound(
             }
             MoS -= 1;
         }
-    } else if(attack.manuever == eOffensiveManuevers::Mordhau) {
+    } else if (attack.manuever == eOffensiveManuevers::Mordhau) {
         damageType = eDamageTypes::Blunt;
         MoS++;
     }
@@ -792,8 +792,7 @@ bool CombatInstance::inflictWound(
 
     // complicated armor calcs go here
     finalDamage -= armorAtLocation.AV;
-    if (armorAtLocation.isMetal == true && damageType != eDamageTypes::Blunt
-        && finalDamage > 0) {
+    if (armorAtLocation.isMetal == true && damageType != eDamageTypes::Blunt && finalDamage > 0) {
         if (attack.component->hasProperty(eWeaponProperties::MaillePiercing) == false
             && armorAtLocation.type == eArmorTypes::Maille) {
             writeMessage("Maille armor reduces wound level by half");

@@ -59,8 +59,6 @@ void Game::run()
     HumanObject target1;
     HumanObject target2;
 
-    // playerObject->startCombatWith(target1.getCreatureComponent());
-    // playerObject->startCombatWith(target2.getCreatureComponent());
     SelectorObject selector;
     GFXSelector gfxSelector;
 
@@ -279,7 +277,6 @@ void Game::run()
             if (tick > CombatManager::cTick) {
                 // pause rest of game if player is in combat. combat between two
                 // NPCS can happen anytime
-
                 level.run();
                 tick = 0;
             }

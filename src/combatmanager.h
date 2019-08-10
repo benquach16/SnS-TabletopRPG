@@ -39,7 +39,7 @@ private:
     unsigned m_currentId;
     unsigned m_instanceId;
     bool m_positionDone;
-    bool m_allowNewCreatures;
+    bool m_doPositionRoll;
     Creature* m_mainCreature;
     bool m_isPlayers;
     eOutnumberedSide m_side;
