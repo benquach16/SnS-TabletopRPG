@@ -121,7 +121,7 @@ void CombatManager::doRunCombat(float tick)
                 refreshInstances();
                 m_doPositionRoll = true;
             }
-            if(m_instances.size() > 1) {
+            if (m_instances.size() > 1) {
                 switchInitiative();
             }
             m_instanceId = 0;

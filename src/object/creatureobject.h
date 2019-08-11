@@ -47,6 +47,7 @@ public:
 
     bool getBleeding() const { return m_creature->getBleeding(); }
 
+    std::string getStartingDialogueLabel() const { return "greeting_hostile"; }
 protected:
     Creature* m_creature;
     eCreatureFaction m_creatureFaction;

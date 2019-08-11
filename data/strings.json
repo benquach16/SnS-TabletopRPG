@@ -1,9 +1,0 @@
-{
-    "generic": {
-        "greeting": "Hello.",
-        "responses": {
-            "shop": "I would like to browse your wares",
-            "end": "I must leave now."
-        }
-    }
-}

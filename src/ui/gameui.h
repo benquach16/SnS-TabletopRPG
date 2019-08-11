@@ -14,6 +14,7 @@ public:
     GameUI();
 
     void run(sf::Event event);
+    void initDialog(CreatureObject* creature);
     void runDialog(sf::Event event, PlayerObject* player, CreatureObject* creature);
     void runCombat(sf::Event event, const CombatManager* manager);
     void runInventory(sf::Event event, PlayerObject* player);

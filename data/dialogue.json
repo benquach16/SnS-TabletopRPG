@@ -1,0 +1,21 @@
+{
+    "greeting_neutral" : {
+        "message": "Hello.",
+        "responses": ["end", "ask_trade"]
+    },
+    "ask_trade": {
+        "message": "I would like to browse your wares.",
+        "responses": ["text3"]
+    },
+    "text3": {
+        "message": "You should probably ask a shopkeeper.",
+        "responses": ["end"]
+    },
+    "greeting_hostile" : {
+        "message": "I do not want to speak to you.",
+        "responses": ["end"]
+    },
+    "end": {
+        "message": "I must leave now."
+    }
+}

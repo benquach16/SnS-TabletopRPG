@@ -1,5 +1,6 @@
 #include "gameui.h"
 #include "../game.h"
+#include "../object/creatureobject.h"
 #include "types.h"
 
 GameUI::GameUI()
@@ -18,6 +19,11 @@ void GameUI::run(sf::Event event)
     m_bkg.setFillColor(sf::Color(50, 50, 50, 30));
     Game::getWindow().draw(m_bkg);
     Game::getWindow().draw(m_helpText);
+}
+
+void GameUI::initDialog(CreatureObject* creature)
+{
+    m_dialogueUI.init(creature->getStartingDialogueLabel());
 }
 
 void GameUI::runDialog(sf::Event event, PlayerObject* player, CreatureObject* creature)

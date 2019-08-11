@@ -189,6 +189,7 @@ void Game::run()
                         CreatureObject* creatureObject = static_cast<CreatureObject*>(object);
                         if (creatureObject->isConscious() == true) {
                             talking = creatureObject;
+                            ui.initDialog(talking);
                             m_currentState = eGameState::DialogueMode;
                         } else {
                             Log::push("You can't talk to an unconscious creature");
