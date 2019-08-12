@@ -304,7 +304,6 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
     if (dualRedThrow == true && m_combatPool > 0 && random_static::get(0, 1) == 1) {
         m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
         m_currentDefense.dice = m_combatPool - m_currentOffense.dice;
-
         // hacky since usually this happens in combatinstance
         // m_combatPool -= m_currentDefense.dice;
         assert(m_currentDefense.dice <= m_combatPool || m_currentDefense.dice == 0);

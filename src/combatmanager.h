@@ -12,11 +12,17 @@ enum class eCombatManagerState { RunCombat, PositioningRoll };
 
 class CombatEdge {
 public:
+    typedef unsigned EdgeId;
     CombatEdge(CombatInstance* instance, CombatManager* vertex1, CombatManager* vertex2);
     CombatInstance* getInstance() const { return m_instance; }
-    CombatManager* getVertex1() { return m_vertex1; }
-    CombatManager* getVertex2() { return m_vertex2; }
+    CombatManager* getVertex1() const { return m_vertex1; }
+    CombatManager* getVertex2() const { return m_vertex2; }
+    void remove();
+    EdgeId getId() { return m_id; }
+    void setActive(bool active) { m_active = active; }
+    bool getActive() const { return m_active; }
 private:
+    EdgeId m_id;
     CombatEdge();
     bool m_active;
     CombatInstance* m_instance;
@@ -27,6 +33,8 @@ private:
 class CombatNode {
 public:
     CombatNode(CreatureObject* creature);
+    void run();
+
 private:
     CombatNode();
     std::vector<CombatEdge> m_edges;
@@ -44,9 +52,10 @@ public:
     CombatInstance* getCurrentInstance() const;
     void startCombatWith(const CreatureObject* creature);
     eCombatManagerState getState() const { return m_currentState; }
-    bool isEngaged() const { return m_instances.size() > 0; }
-    void addInstance(CombatEdge edge);
-    bool canEngage() const { return m_instances.size() < cMaxEngaged; }
+    bool isEngaged() const { return m_edges.size() > 0; }
+    void addEdge(CombatEdge edge);
+    bool canEngage() const { return m_edges.size() < cMaxEngaged; }
+    void remove(CombatEdge::EdgeId id);
 
 private:
     CombatManager();
@@ -62,10 +71,8 @@ private:
     void writeMessage(
         const std::string& str, Log::eMessageTypes type = Log::eMessageTypes::Standard);
 
-    std::vector<CombatEdge> m_instances;
-    std::vector<unsigned> m_activeInstances;
-    unsigned m_currentId;
-    unsigned m_instanceId;
+    std::vector<CombatEdge> m_edges;
+    unsigned m_edgeId;
     bool m_positionDone;
     bool m_doPositionRoll;
     CreatureObject* m_mainCreature;

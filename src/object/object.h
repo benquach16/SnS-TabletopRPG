@@ -22,6 +22,8 @@ class Level;
 
 class Object {
 public:
+    typedef unsigned ObjectId;
+    
     Object();
     virtual ~Object();
     vector2d getPosition() const { return m_position; }
@@ -47,12 +49,12 @@ public:
     const std::map<int, int>& getInventory() const { return m_inventory; }
     std::map<int, int>& getInventoryMutable() { return m_inventory; }
 
-    unsigned getId() const { return m_id; }
+    ObjectId getId() const { return m_id; }
 
 protected:
     vector2d m_position;
 
     std::map<int, int> m_inventory;
     // should be assigned a unique id on creation
-    unsigned m_id;
+    ObjectId m_id;
 };

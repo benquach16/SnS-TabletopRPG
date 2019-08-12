@@ -7,22 +7,26 @@
 
 using namespace std;
 
+static CombatEdge::EdgeId ids;
+
 CombatEdge::CombatEdge(CombatInstance* instance, CombatManager* vertex1, CombatManager* vertex2)
     : m_instance(instance)
     , m_vertex1(vertex1)
     , m_vertex2(vertex2)
-    , m_active(true)
+    , m_active(false)
 {
+    m_id = ids++;
 }
 
+void CombatEdge::remove() {}
+
 CombatManager::CombatManager(CreatureObject* creature)
-    : m_currentId(0)
-    , m_mainCreature(creature)
+    : m_mainCreature(creature)
     , m_side(eOutnumberedSide::None)
     , m_currentTempo(eTempo::First)
     , m_currentState(eCombatManagerState::RunCombat)
     , m_positionDone(false)
-    , m_instanceId(0)
+    , m_edgeId(0)
     , m_doPositionRoll(false)
 {
 }
@@ -31,11 +35,13 @@ CombatManager::~CombatManager() { cleanup(); }
 
 void CombatManager::cleanup()
 {
-    m_instances.clear();
+    for (auto it : m_edges) {
+        // remove from both vertices
+    }
+    m_edges.clear();
     m_currentTempo = eTempo::First;
     m_side = eOutnumberedSide::None;
-    m_currentId = 0;
-    m_instanceId = 0;
+    m_edgeId = 0;
 }
 
 bool CombatManager::run(float tick)
@@ -45,9 +51,8 @@ bool CombatManager::run(float tick)
         cleanup();
         return false;
     }
-    if (m_instances.size() == 0) {
-        m_instanceId = 0;
-        m_currentId = 0;
+    if (m_edges.size() == 0) {
+        m_edgeId = 0;
         cleanup();
         return false;
     }
@@ -66,9 +71,8 @@ bool CombatManager::run(float tick)
     }
 
     // second check in case everyone died in previous iteration
-    if (m_instances.size() == 0) {
-        m_currentId = 0;
-        m_instanceId = 0;
+    if (m_edges.size() == 0) {
+        m_edgeId = 0;
         cleanup();
         return false;
     }
@@ -81,56 +85,64 @@ void CombatManager::doRunCombat(float tick)
         m_currentState = eCombatManagerState::PositioningRoll;
         return;
     }
-    if (m_instances.size() > 1) {
-        m_instances[m_currentId].getInstance()->forceTempo(eTempo::First);
+    if (m_edges.size() > 1) {
+        m_edges[m_edgeId].getInstance()->forceTempo(eTempo::First);
     }
 
+    if(m_edges[m_edgeId].getActive() == false) {
+        m_edgeId = m_edgeId >= m_edges.size() ? 0 : m_edgeId++;
+    }
+    
     // ugly but needed for ui
     if (tick <= cTick) {
         return;
     }
-    // index into array of indexes for active instances
-    m_currentId = m_activeInstances[m_instanceId];
 
-    bool change = m_instances[m_currentId].getInstance()->getState() == eCombatState::PostResolution;
+    bool change = m_edges[m_edgeId].getInstance()->getState() == eCombatState::PostResolution;
 
-    m_instances[m_currentId].getInstance()->run();
+    m_edges[m_edgeId].getInstance()->run();
 
-    if (m_instances[m_currentId].getInstance()->getState() == eCombatState::FinishedCombat) {
+    if (m_edges[m_edgeId].getInstance()->getState() == eCombatState::Uninitialized) {
         // remove from both vertices
-        delete m_instances[m_currentId].getInstance();
-        m_instances.erase(m_instances.begin() + m_currentId);
-        if (m_instanceId == m_activeInstances.size()) {
-            m_instanceId = 0;
-        }
-        if (m_instances.size() > 1) {
+        delete m_edges[m_edgeId].getInstance();
+        CombatEdge::EdgeId id = m_edges[m_edgeId].getId();
+        m_edges[m_edgeId].getVertex1()->remove(id);
+        m_edges[m_edgeId].getVertex2()->remove(id);
+        if (m_edges.size() > 1) {
             writeMessage("Combatant has been killed, refreshing combat pools");
-            refreshInstances();
             m_doPositionRoll = true;
         }
-        m_currentId = 0;
+        refreshInstances();
+        m_edgeId = 0;
         m_currentTempo = eTempo::First;
     }
     // since we just deleted, make sure we clear if we don't have any more
     // combat
-    if (m_activeInstances.size() == 0) {
-        m_instanceId = 0;
-    }
     if (change == true) {
         m_positionDone = false;
-        if (m_instanceId < static_cast<int>(m_activeInstances.size()) - 1) {
-            m_instanceId++;
+        if (m_edgeId < static_cast<int>(m_edges.size()) - 1) {
+            m_edgeId++;
         } else {
-            if (m_currentTempo == eTempo::Second && m_instances.size() > 1) {
+            if (m_currentTempo == eTempo::Second && m_edges.size() > 1) {
                 writeMessage("Exchanges have ended, combat pools for all "
                              "combatants have reset");
                 refreshInstances();
                 m_doPositionRoll = true;
             }
-            if (m_instances.size() > 1) {
+            if (m_edges.size() > 1) {
                 switchInitiative();
             }
-            m_instanceId = 0;
+            m_edgeId = 0;
+        }
+    }
+}
+
+void CombatManager::remove(CombatEdge::EdgeId id)
+{
+    for (unsigned i = 0; i < m_edges.size(); ++i) {
+        if (m_edges[i].getId() == id) {
+            m_edges.erase(m_edges.begin() + i);
+            return;
         }
     }
 }
@@ -142,48 +154,44 @@ void CombatManager::doPositionRoll()
         m_currentState = eCombatManagerState::PositioningRoll;
         return;
     }
-    m_activeInstances.clear();
-    for (auto it : m_instances) {
+    for (auto it : m_edges) {
         // do positioning roll
         // side 2 not guarenteed to be the other side
         it.getInstance()->getSide2()->doPositionRoll(m_mainCreature->getCreatureComponent());
     }
-
+    unsigned count = 0;
     // now roll
     int mainSuccesses = DiceRoller::rollGetSuccess(m_mainCreature->getCreatureComponent()->getBTN(),
         m_mainCreature->getCreatureComponent()->getQueuedPosition().dice);
-    for (unsigned i = 0; i < m_instances.size(); ++i) {
-        Creature* creature = m_instances[i].getInstance()->getSide2();
+    for (unsigned i = 0; i < m_edges.size(); ++i) {
+        // not always side 2
+        Creature* creature = m_edges[i].getInstance()->getSide2();
         int successes
             = DiceRoller::rollGetSuccess(creature->getBTN(), creature->getQueuedPosition().dice);
         if (successes >= mainSuccesses) {
             writeMessage(
                 creature->getName() + " kept up with " + m_mainCreature->getName() + "'s footwork");
-            m_activeInstances.push_back(i);
+            m_edges[i].setActive(true);
+            count++;
+        } else {
+            m_edges[i].setActive(false);
         }
         creature->clearCreatureManuevers();
     }
     // have to have at least one
-    if (m_activeInstances.size() == 0) {
+    if (count == 0) {
         writeMessage("No combatants kept up with footwork, initiating duel");
-        m_activeInstances.push_back(0);
+        m_edges[0].setActive(true);
     } else {
-        writeMessage(m_mainCreature->getName() + " is engaged with "
-            + to_string(m_activeInstances.size()) + " opponents");
+        writeMessage(
+            m_mainCreature->getName() + " is engaged with " + to_string(count) + " opponents");
     }
-    m_instanceId = 0;
-    m_currentId = 0;
+    m_edgeId = 0;
     m_currentState = eCombatManagerState::RunCombat;
     m_doPositionRoll = false;
 }
 
-void CombatManager::addInstance(CombatEdge edge)
-{
-    if (m_instances.size() == 0) {
-        m_activeInstances.push_back(0);
-    }
-    m_instances.push_back(edge);
-}
+void CombatManager::addEdge(CombatEdge edge) { m_edges.push_back(edge); }
 
 void CombatManager::startCombatWith(const CreatureObject* creature)
 {
@@ -194,12 +202,7 @@ void CombatManager::startCombatWith(const CreatureObject* creature)
     // if a creature initiatives combat against another creature, but is not the
     // main creature then we spin up another combatmanger
     CombatInstance* instance = new CombatInstance;
-    if (m_instances.size() == 1) {
-        m_currentId = 0;
-    }
-    if (m_instances.size() == 0) {
-        m_activeInstances.push_back(0);
-    }
+
     writeMessage(
         "Combat started between " + m_mainCreature->getName() + " and " + creature->getName(),
         Log::eMessageTypes::Announcement);
@@ -213,23 +216,26 @@ void CombatManager::startCombatWith(const CreatureObject* creature)
             m_mainCreature->getCreatureComponent(), creature->getCreatureComponent());
     }
     CombatEdge edge(instance, this, creature->getCombatManager());
-    m_instances.push_back(edge);
+    if(m_edges.size() == 0) {
+        edge.setActive(true);
+    }
+    m_edges.push_back(edge);
 
-    creature->getCombatManager()->addInstance(edge);
+    creature->getCombatManager()->addEdge(edge);
 }
 
 CombatInstance* CombatManager::getCurrentInstance() const
 {
-    if (m_instances.size() == 0) {
+    if (m_edges.size() == 0) {
         return nullptr;
     }
-    assert(m_currentId < m_instances.size());
-    return m_instances.at(m_currentId).getInstance();
+    assert(m_edgeId < m_edges.size());
+    return m_edges.at(m_edgeId).getInstance();
 }
 
 void CombatManager::refreshInstances()
 {
-    for (auto it : m_instances) {
+    for (auto it : m_edges) {
         it.getInstance()->forceRefresh();
     }
 }
