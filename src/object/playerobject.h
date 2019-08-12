@@ -9,10 +9,7 @@ class PlayerObject : public CreatureObject {
 public:
     PlayerObject();
     ~PlayerObject();
-    void startCombatWith(Creature* creature);
     bool runCombat(float tick);
-    CombatInstance& getCombatInstance() { return m_instance; }
-    const CombatManager* getCombatManager() { return m_manager; }
 
     eCreatureFaction getFaction() const override { return eCreatureFaction::Player; }
     eCreatureRace getRace() const override { return eCreatureRace::Human; }
@@ -25,6 +22,4 @@ public:
     bool preserveBetweenLevels() const override { return true; }
 
 private:
-    CombatInstance m_instance;
-    CombatManager* m_manager;
 };

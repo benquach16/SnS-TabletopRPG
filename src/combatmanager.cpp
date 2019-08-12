@@ -7,7 +7,15 @@
 
 using namespace std;
 
-CombatManager::CombatManager(Creature* creature)
+CombatEdge::CombatEdge(CombatInstance* instance, CombatManager* vertex1, CombatManager* vertex2)
+    : m_instance(instance)
+    , m_vertex1(vertex1)
+    , m_vertex2(vertex2)
+    , m_active(true)
+{
+}
+
+CombatManager::CombatManager(CreatureObject* creature)
     : m_currentId(0)
     , m_mainCreature(creature)
     , m_side(eOutnumberedSide::None)
@@ -23,9 +31,6 @@ CombatManager::~CombatManager() { cleanup(); }
 
 void CombatManager::cleanup()
 {
-    for (auto it : m_instances) {
-        delete it;
-    }
     m_instances.clear();
     m_currentTempo = eTempo::First;
     m_side = eOutnumberedSide::None;
@@ -77,7 +82,7 @@ void CombatManager::doRunCombat(float tick)
         return;
     }
     if (m_instances.size() > 1) {
-        m_instances[m_currentId]->forceTempo(eTempo::First);
+        m_instances[m_currentId].getInstance()->forceTempo(eTempo::First);
     }
 
     // ugly but needed for ui
@@ -87,12 +92,13 @@ void CombatManager::doRunCombat(float tick)
     // index into array of indexes for active instances
     m_currentId = m_activeInstances[m_instanceId];
 
-    bool change = m_instances[m_currentId]->getState() == eCombatState::PostResolution;
+    bool change = m_instances[m_currentId].getInstance()->getState() == eCombatState::PostResolution;
 
-    m_instances[m_currentId]->run();
+    m_instances[m_currentId].getInstance()->run();
 
-    if (m_instances[m_currentId]->getState() == eCombatState::FinishedCombat) {
-        delete m_instances[m_currentId];
+    if (m_instances[m_currentId].getInstance()->getState() == eCombatState::FinishedCombat) {
+        // remove from both vertices
+        delete m_instances[m_currentId].getInstance();
         m_instances.erase(m_instances.begin() + m_currentId);
         if (m_instanceId == m_activeInstances.size()) {
             m_instanceId = 0;
@@ -131,22 +137,23 @@ void CombatManager::doRunCombat(float tick)
 
 void CombatManager::doPositionRoll()
 {
-    // do player
-    if (m_mainCreature->getHasPosition() == false) {
+    // do player, this is hack
+    if (m_mainCreature->getCreatureComponent()->getHasPosition() == false) {
         m_currentState = eCombatManagerState::PositioningRoll;
         return;
     }
     m_activeInstances.clear();
     for (auto it : m_instances) {
         // do positioning roll
-        it->getSide2()->doPositionRoll(m_mainCreature);
+        // side 2 not guarenteed to be the other side
+        it.getInstance()->getSide2()->doPositionRoll(m_mainCreature->getCreatureComponent());
     }
 
     // now roll
-    int mainSuccesses = DiceRoller::rollGetSuccess(
-        m_mainCreature->getBTN(), m_mainCreature->getQueuedPosition().dice);
+    int mainSuccesses = DiceRoller::rollGetSuccess(m_mainCreature->getCreatureComponent()->getBTN(),
+        m_mainCreature->getCreatureComponent()->getQueuedPosition().dice);
     for (unsigned i = 0; i < m_instances.size(); ++i) {
-        Creature* creature = m_instances[i]->getSide2();
+        Creature* creature = m_instances[i].getInstance()->getSide2();
         int successes
             = DiceRoller::rollGetSuccess(creature->getBTN(), creature->getQueuedPosition().dice);
         if (successes >= mainSuccesses) {
@@ -170,9 +177,17 @@ void CombatManager::doPositionRoll()
     m_doPositionRoll = false;
 }
 
-void CombatManager::startCombatWith(Creature* creature)
+void CombatManager::addInstance(CombatEdge edge)
 {
-    if (m_instances.size() >= cMaxEngaged) {
+    if (m_instances.size() == 0) {
+        m_activeInstances.push_back(0);
+    }
+    m_instances.push_back(edge);
+}
+
+void CombatManager::startCombatWith(const CreatureObject* creature)
+{
+    if (creature->getCombatManager()->canEngage() == false) {
         return;
     }
 
@@ -180,12 +195,6 @@ void CombatManager::startCombatWith(Creature* creature)
     // main creature then we spin up another combatmanger
     CombatInstance* instance = new CombatInstance;
     if (m_instances.size() == 1) {
-        // ptr compares are gross, do ID compares
-        if (creature == m_instances[0]->getSide1()) {
-            m_side = eOutnumberedSide::Side1;
-        } else {
-            m_side = eOutnumberedSide::Side2;
-        }
         m_currentId = 0;
     }
     if (m_instances.size() == 0) {
@@ -195,21 +204,33 @@ void CombatManager::startCombatWith(Creature* creature)
         "Combat started between " + m_mainCreature->getName() + " and " + creature->getName(),
         Log::eMessageTypes::Announcement);
 
-    instance->initCombat(m_mainCreature, creature);
-    m_instances.push_back(instance);
+    // hack to enforce player being side 1
+    if (creature->isPlayer() == true) {
+        instance->initCombat(
+            creature->getCreatureComponent(), m_mainCreature->getCreatureComponent());
+    } else {
+        instance->initCombat(
+            m_mainCreature->getCreatureComponent(), creature->getCreatureComponent());
+    }
+    CombatEdge edge(instance, this, creature->getCombatManager());
+    m_instances.push_back(edge);
+
+    creature->getCombatManager()->addInstance(edge);
 }
 
 CombatInstance* CombatManager::getCurrentInstance() const
 {
-    assert(m_instances.size() > 0);
+    if (m_instances.size() == 0) {
+        return nullptr;
+    }
     assert(m_currentId < m_instances.size());
-    return m_instances[m_currentId];
+    return m_instances.at(m_currentId).getInstance();
 }
 
 void CombatManager::refreshInstances()
 {
     for (auto it : m_instances) {
-        it->forceRefresh();
+        it.getInstance()->forceRefresh();
     }
 }
 

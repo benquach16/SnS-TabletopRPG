@@ -26,9 +26,9 @@ void GameUI::initDialog(CreatureObject* creature)
     m_dialogueUI.init(creature->getStartingDialogueLabel());
 }
 
-void GameUI::runDialog(sf::Event event, PlayerObject* player, CreatureObject* creature)
+bool GameUI::runDialog(sf::Event event, PlayerObject* player, CreatureObject* creature)
 {
-    m_dialogueUI.run(event, player, creature);
+    return m_dialogueUI.run(event, player, creature);
 }
 
 void GameUI::runCombat(sf::Event event, const CombatManager* manager)

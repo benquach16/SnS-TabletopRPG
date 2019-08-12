@@ -55,7 +55,13 @@ DialogueUI::~DialogueUI()
     }
 }
 
-void DialogueUI::run(sf::Event event, PlayerObject* player, CreatureObject* creature)
+void DialogueUI::init(std::string startingLabel)
+{
+    m_currentLabel = startingLabel;
+    m_currentState = eUiState::TalkingNPC;
+}
+
+bool DialogueUI::run(sf::Event event, PlayerObject* player, CreatureObject* creature)
 {
     switch (m_currentState) {
     case eUiState::TalkingNPC:
@@ -65,8 +71,10 @@ void DialogueUI::run(sf::Event event, PlayerObject* player, CreatureObject* crea
         doTalkingPlayer(event, player, creature);
         break;
     case eUiState::Finished:
+        return false;
         break;
     }
+    return true;
 }
 
 void DialogueUI::doTalkingNPC(sf::Event event, PlayerObject* player, CreatureObject* creature)
@@ -104,15 +112,15 @@ void DialogueUI::doTalkingPlayer(sf::Event event, PlayerObject* player, Creature
         if (event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;
             if (c == idx) {
-                Log::push(player->getName() + ": " + node->getMessage(),
-                    Log::eMessageTypes::Dialogue);
+                Log::push(
+                    player->getName() + ": " + node->getMessage(), Log::eMessageTypes::Dialogue);
 
                 vector<string> chosenResponses = node->getResponses();
-                if(chosenResponses.size() == 0) {
+                if (chosenResponses.size() == 0) {
                     m_currentState = eUiState::Finished;
                     return;
                 }
-                //player responses should only have 1 follow up label
+                // player responses should only have 1 follow up label
                 assert(chosenResponses.size() == 1);
                 m_currentLabel = chosenResponses[0];
                 m_currentState = eUiState::TalkingNPC;

@@ -26,8 +26,8 @@ public:
     DialogueUI();
     ~DialogueUI();
     void resetState() { m_currentState = eUiState::TalkingNPC; }
-    void run(sf::Event event, PlayerObject* player, CreatureObject* creature);
-    void init(std::string startingLabel) { m_currentLabel = startingLabel; }
+    bool run(sf::Event event, PlayerObject* player, CreatureObject* creature);
+    void init(std::string startingLabel);
 
 private:
     void doTalkingNPC(sf::Event event, PlayerObject* player, CreatureObject* creature);

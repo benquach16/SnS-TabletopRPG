@@ -15,7 +15,7 @@ public:
 
     void run(sf::Event event);
     void initDialog(CreatureObject* creature);
-    void runDialog(sf::Event event, PlayerObject* player, CreatureObject* creature);
+    bool runDialog(sf::Event event, PlayerObject* player, CreatureObject* creature);
     void runCombat(sf::Event event, const CombatManager* manager);
     void runInventory(sf::Event event, PlayerObject* player);
     void runTrade(sf::Event event, std::map<int, int>& inventory, std::map<int, int>& container);

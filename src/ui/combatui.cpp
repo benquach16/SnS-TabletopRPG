@@ -36,6 +36,9 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
     }
 
     CombatInstance* instance = manager->getCurrentInstance();
+    if (instance == nullptr) {
+        return;
+    }
 
     if (instance->getState() == eCombatState::Uninitialized) {
         return;

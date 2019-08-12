@@ -1,4 +1,5 @@
 #include "creatureobject.h"
+#include "../combatmanager.h"
 #include "../items/consumable.h"
 
 using namespace std;
@@ -6,10 +7,11 @@ using namespace std;
 CreatureObject::CreatureObject(Creature* creature)
     : m_creature(creature)
     , m_creatureFaction(eCreatureFaction::None)
-    , m_combatManagerId(-1)
     , m_thirst(0)
     , m_hunger(0)
     , m_exhaustion(0)
+    , m_inCombat(false)
+    , m_manager(new CombatManager(this))
 {
 }
 
@@ -39,8 +41,17 @@ void CreatureObject::applyItem(int id)
         case eItemEffect::Hunger:
             m_hunger = max(0, m_hunger - it->getValue());
             break;
+        default:
+            break;
         }
     }
 }
 
 int CreatureObject::getFatigue() const { return m_creature->getFatigue(); }
+
+bool CreatureObject::isInCombat() const { return m_manager->isEngaged(); }
+
+void CreatureObject::startCombatWith(const CreatureObject* creature)
+{
+    m_manager->startCombatWith(creature);
+}

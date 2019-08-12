@@ -17,7 +17,8 @@ void AIController::run(const Level* level, CreatureObject* controlledCreature)
         return;
 
     std::vector<Object*> rLevelObjs = level->getObjects();
-    int minDist = 64;
+    constexpr int cMinDist = 64;
+    int minDist = cMinDist;
     CreatureObject* target = nullptr;
     for (int i = 0; i < rLevelObjs.size(); ++i) {
         Object* object = rLevelObjs[i];
@@ -46,11 +47,7 @@ void AIController::run(const Level* level, CreatureObject* controlledCreature)
         if (minDist > 2) {
             moveToward(target->getPosition(), level, controlledCreature);
         } else {
-            // init combat
-            if (target->isPlayer() == true) {
-                PlayerObject* playerObject = static_cast<PlayerObject*>(target);
-                playerObject->startCombatWith(controlledCreature->getCreatureComponent());
-            }
+            controlledCreature->startCombatWith(target);
         }
     } else {
         patrol(level, controlledCreature);

@@ -22,14 +22,14 @@ static constexpr int cBaseBloodLoss = 8;
 
 enum class eCreatureType { Human };
 
-enum class eCreatureState { Idle = 0, InCombat = 1, Dead = 2, Unconscious = 3 };
+enum class eCreatureState { Idle = 0, Dead = 2, Unconscious = 3 };
 
 enum class eCreatureFatigue { Hunger, Thirst, Sleepiness, Stamina };
 
 class Creature {
 public:
     Creature();
-
+    virtual ~Creature() {}
     virtual eCreatureType getCreatureType() = 0;
 
     int getBrawn() const { return m_brawn; }
@@ -136,7 +136,6 @@ public:
         return (m_currentState != eCreatureState::Unconscious)
             && (m_currentState != eCreatureState::Dead);
     }
-    void setInCombat() { m_currentState = eCreatureState::InCombat; }
     void setIdle() { m_currentState = eCreatureState::Idle; }
     void kill() { m_currentState = eCreatureState::Dead; }
 

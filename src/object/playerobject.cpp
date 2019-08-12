@@ -4,10 +4,7 @@
 
 PlayerObject::PlayerObject()
     : CreatureObject(new Player)
-    , m_manager(nullptr)
 {
-    // temp
-    m_manager = new CombatManager(m_creature);
     m_creature->setWeapon(1040);
     m_creature->equipArmor(2055);
     m_creature->equipArmor(2052);
@@ -33,10 +30,11 @@ PlayerObject::~PlayerObject()
     delete m_manager;
 }
 
-void PlayerObject::startCombatWith(Creature* creature)
+bool PlayerObject::runCombat(float tick)
 {
-    assert(m_instance.getState() == eCombatState::Uninitialized);
-    m_manager->startCombatWith(creature);
+    bool ret = m_manager->run(tick);
+    if (ret == false) {
+        setOutofCombat();
+    }
+    return ret;
 }
-
-bool PlayerObject::runCombat(float tick) { return m_manager->run(tick); }

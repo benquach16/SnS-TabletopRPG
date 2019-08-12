@@ -7,6 +7,7 @@
 class Player : public Human {
 public:
     Player();
+    ~Player() {}
     bool isPlayer() override { return true; }
 
     bool pollForInitiative();

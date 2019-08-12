@@ -50,8 +50,6 @@ void CombatInstance::initCombat(Creature* side1, Creature* side2)
 
     m_side1 = side1;
     m_side2 = side2;
-    m_side1->setInCombat();
-    m_side2->setInCombat();
 
     // m_side1->setStand();
     // m_side2->setStand();
@@ -741,12 +739,7 @@ void CombatInstance::doEndCombat()
     writeMessage("Combat has ended", Log::eMessageTypes::Announcement);
     m_side1->clearCreatureManuevers();
     m_side2->clearCreatureManuevers();
-    if (m_side1->isConscious() == true) {
-        m_side1->setIdle();
-    }
-    if (m_side2->isConscious() == true) {
-        m_side2->setIdle();
-    }
+
     m_side1 = nullptr;
     m_side2 = nullptr;
     m_currentState = eCombatState::Uninitialized;
