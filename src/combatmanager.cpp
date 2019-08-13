@@ -89,10 +89,11 @@ void CombatManager::doRunCombat(float tick)
         m_edges[m_edgeId].getInstance()->forceTempo(eTempo::First);
     }
 
-    if(m_edges[m_edgeId].getActive() == false) {
-        m_edgeId = m_edgeId >= m_edges.size() ? 0 : m_edgeId++;
+    if (m_edges[m_edgeId].getActive() == false) {
+        m_edgeId = m_edgeId < m_edges.size() ? m_edgeId + 1 : 0;
+        return;
     }
-    
+
     // ugly but needed for ui
     if (tick <= cTick) {
         return;
@@ -216,7 +217,7 @@ void CombatManager::startCombatWith(const CreatureObject* creature)
             m_mainCreature->getCreatureComponent(), creature->getCreatureComponent());
     }
     CombatEdge edge(instance, this, creature->getCombatManager());
-    if(m_edges.size() == 0) {
+    if (m_edges.size() == 0) {
         edge.setActive(true);
     }
     m_edges.push_back(edge);

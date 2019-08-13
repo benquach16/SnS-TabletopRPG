@@ -21,6 +21,7 @@ public:
     EdgeId getId() { return m_id; }
     void setActive(bool active) { m_active = active; }
     bool getActive() const { return m_active; }
+
 private:
     EdgeId m_id;
     CombatEdge();

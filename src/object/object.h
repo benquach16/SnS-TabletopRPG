@@ -23,7 +23,7 @@ class Level;
 class Object {
 public:
     typedef unsigned ObjectId;
-    
+
     Object();
     virtual ~Object();
     vector2d getPosition() const { return m_position; }

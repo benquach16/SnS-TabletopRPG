@@ -261,7 +261,8 @@ void CombatInstance::doDualOffense1()
     }
 
     Defense defense = attacker->getQueuedDefense();
-    if (defense.manuever == eDefensiveManuevers::StealInitiative) {
+    if (defense.manuever == eDefensiveManuevers::StealInitiative
+        && attacker->getHasDefense() == true) {
         writeMessage(
             attacker->getName() + " allocates " + to_string(defense.dice) + " to steal initiative");
         m_currentState = eCombatState::DualOffenseStealInitiative;
