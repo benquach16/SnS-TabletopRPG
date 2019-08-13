@@ -781,6 +781,7 @@ bool CombatInstance::inflictWound(
             }
             MoS -= 1;
         }
+        MoS += attack.heavyblow;
     } else if (attack.manuever == eOffensiveManuevers::Mordhau) {
         damageType = eDamageTypes::Blunt;
         MoS++;

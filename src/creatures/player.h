@@ -23,6 +23,7 @@ public:
     void setOffensePinpoint() { m_currentOffense.pinpoint = true; }
     void setOffenseLinked() { m_currentOffense.linked = true; }
     void setOffenseFeint() { m_currentOffense.feint = true; }
+    void setOffenseHeavyDice(int dice) { m_currentOffense.heavyblow = dice; }
 
     void setDefenseManuever(eDefensiveManuevers manuever) { m_currentDefense.manuever = manuever; }
     void setDefenseDice(int dice) { m_currentDefense.dice = dice; }

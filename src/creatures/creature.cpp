@@ -441,6 +441,7 @@ eInitiativeRoll Creature::doInitiative(const Creature* opponent)
 void Creature::clearCreatureManuevers()
 {
     m_currentOffense.dice = 0;
+    m_currentOffense.heavyblow = 0;
     m_currentOffense.linked = false;
     m_currentOffense.feint = false;
     m_currentOffense.component = nullptr;

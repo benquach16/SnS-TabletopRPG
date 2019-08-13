@@ -31,6 +31,9 @@ void OffenseUI::run(
     case eUiState::PinpointThrust:
         doPinpointThrust(event, player);
         break;
+    case eUiState::ChooseHeavyBlow:
+        doHeavyBlow(event, player);
+        break;
     case eUiState::Finished:
         break;
     }
@@ -72,7 +75,7 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool linkedParry)
         switch (c) {
         case 'a':
             player->setOffenseManuever(eOffensiveManuevers::Swing);
-            m_currentState = eUiState::ChooseFeint;
+            m_currentState = eUiState::ChooseHeavyBlow;
             break;
         case 'b':
             player->setOffenseManuever(eOffensiveManuevers::Thrust);
@@ -144,6 +147,29 @@ void OffenseUI::doFeint(sf::Event event, Player* player)
             m_currentState = eUiState::ChooseComponent;
         }
     }
+}
+
+void OffenseUI::doHeavyBlow(sf::Event event, Player* player)
+{
+    UiCommon::drawTopPanel();
+    sf::Text text;
+    text.setCharacterSize(cCharSize);
+    text.setFont(Game::getDefaultFont());
+    text.setString("Heavy blow? (Can spend 0-3 AP)");
+    Game::getWindow().draw(text);
+
+    if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
+        int dice = m_numberInput.getNumber();
+        player->reduceCombatPool(dice);
+        player->setOffenseHeavyDice(dice);
+        m_numberInput.reset();
+        m_currentState = eUiState::ChooseFeint;
+    }
+
+    constexpr int cMaxHeavyDice = 3;
+    m_numberInput.setMax(min(player->getCombatPool(), cMaxHeavyDice));
+    m_numberInput.run(event);
+    m_numberInput.setPosition(sf::Vector2f(0, cCharSize));
 }
 
 void OffenseUI::doInspect(sf::Event event, Creature* target)
