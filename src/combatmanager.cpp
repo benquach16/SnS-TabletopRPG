@@ -7,15 +7,16 @@
 
 using namespace std;
 
-static CombatEdge::EdgeId ids;
+//not remotely thread safe
+static CombatEdge::EdgeId ids = static_cast<CombatEdge::EdgeId>(0);
 
 CombatEdge::CombatEdge(CombatInstance* instance, CombatManager* vertex1, CombatManager* vertex2)
     : m_instance(instance)
     , m_vertex1(vertex1)
     , m_vertex2(vertex2)
     , m_active(false)
+    , m_id(ids++)
 {
-    m_id = ids++;
 }
 
 void CombatEdge::remove() {}
@@ -155,10 +156,19 @@ void CombatManager::doPositionRoll()
         m_currentState = eCombatManagerState::PositioningRoll;
         return;
     }
+    Creature::CreatureId id = m_mainCreature->getCreatureComponent()->getId();
     for (auto it : m_edges) {
         // do positioning roll
         // side 2 not guarenteed to be the other side
-        it.getInstance()->getSide2()->doPositionRoll(m_mainCreature->getCreatureComponent());
+        // it.getInstance()->getSide2()->doPositionRoll(m_mainCreature->getCreatureComponent());
+        Creature* side1 = it.getInstance()->getSide1();
+        Creature* side2 = it.getInstance()->getSide2();
+        if (side1->getId() != id) {
+            side1->doPositionRoll(m_mainCreature->getCreatureComponent());
+        }
+        if (side2->getId() != id) {
+            side2->doPositionRoll(m_mainCreature->getCreatureComponent());
+        }
     }
     unsigned count = 0;
     // now roll

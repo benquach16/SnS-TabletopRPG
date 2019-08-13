@@ -512,10 +512,10 @@ void CombatInstance::doResolution()
     if (defend.manuever == eDefensiveManuevers::StealInitiative) {
         // original attacker gets advantage
         // ptr compares bad
-        int side1BTN = (m_side1 == attacker && m_dualRedThrow == false)
+        int side1BTN = (m_side1->getId() == attacker->getId() && m_dualRedThrow == false)
             ? m_side1->getAdvantagedBTN()
             : m_side1->getBTN();
-        int side2BTN = (m_side2 == attacker && m_dualRedThrow == false)
+        int side2BTN = (m_side2->getId() == attacker->getId() && m_dualRedThrow == false)
             ? m_side2->getAdvantagedBTN()
             : m_side2->getBTN();
 

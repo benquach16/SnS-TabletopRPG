@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include <boost/serialization/strong_typedef.hpp>
+
 struct vector2d {
     int x = 0;
     int y = 0;
@@ -22,7 +24,8 @@ class Level;
 
 class Object {
 public:
-    typedef unsigned ObjectId;
+    //replace with boost::uuid
+    BOOST_STRONG_TYPEDEF(unsigned, ObjectId);
 
     Object();
     virtual ~Object();

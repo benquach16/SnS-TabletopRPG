@@ -14,6 +14,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include <boost/serialization/strong_typedef.hpp>
+
 static constexpr int cBaseBTN = 3;
 static constexpr int cMinBTN = 2;
 static constexpr int cMaxBTN = 6;
@@ -28,6 +30,8 @@ enum class eCreatureFatigue { Hunger, Thirst, Sleepiness, Stamina };
 
 class Creature {
 public:
+    BOOST_STRONG_TYPEDEF(unsigned, CreatureId);
+    
     Creature();
     virtual ~Creature() {}
     virtual eCreatureType getCreatureType() = 0;
@@ -145,7 +149,11 @@ public:
 
     bool rollFatigue();
 
+    CreatureId getId() const { return m_id; }
+
 protected:
+    CreatureId m_id;
+    
     eCreatureState m_currentState;
     eCreatureStance m_currentStance;
 

@@ -1,7 +1,10 @@
 #include "object.h"
 
+static Object::ObjectId ids = static_cast<Object::ObjectId>(0);
+
 Object::Object()
     : m_position(0, 0)
+    , m_id(ids++)
 {
 }
 

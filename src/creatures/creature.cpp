@@ -7,6 +7,8 @@
 using namespace std;
 using namespace effolkronium;
 
+static Creature::CreatureId ids = static_cast<Creature::CreatureId>(0);
+
 Creature::Creature()
     : m_BTN(cBaseBTN)
     , m_brawn(1)
@@ -26,6 +28,7 @@ Creature::Creature()
     , m_hasPrecombat(false)
     , m_currentGrip(eGrips::Standard)
     , m_currentStance(eCreatureStance::Standing)
+    , m_id(ids++)
 {
     m_fatigue[eCreatureFatigue::Stamina] = 0;
 }

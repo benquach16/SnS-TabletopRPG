@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include <boost/serialization/strong_typedef.hpp>
+
 #include "combatinstance.h"
 #include "creatures/creature.h"
 #include "object/creatureobject.h"
@@ -12,7 +14,8 @@ enum class eCombatManagerState { RunCombat, PositioningRoll };
 
 class CombatEdge {
 public:
-    typedef unsigned EdgeId;
+    //replace with boost::uuid
+    BOOST_STRONG_TYPEDEF(unsigned, EdgeId);
     CombatEdge(CombatInstance* instance, CombatManager* vertex1, CombatManager* vertex2);
     CombatInstance* getInstance() const { return m_instance; }
     CombatManager* getVertex1() const { return m_vertex1; }
