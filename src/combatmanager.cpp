@@ -7,7 +7,7 @@
 
 using namespace std;
 
-//not remotely thread safe
+// not remotely thread safe
 static CombatEdge::EdgeId ids = static_cast<CombatEdge::EdgeId>(0);
 
 CombatEdge::CombatEdge(CombatInstance* instance, CombatManager* vertex1, CombatManager* vertex2)

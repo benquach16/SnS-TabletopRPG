@@ -14,7 +14,7 @@ enum class eCombatManagerState { RunCombat, PositioningRoll };
 
 class CombatEdge {
 public:
-    //replace with boost::uuid
+    // replace with boost::uuid
     BOOST_STRONG_TYPEDEF(unsigned, EdgeId);
     CombatEdge(CombatInstance* instance, CombatManager* vertex1, CombatManager* vertex2);
     CombatInstance* getInstance() const { return m_instance; }

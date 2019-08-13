@@ -24,7 +24,7 @@ class Level;
 
 class Object {
 public:
-    //replace with boost::uuid
+    // replace with boost::uuid
     BOOST_STRONG_TYPEDEF(unsigned, ObjectId);
 
     Object();

@@ -31,7 +31,7 @@ enum class eCreatureFatigue { Hunger, Thirst, Sleepiness, Stamina };
 class Creature {
 public:
     BOOST_STRONG_TYPEDEF(unsigned, CreatureId);
-    
+
     Creature();
     virtual ~Creature() {}
     virtual eCreatureType getCreatureType() = 0;
@@ -153,7 +153,7 @@ public:
 
 protected:
     CreatureId m_id;
-    
+
     eCreatureState m_currentState;
     eCreatureStance m_currentStance;
 
