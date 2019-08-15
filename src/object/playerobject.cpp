@@ -24,14 +24,23 @@ PlayerObject::PlayerObject()
     m_inventory[5] = 3;
 }
 
-PlayerObject::~PlayerObject()
+PlayerObject::~PlayerObject() {}
+
+void PlayerObject::run(const Level* level)
 {
-    // temp
-    delete m_manager;
+    /*
+    if (m_manager->isParent() == true) {
+        m_manager->run(0.9);
+    }
+    */
 }
 
 bool PlayerObject::runCombat(float tick)
 {
+    // we are in a duel but not parent
+    if (isInCombat() == true && m_manager->isParent() == false) {
+        return true;
+    }
     bool ret = m_manager->run(tick);
     if (ret == false) {
         setOutofCombat();

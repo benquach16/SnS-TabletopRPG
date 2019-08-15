@@ -24,6 +24,7 @@ public:
     EdgeId getId() { return m_id; }
     void setActive(bool active) { m_active = active; }
     bool getActive() const { return m_active; }
+    CombatManager* findOtherVertex(const CombatManager* manager) const;
 
 private:
     EdgeId m_id;
@@ -49,7 +50,7 @@ private:
 class CombatManager {
 public:
     static constexpr float cTick = 0.8;
-    static constexpr int cMaxEngaged = 5;
+    static constexpr int cMaxEngaged = 4;
     CombatManager(CreatureObject* creature);
     ~CombatManager();
     bool run(float tick);
@@ -60,6 +61,13 @@ public:
     void addEdge(CombatEdge edge);
     bool canEngage() const { return m_edges.size() < cMaxEngaged; }
     void remove(CombatEdge::EdgeId id);
+    bool isLeaf() const;
+    bool isParent() const { return m_isParent; }
+    void setLeaf() { m_isParent = false; }
+    void setParent() { m_isParent = true; }
+    void peel();
+    unsigned getEngagementCount() const { return m_edges.size(); }
+    bool isInDuel() const;
 
 private:
     CombatManager();
@@ -75,6 +83,7 @@ private:
     void writeMessage(
         const std::string& str, Log::eMessageTypes type = Log::eMessageTypes::Standard);
 
+    bool m_isParent;
     std::vector<CombatEdge> m_edges;
     unsigned m_edgeId;
     bool m_positionDone;

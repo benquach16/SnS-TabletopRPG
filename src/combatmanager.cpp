@@ -19,7 +19,22 @@ CombatEdge::CombatEdge(CombatInstance* instance, CombatManager* vertex1, CombatM
 {
 }
 
-void CombatEdge::remove() {}
+void CombatEdge::remove()
+{
+    // remove dangling pointer
+    m_vertex1->remove(getId());
+    m_vertex2->remove(getId());
+}
+
+CombatManager* CombatEdge::findOtherVertex(const CombatManager* manager) const
+{
+    assert(manager == m_vertex1 || manager == m_vertex2);
+    if (manager == m_vertex1) {
+        return m_vertex2;
+    } else {
+        return m_vertex1;
+    }
+}
 
 CombatManager::CombatManager(CreatureObject* creature)
     : m_mainCreature(creature)
@@ -29,6 +44,7 @@ CombatManager::CombatManager(CreatureObject* creature)
     , m_positionDone(false)
     , m_edgeId(0)
     , m_doPositionRoll(false)
+    , m_isParent(false)
 {
 }
 
@@ -36,8 +52,8 @@ CombatManager::~CombatManager() { cleanup(); }
 
 void CombatManager::cleanup()
 {
-    for (auto it : m_edges) {
-        // remove from both vertices
+    while (m_edges.empty() == false) {
+        m_edges[0].remove();
     }
     m_edges.clear();
     m_currentTempo = eTempo::First;
@@ -86,8 +102,15 @@ void CombatManager::doRunCombat(float tick)
         m_currentState = eCombatManagerState::PositioningRoll;
         return;
     }
-    if (m_edges.size() > 1) {
-        m_edges[m_edgeId].getInstance()->forceTempo(eTempo::First);
+    if (m_edgeId >= m_edges.size()) {
+        m_edgeId = 0;
+
+        if (m_currentTempo == eTempo::Second && m_edges.size() > 1) {
+            m_doPositionRoll = true;
+            refreshInstances();
+        }
+        switchInitiative();
+        return;
     }
 
     if (m_edges[m_edgeId].getActive() == false) {
@@ -95,6 +118,9 @@ void CombatManager::doRunCombat(float tick)
         return;
     }
 
+    if (m_edges.size() > 1) {
+        m_edges[m_edgeId].getInstance()->forceTempo(eTempo::First);
+    }
     // ugly but needed for ui
     if (tick <= cTick) {
         return;
@@ -107,9 +133,8 @@ void CombatManager::doRunCombat(float tick)
     if (m_edges[m_edgeId].getInstance()->getState() == eCombatState::Uninitialized) {
         // remove from both vertices
         delete m_edges[m_edgeId].getInstance();
+        m_edges[m_edgeId].remove();
         CombatEdge::EdgeId id = m_edges[m_edgeId].getId();
-        m_edges[m_edgeId].getVertex1()->remove(id);
-        m_edges[m_edgeId].getVertex2()->remove(id);
         if (m_edges.size() > 1) {
             writeMessage("Combatant has been killed, refreshing combat pools");
             m_doPositionRoll = true;
@@ -117,6 +142,11 @@ void CombatManager::doRunCombat(float tick)
         refreshInstances();
         m_edgeId = 0;
         m_currentTempo = eTempo::First;
+
+        // make sure we force the last edge to be active if we drop down to 1 edge
+        if (m_edges.size() == 1) {
+            m_edges[0].setActive(true);
+        }
     }
     // since we just deleted, make sure we clear if we don't have any more
     // combat
@@ -202,12 +232,40 @@ void CombatManager::doPositionRoll()
     m_doPositionRoll = false;
 }
 
-void CombatManager::addEdge(CombatEdge edge) { m_edges.push_back(edge); }
+void CombatManager::addEdge(CombatEdge edge)
+{
+    m_edges.push_back(edge);
+    if (m_edges.size() > 1) {
+        // ensure all edges are connected to leaves
+        m_isParent = true;
+        // new combat should always be deactivated until position roll
+        // WARNING - since these are automatic variables, these are NOT sync across edges across all
+        // nodes. if this becomes a problem, make edges pointers.
+        m_edges[m_edges.size() - 1].setActive(false);
+        for (auto it : m_edges) {
+            CombatManager* otherManager = it.findOtherVertex(this);
+            otherManager->setLeaf();
+            assert(otherManager->getEngagementCount() == 1);
+        }
+    }
+}
 
 void CombatManager::startCombatWith(const CreatureObject* creature)
 {
+    // general concept of this - in a duel, parent is assigned to the creature who initiated duel.
+    // if another creature enters the engagement, all nodes are set to leaf except for the node with
+    // multiple edges.
+
     if (creature->getCombatManager()->canEngage() == false) {
         return;
+    }
+
+    if (creature->getCombatManager()->isLeaf() == true) {
+        // peel off creature from previous engagement, unless the engagement is a duel. if we're in
+        // a duel, then we can just freely assign parent without peeling
+        if (creature->getCombatManager()->isInDuel() == false) {
+            creature->getCombatManager()->peel();
+        }
     }
 
     // if a creature initiatives combat against another creature, but is not the
@@ -229,18 +287,59 @@ void CombatManager::startCombatWith(const CreatureObject* creature)
     CombatEdge edge(instance, this, creature->getCombatManager());
     if (m_edges.size() == 0) {
         edge.setActive(true);
+        m_isParent = false;
     }
+
+    if (creature->getCombatManager()->isParent() == false && m_isParent == false) {
+        m_isParent = true;
+    }
+
     m_edges.push_back(edge);
 
     creature->getCombatManager()->addEdge(edge);
 }
 
-CombatInstance* CombatManager::getCurrentInstance() const
+bool CombatManager::isLeaf() const
+{
+    if (m_edges.size() > 1) {
+        return false;
+    }
+    if (m_edges.size() == 0) {
+        return true;
+    }
+    if (m_edges[0].findOtherVertex(this)->isParent() == false) {
+        return false;
+    }
+    return true;
+}
+
+bool CombatManager::isInDuel() const
+{
+    if (m_edges.size() != 1) {
+        return false;
+    }
+    if (m_edges[0].findOtherVertex(this)->getEngagementCount() == 1) {
+        return true;
+    }
+    return false;
+}
+
+void CombatManager::peel()
 {
     if (m_edges.size() == 0) {
+        return;
+    }
+    Log::push(m_mainCreature->getName() + " has left their combat to fight a different combatant",
+        Log::eMessageTypes::Announcement);
+    delete m_edges[0].getInstance();
+    m_edges[0].remove();
+}
+
+CombatInstance* CombatManager::getCurrentInstance() const
+{
+    if (m_edges.size() == 0 || m_edgeId >= m_edges.size()) {
         return nullptr;
     }
-    assert(m_edgeId < m_edges.size());
     return m_edges.at(m_edgeId).getInstance();
 }
 

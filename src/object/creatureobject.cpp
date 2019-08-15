@@ -12,6 +12,7 @@ CreatureObject::CreatureObject(Creature* creature)
     , m_exhaustion(0)
     , m_inCombat(false)
     , m_manager(new CombatManager(this))
+    , m_delete(false)
 {
 }
 
@@ -21,9 +22,24 @@ CreatureObject::~CreatureObject()
         delete m_creature;
         m_creature = nullptr;
     }
+    if (m_manager != nullptr) {
+        delete m_manager;
+        m_manager = nullptr;
+    }
 }
 
-void CreatureObject::run(const Level* level) { m_controller.run(level, this); }
+void CreatureObject::run(const Level* level)
+{
+    if (m_creature->getCreatureState() == eCreatureState::Dead && m_manager->isEngaged() == true) {
+        m_delete = true;
+    }
+    if (m_manager->isParent() == true) {
+        // definitely engaged, no need to run ai controller
+        m_manager->run(0.9);
+    } else {
+        m_controller.run(level, this);
+    }
+}
 
 void CreatureObject::applyItem(int id)
 {

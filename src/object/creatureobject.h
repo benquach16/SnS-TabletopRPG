@@ -15,10 +15,7 @@ public:
     CreatureObject(Creature* creature);
     virtual ~CreatureObject();
     bool hasCollision() const override { return true; }
-    bool deleteMe() const override
-    {
-        return m_creature->getCreatureState() == eCreatureState::Dead;
-    }
+    bool deleteMe() const override { return m_delete; }
     bool isConscious() const
     {
         return (!deleteMe() && m_creature->getCreatureState() != eCreatureState::Unconscious);
@@ -70,4 +67,5 @@ protected:
     CombatManager* m_manager;
 
     bool m_inCombat;
+    bool m_delete;
 };

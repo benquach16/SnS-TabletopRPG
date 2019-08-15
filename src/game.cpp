@@ -170,7 +170,8 @@ void Game::run()
                         break;
                     case eObjectTypes::Creature:
                         Log::push("There is a creature here. You need to kill "
-                                  "them if you want to loot them.");
+                                  "them if you want to loot them.",
+                            Log::eMessageTypes::Alert);
                         break;
                     default:
                         Log::push("Nothing to loot");
@@ -280,9 +281,15 @@ void Game::run()
 
         } else if (m_currentState == eGameState::InCombat) {
             ui.runCombat(event, m_playerObject->getCombatManager());
+
             if (m_playerObject->runCombat(tick) == false) {
                 m_currentState = eGameState::Playing;
             }
+            /*
+            if (m_playerObject->isInCombat() == false) {
+                m_currentState = eGameState::Playing;
+            }
+            */
             if (tick > CombatManager::cTick) {
                 // pause rest of game if player is in combat. combat between two
                 // NPCS can happen anytime

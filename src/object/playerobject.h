@@ -15,7 +15,7 @@ public:
     eCreatureRace getRace() const override { return eCreatureRace::Human; }
     std::string getDescription() const override { return "yourself."; }
     bool isPlayer() const override { return true; }
-    void run(const Level* level) override {}
+    void run(const Level* level) override;
 
     // never delete player, otherwise there will be a segfault
     bool deleteMe() const override { return false; }
