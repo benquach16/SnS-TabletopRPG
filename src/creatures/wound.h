@@ -63,6 +63,14 @@ public:
         return singleton;
     }
 
+    static void cleanupSingleton()
+    {
+        if (singleton != nullptr) {
+            delete singleton;
+            singleton = nullptr;
+        }
+    }
+
 private:
     WoundTable();
     void initHitLocationTable();

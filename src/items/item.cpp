@@ -67,6 +67,13 @@ ItemTable::ItemTable()
     }
 }
 
+ItemTable::~ItemTable()
+{
+    for (auto it : m_itemList) {
+        delete it.second;
+    }
+}
+
 const Item* ItemTable::get(int id) const
 {
     auto it = m_itemList.find(id);

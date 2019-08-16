@@ -17,6 +17,7 @@ public:
     // replace with boost::uuid
     BOOST_STRONG_TYPEDEF(unsigned, EdgeId);
     CombatEdge(CombatInstance* instance, CombatManager* vertex1, CombatManager* vertex2);
+    ~CombatEdge();
     CombatInstance* getInstance() const { return m_instance; }
     CombatManager* getVertex1() const { return m_vertex1; }
     CombatManager* getVertex2() const { return m_vertex2; }
@@ -58,7 +59,7 @@ public:
     void startCombatWith(const CreatureObject* creature);
     eCombatManagerState getState() const { return m_currentState; }
     bool isEngaged() const { return m_edges.size() > 0; }
-    void addEdge(CombatEdge edge);
+    void addEdge(CombatEdge* edge);
     bool canEngage() const { return m_edges.size() < cMaxEngaged; }
     void remove(CombatEdge::EdgeId id);
     bool isLeaf() const;
@@ -84,7 +85,7 @@ private:
         const std::string& str, Log::eMessageTypes type = Log::eMessageTypes::Standard);
 
     bool m_isParent;
-    std::vector<CombatEdge> m_edges;
+    std::vector<CombatEdge*> m_edges;
     unsigned m_edgeId;
     bool m_positionDone;
     bool m_doPositionRoll;

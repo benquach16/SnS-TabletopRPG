@@ -23,6 +23,7 @@ struct Room {
 class Level {
 public:
     Level(int width, int height);
+    ~Level();
     void load();
     void run();
     void generate();

@@ -16,6 +16,7 @@ public:
     {
     }
 
+    virtual ~Item() {}
     virtual eItemType getItemType() const { return m_type; }
     int getCost() const { return m_cost; }
 
@@ -29,12 +30,20 @@ class Armor;
 
 class ItemTable {
 public:
+    ~ItemTable();
     static ItemTable* getSingleton()
     {
         if (singleton == nullptr) {
             singleton = new ItemTable;
         }
         return singleton;
+    }
+    static void cleanupSingleton()
+    {
+        if (singleton != nullptr) {
+            delete singleton;
+            singleton = nullptr;
+        }
     }
     static ItemTable* singleton;
 

@@ -9,4 +9,7 @@ int main()
     Game game;
     game.initialize();
     game.run();
+
+    WoundTable::cleanupSingleton();
+    ItemTable::cleanupSingleton();
 }

@@ -14,6 +14,8 @@ Level::Level(int width, int height)
 {
 }
 
+Level::~Level() { clearObjects(); }
+
 void Level::load() {}
 
 void Level::run()
@@ -284,7 +286,9 @@ void Level::cleanup()
 void Level::clearObjects()
 {
     for (int i = 0; i < m_objects.size(); ++i) {
-        delete m_objects[i];
+        if (m_objects[i]->preserveBetweenLevels() == false) {
+            delete m_objects[i];
+        }
     };
     m_objects.clear();
 }

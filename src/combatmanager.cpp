@@ -20,6 +20,8 @@ CombatEdge::CombatEdge(CombatInstance* instance, CombatManager* vertex1, CombatM
     assert(m_vertex1 != m_vertex2);
 }
 
+CombatEdge::~CombatEdge() { remove(); }
+
 void CombatEdge::remove()
 {
     delete m_instance;
@@ -54,10 +56,8 @@ CombatManager::~CombatManager() { cleanup(); }
 void CombatManager::cleanup()
 {
     m_isParent = false;
-    cout << "cleanup" << m_edges.size() << endl;
     while (m_edges.empty() == false) {
-        cout << "real cleanup" << m_edges.size() << endl;
-        m_edges[0].remove();
+        delete m_edges[0];
     }
     m_currentTempo = eTempo::First;
     m_side = eOutnumberedSide::None;
@@ -116,30 +116,30 @@ void CombatManager::doRunCombat(float tick)
         return;
     }
 
-    if (m_edges[m_edgeId].getActive() == false) {
+    if (m_edges[m_edgeId]->getActive() == false) {
         m_edgeId = m_edgeId < m_edges.size() ? m_edgeId + 1 : 0;
         return;
     }
 
     if (m_edges.size() > 1) {
-        m_edges[m_edgeId].getInstance()->forceTempo(eTempo::First);
+        m_edges[m_edgeId]->getInstance()->forceTempo(eTempo::First);
     }
     // ugly but needed for ui
     if (tick <= cTick) {
         return;
     }
 
-    bool change = m_edges[m_edgeId].getInstance()->getState() == eCombatState::PostResolution;
+    bool change = m_edges[m_edgeId]->getInstance()->getState() == eCombatState::PostResolution;
 
-    m_edges[m_edgeId].getInstance()->run();
+    m_edges[m_edgeId]->getInstance()->run();
 
-    if (m_edges[m_edgeId].getInstance()->getState() == eCombatState::Uninitialized) {
+    if (m_edges[m_edgeId]->getInstance()->getState() == eCombatState::Uninitialized) {
         // remove from both vertices
         if (m_mainCreature->isConscious() == false) {
             // cleanup, we don't need this anymore
             cleanup();
         } else {
-            m_edges[m_edgeId].remove();
+            m_edges[m_edgeId]->remove();
         }
 
         if (m_edges.size() > 1) {
@@ -152,7 +152,7 @@ void CombatManager::doRunCombat(float tick)
 
         // make sure we force the last edge to be active if we drop down to 1 edge
         if (m_edges.size() == 1) {
-            m_edges[0].setActive(true);
+            m_edges[0]->setActive(true);
         }
     }
     // since we just deleted, make sure we clear if we don't have any more
@@ -179,7 +179,7 @@ void CombatManager::doRunCombat(float tick)
 void CombatManager::remove(CombatEdge::EdgeId id)
 {
     for (unsigned i = 0; i < m_edges.size(); ++i) {
-        if (m_edges[i].getId() == id) {
+        if (m_edges[i]->getId() == id) {
             m_edges.erase(m_edges.begin() + i);
             return;
         }
@@ -204,8 +204,8 @@ void CombatManager::doPositionRoll()
         // do positioning roll
         // side 2 not guarenteed to be the other side
         // it.getInstance()->getSide2()->doPositionRoll(m_mainCreature->getCreatureComponent());
-        Creature* side1 = it.getInstance()->getSide1();
-        Creature* side2 = it.getInstance()->getSide2();
+        Creature* side1 = it->getInstance()->getSide1();
+        Creature* side2 = it->getInstance()->getSide2();
         if (side1->getId() != id) {
             side1->doPositionRoll(m_mainCreature->getCreatureComponent());
         }
@@ -217,10 +217,10 @@ void CombatManager::doPositionRoll()
     // now roll
     int mainSuccesses = DiceRoller::rollGetSuccess(m_mainCreature->getCreatureComponent()->getBTN(),
         m_mainCreature->getCreatureComponent()->getQueuedPosition().dice);
-    for (unsigned i = 0; i < m_edges.size(); ++i) {
+    for (auto it : m_edges) {
         // not always side 2
-        Creature* side1 = m_edges[i].getInstance()->getSide1();
-        Creature* side2 = m_edges[i].getInstance()->getSide2();
+        Creature* side1 = it->getInstance()->getSide1();
+        Creature* side2 = it->getInstance()->getSide2();
         Creature* creature = nullptr;
         if (side1->getId() != id) {
             creature = side1;
@@ -234,17 +234,17 @@ void CombatManager::doPositionRoll()
         if (successes >= mainSuccesses) {
             writeMessage(
                 creature->getName() + " kept up with " + m_mainCreature->getName() + "'s footwork");
-            m_edges[i].setActive(true);
+            it->setActive(true);
             count++;
         } else {
-            m_edges[i].setActive(false);
+            it->setActive(false);
         }
         creature->clearCreatureManuevers();
     }
     // have to have at least one
     if (count == 0) {
         writeMessage("No combatants kept up with footwork, initiating duel");
-        m_edges[0].setActive(true);
+        m_edges[0]->setActive(true);
     } else {
         writeMessage(
             m_mainCreature->getName() + " is engaged with " + to_string(count) + " opponents");
@@ -254,18 +254,16 @@ void CombatManager::doPositionRoll()
     m_doPositionRoll = false;
 }
 
-void CombatManager::addEdge(CombatEdge edge)
+void CombatManager::addEdge(CombatEdge* edge)
 {
     m_edges.push_back(edge);
     if (m_edges.size() > 1) {
         // ensure all edges are connected to leaves
         m_isParent = true;
         // new combat should always be deactivated until position roll
-        // WARNING - since these are automatic variables, these are NOT sync across edges across all
-        // nodes. if this becomes a problem, make edges pointers.
-        m_edges[m_edges.size() - 1].setActive(false);
+        edge->setActive(false);
         for (auto it : m_edges) {
-            CombatManager* otherManager = it.findOtherVertex(this);
+            CombatManager* otherManager = it->findOtherVertex(this);
             otherManager->setLeaf();
             assert(otherManager->getEngagementCount() == 1);
         }
@@ -306,9 +304,9 @@ void CombatManager::startCombatWith(const CreatureObject* creature)
         instance->initCombat(
             m_mainCreature->getCreatureComponent(), creature->getCreatureComponent(), false);
     }
-    CombatEdge edge(instance, this, creature->getCombatManager());
+    CombatEdge* edge = new CombatEdge(instance, this, creature->getCombatManager());
     if (m_edges.size() == 0) {
-        edge.setActive(true);
+        edge->setActive(true);
         m_isParent = false;
     }
 
@@ -329,7 +327,7 @@ bool CombatManager::isLeaf() const
     if (m_edges.size() == 0) {
         return true;
     }
-    if (m_edges[0].findOtherVertex(this)->isParent() == false) {
+    if (m_edges[0]->findOtherVertex(this)->isParent() == false) {
         return false;
     }
     return true;
@@ -340,7 +338,7 @@ bool CombatManager::isInDuel() const
     if (m_edges.size() != 1) {
         return false;
     }
-    if (m_edges[0].findOtherVertex(this)->getEngagementCount() == 1) {
+    if (m_edges[0]->findOtherVertex(this)->getEngagementCount() == 1) {
         return true;
     }
     return false;
@@ -353,8 +351,7 @@ void CombatManager::peel()
     }
     Log::push(m_mainCreature->getName() + " has left their combat to fight a different combatant",
         Log::eMessageTypes::Announcement);
-    delete m_edges[0].getInstance();
-    m_edges[0].remove();
+    m_edges[0]->remove();
 }
 
 CombatInstance* CombatManager::getCurrentInstance() const
@@ -362,13 +359,17 @@ CombatInstance* CombatManager::getCurrentInstance() const
     if (m_edges.size() == 0 || m_edgeId >= m_edges.size()) {
         return nullptr;
     }
-    return m_edges.at(m_edgeId).getInstance();
+    auto edge = m_edges.at(m_edgeId);
+    if (edge->getActive() == false) {
+        return nullptr;
+    }
+    return edge->getInstance();
 }
 
 void CombatManager::refreshInstances()
 {
     for (auto it : m_edges) {
-        it.getInstance()->forceRefresh();
+        it->getInstance()->forceRefresh();
     }
 }
 
