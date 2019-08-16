@@ -37,5 +37,11 @@
         "description": "Strips of linen used to staunch bleeding. Only heals level 1 wounds.",
         "type": "bandage",
         "cost": 5
+    },
+    "6": {
+        "name": "Surgery Kit",
+        "description": "Contains everything you need to perform surgery on yourself. A very painful process. Heals up to level 4 wounds.",
+        "type": "firstaid",
+        "cost": 10
     }
 }

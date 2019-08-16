@@ -52,6 +52,7 @@ CombatManager::~CombatManager() { cleanup(); }
 
 void CombatManager::cleanup()
 {
+    m_isParent = false;
     while (m_edges.empty() == false) {
         m_edges[0].remove();
     }
@@ -181,10 +182,15 @@ void CombatManager::remove(CombatEdge::EdgeId id)
 
 void CombatManager::doPositionRoll()
 {
+    assert(m_edges.size() > 1);
     // do player, this is hack
     if (m_mainCreature->getCreatureComponent()->getHasPosition() == false) {
-        m_currentState = eCombatManagerState::PositioningRoll;
-        return;
+        if (m_mainCreature->isPlayer() == true) {
+            m_currentState = eCombatManagerState::PositioningRoll;
+            return;
+        } else {
+            m_mainCreature->getCreatureComponent()->doPositionRoll(nullptr);
+        }
     }
     Creature::CreatureId id = m_mainCreature->getCreatureComponent()->getId();
     for (auto it : m_edges) {

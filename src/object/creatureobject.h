@@ -23,6 +23,7 @@ public:
     Creature* getCreatureComponent() const { return m_creature; }
     const std::string getName() const { return m_creature->getName(); }
     virtual eCreatureFaction getFaction() const { return m_creatureFaction; }
+    void setFaction(eCreatureFaction faction) { m_creatureFaction = faction; }
     virtual eCreatureRace getRace() const = 0;
     eObjectTypes getObjectType() const override { return eObjectTypes::Creature; }
     virtual bool isPlayer() const { return false; }

@@ -52,6 +52,9 @@ std::string damageTypeToString(eDamageTypes type)
 std::string lengthToString(eLength length)
 {
     switch (length) {
+    case eLength::Nonexistent:
+        return "Nonexistent";
+        break;
     case eLength::Hand:
         return "Hand";
         break;
@@ -125,6 +128,8 @@ std::string itemTypeToString(eItemType type)
         return "Bandage";
     case eItemType::Bedroll:
         return "Bedroll";
+    case eItemType::Firstaid:
+        return "First Aid";
     default:
         return "";
     }
@@ -186,6 +191,8 @@ eItemType stringToItemType(const std::string& str)
         return eItemType::Money;
     } else if (str == "bandage") {
         return eItemType::Bandage;
+    } else if (str == "firstaid") {
+        return eItemType::Firstaid;
     }
     assert(true);
     return eItemType::Item;

@@ -357,7 +357,14 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
 void Creature::doPositionRoll(const Creature* opponent)
 {
     // can be reused for standing up as well
-    int dice = opponent->getQueuedPosition().dice;
+    int dice = 0;
+    if (opponent == nullptr) {
+        // outnumbered, so we choose some nubmer that feels good
+        dice = m_combatPool / 4;
+    } else {
+        dice = opponent->getQueuedPosition().dice;
+    }
+
     m_currentPosition.dice
         = dice + random_static::get(0, dice / 3) - random_static::get(0, dice / 4);
     m_currentPosition.dice = min(m_combatPool, m_currentPosition.dice);

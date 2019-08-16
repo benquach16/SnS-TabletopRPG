@@ -1,7 +1,7 @@
 {
     "greeting_neutral" : {
         "message": "Hello.",
-        "responses": ["end", "ask_trade"]
+        "responses": ["end", "ask_trade", "ask_healing"]
     },
     "ask_trade": {
         "message": "I would like to browse your wares.",
@@ -14,6 +14,10 @@
     "greeting_hostile" : {
         "message": "I do not want to speak to you.",
         "responses": ["end"]
+    },
+    "ask_healing": {
+        "message": "I would like to heal my wounds.",
+        "responses": ["text3"]
     },
     "end": {
         "message": "I must leave now."
