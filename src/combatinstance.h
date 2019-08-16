@@ -43,7 +43,7 @@ public:
     CombatInstance();
     void run();
 
-    void initCombat(Creature* side1, Creature* side2);
+    void initCombat(Creature* side1, Creature* side2, bool showAllMessages);
     void forceInitiative(eInitiative initiative);
     eCombatState getState() const { return m_currentState; }
     Creature* getSide1() const { return m_side1; }
@@ -54,8 +54,8 @@ public:
     void forceRefresh();
     void forceTempo(eTempo tempo) { m_currentTempo = tempo; }
 
-    bool getInGrapple();
-    bool getInWind();
+    bool getInGrapple() const { return m_inGrapple; }
+    bool getInWind() const { return m_inWind; }
 
 private:
     void doInitialization();
@@ -89,8 +89,8 @@ private:
 
     bool inflictWound(
         Creature* attacker, int MoS, Offense attack, Creature* target, bool manueverFirst = false);
-    void writeMessage(
-        const std::string& str, Log::eMessageTypes type = Log::eMessageTypes::Standard);
+    void writeMessage(const std::string& str,
+        Log::eMessageTypes type = Log::eMessageTypes::Standard, bool important = false);
     void outputReachCost(int cost, Creature* attacker);
 
     eInitiative m_initiative;
@@ -106,4 +106,6 @@ private:
 
     bool m_inWind;
     bool m_inGrapple;
+
+    bool m_sendAllMessages;
 };

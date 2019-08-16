@@ -26,6 +26,7 @@ CombatInstance::CombatInstance()
     , m_numTempos(0)
     , m_inWind(false)
     , m_inGrapple(false)
+    , m_sendAllMessages(false)
 {
 }
 
@@ -42,11 +43,13 @@ void CombatInstance::setSides(Creature*& attacker, Creature*& defender)
     assert(defender != nullptr);
 }
 
-void CombatInstance::initCombat(Creature* side1, Creature* side2)
+void CombatInstance::initCombat(Creature* side1, Creature* side2, bool showAllMessages)
 {
     assert(side1 != nullptr);
     assert(side2 != nullptr);
     assert(m_currentState == eCombatState::Uninitialized);
+
+    m_sendAllMessages = showAllMessages;
 
     m_side1 = side1;
     m_side2 = side2;
@@ -756,7 +759,7 @@ bool CombatInstance::inflictWound(
         target->inflictImpact(MoS);
         if (MoS >= 3) {
             writeMessage(target->getName() + " has been hooked and thrown prone!",
-                Log::eMessageTypes::Alert);
+                Log::eMessageTypes::Alert, true);
             target->setProne();
         }
         return false;
@@ -794,7 +797,8 @@ bool CombatInstance::inflictWound(
 
     if (armorAtLocation.AV > 0) {
         writeMessage(
-            target->getName() + "'s armor reduced wound level by " + to_string(armorAtLocation.AV));
+            target->getName() + "'s armor reduced wound level by " + to_string(armorAtLocation.AV),
+            Log::eMessageTypes::Standard, true);
     }
 
     // complicated armor calcs go here
@@ -838,13 +842,14 @@ bool CombatInstance::inflictWound(
     }
 
     if (finalDamage <= 0) {
-        writeMessage(
-            target->getName() + "'s armor prevented any damage!", Log::eMessageTypes::Announcement);
+        writeMessage(target->getName() + "'s armor prevented any damage!",
+            Log::eMessageTypes::Announcement, true);
         return false;
     }
 
     writeMessage(target->getName() + " received a level " + to_string(finalDamage) + " wound to "
-        + bodyPartToString(bodyPart));
+            + bodyPartToString(bodyPart),
+        Log::eMessageTypes::Standard, true);
     eDamageTypes finalType = doBlunt == true ? eDamageTypes::Blunt : attack.component->getType();
     if (finalType == eDamageTypes::Blunt && armorAtLocation.isRigid == true) {
         constexpr int cMaxRigid = 3;
@@ -853,21 +858,22 @@ bool CombatInstance::inflictWound(
     Wound* wound = WoundTable::getSingleton()->getWound(finalType, bodyPart, finalDamage);
     writeMessage(wound->getText(), Log::eMessageTypes::Damage);
     if (wound->getBTN() > target->getBTN()) {
-        writeMessage(
-            target->getName() + " begins to struggle from the pain", Log::eMessageTypes::Alert);
+        writeMessage(target->getName() + " begins to struggle from the pain",
+            Log::eMessageTypes::Alert, true);
     }
     target->inflictWound(wound, manueverFirst);
 
     if (target->getCreatureState() == eCreatureState::Dead) {
         // end combat
-        writeMessage(target->getName() + " has been killed", Log::eMessageTypes::Announcement);
+        writeMessage(
+            target->getName() + " has been killed", Log::eMessageTypes::Announcement, true);
         m_currentState = eCombatState::FinishedCombat;
         return true;
     }
     if (target->getCreatureState() == eCreatureState::Unconscious) {
         // end combat
-        writeMessage(
-            target->getName() + " has been knocked unconcious", Log::eMessageTypes::Announcement);
+        writeMessage(target->getName() + " has been knocked unconcious",
+            Log::eMessageTypes::Announcement, true);
         m_currentState = eCombatState::FinishedCombat;
         return true;
     }
@@ -974,11 +980,13 @@ void CombatInstance::run()
     }
 }
 
-void CombatInstance::writeMessage(const std::string& str, Log::eMessageTypes type)
+void CombatInstance::writeMessage(const std::string& str, Log::eMessageTypes type, bool important)
 {
     // combat manager is not a singleton, so we can have multiple.
     // we can choose not to display combatmanager messages if we want to.
-    Log::push(str, type);
+    if (m_sendAllMessages == true || important == true) {
+        Log::push(str, type);
+    }
 }
 
 void CombatInstance::outputReachCost(int cost, Creature* attacker)

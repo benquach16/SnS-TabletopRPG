@@ -66,7 +66,7 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool linkedParry)
     } else {
         str += to_string(mordhauCost);
     }
-    str += "AP)\ni - Inspect Target";
+    str += "AP)\ni - Grab (1AP)\nj - Inspect Target";
     text.setString(str);
     Game::getWindow().draw(text);
 
@@ -118,7 +118,7 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool linkedParry)
                 Log::push("You need a sword to use this manuever");
             }
             break;
-        case 'i':
+        case 'j':
             m_currentState = eUiState::InspectTarget;
             break;
         default:

@@ -16,10 +16,7 @@ public:
     virtual ~CreatureObject();
     bool hasCollision() const override { return true; }
     bool deleteMe() const override { return m_delete; }
-    bool isConscious() const
-    {
-        return (!deleteMe() && m_creature->getCreatureState() != eCreatureState::Unconscious);
-    }
+    bool isConscious() const { return (!deleteMe() && m_creature->isConscious()); }
     Creature* getCreatureComponent() const { return m_creature; }
     const std::string getName() const { return m_creature->getName(); }
     virtual eCreatureFaction getFaction() const { return m_creatureFaction; }

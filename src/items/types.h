@@ -27,7 +27,12 @@ enum class eOffensiveManuevers : unsigned {
     Beat,
     Mordhau,
     Hook,
-    Slam
+    Slam,
+    Grab,
+    // grapple moves
+    Snap,
+    Throw,
+    Pin
 };
 
 enum class ePositionManuevers : unsigned { Stand, Pickup };
@@ -52,9 +57,13 @@ inline int offenseManueverCost(eOffensiveManuevers manuever)
 {
     switch (manuever) {
     case eOffensiveManuevers::PinpointThrust:
+    case eOffensiveManuevers::Pin:
         return 2;
     case eOffensiveManuevers::Beat:
     case eOffensiveManuevers::Mordhau:
+    case eOffensiveManuevers::Snap:
+    case eOffensiveManuevers::Throw:
+    case eOffensiveManuevers::Grab:
         return 1;
     default:
         return 0;
@@ -70,7 +79,11 @@ enum class eDefensiveManuevers : unsigned {
     Counter,
     Parry,
     Dodge,
-    Expulsion
+    Expulsion,
+    // grapple manuevers
+    Break,
+    Resist,
+    Reverse
 };
 
 inline int defenseManueverCost(eDefensiveManuevers manuever)

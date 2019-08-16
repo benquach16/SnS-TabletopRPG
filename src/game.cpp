@@ -64,11 +64,11 @@ void Game::run()
     GFXLevel gfxlevel;
     level.addObject(m_playerObject);
 
-    HumanObject human1;
-    human1.setFaction(eCreatureFaction::EidgenConfederacy);
-    human1.setPosition(5, 5);
+    HumanObject* human1 = new HumanObject;
+    human1->setFaction(eCreatureFaction::EidgenConfederacy);
+    human1->setPosition(5, 5);
 
-    level.addObject(&human1);
+    level.addObject(human1);
 
     m_playerObject->setPosition(1, 1);
 

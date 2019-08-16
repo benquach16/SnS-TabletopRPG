@@ -275,6 +275,7 @@ void Level::removeIslands()
 void Level::cleanup()
 {
     for (int i = 0; i < m_toDelete.size(); ++i) {
+        cout << "clearing.." << endl;
         delete m_toDelete[i];
     }
     m_toDelete.clear();
@@ -283,9 +284,7 @@ void Level::cleanup()
 void Level::clearObjects()
 {
     for (int i = 0; i < m_objects.size(); ++i) {
-        if (m_objects[i]->preserveBetweenLevels()) {
-            delete m_objects[i];
-        }
+        delete m_objects[i];
     };
     m_objects.clear();
 }

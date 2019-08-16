@@ -27,8 +27,9 @@ void DefenseUI::doManuever(sf::Event event, Player* player)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setString("Choose defense:\na - Parry\nb - Dodge\nc - Linked Parry "
-                   "(1AP)\nd - Steal Initiative\ne - Counter (2AP)\nf - Expulsion (1AP)");
+    text.setString(
+        "Choose defense:\na - Parry\nb - Dodge\nc - Linked Parry "
+        "(1AP)\nd - Steal Initiative\ne - Counter (2AP)\nf - Expulsion (1AP)\ng - Disengage");
     Game::getWindow().draw(text);
     if (event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;

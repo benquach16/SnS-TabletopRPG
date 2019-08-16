@@ -17,11 +17,12 @@ CombatEdge::CombatEdge(CombatInstance* instance, CombatManager* vertex1, CombatM
     , m_active(false)
     , m_id(ids++)
 {
+    assert(m_vertex1 != m_vertex2);
 }
 
 void CombatEdge::remove()
 {
-    // remove dangling pointer
+    delete m_instance;
     m_vertex1->remove(getId());
     m_vertex2->remove(getId());
 }
@@ -53,10 +54,11 @@ CombatManager::~CombatManager() { cleanup(); }
 void CombatManager::cleanup()
 {
     m_isParent = false;
+    cout << "cleanup" << m_edges.size() << endl;
     while (m_edges.empty() == false) {
+        cout << "real cleanup" << m_edges.size() << endl;
         m_edges[0].remove();
     }
-    m_edges.clear();
     m_currentTempo = eTempo::First;
     m_side = eOutnumberedSide::None;
     m_edgeId = 0;
@@ -133,9 +135,13 @@ void CombatManager::doRunCombat(float tick)
 
     if (m_edges[m_edgeId].getInstance()->getState() == eCombatState::Uninitialized) {
         // remove from both vertices
-        delete m_edges[m_edgeId].getInstance();
-        m_edges[m_edgeId].remove();
-        CombatEdge::EdgeId id = m_edges[m_edgeId].getId();
+        if (m_mainCreature->isConscious() == false) {
+            // cleanup, we don't need this anymore
+            cleanup();
+        } else {
+            m_edges[m_edgeId].remove();
+        }
+
         if (m_edges.size() > 1) {
             writeMessage("Combatant has been killed, refreshing combat pools");
             m_doPositionRoll = true;
@@ -178,6 +184,7 @@ void CombatManager::remove(CombatEdge::EdgeId id)
             return;
         }
     }
+    assert(true);
 }
 
 void CombatManager::doPositionRoll()
@@ -212,7 +219,16 @@ void CombatManager::doPositionRoll()
         m_mainCreature->getCreatureComponent()->getQueuedPosition().dice);
     for (unsigned i = 0; i < m_edges.size(); ++i) {
         // not always side 2
-        Creature* creature = m_edges[i].getInstance()->getSide2();
+        Creature* side1 = m_edges[i].getInstance()->getSide1();
+        Creature* side2 = m_edges[i].getInstance()->getSide2();
+        Creature* creature = nullptr;
+        if (side1->getId() != id) {
+            creature = side1;
+        }
+        if (side2->getId() != id) {
+            creature = side2;
+        }
+        assert(creature != nullptr);
         int successes
             = DiceRoller::rollGetSuccess(creature->getBTN(), creature->getQueuedPosition().dice);
         if (successes >= mainSuccesses) {
@@ -285,10 +301,10 @@ void CombatManager::startCombatWith(const CreatureObject* creature)
     // hack to enforce player being side 1
     if (creature->isPlayer() == true) {
         instance->initCombat(
-            creature->getCreatureComponent(), m_mainCreature->getCreatureComponent());
+            creature->getCreatureComponent(), m_mainCreature->getCreatureComponent(), true);
     } else {
         instance->initCombat(
-            m_mainCreature->getCreatureComponent(), creature->getCreatureComponent());
+            m_mainCreature->getCreatureComponent(), creature->getCreatureComponent(), false);
     }
     CombatEdge edge(instance, this, creature->getCombatManager());
     if (m_edges.size() == 0) {

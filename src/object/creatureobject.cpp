@@ -30,7 +30,7 @@ CreatureObject::~CreatureObject()
 
 void CreatureObject::run(const Level* level)
 {
-    if (m_creature->getCreatureState() == eCreatureState::Dead && m_manager->isEngaged() == true) {
+    if (m_creature->getCreatureState() == eCreatureState::Dead && m_manager->isEngaged() == false) {
         m_delete = true;
     }
     if (m_manager->isParent() == true) {

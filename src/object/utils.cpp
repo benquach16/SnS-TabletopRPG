@@ -12,8 +12,13 @@ std::string factionToString(eCreatureFaction faction)
     case eCreatureFaction::Wildlife:
         return "Wildlife";
         break;
+    case eCreatureFaction::EidgenConfederacy:
+        return "Eidgen Confederacy";
+        break;
+    default:
+        return "";
+        break;
     }
-    return "";
 }
 
 std::string raceToString(eCreatureRace race)
