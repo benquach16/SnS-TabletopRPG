@@ -50,7 +50,13 @@ void AIController::run(const Level* level, CreatureObject* controlledCreature)
             controlledCreature->startCombatWith(target);
         }
     } else {
-        patrol(level, controlledCreature);
+        switch (m_role) {
+        case eAIRoles::Standing:
+            break;
+        case eAIRoles::Patrolling:
+            patrol(level, controlledCreature);
+            break;
+        }
     }
 }
 

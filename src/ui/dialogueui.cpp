@@ -42,6 +42,8 @@ DialogueUI::DialogueUI()
             responses = static_cast<vector<string>>(values["responses"]);
         }
 
+        if (values["effects"].is_null() == false) {
+        }
         assert(m_dialogueTree.find(key) == m_dialogueTree.end());
 
         m_dialogueTree[key] = new DialogueNode(message, responses);

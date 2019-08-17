@@ -66,9 +66,11 @@ void Level::generate()
 
     // temporary, to add enemies
     for (auto it : rooms) {
-        HumanObject* object = new HumanObject;
-        object->setPosition(it.x, it.y);
-        m_objects.push_back(object);
+        if (random_static::get(1, 3) == 1) {
+            HumanObject* object = new HumanObject;
+            object->setPosition(it.x, it.y);
+            m_objects.push_back(object);
+        }
     }
 }
 

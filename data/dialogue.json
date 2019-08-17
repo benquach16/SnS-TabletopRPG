@@ -25,5 +25,60 @@
     },
     "end": {
         "message": "I must leave now."
+    },
+    "greeting_intro" : {
+        "message": "Glad you made it. Hope it didn't take too long to get here. I'll have you clear this place out. Our team is securing the outside of this area. This shouldn't be too difficult. Maybe just a few underequipped bandits. Once you're done, head back to the capital. Do you need a run down on fighting?",
+        "responses": ["needhelp", "imgood"]  
+    },
+    "needhelp" : {
+        "message": "Tell me how combat works again.",
+        "responses": ["combat1"]
+    },
+    "imgood": {
+        "message": "I'm good.",
+        "responses": ["goodluck"]
+    },
+    "combat1": {
+        "message": "The first thing you should do is take a look and inspect anyone you see. This will let you know if they are an enemy or not, and what kind of equipment they have. If they look too strong, make sure to run. A single hit can cripple your combat abilities, and getting back in the fight from that will be very hard. Got it?",
+        "responses": ["gotitcombat1", "imgood"]
+    },
+    "gotitcombat1": {
+        "message": "Got it",
+        "responses": ["combat2"]
+    },
+    "combat2": {
+        "message": "Once you've sized someone up, you can fight them. If they can see you, you will have to declare initiative first. You can decide to attack, or defend. If you choose to attack and they choose to defend, you get initiative and vise versa. If you both defend, nothing happens until one of you loses your nerve. If you both decide to attack, things get complicated. You with both attack at the same time, and then its a race to see who gets hit first. Its likely both of you will die because of this, so play it safe if you're not sure.",
+        "responses": ["gotitcombat2","imgood"]
+    },
+    "gotitcombat2": {
+        "message": "Makes sense.",
+        "responses": ["combat3"]
+    },
+    "combat3": {
+        "message": "If you have taken initiative, you get to attack. Both you and your opponent get a combat pool. This is how many action points you have. Each point you allocate to a manuever increases its probability of success. If you get more successes than your opponent, your attack will hit. The more points you put into an attack, the stronger it is. You will refresh your combat pools every other exchange.",
+        "responses": ["gotitcombat3","imgood"]
+    },
+    "gotitcombat3": {
+        "message": "And what if I'm defending?",
+        "responses": ["combat4"]
+    },
+    "combat4": {
+        "message": "If you decided to defend, you must successfully defend against your opponent in order to take initiative. You will usually try to parry their attack. You may also link your defense into an attack, giving you a strong counterattack. If it looks like the enemy is doing a really big attack, you can try to steal initiative and hit them first. They won't be able to defend against your attack, if you can land your attack first. Use thrusts for this, a thrust is much faster than a swing and gives you advantages on initiative contests.",
+        "responses": ["gotitcombat4","imgood"]
+    },
+    "gotitcombat4": {
+        "message": "I got it now.",
+        "responses": ["combat5"]
+    },
+    "combat5": {
+        "message": "You might notice that reach is a critical factor in melee combat. For every step of reach you enjoy over your enemy, it costs them that many action points just to attack you. Fighting someone with a spear with a short sword is virtually suicide. However, the reach of combat changes whenever someone gets a successful attack. If they get a hit on you, the reach goes to their favored step. If you have a longer weapon, this might put you in trouble. You can also change the grip on your weapon, which will usually change the reach of your weapon and provide additional manuevers. Use this to your advantage.",
+        "responses": ["imgood"]
+    },
+    "combat6": {
+        "message": "Lastly, there are a lot of different manuevers you have to try to open up your opponent. You may notice that enemies with metal armor are difficult to fight. If thats the case, you can try to pinpoint thrust to hit them in a weak spot, or try to feint to open them up to a big attack, or hook them to trip them. Blunt weapons will be a big help against armored enemies, but you may notice that even they don't do as much as you hope. You will have to use every trick in the book to try to open them up. This goes for you too. Having armor is a tremendous boon, as long as it covers you completely. Having an exposed spot on your leg will mean the enemy will try to attack you there.",
+        "responses": ["imgood"]
+    },
+    "goodluck": {
+        "message": "Good luck."
     }
 }

@@ -8,16 +8,21 @@ using namespace std;
 
 std::deque<Log::message> Log::m_queue = std::deque<Log::message>();
 
-void Log::push(const std::string& str, eMessageTypes type)
+void Log::push(std::string str, eMessageTypes type)
 {
     // split if the string is too long
     auto windowSize = Game::getWindow().getSize();
     int width = str.size() * cCharWidth;
     if (width > windowSize.x) {
-        int diff = width - windowSize.x;
-        int count = diff / cCharWidth;
-        m_queue.push_back({ str.substr(0, count), type });
-        m_queue.push_back({ str.substr(count, str.size() - count), type });
+        while (width > windowSize.x) {
+            int diff = width - windowSize.x;
+            int count = diff / cCharWidth;
+            int size = str.size() - count;
+            m_queue.push_back({ str.substr(0, size), type });
+            str = str.substr(size, count);
+            width = str.size() * cCharWidth;
+        }
+        m_queue.push_back({ str, type });
     } else {
         m_queue.push_back({ str, type });
     }
@@ -61,7 +66,7 @@ void Log::run()
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
         // lots of magic numbers
-        constexpr int cSpace = 50;
+        constexpr int cSpace = 0;
         sf::RectangleShape historyBkg(sf::Vector2f(windowSize.x - cSpace, windowSize.y - cSpace));
         historyBkg.setPosition(cSpace / 2, cSpace / 2);
         historyBkg.setFillColor(sf::Color(12, 12, 23));

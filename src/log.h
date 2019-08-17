@@ -11,7 +11,7 @@ public:
         std::string text;
         eMessageTypes type;
     };
-    static void push(const std::string& str, eMessageTypes type = eMessageTypes::Standard);
+    static void push(std::string str, eMessageTypes type = eMessageTypes::Standard);
     static void run();
 
 private:

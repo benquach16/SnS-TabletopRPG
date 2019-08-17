@@ -40,7 +40,8 @@ public:
 
     bool getBleeding() const { return m_creature->getBleeding(); }
 
-    std::string getStartingDialogueLabel() const { return "greeting_neutral"; }
+    std::string getStartingDialogueLabel() const { return m_dialogue; }
+    void setStartingDialogueLabel(const std::string& str) { m_dialogue = str; }
 
     bool isInCombat() const;
     void setInCombat() { m_inCombat = true; }
@@ -48,6 +49,8 @@ public:
 
     void startCombatWith(const CreatureObject* creature);
     CombatManager* getCombatManager() const { return m_manager; }
+
+    void setAIRole(eAIRoles role) { m_controller.setRole(role); }
 
 protected:
     Creature* m_creature;
@@ -66,4 +69,6 @@ protected:
 
     bool m_inCombat;
     bool m_delete;
+
+    std::string m_dialogue;
 };

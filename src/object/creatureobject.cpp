@@ -13,6 +13,7 @@ CreatureObject::CreatureObject(Creature* creature)
     , m_inCombat(false)
     , m_manager(new CombatManager(this))
     , m_delete(false)
+    , m_dialogue("greeting_neutral")
 {
 }
 

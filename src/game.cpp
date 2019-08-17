@@ -66,7 +66,9 @@ void Game::run()
 
     HumanObject* human1 = new HumanObject;
     human1->setFaction(eCreatureFaction::EidgenConfederacy);
-    human1->setPosition(5, 5);
+    human1->setPosition(2, 2);
+    human1->setAIRole(eAIRoles::Standing);
+    human1->setStartingDialogueLabel("greeting_intro");
     level.addObject(human1);
 
     m_playerObject->setPosition(1, 1);
