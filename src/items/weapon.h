@@ -6,10 +6,13 @@
 #include <unordered_map>
 #include <vector>
 
+constexpr int cFistsId = 1000;
+
 class Weapon : public Item {
 public:
     Weapon(const std::string& name, const std::string& description, eLength length,
-        std::vector<Component*> components, eWeaponTypes type, int cost);
+        std::vector<Component*> components, eWeaponTypes type, int cost,
+        bool naturalWeapon = false);
     ~Weapon();
     eItemType getItemType() const override { return eItemType::Weapon; }
 
@@ -23,6 +26,8 @@ public:
 
     Component* getPommelStrike() const;
 
+    bool getNaturalWeapon() const { return m_naturalWeapon; }
+
 private:
     Weapon();
     eLength m_length;
@@ -32,6 +37,7 @@ private:
     std::unordered_map<eGrips, std::vector<Component*>> m_thrust;
     std::unordered_map<eGrips, std::vector<Component*>> m_swing;
     eWeaponTypes m_type;
+    bool m_naturalWeapon;
 };
 
 class WeaponTable {
@@ -48,6 +54,8 @@ public:
 private:
     WeaponTable();
     ~WeaponTable();
+
+    void createNaturalWeapons();
 
     eLength convertLengthFromStr(const std::string& str);
     eWeaponTypes convertTypeFromStr(const std::string& str);

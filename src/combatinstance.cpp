@@ -629,6 +629,12 @@ void CombatInstance::doResolution()
                 writeMessage("attack dodged with " + to_string(-MoS) + " successes");
             } else {
                 writeMessage("attack deflected with " + to_string(-MoS) + " successes");
+
+                //natural weapon parries still take damage thru the parry
+                if(defender->getPrimaryWeapon()->getNaturalWeapon() == true) {
+                    attack.target = eHitLocations::Arm;
+                    inflictWound(attacker, 0, attack, defender);
+                }
             }
             if (defend.manuever == eDefensiveManuevers::ParryLinked) {
                 // resolve offense

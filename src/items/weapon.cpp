@@ -13,11 +13,12 @@ using namespace std;
 const string filepath = "data/weapons.json";
 
 Weapon::Weapon(const std::string& name, const std::string& description, eLength length,
-    std::vector<Component*> components, eWeaponTypes type, int cost)
+    std::vector<Component*> components, eWeaponTypes type, int cost, bool naturalWeapon)
     : Item(name, description, cost, eItemType::Weapon)
     , m_length(length)
     , m_components(components)
     , m_type(type)
+    , m_naturalWeapon(naturalWeapon)
 {
     for (int i = 0; i < components.size(); ++i) {
         if (components[i]->getAttack() == eAttacks::Thrust) {
@@ -207,6 +208,25 @@ WeaponTable::WeaponTable()
         m_weaponsList[id] = weapon;
         ItemTable::getSingleton()->addWeapon(id, weapon);
     }
+
+    createNaturalWeapons();
+}
+
+void WeaponTable::createNaturalWeapons()
+{
+    string name = "Fists";
+    set<eWeaponProperties> properties;
+    std::unordered_map<eGrips, bool> grips;
+    grips[eGrips::Standard] = false;
+    std::vector<Component*> components;
+    components.push_back(
+        new Component("Fist", -1, eDamageTypes::Blunt, eAttacks::Swing, properties, grips));
+    components.push_back(
+        new Component("Fist", -1, eDamageTypes::Blunt, eAttacks::Thrust, properties, grips));
+    Weapon* fists = new Weapon(name, "For punching", eLength::Hand, components, eWeaponTypes::Brawling, 0, true);
+    assert(m_weaponsList.find(cFistsId) == m_weaponsList.end());
+    m_weaponsList[cFistsId] = fists;
+    ItemTable::getSingleton()->addWeapon(cFistsId, fists);
 }
 
 WeaponTable::~WeaponTable()
