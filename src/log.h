@@ -6,13 +6,7 @@
 
 class Log {
 public:
-    enum eMessageTypes {
-        Announcement,
-        Standard,
-        Alert,
-        Damage,
-        Dialogue,
-    };
+    enum eMessageTypes { Announcement, Standard, Alert, Damage, Dialogue, Background };
     struct message {
         std::string text;
         eMessageTypes type;

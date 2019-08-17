@@ -280,6 +280,9 @@ void CombatManager::startCombatWith(const CreatureObject* creature)
         return;
     }
 
+    // assume creature attempts to stand before attacking someone
+    m_mainCreature->getCreatureComponent()->setStand();
+
     if (creature->getCombatManager()->isLeaf() == true) {
         // peel off creature from previous engagement, unless the engagement is a duel. if we're in
         // a duel, then we can just freely assign parent without peeling
@@ -300,6 +303,9 @@ void CombatManager::startCombatWith(const CreatureObject* creature)
     if (creature->isPlayer() == true) {
         instance->initCombat(
             creature->getCreatureComponent(), m_mainCreature->getCreatureComponent(), true);
+    } else if (m_mainCreature->isPlayer() == true) {
+        instance->initCombat(
+            m_mainCreature->getCreatureComponent(), creature->getCreatureComponent(), true);
     } else {
         instance->initCombat(
             m_mainCreature->getCreatureComponent(), creature->getCreatureComponent(), false);
@@ -354,16 +360,13 @@ void CombatManager::peel()
     m_edges[0]->remove();
 }
 
-CombatInstance* CombatManager::getCurrentInstance() const
+CombatEdge* CombatManager::getCurrentEdge() const
 {
     if (m_edges.size() == 0 || m_edgeId >= m_edges.size()) {
         return nullptr;
     }
     auto edge = m_edges.at(m_edgeId);
-    if (edge->getActive() == false) {
-        return nullptr;
-    }
-    return edge->getInstance();
+    return edge;
 }
 
 void CombatManager::refreshInstances()

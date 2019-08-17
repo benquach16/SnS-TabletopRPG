@@ -11,13 +11,17 @@
         "message": "You should probably ask a shopkeeper.",
         "responses": ["end"]
     },
+    "text4": {
+        "message": "You should probably ask a healer.",
+        "responses": ["end"]
+    },
     "greeting_hostile" : {
         "message": "I do not want to speak to you.",
         "responses": ["end"]
     },
     "ask_healing": {
         "message": "I would like to heal my wounds.",
-        "responses": ["text3"]
+        "responses": ["text4"]
     },
     "end": {
         "message": "I must leave now."

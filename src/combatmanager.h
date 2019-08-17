@@ -55,7 +55,7 @@ public:
     CombatManager(CreatureObject* creature);
     ~CombatManager();
     bool run(float tick);
-    CombatInstance* getCurrentInstance() const;
+    CombatEdge* getCurrentEdge() const;
     void startCombatWith(const CreatureObject* creature);
     eCombatManagerState getState() const { return m_currentState; }
     bool isEngaged() const { return m_edges.size() > 0; }

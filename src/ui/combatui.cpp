@@ -35,10 +35,13 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
         return;
     }
 
-    CombatInstance* instance = manager->getCurrentInstance();
-    if (instance == nullptr) {
+    CombatEdge* edge = manager->getCurrentEdge();
+    if (edge == nullptr) {
         return;
     }
+    CombatInstance* instance = edge->getInstance();
+
+    assert(instance != nullptr);
 
     if (instance->getState() == eCombatState::Uninitialized) {
         return;
@@ -85,6 +88,10 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
 
     if (manager->getState() == eCombatManagerState::PositioningRoll) {
         m_positionUI.run(event, player);
+        return;
+    }
+
+    if (edge->getActive() == false) {
         return;
     }
     if (instance->getState() == eCombatState::Initialized) {

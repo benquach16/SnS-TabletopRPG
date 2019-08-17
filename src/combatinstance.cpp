@@ -797,8 +797,7 @@ bool CombatInstance::inflictWound(
 
     if (armorAtLocation.AV > 0) {
         writeMessage(
-            target->getName() + "'s armor reduced wound level by " + to_string(armorAtLocation.AV),
-            Log::eMessageTypes::Standard, true);
+            target->getName() + "'s armor reduced wound level by " + to_string(armorAtLocation.AV));
     }
 
     // complicated armor calcs go here
@@ -984,8 +983,10 @@ void CombatInstance::writeMessage(const std::string& str, Log::eMessageTypes typ
 {
     // combat manager is not a singleton, so we can have multiple.
     // we can choose not to display combatmanager messages if we want to.
-    if (m_sendAllMessages == true || important == true) {
+    if (m_sendAllMessages == true) {
         Log::push(str, type);
+    } else if (important == true) {
+        Log::push(str, Log::eMessageTypes::Background);
     }
 }
 

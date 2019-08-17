@@ -79,7 +79,7 @@ bool DialogueUI::run(sf::Event event, PlayerObject* player, CreatureObject* crea
 
 void DialogueUI::doTalkingNPC(sf::Event event, PlayerObject* player, CreatureObject* creature)
 {
-    // UiCommon::drawTopPanel();
+    UiCommon::drawTopPanel();
     string message = m_dialogueTree.at(m_currentLabel)->getMessage();
     Log::push(
         creature->getCreatureComponent()->getName() + ": " + message, Log::eMessageTypes::Dialogue);

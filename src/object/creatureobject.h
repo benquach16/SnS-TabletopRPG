@@ -40,7 +40,7 @@ public:
 
     bool getBleeding() const { return m_creature->getBleeding(); }
 
-    std::string getStartingDialogueLabel() const { return "greeting_hostile"; }
+    std::string getStartingDialogueLabel() const { return "greeting_neutral"; }
 
     bool isInCombat() const;
     void setInCombat() { m_inCombat = true; }
