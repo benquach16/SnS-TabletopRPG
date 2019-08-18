@@ -30,6 +30,8 @@ void CombatUI::resetState()
 
 void CombatUI::run(sf::Event event, const CombatManager* manager)
 {
+    // bug - players combat manager might not be parent, then we are working with an outdated
+    // instance
     if (manager == nullptr) {
         cout << "this shouldnt happen" << endl;
         return;
@@ -91,7 +93,13 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
         return;
     }
 
-    if (edge->getActive() == false) {
+    if (edge->getActive() == false || edge->getCurrent() == false) {
+        UiCommon::drawTopPanel();
+        sf::Text text;
+        text.setFont(Game::getDefaultFont());
+        text.setCharacterSize(cCharSize);
+        text.setString("Waiting for turn...");
+        Game::getWindow().draw(text);
         return;
     }
     if (instance->getState() == eCombatState::Initialized) {

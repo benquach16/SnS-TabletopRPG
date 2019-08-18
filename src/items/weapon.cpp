@@ -223,7 +223,8 @@ void WeaponTable::createNaturalWeapons()
         new Component("Fist", -1, eDamageTypes::Blunt, eAttacks::Swing, properties, grips));
     components.push_back(
         new Component("Fist", -1, eDamageTypes::Blunt, eAttacks::Thrust, properties, grips));
-    Weapon* fists = new Weapon(name, "For punching", eLength::Hand, components, eWeaponTypes::Brawling, 0, true);
+    Weapon* fists = new Weapon(
+        name, "For punching", eLength::Hand, components, eWeaponTypes::Brawling, 0, true);
     assert(m_weaponsList.find(cFistsId) == m_weaponsList.end());
     m_weaponsList[cFistsId] = fists;
     ItemTable::getSingleton()->addWeapon(cFistsId, fists);

@@ -298,8 +298,8 @@ void Game::run()
             }
             */
             if (tick > CombatManager::cTick) {
-                // pause rest of game if player is in combat. combat between two
-                // NPCS can happen anytime
+                // issue here is if player is engaged and is not the parent. the ai updates so
+                // slowly that its hard for the player to understand whats going on
                 level.run();
                 tick = 0;
             }

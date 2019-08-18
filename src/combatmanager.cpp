@@ -15,6 +15,7 @@ CombatEdge::CombatEdge(CombatInstance* instance, CombatManager* vertex1, CombatM
     , m_vertex1(vertex1)
     , m_vertex2(vertex2)
     , m_active(false)
+    , m_current(false)
     , m_id(ids++)
 {
     assert(m_vertex1 != m_vertex2);
@@ -129,6 +130,7 @@ void CombatManager::doRunCombat(float tick)
         return;
     }
 
+    m_edges[m_edgeId]->setCurrent(true);
     bool change = m_edges[m_edgeId]->getInstance()->getState() == eCombatState::PostResolution;
 
     m_edges[m_edgeId]->getInstance()->run();
@@ -159,6 +161,7 @@ void CombatManager::doRunCombat(float tick)
     // combat
     if (change == true) {
         m_positionDone = false;
+        m_edges[m_edgeId]->setCurrent(false);
         if (m_edgeId < static_cast<int>(m_edges.size()) - 1) {
             m_edgeId++;
         } else {

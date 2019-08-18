@@ -630,8 +630,8 @@ void CombatInstance::doResolution()
             } else {
                 writeMessage("attack deflected with " + to_string(-MoS) + " successes");
 
-                //natural weapon parries still take damage thru the parry
-                if(defender->getPrimaryWeapon()->getNaturalWeapon() == true) {
+                // natural weapon parries still take damage thru the parry
+                if (defender->getPrimaryWeapon()->getNaturalWeapon() == true) {
                     attack.target = eHitLocations::Arm;
                     inflictWound(attacker, 0, attack, defender);
                 }

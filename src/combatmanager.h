@@ -25,12 +25,17 @@ public:
     EdgeId getId() { return m_id; }
     void setActive(bool active) { m_active = active; }
     bool getActive() const { return m_active; }
+    void setCurrent(bool current) { m_current = current; }
+    bool getCurrent() const { return m_current; }
     CombatManager* findOtherVertex(const CombatManager* manager) const;
 
 private:
     EdgeId m_id;
     CombatEdge();
     bool m_active;
+
+    // used primarily for showing the player ui when its ready for ui input
+    bool m_current;
     CombatInstance* m_instance;
     CombatManager* m_vertex1;
     CombatManager* m_vertex2;
