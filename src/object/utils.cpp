@@ -40,6 +40,8 @@ eCreatureFaction stringToFaction(const std::string& str)
         return eCreatureFaction::Bandit;
     } else if (str == "wildlife") {
         return eCreatureFaction::Wildlife;
+    } else if (str == "eidgen") {
+        return eCreatureFaction::EidgenConfederacy;
     }
     return eCreatureFaction::None;
 }

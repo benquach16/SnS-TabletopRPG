@@ -52,6 +52,8 @@ public:
 
     void setAIRole(eAIRoles role) { m_controller.setRole(role); }
 
+    void setLoadout(eCreatureFaction faction);
+
 protected:
     Creature* m_creature;
     eCreatureFaction m_creatureFaction;

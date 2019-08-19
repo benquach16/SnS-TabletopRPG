@@ -4,19 +4,27 @@
         "baseLegs": [2048, 2044],
         "helmets": [2050, 2051],
         "chests": [2041],
+        "plateChests": [],
+        "skirts": [],
         "leggings": [],
+        "plateLeggings": [],
         "shoes": [2046],
         "gloves": [2047],
+        "plateGloves": [],
         "weapons": [1042, 1045, 1046, 1041, 1052]
     },
     "eidgen": {
-        "baseChests": [2040, 2045],
-        "baseLegs": [2048, 2044],
-        "helmets": [2050, 2051],
-        "chests": [2041],
-        "leggings": [],
+        "baseChests": [2040],
+        "baseLegs": [2044],
+        "helmets": [2052],
+        "chests": [2055],
+        "plateChests": [2043],
+        "skirts": [2056],
+        "leggings": [2057],
+        "plateLeggings": [2070],
         "shoes": [2046],
-        "gloves": [2047],
-        "weapons": [1042, 1045, 1046, 1041, 1052]    
+        "gloves": [2054],
+        "plateGloves": [],
+        "weapons": [1040, 1042, 1048, 1050]    
     }
 }

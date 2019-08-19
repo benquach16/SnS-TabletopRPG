@@ -39,6 +39,8 @@ void Game::initialize()
     m_window.create(sf::VideoMode(1600, 900), "window", sf::Style::Default, settings);
     m_window.setFramerateLimit(165);
     m_defaultFont.loadFromFile("data/fonts/MorePerfectDOSVGA.ttf");
+    // quite possibly the worst way of doing this, but cannot disable AA on sfml without this.
+    const_cast<sf::Texture&>(m_defaultFont.getTexture(11)).setSmooth(false);
     m_currentState = eGameState::Playing;
 }
 
@@ -66,6 +68,7 @@ void Game::run()
 
     HumanObject* human1 = new HumanObject;
     human1->setFaction(eCreatureFaction::EidgenConfederacy);
+    human1->setLoadout(eCreatureFaction::EidgenConfederacy);
     human1->setPosition(2, 2);
     human1->setAIRole(eAIRoles::Standing);
     human1->setStartingDialogueLabel("greeting_intro");
@@ -106,8 +109,11 @@ void Game::run()
             || m_currentState == eGameState::DialogueSelect) {
             gfxSelector.run(&m_selector);
         }
+        gfxlevel.renderText();
         getWindow().setView(getWindow().getDefaultView());
+
         ui.run(event);
+
         if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Equal) {
             zoom = max(cMaxZoom, zoom - .1f);
         }

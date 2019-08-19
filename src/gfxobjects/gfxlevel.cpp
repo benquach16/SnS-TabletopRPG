@@ -1,6 +1,7 @@
 #include "gfxlevel.h"
 #include "../game.h"
 #include "../level/level.h"
+#include "../ui/types.h"
 #include "utils.h"
 
 using namespace std;
@@ -29,9 +30,6 @@ void GFXLevel::run(const Level* level, vector2d center)
     int height = level->getHeight();
 
     auto windowSize = Game::getWindow().getSize();
-
-    std::queue<sf::RectangleShape> m_ground;
-    std::queue<sf::RectangleShape> m_top;
 
     sf::RectangleShape rect(sf::Vector2f(width * cWidth, height * cHeight));
     rect.setFillColor(sf::Color(11, 11, 11));
@@ -209,7 +207,6 @@ void GFXLevel::run(const Level* level, vector2d center)
 
     const std::vector<Object*> rLevelObjs = level->getObjects();
 
-    std::queue<sf::RectangleShape> m_chars;
     for (int i = 0; i < rLevelObjs.size(); ++i) {
         vector2d position = rLevelObjs[i]->getPosition();
         int dist = (position.x - center.x) * (position.x - center.x)
@@ -230,6 +227,20 @@ void GFXLevel::run(const Level* level, vector2d center)
         rect.setRotation(45.f);
         pos.y -= 60;
         pos.x -= 15;
+        if (rLevelObjs[i]->getObjectType() == eObjectTypes::Creature) {
+            sf::Vector2f textPos(pos);
+            sf::Text text;
+
+            // hardcoded
+            text.setCharacterSize(11);
+            text.setFont(Game::getDefaultFont());
+            text.setString(static_cast<const CreatureObject*>(rLevelObjs[i])->getName());
+            text.setPosition(textPos);
+            textPos.x -= text.getLocalBounds().width / 2;
+            text.setScale(1, 2);
+            m_texts.push(text);
+        }
+
         sprite->setPosition(pos);
         Game::getWindow().draw(rect);
 
@@ -241,5 +252,13 @@ void GFXLevel::run(const Level* level, vector2d center)
     while (m_top.empty() == false) {
         Game::getWindow().draw(m_top.front());
         m_top.pop();
+    }
+}
+
+void GFXLevel::renderText()
+{
+    while (m_texts.empty() == false) {
+        Game::getWindow().draw(m_texts.front());
+        m_texts.pop();
     }
 }

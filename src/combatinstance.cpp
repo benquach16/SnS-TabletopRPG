@@ -54,8 +54,8 @@ void CombatInstance::initCombat(Creature* side1, Creature* side2, bool showAllMe
     m_side1 = side1;
     m_side2 = side2;
 
-    // m_side1->setStand();
-    // m_side2->setStand();
+    m_side1->clearCreatureManuevers();
+    m_side2->clearCreatureManuevers();
 
     m_currentTempo = eTempo::First;
     m_initiative = eInitiative::Side1;

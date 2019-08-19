@@ -1,6 +1,7 @@
 #include "creatureobject.h"
 #include "../combatmanager.h"
 #include "../items/consumable.h"
+#include "equipmentmanager.h"
 
 using namespace std;
 
@@ -71,4 +72,24 @@ bool CreatureObject::isInCombat() const { return m_manager->isEngaged(); }
 void CreatureObject::startCombatWith(const CreatureObject* creature)
 {
     m_manager->startCombatWith(creature);
+}
+
+void CreatureObject::setLoadout(eCreatureFaction faction)
+{
+    int weaponId = EquipmentManager::getSingleton()->getRandomWeapon(faction);
+    m_creature->setWeapon(weaponId);
+    std::vector<int> armor = EquipmentManager::getSingleton()->getRandomArmors(faction);
+    for (auto i : armor) {
+        if (m_creature->canEquipArmor(i)) {
+            m_creature->equipArmor(i);
+        } else {
+            cout << "Failed to equip " << i << endl;
+        }
+        m_inventory[i]++;
+    }
+
+    m_inventory[0] = effolkronium::random_static::get(1, 25);
+    m_inventory[weaponId] = 1;
+
+    m_inventory[5] = 3;
 }

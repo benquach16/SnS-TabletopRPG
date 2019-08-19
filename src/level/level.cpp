@@ -69,6 +69,8 @@ void Level::generate()
         if (random_static::get(1, 3) == 1) {
             HumanObject* object = new HumanObject;
             object->setPosition(it.x, it.y);
+            object->setFaction(eCreatureFaction::Bandit);
+            object->setLoadout(eCreatureFaction::Bandit);
             m_objects.push_back(object);
         }
     }
