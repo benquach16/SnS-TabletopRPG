@@ -5,16 +5,18 @@
 
 using namespace std;
 
-void PositionUI::run(sf::Event event, Player* player)
+void PositionUI::run(bool hasKeyEvents, sf::Event event, Player* player)
 {
     switch (m_currentState) {
     case eUiState::ChooseDice:
-        doPositionRoll(event, player);
+        doPositionRoll(hasKeyEvents, event, player);
+        break;
+    default:
         break;
     }
 }
 
-void PositionUI::doPositionRoll(sf::Event event, Player* player)
+void PositionUI::doPositionRoll(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();
 
@@ -26,7 +28,8 @@ void PositionUI::doPositionRoll(sf::Event event, Player* player)
 
     Game::getWindow().draw(text);
 
-    if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
+    if (hasKeyEvents && event.type == sf::Event::KeyReleased
+        && event.key.code == sf::Keyboard::Enter) {
         player->setPositionDice(m_numberInput.getNumber());
         m_currentState = eUiState::Finished;
         player->reduceCombatPool(m_numberInput.getNumber());
@@ -36,6 +39,6 @@ void PositionUI::doPositionRoll(sf::Event event, Player* player)
     }
 
     m_numberInput.setMax(player->getCombatPool());
-    m_numberInput.run(event);
+    m_numberInput.run(hasKeyEvents, event);
     m_numberInput.setPosition(sf::Vector2f(0, cCharSize));
 }

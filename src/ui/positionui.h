@@ -5,11 +5,11 @@
 
 class PositionUI {
 public:
-    void run(sf::Event event, Player* player);
+    void run(bool hasKeyEvents, sf::Event event, Player* player);
     void resetState() { m_currentState = eUiState::ChooseDice; }
 
 private:
-    void doPositionRoll(sf::Event event, Player* player);
+    void doPositionRoll(bool hasKeyEvents, sf::Event event, Player* player);
     enum class eUiState : unsigned { ChooseDice, Finished };
 
     NumberInput m_numberInput;

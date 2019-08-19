@@ -12,9 +12,9 @@ NumberInput::NumberInput()
     m_text.setFont(Game::getDefaultFont());
 }
 
-void NumberInput::run(sf::Event event)
+void NumberInput::run(bool hasKeyEvents, sf::Event event)
 {
-    if (event.type == sf::Event::TextEntered) {
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
         if (c >= '0' && c <= '9') {
             int val = c - '0';

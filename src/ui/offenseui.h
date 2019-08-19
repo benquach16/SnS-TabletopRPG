@@ -5,19 +5,20 @@
 
 class OffenseUI {
 public:
-    void run(sf::Event event, Player* player, Creature* target, bool allowStealInitiative = false,
-        bool linkedParry = false);
+    void run(bool hasKeyEvents, sf::Event event, Player* player, Creature* target,
+        bool allowStealInitiative = false, bool linkedParry = false);
     void resetState() { m_currentState = eUiState::ChooseManuever; }
 
 private:
-    void doManuever(sf::Event event, Player* player, bool linkedParry = false);
-    void doFeint(sf::Event event, Player* player);
-    void doHeavyBlow(sf::Event event, Player* player);
-    void doComponent(sf::Event event, Player* player);
-    void doDice(sf::Event event, Player* player);
-    void doTarget(sf::Event event, Player* player, bool linkedParry, Creature* target);
-    void doInspect(sf::Event event, Creature* target);
-    void doPinpointThrust(sf::Event event, Player* player);
+    void doManuever(bool hasKeyEvents, sf::Event event, Player* player, bool linkedParry = false);
+    void doFeint(bool hasKeyEvents, sf::Event event, Player* player);
+    void doHeavyBlow(bool hasKeyEvents, sf::Event event, Player* player);
+    void doComponent(bool hasKeyEvents, sf::Event event, Player* player);
+    void doDice(bool hasKeyEvents, sf::Event event, Player* player);
+    void doTarget(
+        bool hasKeyEvents, sf::Event event, Player* player, bool linkedParry, Creature* target);
+    void doInspect(bool hasKeyEvents, sf::Event event, Creature* target);
+    void doPinpointThrust(bool hasKeyEvents, sf::Event event, Player* player);
 
     enum class eUiState : unsigned {
         ChooseManuever,

@@ -5,13 +5,13 @@
 
 class PrecombatUI {
 public:
-    void run(sf::Event event, Player* player);
+    void run(bool hasKeyEvents, sf::Event event, Player* player);
     void resetState() { m_currentState = eUiState::ChooseFavoring; }
 
 private:
-    void doFavoring(sf::Event event, Player* player);
-    void doFavorLocation(sf::Event event, Player* player);
-    void doChooseGrip(sf::Event event, Player* player);
+    void doFavoring(bool hasKeyEvents, sf::Event event, Player* player);
+    void doFavorLocation(bool hasKeyEvents, sf::Event event, Player* player);
+    void doChooseGrip(bool hasKeyEvents, sf::Event event, Player* player);
     enum class eUiState : unsigned { ChooseFavoring, ChooseFavorLocations, ChooseGrip, Finished };
 
     eUiState m_currentState;

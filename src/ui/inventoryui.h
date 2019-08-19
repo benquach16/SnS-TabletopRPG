@@ -8,12 +8,12 @@ class InventoryUI {
 public:
     InventoryUI();
 
-    void run(sf::Event event, PlayerObject* player);
-    void doBackpack(sf::Event event, PlayerObject* player);
-    void doEquipped(sf::Event event, PlayerObject* player);
-    void doWounds(sf::Event event, PlayerObject* player);
-    void doProfile(sf::Event event, PlayerObject* player);
-    void displayDetail(sf::Event event, PlayerObject* player);
+    void run(bool hasKeyEvents, sf::Event event, PlayerObject* player);
+    void doBackpack(bool hasKeyEvents, sf::Event event, PlayerObject* player);
+    void doEquipped(bool hasKeyEvents, sf::Event event, PlayerObject* player);
+    void doWounds(bool hasKeyEvents, sf::Event event, PlayerObject* player);
+    void doProfile(bool hasKeyEvents, sf::Event event, PlayerObject* player);
+    void displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject* player);
 
 private:
     enum eUiState { Backpack, Equipped, Detailed, Wounds, Profile };

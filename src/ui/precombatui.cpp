@@ -6,24 +6,24 @@
 
 using namespace std;
 
-void PrecombatUI::run(sf::Event event, Player* player)
+void PrecombatUI::run(bool hasKeyEvents, sf::Event event, Player* player)
 {
     switch (m_currentState) {
     case eUiState::ChooseFavoring:
-        doFavoring(event, player);
+        doFavoring(hasKeyEvents, event, player);
         break;
     case eUiState::ChooseFavorLocations:
-        doFavorLocation(event, player);
+        doFavorLocation(hasKeyEvents, event, player);
         break;
     case eUiState::ChooseGrip:
-        doChooseGrip(event, player);
+        doChooseGrip(hasKeyEvents, event, player);
         break;
     case eUiState::Finished:
         break;
     }
 }
 
-void PrecombatUI::doFavoring(sf::Event event, Player* player)
+void PrecombatUI::doFavoring(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();
 
@@ -34,7 +34,7 @@ void PrecombatUI::doFavoring(sf::Event event, Player* player)
 
     Game::getWindow().draw(text);
 
-    if (event.type == sf::Event::TextEntered) {
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
         switch (c) {
         case 'a':
@@ -51,7 +51,7 @@ void PrecombatUI::doFavoring(sf::Event event, Player* player)
     }
 }
 
-void PrecombatUI::doFavorLocation(sf::Event event, Player* player)
+void PrecombatUI::doFavorLocation(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();
 
@@ -68,7 +68,7 @@ void PrecombatUI::doFavorLocation(sf::Event event, Player* player)
         str += idx;
         str += " - " + hitLocationToString(locations[i]) + '\n';
 
-        if (event.type == sf::Event::TextEntered) {
+        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;
             if (c == idx) {
                 player->reduceCombatPool(1);
@@ -81,7 +81,7 @@ void PrecombatUI::doFavorLocation(sf::Event event, Player* player)
     Game::getWindow().draw(text);
 }
 
-void PrecombatUI::doChooseGrip(sf::Event event, Player* player)
+void PrecombatUI::doChooseGrip(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();
 
@@ -91,7 +91,7 @@ void PrecombatUI::doChooseGrip(sf::Event event, Player* player)
     const Weapon* weapon = player->getPrimaryWeapon();
     if (weapon->getType() == eWeaponTypes::Polearms) {
         text.setString("Switch Grip?\na - Standard\nb - Staff Grip\nc - Overhand");
-        if (event.type == sf::Event::TextEntered) {
+        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;
             switch (c) {
             case 'a':
@@ -114,7 +114,7 @@ void PrecombatUI::doChooseGrip(sf::Event event, Player* player)
     } else if (weapon->getType() == eWeaponTypes::Longswords
         || weapon->getType() == eWeaponTypes::Swords) {
         text.setString("Switch Grip?\na - Standard\nb - Half Sword");
-        if (event.type == sf::Event::TextEntered) {
+        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;
             switch (c) {
             case 'a':

@@ -20,28 +20,28 @@ InventoryUI::InventoryUI()
 }
 constexpr int cDisplayLines = 28;
 
-void InventoryUI::run(sf::Event event, PlayerObject* player)
+void InventoryUI::run(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
     switch (m_uiState) {
     case eUiState::Backpack:
-        doBackpack(event, player);
+        doBackpack(hasKeyEvents, event, player);
         break;
     case eUiState::Equipped:
-        doEquipped(event, player);
+        doEquipped(hasKeyEvents, event, player);
         break;
     case eUiState::Detailed:
-        displayDetail(event, player);
+        displayDetail(hasKeyEvents, event, player);
         break;
     case eUiState::Wounds:
-        doWounds(event, player);
+        doWounds(hasKeyEvents, event, player);
         break;
     case eUiState::Profile:
-        doProfile(event, player);
+        doProfile(hasKeyEvents, event, player);
         break;
     }
 }
 
-void InventoryUI::doBackpack(sf::Event event, PlayerObject* player)
+void InventoryUI::doBackpack(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
     auto windowSize = Game::getWindow().getSize();
 
@@ -83,7 +83,7 @@ void InventoryUI::doBackpack(sf::Event event, PlayerObject* player)
     }
     txt.setString(str);
     Game::getWindow().draw(txt);
-    if (event.type == sf::Event::TextEntered) {
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
         switch (c) {
         case '1':
@@ -98,7 +98,7 @@ void InventoryUI::doBackpack(sf::Event event, PlayerObject* player)
     }
 }
 
-void InventoryUI::doEquipped(sf::Event event, PlayerObject* player)
+void InventoryUI::doEquipped(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
     auto windowSize = Game::getWindow().getSize();
 
@@ -127,7 +127,7 @@ void InventoryUI::doEquipped(sf::Event event, PlayerObject* player)
         str += idx;
         str += " - " + armor->getName() + '\n';
 
-        if (event.type == sf::Event::TextEntered) {
+        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;
             if (c == idx) {
                 m_id = armorId[i];
@@ -152,7 +152,7 @@ void InventoryUI::doEquipped(sf::Event event, PlayerObject* player)
     txt2.setString(weapontxt);
     Game::getWindow().draw(txt2);
 
-    if (event.type == sf::Event::TextEntered) {
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
         switch (c) {
         case '1':
@@ -171,7 +171,7 @@ void InventoryUI::doEquipped(sf::Event event, PlayerObject* player)
     }
 }
 
-void InventoryUI::displayDetail(sf::Event event, PlayerObject* player)
+void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
     assert(m_id != -1);
     auto windowSize = Game::getWindow().getSize();
@@ -202,7 +202,7 @@ void InventoryUI::displayDetail(sf::Event event, PlayerObject* player)
         }
         str += '\n';
 
-        if (event.type == sf::Event::TextEntered && event.text.unicode == 'e') {
+        if (hasKeyEvents && event.type == sf::Event::TextEntered && event.text.unicode == 'e') {
             if (m_equipped == false) {
                 if (player->getCreatureComponent()->canEquipArmor(m_id)) {
                     player->getCreatureComponent()->equipArmor(m_id);
@@ -234,13 +234,14 @@ void InventoryUI::displayDetail(sf::Event event, PlayerObject* player)
         }
 
         // don't allow fists since they dont exist yet
-        if (event.type == sf::Event::TextEntered && event.text.unicode == 'e'
-            && m_equipped == false) {
-            player->addItem(player->getCreatureComponent()->getPrimaryWeaponId());
-            player->getCreatureComponent()->setWeapon(m_id);
-            player->removeItem(m_id);
-            m_uiState = eUiState::Equipped;
-            Log::push("You equip the " + item->getName());
+        if (hasKeyEvents && event.type == sf::Event::TextEntered && event.text.unicode == 'e') {
+            if (m_equipped == false) {
+                player->addItem(player->getCreatureComponent()->getPrimaryWeaponId());
+                player->getCreatureComponent()->setWeapon(m_id);
+                player->removeItem(m_id);
+                m_uiState = eUiState::Equipped;
+                Log::push("You equip the " + item->getName());
+            }
         }
     } else if (item->getItemType() == eItemType::Food) {
         if (event.type == sf::Event::TextEntered && event.text.unicode == 'e') {
@@ -255,13 +256,13 @@ void InventoryUI::displayDetail(sf::Event event, PlayerObject* player)
 
     Game::getWindow().draw(txt);
 
-    if (event.type == sf::Event::KeyReleased
+    if (hasKeyEvents && event.type == sf::Event::KeyReleased
         && (event.key.code == sf::Keyboard::Enter || event.key.code == sf::Keyboard::Escape)) {
         m_uiState = eUiState::Backpack;
     }
 }
 
-void InventoryUI::doWounds(sf::Event event, PlayerObject* player)
+void InventoryUI::doWounds(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
     auto windowSize = Game::getWindow().getSize();
     sf::RectangleShape bkg(sf::Vector2f(windowSize.x / 2, cCharSize * cDisplayLines));
@@ -277,7 +278,7 @@ void InventoryUI::doWounds(sf::Event event, PlayerObject* player)
     Game::getWindow().draw(bkg2);
 }
 
-void InventoryUI::doProfile(sf::Event event, PlayerObject* player)
+void InventoryUI::doProfile(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
     auto windowSize = Game::getWindow().getSize();
 
@@ -345,7 +346,7 @@ void InventoryUI::doProfile(sf::Event event, PlayerObject* player)
     stats.setString(statStr);
     Game::getWindow().draw(ap);
     Game::getWindow().draw(stats);
-    if (event.type == sf::Event::TextEntered) {
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
         switch (c) {
         case '1':

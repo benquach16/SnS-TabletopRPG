@@ -16,7 +16,7 @@ class CombatUI {
 public:
     CombatUI();
 
-    void run(sf::Event event, const CombatManager* manager);
+    void run(bool hasKeyEvents, sf::Event event, const CombatManager* manager);
 
 private:
     sf::RectangleShape m_combatBkg;
@@ -37,10 +37,10 @@ private:
     enum class ePositionRollSubState : unsigned { ChooseDice, Finished };
 
     void resetState();
-    void doInitiative(sf::Event event, Player* player, Creature* target);
+    void doInitiative(bool hasKeyEvents, sf::Event event, Player* player, Creature* target);
 
-    void doStolenOffense(sf::Event event, Player* player);
-    void doDualRedSteal(sf::Event event, Player* player);
+    void doStolenOffense(bool hasKeyEvents, sf::Event event, Player* player);
+    void doDualRedSteal(bool hasKeyEvents, sf::Event event, Player* player);
 
     void showSide1Stats(const CombatInstance* instance);
     void showSide2Stats(const CombatInstance* instance);

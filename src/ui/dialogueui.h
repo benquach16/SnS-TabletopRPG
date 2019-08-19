@@ -26,12 +26,13 @@ public:
     DialogueUI();
     ~DialogueUI();
     void resetState() { m_currentState = eUiState::TalkingNPC; }
-    bool run(sf::Event event, PlayerObject* player, CreatureObject* creature);
+    bool run(bool hasKeyEvents, sf::Event event, PlayerObject* player, CreatureObject* creature);
     void init(std::string startingLabel);
 
 private:
-    void doTalkingNPC(sf::Event event, PlayerObject* player, CreatureObject* creature);
-    void doTalkingPlayer(sf::Event event, PlayerObject* player, CreatureObject* creature);
+    void doTalkingNPC(PlayerObject* player, CreatureObject* creature);
+    void doTalkingPlayer(
+        bool hasKeyEvents, sf::Event event, PlayerObject* player, CreatureObject* creature);
     enum eUiState { TalkingNPC, TalkingPlayer, Finished };
     eUiState m_currentState;
     std::string m_currentLabel;

@@ -28,7 +28,7 @@ void CombatUI::resetState()
     m_dualRedState = eDualRedStealSubState::ChooseInitiative;
 }
 
-void CombatUI::run(sf::Event event, const CombatManager* manager)
+void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* manager)
 {
     // bug - players combat manager might not be parent, then we are working with an outdated
     // instance
@@ -89,7 +89,7 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
     Game::getWindow().draw(reachTxt);
 
     if (manager->getState() == eCombatManagerState::PositioningRoll) {
-        m_positionUI.run(event, player);
+        m_positionUI.run(hasKeyEvents, event, player);
         return;
     }
 
@@ -107,11 +107,11 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
         return;
     }
     if (instance->getState() == eCombatState::RollInitiative) {
-        doInitiative(event, player, target);
+        doInitiative(hasKeyEvents, event, player, target);
         return;
     }
     if (instance->getState() == eCombatState::PreexchangeActions) {
-        m_precombatUI.run(event, player);
+        m_precombatUI.run(hasKeyEvents, event, player);
         return;
     }
     if (instance->getState() == eCombatState::ResetState) {
@@ -119,56 +119,56 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
         return;
     }
     if (instance->getState() == eCombatState::Offense && instance->isAttackerPlayer() == true) {
-        m_offenseUI.run(event, player, target);
+        m_offenseUI.run(hasKeyEvents, event, player, target);
         return;
     }
     if (instance->getState() == eCombatState::Defense && instance->isDefenderPlayer() == true) {
-        m_defenseUI.run(event, player);
+        m_defenseUI.run(hasKeyEvents, event, player);
         return;
     }
     if (instance->getState() == eCombatState::ParryLinked) {
-        m_offenseUI.run(event, player, target, false, true);
+        m_offenseUI.run(hasKeyEvents, event, player, target, false, true);
         return;
     }
     if (instance->getState() == eCombatState::DualOffense1
         && instance->isAttackerPlayer() == true) {
         if (m_dualRedState == eDualRedStealSubState::Finished) {
-            m_offenseUI.run(event, player, target, false);
+            m_offenseUI.run(hasKeyEvents, event, player, target, false);
         } else {
-            doDualRedSteal(event, player);
+            doDualRedSteal(hasKeyEvents, event, player);
         }
         return;
     }
     if (instance->getState() == eCombatState::DualOffense2
         && instance->isAttackerPlayer() == true) {
         if (m_dualRedState == eDualRedStealSubState::Finished) {
-            m_offenseUI.run(event, player, target, false);
+            m_offenseUI.run(hasKeyEvents, event, player, target, false);
         } else {
-            doDualRedSteal(event, player);
+            doDualRedSteal(hasKeyEvents, event, player);
         }
         return;
     }
     if (instance->getState() == eCombatState::StolenOffense
         && instance->isAttackerPlayer() == true) {
-        doStolenOffense(event, player);
+        doStolenOffense(hasKeyEvents, event, player);
         return;
     }
     if (instance->getState() == eCombatState::DualOffenseStealInitiative
         && instance->isDefenderPlayer() == true) {
         if (m_stolenOffenseState == eStolenOffenseSubState::Finished) {
-            m_offenseUI.run(event, player, target);
+            m_offenseUI.run(hasKeyEvents, event, player, target);
         } else {
-            doStolenOffense(event, player);
+            doStolenOffense(hasKeyEvents, event, player);
         }
         return;
     }
     if (instance->getState() == eCombatState::DualOffenseSecondInitiative
         && instance->isDefenderPlayer() == true) {
-        doStolenOffense(event, player);
+        doStolenOffense(hasKeyEvents, event, player);
         return;
     }
     if (instance->getState() == eCombatState::StealInitiative) {
-        m_offenseUI.run(event, player, target);
+        m_offenseUI.run(hasKeyEvents, event, player, target);
         return;
     }
     if (instance->getState() == eCombatState::Resolution) {
@@ -185,7 +185,7 @@ void CombatUI::run(sf::Event event, const CombatManager* manager)
     }
 }
 
-void CombatUI::doInitiative(sf::Event event, Player* player, Creature* target)
+void CombatUI::doInitiative(bool hasKeyEvents, sf::Event event, Player* player, Creature* target)
 {
     if (m_initiativeState == eInitiativeSubState::ChooseInitiative) {
         UiCommon::drawTopPanel();
@@ -196,7 +196,7 @@ void CombatUI::doInitiative(sf::Event event, Player* player, Creature* target)
         text.setString("Choose initiative:\na - Attack \nb - Defend\nc - Inspect target");
         Game::getWindow().draw(text);
 
-        if (event.type == sf::Event::TextEntered) {
+        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;
             switch (c) {
             case 'a':
@@ -226,7 +226,7 @@ void CombatUI::doInitiative(sf::Event event, Player* player, Creature* target)
     }
 }
 
-void CombatUI::doStolenOffense(sf::Event event, Player* player)
+void CombatUI::doStolenOffense(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();
 
@@ -240,7 +240,8 @@ void CombatUI::doStolenOffense(sf::Event event, Player* player)
 
         Game::getWindow().draw(text);
 
-        if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
+        if (hasKeyEvents && event.type == sf::Event::KeyReleased
+            && event.key.code == sf::Keyboard::Enter) {
             player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
             player->setDefenseDice(m_numberInput.getNumber());
             // last one so set flag
@@ -251,12 +252,12 @@ void CombatUI::doStolenOffense(sf::Event event, Player* player)
         }
 
         m_numberInput.setMax(player->getCombatPool());
-        m_numberInput.run(event);
+        m_numberInput.run(hasKeyEvents, event);
         m_numberInput.setPosition(sf::Vector2f(0, cCharSize));
     }
 }
 
-void CombatUI::doDualRedSteal(sf::Event event, Player* player)
+void CombatUI::doDualRedSteal(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();
 
@@ -265,12 +266,14 @@ void CombatUI::doDualRedSteal(sf::Event event, Player* player)
         text.setCharacterSize(cCharSize);
         text.setFont(Game::getDefaultFont());
         text.setString("Steal Initiative?\na - Yes\nb - No");
-        if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::A) {
-            player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
-            m_dualRedState = eDualRedStealSubState::ChooseDice;
-        }
-        if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::B) {
-            m_dualRedState = eDualRedStealSubState::Finished;
+        if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
+            if (event.key.code == sf::Keyboard::A) {
+                player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
+                m_dualRedState = eDualRedStealSubState::ChooseDice;
+            }
+            if (event.key.code == sf::Keyboard::B) {
+                m_dualRedState = eDualRedStealSubState::Finished;
+            }
         }
         Game::getWindow().draw(text);
     } else if (m_dualRedState == eDualRedStealSubState::ChooseDice) {
@@ -282,7 +285,8 @@ void CombatUI::doDualRedSteal(sf::Event event, Player* player)
 
         Game::getWindow().draw(text);
 
-        if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
+        if (hasKeyEvents && event.type == sf::Event::KeyReleased
+            && event.key.code == sf::Keyboard::Enter) {
             player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
             player->setDefenseDice(m_numberInput.getNumber());
             player->reduceCombatPool(m_numberInput.getNumber());
@@ -293,7 +297,7 @@ void CombatUI::doDualRedSteal(sf::Event event, Player* player)
         }
 
         m_numberInput.setMax(player->getCombatPool());
-        m_numberInput.run(event);
+        m_numberInput.run(hasKeyEvents, event);
         m_numberInput.setPosition(sf::Vector2f(0, cCharSize));
     }
 }

@@ -63,14 +63,15 @@ void DialogueUI::init(std::string startingLabel)
     m_currentState = eUiState::TalkingNPC;
 }
 
-bool DialogueUI::run(sf::Event event, PlayerObject* player, CreatureObject* creature)
+bool DialogueUI::run(
+    bool hasKeyEvents, sf::Event event, PlayerObject* player, CreatureObject* creature)
 {
     switch (m_currentState) {
     case eUiState::TalkingNPC:
-        doTalkingNPC(event, player, creature);
+        doTalkingNPC(player, creature);
         break;
     case eUiState::TalkingPlayer:
-        doTalkingPlayer(event, player, creature);
+        doTalkingPlayer(hasKeyEvents, event, player, creature);
         break;
     case eUiState::Finished:
         return false;
@@ -79,7 +80,7 @@ bool DialogueUI::run(sf::Event event, PlayerObject* player, CreatureObject* crea
     return true;
 }
 
-void DialogueUI::doTalkingNPC(sf::Event event, PlayerObject* player, CreatureObject* creature)
+void DialogueUI::doTalkingNPC(PlayerObject* player, CreatureObject* creature)
 {
     UiCommon::drawTopPanel();
     string message = m_dialogueTree.at(m_currentLabel)->getMessage();
@@ -88,7 +89,8 @@ void DialogueUI::doTalkingNPC(sf::Event event, PlayerObject* player, CreatureObj
     m_currentState = eUiState::TalkingPlayer;
 }
 
-void DialogueUI::doTalkingPlayer(sf::Event event, PlayerObject* player, CreatureObject* creature)
+void DialogueUI::doTalkingPlayer(
+    bool hasKeyEvents, sf::Event event, PlayerObject* player, CreatureObject* creature)
 {
     UiCommon::drawTopPanel();
 
@@ -111,7 +113,7 @@ void DialogueUI::doTalkingPlayer(sf::Event event, PlayerObject* player, Creature
 
         str += " - " + node->getMessage() + "\n";
 
-        if (event.type == sf::Event::TextEntered) {
+        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;
             if (c == idx) {
                 Log::push(

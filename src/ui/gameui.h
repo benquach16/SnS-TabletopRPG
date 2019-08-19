@@ -13,19 +13,19 @@ class GameUI {
 public:
     GameUI();
 
-    void run(sf::Event event);
+    void run();
     void initDialog(CreatureObject* creature);
-    bool runDialog(sf::Event event, PlayerObject* player, CreatureObject* creature);
-    void runCombat(sf::Event event, const CombatManager* manager);
-    void runInventory(sf::Event event, PlayerObject* player);
-    void runTrade(sf::Event event, std::map<int, int>& inventory, std::map<int, int>& container);
+    bool runDialog(
+        bool hasKeyEvent, sf::Event event, PlayerObject* player, CreatureObject* creature);
+    void runCombat(bool hasKeyEvents, sf::Event event, const CombatManager* manager);
+    void runInventory(bool hasKeyEvents, sf::Event event, PlayerObject* player);
+    void runTrade(bool hasKeyEvents, sf::Event event, std::map<int, int>& inventory,
+        std::map<int, int>& container);
 
 private:
     sf::Text m_helpText;
     sf::RectangleShape m_bkg;
-    enum class eGameUIState {
 
-    };
     CombatUI m_combatUI;
     InventoryUI m_inventoryUI;
     TradeUI m_tradeUI;

@@ -8,7 +8,7 @@ class NumberInput : public UIObject {
 public:
     NumberInput();
 
-    void run(sf::Event event) override;
+    void run(bool hasKeyEvents, sf::Event event) override;
     bool pollForCompletion();
     int getNumber() { return m_number; }
     void reset()

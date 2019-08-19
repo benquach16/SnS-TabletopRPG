@@ -11,7 +11,7 @@ GameUI::GameUI()
                          "Attack\nK - Talk\nR - Rest\n");
 }
 
-void GameUI::run(sf::Event event)
+void GameUI::run()
 {
     sf::FloatRect backgroundRect = m_helpText.getLocalBounds();
     backgroundRect.width += 5;
@@ -26,22 +26,24 @@ void GameUI::initDialog(CreatureObject* creature)
     m_dialogueUI.init(creature->getStartingDialogueLabel());
 }
 
-bool GameUI::runDialog(sf::Event event, PlayerObject* player, CreatureObject* creature)
+bool GameUI::runDialog(
+    bool hasKeyEvents, sf::Event event, PlayerObject* player, CreatureObject* creature)
 {
-    return m_dialogueUI.run(event, player, creature);
+    return m_dialogueUI.run(hasKeyEvents, event, player, creature);
 }
 
-void GameUI::runCombat(sf::Event event, const CombatManager* manager)
+void GameUI::runCombat(bool hasKeyEvents, sf::Event event, const CombatManager* manager)
 {
-    m_combatUI.run(event, manager);
+    m_combatUI.run(hasKeyEvents, event, manager);
 }
 
-void GameUI::runInventory(sf::Event event, PlayerObject* player)
+void GameUI::runInventory(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
-    m_inventoryUI.run(event, player);
+    m_inventoryUI.run(hasKeyEvents, event, player);
 }
 
-void GameUI::runTrade(sf::Event event, std::map<int, int>& inventory, std::map<int, int>& container)
+void GameUI::runTrade(bool hasKeyEvents, sf::Event event, std::map<int, int>& inventory,
+    std::map<int, int>& container)
 {
     m_tradeUI.run(event, inventory, container);
 }

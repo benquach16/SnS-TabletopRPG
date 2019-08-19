@@ -4,5 +4,5 @@
 
 class UIObject {
 public:
-    virtual void run(sf::Event event) = 0;
+    virtual void run(bool hasKeyEvents, sf::Event event) = 0;
 };

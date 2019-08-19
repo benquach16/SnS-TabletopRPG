@@ -6,40 +6,40 @@
 
 using namespace std;
 
-void OffenseUI::run(
-    sf::Event event, Player* player, Creature* target, bool allowStealInitiative, bool linkedParry)
+void OffenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, Creature* target,
+    bool allowStealInitiative, bool linkedParry)
 {
     switch (m_currentState) {
     case eUiState::ChooseManuever:
-        doManuever(event, player, linkedParry);
+        doManuever(hasKeyEvents, event, player, linkedParry);
         break;
     case eUiState::ChooseFeint:
-        doFeint(event, player);
+        doFeint(hasKeyEvents, event, player);
         break;
     case eUiState::ChooseComponent:
-        doComponent(event, player);
+        doComponent(hasKeyEvents, event, player);
         break;
     case eUiState::ChooseDice:
-        doDice(event, player);
+        doDice(hasKeyEvents, event, player);
         break;
     case eUiState::ChooseTarget:
-        doTarget(event, player, linkedParry, target);
+        doTarget(hasKeyEvents, event, player, linkedParry, target);
         break;
     case eUiState::InspectTarget:
-        doInspect(event, target);
+        doInspect(hasKeyEvents, event, target);
         break;
     case eUiState::PinpointThrust:
-        doPinpointThrust(event, player);
+        doPinpointThrust(hasKeyEvents, event, player);
         break;
     case eUiState::ChooseHeavyBlow:
-        doHeavyBlow(event, player);
+        doHeavyBlow(hasKeyEvents, event, player);
         break;
     case eUiState::Finished:
         break;
     }
 }
 
-void OffenseUI::doManuever(sf::Event event, Player* player, bool linkedParry)
+void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, bool linkedParry)
 {
     UiCommon::drawTopPanel();
 
@@ -70,7 +70,7 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool linkedParry)
     text.setString(str);
     Game::getWindow().draw(text);
 
-    if (event.type == sf::Event::TextEntered) {
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
         switch (c) {
         case 'a':
@@ -127,7 +127,7 @@ void OffenseUI::doManuever(sf::Event event, Player* player, bool linkedParry)
     }
 }
 
-void OffenseUI::doFeint(sf::Event event, Player* player)
+void OffenseUI::doFeint(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();
     sf::Text text;
@@ -136,7 +136,7 @@ void OffenseUI::doFeint(sf::Event event, Player* player)
     text.setString("Feint attack? (2AP)\na - No\nb - Yes");
     Game::getWindow().draw(text);
 
-    if (event.type == sf::Event::TextEntered) {
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
         if (c == 'a') {
             m_currentState = eUiState::ChooseComponent;
@@ -149,7 +149,7 @@ void OffenseUI::doFeint(sf::Event event, Player* player)
     }
 }
 
-void OffenseUI::doHeavyBlow(sf::Event event, Player* player)
+void OffenseUI::doHeavyBlow(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();
     sf::Text text;
@@ -158,7 +158,8 @@ void OffenseUI::doHeavyBlow(sf::Event event, Player* player)
     text.setString("Heavy blow? (Can spend 0-3 AP)");
     Game::getWindow().draw(text);
 
-    if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
+    if (hasKeyEvents && event.type == sf::Event::KeyReleased
+        && event.key.code == sf::Keyboard::Enter) {
         int dice = m_numberInput.getNumber();
         player->reduceCombatPool(dice);
         player->setOffenseHeavyDice(dice);
@@ -168,11 +169,11 @@ void OffenseUI::doHeavyBlow(sf::Event event, Player* player)
 
     constexpr int cMaxHeavyDice = 3;
     m_numberInput.setMax(min(player->getCombatPool(), cMaxHeavyDice));
-    m_numberInput.run(event);
+    m_numberInput.run(hasKeyEvents, event);
     m_numberInput.setPosition(sf::Vector2f(0, cCharSize));
 }
 
-void OffenseUI::doInspect(sf::Event event, Creature* target)
+void OffenseUI::doInspect(bool hasKeyEvents, sf::Event event, Creature* target)
 {
     UiCommon::drawTopPanel();
 
@@ -187,12 +188,12 @@ void OffenseUI::doInspect(sf::Event event, Creature* target)
     text.setFont(Game::getDefaultFont());
     text.setString(str);
     Game::getWindow().draw(text);
-    if (event.type == sf::Event::TextEntered) {
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         m_currentState = eUiState::ChooseManuever;
     }
 }
 
-void OffenseUI::doComponent(sf::Event event, Player* player)
+void OffenseUI::doComponent(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();
 
@@ -210,7 +211,7 @@ void OffenseUI::doComponent(sf::Event event, Player* player)
             str += idx;
             str += " - " + weapon->getSwingComponents(grip)[i]->getName() + '\n';
 
-            if (event.type == sf::Event::TextEntered) {
+            if (hasKeyEvents && event.type == sf::Event::TextEntered) {
                 char c = event.text.unicode;
                 if (c == idx) {
                     player->setOffenseComponent(weapon->getSwingComponents(grip)[i]);
@@ -225,7 +226,7 @@ void OffenseUI::doComponent(sf::Event event, Player* player)
             str += idx;
             str += " - " + weapon->getThrustComponents(grip)[i]->getName() + '\n';
 
-            if (event.type == sf::Event::TextEntered) {
+            if (hasKeyEvents && event.type == sf::Event::TextEntered) {
                 char c = event.text.unicode;
                 if (c == idx) {
                     player->setOffenseComponent(weapon->getThrustComponents(grip)[i]);
@@ -239,7 +240,7 @@ void OffenseUI::doComponent(sf::Event event, Player* player)
     Game::getWindow().draw(text);
 }
 
-void OffenseUI::doDice(sf::Event event, Player* player)
+void OffenseUI::doDice(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();
 
@@ -251,7 +252,8 @@ void OffenseUI::doDice(sf::Event event, Player* player)
 
     Game::getWindow().draw(text);
 
-    if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
+    if (hasKeyEvents && event.type == sf::Event::KeyReleased
+        && event.key.code == sf::Keyboard::Enter) {
         int dice = m_numberInput.getNumber();
         player->setOffenseDice(dice);
         player->reduceCombatPool(dice);
@@ -262,11 +264,12 @@ void OffenseUI::doDice(sf::Event event, Player* player)
     }
 
     m_numberInput.setMax(player->getCombatPool());
-    m_numberInput.run(event);
+    m_numberInput.run(hasKeyEvents, event);
     m_numberInput.setPosition(sf::Vector2f(0, cCharSize));
 }
 
-void OffenseUI::doTarget(sf::Event event, Player* player, bool linkedParry, Creature* target)
+void OffenseUI::doTarget(
+    bool hasKeyEvents, sf::Event event, Player* player, bool linkedParry, Creature* target)
 {
     UiCommon::drawTopPanel();
 
@@ -283,7 +286,7 @@ void OffenseUI::doTarget(sf::Event event, Player* player, bool linkedParry, Crea
         str += idx;
         str += " - " + hitLocationToString(locations[i]) + '\n';
 
-        if (event.type == sf::Event::TextEntered) {
+        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;
             if (c == idx) {
                 player->setOffenseTarget(locations[i]);
@@ -309,7 +312,7 @@ void OffenseUI::doTarget(sf::Event event, Player* player, bool linkedParry, Crea
     Game::getWindow().draw(text);
 }
 
-void OffenseUI::doPinpointThrust(sf::Event event, Player* player)
+void OffenseUI::doPinpointThrust(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();
 
@@ -328,7 +331,7 @@ void OffenseUI::doPinpointThrust(sf::Event event, Player* player)
         str += idx;
         str += " - " + bodyPartToString(parts[i]) + '\n';
 
-        if (event.type == sf::Event::TextEntered) {
+        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;
             if (c == idx) {
                 player->setOffensePinpointTarget(parts[i]);

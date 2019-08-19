@@ -86,15 +86,17 @@ void Game::run()
         sf::Event event;
         bool hasKeyEvents = false;
         while (m_window.pollEvent(event)) {
-            switch(event.type) {
+            switch (event.type) {
             case sf::Event::Closed:
                 m_window.close();
                 break;
+            case sf::Event::KeyPressed:
+            case sf::Event::TextEntered:
             case sf::Event::KeyReleased:
-                hasEvent = true;
+                hasKeyEvents = true;
                 break;
             default:
-                hasEvent = false;
+                hasKeyEvents = false;
                 break;
             }
         }
@@ -120,7 +122,7 @@ void Game::run()
         gfxlevel.renderText();
         getWindow().setView(getWindow().getDefaultView());
 
-        ui.run(event);
+        ui.run();
 
         if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Equal) {
             zoom = max(cMaxZoom, zoom - .1f);
@@ -143,7 +145,7 @@ void Game::run()
 
         if (m_currentState == eGameState::Playing) {
             vector2d pos = m_playerObject->getPosition();
-            if(event.type == sf::Event::KeyReleased && hasKeyEvent) {
+            if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
                 if (event.key.code == sf::Keyboard::Down) {
                     if (level.isFreeSpace(pos.x, pos.y + 1) == true) {
                         m_playerObject->moveDown();
@@ -193,7 +195,7 @@ void Game::run()
                         case eObjectTypes::Creature:
                             Log::push("There is a creature here. You need to kill "
                                       "them if you want to loot them.",
-                                      Log::eMessageTypes::Alert);
+                                Log::eMessageTypes::Alert);
                             break;
                         default:
                             Log::push("Nothing to loot");
@@ -207,7 +209,6 @@ void Game::run()
                     m_selector.setPosition(m_playerObject->getPosition());
                     m_currentState = eGameState::DialogueSelect;
                 }
-
             }
 
             if (aiTick > 0.3) {
@@ -220,10 +221,11 @@ void Game::run()
             }
 
         } else if (m_currentState == eGameState::DialogueSelect) {
-            doMoveSelector(event, true);
-            if(event.type == sf::Event::KeyReleased) {
+            if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
+                doMoveSelector(event, true);
                 if (event.key.code == sf::Keyboard::Enter) {
-                    Object* object = level.getObjectMutable(m_selector.getPosition(), m_playerObject);
+                    Object* object
+                        = level.getObjectMutable(m_selector.getPosition(), m_playerObject);
                     if (object != nullptr) {
                         if (object->getObjectType() == eObjectTypes::Creature) {
                             CreatureObject* creatureObject = static_cast<CreatureObject*>(object);
@@ -243,9 +245,8 @@ void Game::run()
             }
 
         } else if (m_currentState == eGameState::SelectionMode) {
-            doMoveSelector(event, false);
-
-            if(event.type == sf::Event::KeyReleased) {
+            if (event.type == sf::Event::KeyReleased) {
+                doMoveSelector(event, false);
                 if (event.key.code == sf::Keyboard::Enter) {
                     const Object* object = level.getObject(m_selector.getPosition());
                     if (object != nullptr) {
@@ -256,14 +257,15 @@ void Game::run()
                             // don't do anything more for player
                             if (creatureObj->isPlayer() == false) {
                                 if (creatureObj->isConscious() == false) {
-                                    Log::push("They are unconscious", Log::eMessageTypes::Announcement);
+                                    Log::push(
+                                        "They are unconscious", Log::eMessageTypes::Announcement);
                                 }
                                 int relation = RelationManager::getSingleton()->getRelationship(
                                     eCreatureFaction::Player, creatureObj->getFaction());
 
                                 if (relation <= RelationManager::cHostile) {
                                     Log::push(creatureObj->getName() + " is hostile to you",
-                                              Log::eMessageTypes::Damage);
+                                        Log::eMessageTypes::Damage);
                                 }
                             }
                         }
@@ -275,8 +277,8 @@ void Game::run()
                 }
             }
         } else if (m_currentState == eGameState::AttackMode) {
-            doMoveSelector(event, true);
-            if(event.type == sf::Event::KeyReleased) {
+            if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
+                doMoveSelector(event, true);
                 if (event.key.code == sf::Keyboard::Enter) {
                     const Object* object = level.getObject(m_selector.getPosition());
                     if (object != nullptr) {
@@ -298,20 +300,22 @@ void Game::run()
                 }
             }
         } else if (m_currentState == eGameState::Inventory) {
-            ui.runInventory(event, m_playerObject);
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::I) {
+            ui.runInventory(hasKeyEvents, event, m_playerObject);
+            if (hasKeyEvents && event.type == sf::Event::KeyReleased
+                && event.key.code == sf::Keyboard::I) {
                 m_currentState = eGameState::Playing;
             }
         } else if (m_currentState == eGameState::Pickup) {
             assert(m_pickup != nullptr);
-            ui.runTrade(
-                event, m_playerObject->getInventoryMutable(), m_pickup->getInventoryMutable());
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::P) {
+            ui.runTrade(hasKeyEvents, event, m_playerObject->getInventoryMutable(),
+                m_pickup->getInventoryMutable());
+            if (hasKeyEvents && event.type == sf::Event::KeyReleased
+                && event.key.code == sf::Keyboard::P) {
                 m_currentState = eGameState::Playing;
             }
 
         } else if (m_currentState == eGameState::InCombat) {
-            ui.runCombat(event, m_playerObject->getCombatManager());
+            ui.runCombat(hasKeyEvents, event, m_playerObject->getCombatManager());
 
             if (m_playerObject->runCombat(tick) == false) {
                 m_currentState = eGameState::Playing;
@@ -329,7 +333,7 @@ void Game::run()
             }
         } else if (m_currentState == eGameState::DialogueMode) {
             assert(m_talking != nullptr);
-            if (ui.runDialog(event, m_playerObject, m_talking) == false) {
+            if (ui.runDialog(hasKeyEvents, event, m_playerObject, m_talking) == false) {
                 m_currentState = eGameState::Playing;
             }
         }
@@ -347,7 +351,7 @@ void Game::run()
 void Game::doMoveSelector(sf::Event event, bool limit)
 {
     constexpr int cLimit = 2;
-    if(event.type == sf::Event::KeyReleased) {
+    if (event.type == sf::Event::KeyReleased) {
         if (event.key.code == sf::Keyboard::Down) {
             if (limit == false
                 || m_selector.getPosition().y < m_playerObject->getPosition().y + cLimit) {
