@@ -39,7 +39,7 @@ DialogueUI::DialogueUI()
         vector<string> responses;
 
         if (values["responses"].is_null() == false) {
-            responses = static_cast<vector<string>>(values["responses"]);
+            responses = values["responses"].get<vector<string>>();
         }
 
         if (values["effects"].is_null() == false) {

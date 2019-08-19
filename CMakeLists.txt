@@ -70,7 +70,10 @@ set(DIRS
 add_executable(RPG ${SOURCES})
 if(WIN32)
     set(SFML_DIR "C:/SFML-2.5.1/lib/cmake/SFML")
-    set(BOOST_DIR "C:/Boost")
+    set(BOOST_DIR "C:/boost_1_70_0")
+    set(BOOST_INCLUDEDIR "C:/boost_1_70_0")
+    set(BOOST_LIBRARYDIR "C:/boost_1_70_0/lib64-msvc-14.1")
+    set(BOOST_ROOT "C:/boost_1_70_0/boost")
 endif()
 
 find_package(SFML REQUIRED COMPONENTS graphics window system)
