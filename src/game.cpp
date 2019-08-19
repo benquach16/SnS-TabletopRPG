@@ -84,10 +84,18 @@ void Game::run()
         m_window.clear();
 
         sf::Event event;
+        bool hasKeyEvents = false;
         while (m_window.pollEvent(event)) {
-            // "close requested" event: we close the window
-            if (event.type == sf::Event::Closed) {
+            switch(event.type) {
+            case sf::Event::Closed:
                 m_window.close();
+                break;
+            case sf::Event::KeyReleased:
+                hasEvent = true;
+                break;
+            default:
+                hasEvent = false;
+                break;
             }
         }
         sf::Time elapsedTime = clock.getElapsedTime();
@@ -135,68 +143,71 @@ void Game::run()
 
         if (m_currentState == eGameState::Playing) {
             vector2d pos = m_playerObject->getPosition();
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
-                if (level.isFreeSpace(pos.x, pos.y + 1) == true) {
-                    m_playerObject->moveDown();
-                }
-            }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Up) {
-                if (level.isFreeSpace(pos.x, pos.y - 1) == true) {
-                    m_playerObject->moveUp();
-                }
-            }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Left) {
-                if (level.isFreeSpace(pos.x - 1, pos.y) == true) {
-                    m_playerObject->moveLeft();
-                }
-            }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Right) {
-                if (level.isFreeSpace(pos.x + 1, pos.y) == true) {
-                    m_playerObject->moveRight();
-                }
-            }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::A) {
-                m_selector.setPosition(m_playerObject->getPosition());
-                m_currentState = eGameState::AttackMode;
-            }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::I) {
-                m_currentState = eGameState::Inventory;
-            }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::D) {
-                m_selector.setPosition(m_playerObject->getPosition());
-                m_currentState = eGameState::SelectionMode;
-            }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::P) {
-                Object* object
-                    = level.getObjectMutable(m_playerObject->getPosition(), m_playerObject);
-                if (object != nullptr) {
-                    switch (object->getObjectType()) {
-                    case eObjectTypes::Corpse:
-                        Log::push("Searching corpse...");
-                        m_pickup = object;
-                        m_currentState = eGameState::Pickup;
-                        break;
-                    case eObjectTypes::Chest:
-                        Log::push("Opening chest...");
-                        m_pickup = object;
-                        m_currentState = eGameState::Pickup;
-                        break;
-                    case eObjectTypes::Creature:
-                        Log::push("There is a creature here. You need to kill "
-                                  "them if you want to loot them.",
-                            Log::eMessageTypes::Alert);
-                        break;
-                    default:
-                        Log::push("Nothing to loot");
-                        break;
+            if(event.type == sf::Event::KeyReleased && hasKeyEvent) {
+                if (event.key.code == sf::Keyboard::Down) {
+                    if (level.isFreeSpace(pos.x, pos.y + 1) == true) {
+                        m_playerObject->moveDown();
                     }
-                } else {
-                    Log::push("There is nothing here.");
                 }
-            }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::K) {
-                m_selector.setPosition(m_playerObject->getPosition());
-                m_currentState = eGameState::DialogueSelect;
+                if (event.key.code == sf::Keyboard::Up) {
+                    if (level.isFreeSpace(pos.x, pos.y - 1) == true) {
+                        m_playerObject->moveUp();
+                    }
+                }
+                if (event.key.code == sf::Keyboard::Left) {
+                    if (level.isFreeSpace(pos.x - 1, pos.y) == true) {
+                        m_playerObject->moveLeft();
+                    }
+                }
+                if (event.key.code == sf::Keyboard::Right) {
+                    if (level.isFreeSpace(pos.x + 1, pos.y) == true) {
+                        m_playerObject->moveRight();
+                    }
+                }
+                if (event.key.code == sf::Keyboard::A) {
+                    m_selector.setPosition(m_playerObject->getPosition());
+                    m_currentState = eGameState::AttackMode;
+                }
+                if (event.key.code == sf::Keyboard::I) {
+                    m_currentState = eGameState::Inventory;
+                }
+                if (event.key.code == sf::Keyboard::D) {
+                    m_selector.setPosition(m_playerObject->getPosition());
+                    m_currentState = eGameState::SelectionMode;
+                }
+                if (event.key.code == sf::Keyboard::P) {
+                    Object* object
+                        = level.getObjectMutable(m_playerObject->getPosition(), m_playerObject);
+                    if (object != nullptr) {
+                        switch (object->getObjectType()) {
+                        case eObjectTypes::Corpse:
+                            Log::push("Searching corpse...");
+                            m_pickup = object;
+                            m_currentState = eGameState::Pickup;
+                            break;
+                        case eObjectTypes::Chest:
+                            Log::push("Opening chest...");
+                            m_pickup = object;
+                            m_currentState = eGameState::Pickup;
+                            break;
+                        case eObjectTypes::Creature:
+                            Log::push("There is a creature here. You need to kill "
+                                      "them if you want to loot them.",
+                                      Log::eMessageTypes::Alert);
+                            break;
+                        default:
+                            Log::push("Nothing to loot");
+                            break;
+                        }
+                    } else {
+                        Log::push("There is nothing here.");
+                    }
+                }
+                if (event.key.code == sf::Keyboard::K) {
+                    m_selector.setPosition(m_playerObject->getPosition());
+                    m_currentState = eGameState::DialogueSelect;
+                }
+
             }
 
             if (aiTick > 0.3) {
@@ -210,74 +221,81 @@ void Game::run()
 
         } else if (m_currentState == eGameState::DialogueSelect) {
             doMoveSelector(event, true);
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
-                Object* object = level.getObjectMutable(m_selector.getPosition(), m_playerObject);
-                if (object != nullptr) {
-                    if (object->getObjectType() == eObjectTypes::Creature) {
-                        CreatureObject* creatureObject = static_cast<CreatureObject*>(object);
-                        if (creatureObject->isConscious() == true) {
-                            m_talking = creatureObject;
-                            ui.initDialog(m_talking);
-                            m_currentState = eGameState::DialogueMode;
-                        } else {
-                            Log::push("You can't talk to an unconscious creature");
+            if(event.type == sf::Event::KeyReleased) {
+                if (event.key.code == sf::Keyboard::Enter) {
+                    Object* object = level.getObjectMutable(m_selector.getPosition(), m_playerObject);
+                    if (object != nullptr) {
+                        if (object->getObjectType() == eObjectTypes::Creature) {
+                            CreatureObject* creatureObject = static_cast<CreatureObject*>(object);
+                            if (creatureObject->isConscious() == true) {
+                                m_talking = creatureObject;
+                                ui.initDialog(m_talking);
+                                m_currentState = eGameState::DialogueMode;
+                            } else {
+                                Log::push("You can't talk to an unconscious creature");
+                            }
                         }
                     }
                 }
+                if (event.key.code == sf::Keyboard::K) {
+                    m_currentState = eGameState::Playing;
+                }
             }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::K) {
-                m_currentState = eGameState::Playing;
-            }
+
         } else if (m_currentState == eGameState::SelectionMode) {
             doMoveSelector(event, false);
 
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
-                const Object* object = level.getObject(m_selector.getPosition());
-                if (object != nullptr) {
-                    Log::push("You see " + object->getDescription());
-                    if (object->getObjectType() == eObjectTypes::Creature) {
-                        const CreatureObject* creatureObj
-                            = static_cast<const CreatureObject*>(object);
-                        // don't do anything more for player
-                        if (creatureObj->isPlayer() == false) {
-                            if (creatureObj->isConscious() == false) {
-                                Log::push("They are unconscious", Log::eMessageTypes::Announcement);
-                            }
-                            int relation = RelationManager::getSingleton()->getRelationship(
-                                eCreatureFaction::Player, creatureObj->getFaction());
+            if(event.type == sf::Event::KeyReleased) {
+                if (event.key.code == sf::Keyboard::Enter) {
+                    const Object* object = level.getObject(m_selector.getPosition());
+                    if (object != nullptr) {
+                        Log::push("You see " + object->getDescription());
+                        if (object->getObjectType() == eObjectTypes::Creature) {
+                            const CreatureObject* creatureObj
+                                = static_cast<const CreatureObject*>(object);
+                            // don't do anything more for player
+                            if (creatureObj->isPlayer() == false) {
+                                if (creatureObj->isConscious() == false) {
+                                    Log::push("They are unconscious", Log::eMessageTypes::Announcement);
+                                }
+                                int relation = RelationManager::getSingleton()->getRelationship(
+                                    eCreatureFaction::Player, creatureObj->getFaction());
 
-                            if (relation <= RelationManager::cHostile) {
-                                Log::push(creatureObj->getName() + " is hostile to you",
-                                    Log::eMessageTypes::Damage);
+                                if (relation <= RelationManager::cHostile) {
+                                    Log::push(creatureObj->getName() + " is hostile to you",
+                                              Log::eMessageTypes::Damage);
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::D) {
-                m_currentState = eGameState::Playing;
+                if (event.key.code == sf::Keyboard::D) {
+                    m_currentState = eGameState::Playing;
+                }
             }
         } else if (m_currentState == eGameState::AttackMode) {
             doMoveSelector(event, true);
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Enter) {
-                const Object* object = level.getObject(m_selector.getPosition());
-                if (object != nullptr) {
-                    if (object->getObjectType() == eObjectTypes::Creature) {
-                        const CreatureObject* creatureObject
-                            = static_cast<const CreatureObject*>(object);
-                        if (creatureObject->isConscious() == true) {
-                            m_playerObject->startCombatWith(creatureObject);
-                            m_currentState = eGameState::InCombat;
-                        } else {
-                            creatureObject->kill();
-                            Log::push("You finish off the unconscious creature");
+            if(event.type == sf::Event::KeyReleased) {
+                if (event.key.code == sf::Keyboard::Enter) {
+                    const Object* object = level.getObject(m_selector.getPosition());
+                    if (object != nullptr) {
+                        if (object->getObjectType() == eObjectTypes::Creature) {
+                            const CreatureObject* creatureObject
+                                = static_cast<const CreatureObject*>(object);
+                            if (creatureObject->isConscious() == true) {
+                                m_playerObject->startCombatWith(creatureObject);
+                                m_currentState = eGameState::InCombat;
+                            } else {
+                                creatureObject->kill();
+                                Log::push("You finish off the unconscious creature");
+                            }
                         }
                     }
                 }
-            }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::A) {
-                m_currentState = eGameState::Playing;
+                if (event.key.code == sf::Keyboard::A) {
+                    m_currentState = eGameState::Playing;
+                }
             }
         } else if (m_currentState == eGameState::Inventory) {
             ui.runInventory(event, m_playerObject);
@@ -329,28 +347,30 @@ void Game::run()
 void Game::doMoveSelector(sf::Event event, bool limit)
 {
     constexpr int cLimit = 2;
-    if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Down) {
-        if (limit == false
-            || m_selector.getPosition().y < m_playerObject->getPosition().y + cLimit) {
-            m_selector.moveDown();
+    if(event.type == sf::Event::KeyReleased) {
+        if (event.key.code == sf::Keyboard::Down) {
+            if (limit == false
+                || m_selector.getPosition().y < m_playerObject->getPosition().y + cLimit) {
+                m_selector.moveDown();
+            }
         }
-    }
-    if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Up) {
-        if (limit == false
-            || m_selector.getPosition().y > m_playerObject->getPosition().y - cLimit) {
-            m_selector.moveUp();
+        if (event.key.code == sf::Keyboard::Up) {
+            if (limit == false
+                || m_selector.getPosition().y > m_playerObject->getPosition().y - cLimit) {
+                m_selector.moveUp();
+            }
         }
-    }
-    if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Left) {
-        if (limit == false
-            || m_selector.getPosition().x > m_playerObject->getPosition().x - cLimit) {
-            m_selector.moveLeft();
+        if (event.key.code == sf::Keyboard::Left) {
+            if (limit == false
+                || m_selector.getPosition().x > m_playerObject->getPosition().x - cLimit) {
+                m_selector.moveLeft();
+            }
         }
-    }
-    if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Right) {
-        if (limit == false
-            || m_selector.getPosition().x < m_playerObject->getPosition().x + cLimit) {
-            m_selector.moveRight();
+        if (event.key.code == sf::Keyboard::Right) {
+            if (limit == false
+                || m_selector.getPosition().x < m_playerObject->getPosition().x + cLimit) {
+                m_selector.moveRight();
+            }
         }
     }
 }

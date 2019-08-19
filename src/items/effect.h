@@ -10,6 +10,7 @@ public:
         : m_value(value)
     {
     }
+    virtual ~ItemEffect() {}
     virtual eItemEffect getType() const = 0;
     int getValue() const { return m_value; }
 
