@@ -65,10 +65,10 @@ void Level::generate()
     removeIslands();
 
     // temporary, to add enemies
-    for (auto it : rooms) {
+    for (unsigned i = 1; i < rooms.size(); ++i) {
         if (random_static::get(1, 3) == 1) {
             HumanObject* object = new HumanObject;
-            object->setPosition(it.x, it.y);
+            object->setPosition(rooms[i].x, rooms[i].y);
             object->setFaction(eCreatureFaction::Bandit);
             object->setLoadout(eCreatureFaction::Bandit);
             m_objects.push_back(object);

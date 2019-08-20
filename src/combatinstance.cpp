@@ -287,9 +287,6 @@ void CombatInstance::doDualOffenseStealInitiative()
         // wait until player inputs
         Player* player = static_cast<Player*>(defender);
 
-        // two staged ui, piggyback off of existing code
-        // this may cause isseus so add another ui state if it does
-
         // causes issues with new implementation
         if (player->getHasOffense() == false) {
             m_currentState = eCombatState::DualOffenseStealInitiative;
@@ -331,9 +328,9 @@ void CombatInstance::doDualOffense2()
         && attacker->getHasDefense() == true) {
         writeMessage(
             attacker->getName() + " allocates " + to_string(defense.dice) + " for initiative");
-        // attacker->reduceCombatPool(defense.dice);
         // defender already declared initiative roll, just go to resolution
-        if (defender->getQueuedDefense().manuever == eDefensiveManuevers::StealInitiative) {
+        if (defender->getQueuedDefense().manuever == eDefensiveManuevers::StealInitiative
+            && defender->getHasDefense() == true) {
             m_currentState = eCombatState::Resolution;
             return;
         }
@@ -532,10 +529,11 @@ void CombatInstance::doResolution()
             ? m_side2->getQueuedDefense().dice + cThrustDie
             : m_side2->getQueuedDefense().dice;
 
-        int side1InitiativeSuccesses
-            = DiceRoller::rollGetSuccess(side1BTN, side1Dice + m_side1->getSpeed());
-        int side2InitiativeSuccesses
-            = DiceRoller::rollGetSuccess(side2BTN, side2Dice + m_side2->getSpeed());
+        constexpr unsigned cSpeedFactor = 2;
+        int side1InitiativeSuccesses = DiceRoller::rollGetSuccess(
+            side1BTN, side1Dice + (m_side1->getSpeed() / cSpeedFactor));
+        int side2InitiativeSuccesses = DiceRoller::rollGetSuccess(
+            side2BTN, side2Dice + (m_side2->getSpeed() / cSpeedFactor));
 
         if (side1InitiativeSuccesses > side2InitiativeSuccesses) {
             m_initiative = eInitiative::Side1;
@@ -1004,6 +1002,6 @@ void CombatInstance::outputReachCost(int cost, Creature* attacker)
                 + " action points",
             Log::eMessageTypes::Announcement);
         attacker->reduceOffenseDie(reachCost);
-        attacker->reduceCombatPool(min(reachCost, attacker->getCombatPool()));
+        // attacker->reduceCombatPool(min(reachCost, attacker->getCombatPool()));
     }
 }

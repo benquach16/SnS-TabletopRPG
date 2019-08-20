@@ -304,11 +304,10 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
         m_currentOffense.dice = dice;
     }
 
-    if (dualRedThrow == true && m_combatPool > 0 && random_static::get(0, 1) == 1) {
+    if (dualRedThrow == true && m_combatPool > 0 && random_static::get(0, 1) == 0) {
         m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
         m_currentDefense.dice = m_combatPool - m_currentOffense.dice;
-        // hacky since usually this happens in combatinstance
-        // m_combatPool -= m_currentDefense.dice;
+        m_hasDefense = true;
         assert(m_currentDefense.dice <= m_combatPool || m_currentDefense.dice == 0);
         reduceCombatPool(m_currentDefense.dice);
     }
@@ -392,6 +391,7 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
         int dice = diff + bufferDie;
         if (m_combatPool > dice) {
             outDie = dice;
+            m_hasDefense = true;
             return true;
         }
     }
@@ -414,13 +414,13 @@ void Creature::doStolenInitiative(const Creature* defender, bool allin)
 {
     m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
     Defense defend = defender->getQueuedDefense();
-    cout << defend.dice << endl;
     m_currentDefense.dice = min(m_combatPool, defend.dice);
     if (allin == true) {
         m_currentDefense.dice = m_combatPool;
     }
     assert(m_currentDefense.dice <= m_combatPool || m_currentDefense.dice == 0);
     reduceCombatPool(m_currentDefense.dice);
+    m_hasDefense = true;
 }
 
 eInitiativeRoll Creature::doInitiative(const Creature* opponent)

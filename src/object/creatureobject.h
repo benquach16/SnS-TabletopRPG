@@ -19,6 +19,7 @@ public:
     bool isConscious() const { return (!deleteMe() && m_creature->isConscious()); }
     Creature* getCreatureComponent() const { return m_creature; }
     const std::string getName() const { return m_creature->getName(); }
+    void setName(const std::string& name) { m_creature->setName(name); }
     virtual eCreatureFaction getFaction() const { return m_creatureFaction; }
     void setFaction(eCreatureFaction faction) { m_creatureFaction = faction; }
     virtual eCreatureRace getRace() const = 0;

@@ -72,6 +72,7 @@ void Game::run()
     human1->setPosition(2, 2);
     human1->setAIRole(eAIRoles::Standing);
     human1->setStartingDialogueLabel("greeting_intro");
+    human1->setName("Sir Wilhelm");
     level.addObject(human1);
 
     m_playerObject->setPosition(1, 1);

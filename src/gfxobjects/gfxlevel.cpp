@@ -235,8 +235,9 @@ void GFXLevel::run(const Level* level, vector2d center)
             text.setCharacterSize(11);
             text.setFont(Game::getDefaultFont());
             text.setString(static_cast<const CreatureObject*>(rLevelObjs[i])->getName());
+            textPos.x -= text.getLocalBounds().width / 2 - 15;
             text.setPosition(textPos);
-            textPos.x -= text.getLocalBounds().width / 2;
+
             text.setScale(1, 2);
             m_texts.push(text);
         }
