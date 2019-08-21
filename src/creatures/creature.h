@@ -21,6 +21,7 @@ static constexpr int cMinBTN = 2;
 static constexpr int cMaxBTN = 6;
 // different based on race
 static constexpr int cBaseBloodLoss = 8;
+static constexpr int cTapFactor = 3;
 
 enum class eCreatureType { Human };
 

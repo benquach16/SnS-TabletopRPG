@@ -15,9 +15,9 @@ Human::Human()
     m_proficiencies[eWeaponTypes::Longswords] = 5;
     m_proficiencies[eWeaponTypes::Brawling] = 2;
 
-    m_brawn = 5;
-    m_agility = 5;
-    m_cunning = 5;
-    m_perception = 5;
-    m_will = 5;
+    m_brawn = 4;
+    m_agility = 4;
+    m_cunning = 4;
+    m_perception = 4;
+    m_will = 4;
 }

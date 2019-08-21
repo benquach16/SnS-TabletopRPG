@@ -73,6 +73,9 @@ void Game::run()
     human1->setAIRole(eAIRoles::Standing);
     human1->setStartingDialogueLabel("greeting_intro");
     human1->setName("Sir Wilhelm");
+    m_talking = human1;
+    ui.initDialog(human1);
+    m_currentState = eGameState::DialogueMode;
     level.addObject(human1);
 
     m_playerObject->setPosition(1, 1);

@@ -11,7 +11,7 @@ constexpr int cFistsId = 1000;
 class Weapon : public Item {
 public:
     Weapon(const std::string& name, const std::string& description, eLength length,
-        std::vector<Component*> components, eWeaponTypes type, int cost,
+        std::vector<Component*> components, eWeaponTypes type, int cost, bool hook,
         bool naturalWeapon = false);
     ~Weapon();
     eItemType getItemType() const override { return eItemType::Weapon; }
@@ -26,6 +26,8 @@ public:
 
     Component* getPommelStrike() const;
 
+    bool canHook() const { return m_hook; }
+
     bool getNaturalWeapon() const { return m_naturalWeapon; }
 
 private:
@@ -38,6 +40,7 @@ private:
     std::unordered_map<eGrips, std::vector<Component*>> m_swing;
     eWeaponTypes m_type;
     bool m_naturalWeapon;
+    bool m_hook;
 };
 
 class WeaponTable {

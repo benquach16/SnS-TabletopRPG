@@ -13,11 +13,12 @@ using namespace std;
 const string filepath = "data/weapons.json";
 
 Weapon::Weapon(const std::string& name, const std::string& description, eLength length,
-    std::vector<Component*> components, eWeaponTypes type, int cost, bool naturalWeapon)
+    std::vector<Component*> components, eWeaponTypes type, int cost, bool hook, bool naturalWeapon)
     : Item(name, description, cost, eItemType::Weapon)
     , m_length(length)
     , m_components(components)
     , m_type(type)
+    , m_hook(hook)
     , m_naturalWeapon(naturalWeapon)
 {
     for (int i = 0; i < components.size(); ++i) {
@@ -107,6 +108,7 @@ WeaponTable::WeaponTable()
         assert(values["hands"].is_null() == false);
         assert(values["description"].is_null() == false);
         assert(values["cost"].is_null() == false);
+        assert(values["hook"].is_null() == false);
         assert(componentJson.size() > 0);
 
         string weaponName = values["name"];
@@ -114,6 +116,7 @@ WeaponTable::WeaponTable()
         eLength length = convertLengthFromStr(values["length"]);
         eWeaponTypes weaponType = convertTypeFromStr(values["type"]);
         int cost = values["cost"];
+        bool hook = values["hook"];
         vector<Component*> weaponComponents;
 
         for (int i = 0; i < componentJson.size(); ++i) {
@@ -203,7 +206,7 @@ WeaponTable::WeaponTable()
         }
 
         Weapon* weapon
-            = new Weapon(weaponName, description, length, weaponComponents, weaponType, cost);
+            = new Weapon(weaponName, description, length, weaponComponents, weaponType, cost, hook);
         assert(m_weaponsList.find(id) == m_weaponsList.end());
         m_weaponsList[id] = weapon;
         ItemTable::getSingleton()->addWeapon(id, weapon);
@@ -224,7 +227,7 @@ void WeaponTable::createNaturalWeapons()
     components.push_back(
         new Component("Fist", -1, eDamageTypes::Blunt, eAttacks::Thrust, properties, grips));
     Weapon* fists = new Weapon(
-        name, "For punching", eLength::Hand, components, eWeaponTypes::Brawling, 0, true);
+        name, "For punching", eLength::Hand, components, eWeaponTypes::Brawling, 0, false, true);
     assert(m_weaponsList.find(cFistsId) == m_weaponsList.end());
     m_weaponsList[cFistsId] = fists;
     ItemTable::getSingleton()->addWeapon(cFistsId, fists);
