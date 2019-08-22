@@ -269,6 +269,23 @@ bool Creature::rollFatigue()
     return false;
 }
 
+bool Creature::canPerformManuever(eOffensiveManuevers manuever)
+{
+    const Weapon* weapon = getPrimaryWeapon();
+    switch (manuever) {
+    case eOffensiveManuevers::Hook:
+        return (weapon->canHook() == true || getGrip() == eGrips::HalfSword
+            || getGrip() == eGrips::Staff);
+        break;
+    case eOffensiveManuevers::Mordhau:
+        return (weapon->getType() == eWeaponTypes::Swords
+            || weapon->getType() == eWeaponTypes::Longswords);
+        break;
+    default:
+        return true;
+    }
+}
+
 void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool dualRedThrow)
 {
     cout << "allin : " << allin << endl;

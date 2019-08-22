@@ -70,7 +70,6 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
     text.setString(str);
     Game::getWindow().draw(text);
 
-    const Weapon* weapon = player->getPrimaryWeapon();
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
         switch (c) {
@@ -93,8 +92,7 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
             }
             break;
         case 'e':
-            if (weapon->canHook() == true || player->getGrip() == eGrips::HalfSword
-                || player->getGrip() == eGrips::Staff) {
+            if (player->canPerformManuever(eOffensiveManuevers::Hook)) {
                 player->setOffenseManuever(eOffensiveManuevers::Hook);
                 m_currentState = eUiState::ChooseFeint;
             } else {
@@ -102,8 +100,7 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
             }
             break;
         case 'h':
-            if (weapon->getType() == eWeaponTypes::Swords
-                || player->getPrimaryWeapon()->getType() == eWeaponTypes::Longswords) {
+            if (player->canPerformManuever(eOffensiveManuevers::Mordhau)) {
                 if (player->getCombatPool() >= mordhauCost) {
                     player->reduceCombatPool(mordhauCost);
                     const Weapon* weapon = player->getPrimaryWeapon();

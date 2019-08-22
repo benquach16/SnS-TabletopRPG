@@ -646,6 +646,12 @@ void CombatInstance::doResolution()
                 int linkedOffenseMoS = DiceRoller::rollGetSuccess(BTN, MoS);
                 cout << "Linked hits: " << linkedOffenseMoS << endl;
 
+                // simulating some kind of pollaxe play thing here
+                if (defender->getGrip() == eGrips::Overhand
+                    && offense.manuever == eOffensiveManuevers::Swing) {
+                    defender->setGrip(eGrips::Staff);
+                }
+
                 if (linkedOffenseMoS > 0
                     && inflictWound(defender, linkedOffenseMoS, offense, attacker) == true) {
                     m_currentState = eCombatState::FinishedCombat;

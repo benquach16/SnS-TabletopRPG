@@ -119,6 +119,8 @@ public:
 
     void doStand();
 
+    bool canPerformManuever(eOffensiveManuevers manuever);
+
     Offense getQueuedOffense() const { return m_currentOffense; }
     Defense getQueuedDefense() const { return m_currentDefense; }
     Position getQueuedPosition() const { return m_currentPosition; }
