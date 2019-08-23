@@ -80,6 +80,9 @@ private:
     void doPostResolution();
     void doEndCombat();
     void setSides(Creature*& attacker, Creature*& defender);
+    bool switchToStaffGrip(Creature* creature);
+    void outputOffense(Creature* creature);
+    void outputDefense(Creature* creature);
 
     void switchInitiative()
     {

@@ -646,12 +646,6 @@ void CombatInstance::doResolution()
                 int linkedOffenseMoS = DiceRoller::rollGetSuccess(BTN, MoS);
                 cout << "Linked hits: " << linkedOffenseMoS << endl;
 
-                // simulating some kind of pollaxe play thing here
-                if (defender->getGrip() == eGrips::Overhand
-                    && offense.manuever == eOffensiveManuevers::Swing) {
-                    defender->setGrip(eGrips::Staff);
-                }
-
                 if (linkedOffenseMoS > 0
                     && inflictWound(defender, linkedOffenseMoS, offense, attacker) == true) {
                     m_currentState = eCombatState::FinishedCombat;
@@ -722,6 +716,15 @@ void CombatInstance::doPostResolution()
     Defense defend = defender->getQueuedDefense();
     if (defend.manuever == eDefensiveManuevers::Dodge) {
         // allow using 2 dice to take initiative
+    }
+
+    // simulating some kind of pollaxe play thing here
+    if (switchToStaffGrip(defender)) {
+        defender->setGrip(eGrips::Staff);
+    }
+    // simulating some kind of pollaxe play thing here
+    if (switchToStaffGrip(attacker)) {
+        defender->setGrip(eGrips::Staff);
     }
 
     m_side1->clearCreatureManuevers();
@@ -1010,4 +1013,12 @@ void CombatInstance::outputReachCost(int cost, Creature* attacker)
         attacker->reduceOffenseDie(reachCost);
         // attacker->reduceCombatPool(min(reachCost, attacker->getCombatPool()));
     }
+}
+
+bool CombatInstance::switchToStaffGrip(Creature* creature)
+{
+    Offense offense = creature->getQueuedOffense();
+    return (creature->getGrip() == eGrips::Overhand
+        && offense.manuever == eOffensiveManuevers::Swing
+        && offense.component->isLinked(eGrips::Overhand));
 }

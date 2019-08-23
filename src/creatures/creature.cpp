@@ -9,6 +9,8 @@ using namespace effolkronium;
 
 static Creature::CreatureId ids = static_cast<Creature::CreatureId>(0);
 
+constexpr int cDisableTick = 2;
+
 Creature::Creature()
     : m_BTN(cBaseBTN)
     , m_brawn(1)
@@ -17,7 +19,9 @@ Creature::Creature()
     , m_perception(1)
     , m_will(1)
     , m_primaryWeaponId(cFistsId)
+    , m_disableWeaponId(cFistsId)
     , m_combatPool(0)
+    , m_disarm(0)
     , m_currentState(eCreatureState::Idle)
     , m_bonusDice(0)
     , m_bloodLoss(0)

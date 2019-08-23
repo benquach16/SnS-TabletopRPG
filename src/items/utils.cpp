@@ -220,7 +220,7 @@ std::string gripToString(eGrips grip)
     case eGrips::Staff:
         return "Staff";
     case eGrips::Overhand:
-        return "Overhead";
+        return "Reverse";
     default:
         return "";
     }

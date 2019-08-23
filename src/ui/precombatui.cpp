@@ -90,7 +90,8 @@ void PrecombatUI::doChooseGrip(bool hasKeyEvents, sf::Event event, Player* playe
     text.setFont(Game::getDefaultFont());
     const Weapon* weapon = player->getPrimaryWeapon();
     if (weapon->getType() == eWeaponTypes::Polearms) {
-        text.setString("Switch Grip?\na - Standard\nb - Staff Grip\nc - Overhand");
+        text.setString(
+            "Switch Grip?\na - Standard\nb - Staff Grip\nc - Reverse (Tail-end forward)");
         if (hasKeyEvents && event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;
             switch (c) {

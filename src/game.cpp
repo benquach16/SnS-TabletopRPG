@@ -39,7 +39,7 @@ void Game::initialize()
     m_window.create(sf::VideoMode(1600, 900), "window", sf::Style::Default, settings);
     m_window.setFramerateLimit(165);
     m_defaultFont.loadFromFile("data/fonts/MorePerfectDOSVGA.ttf");
-    // quite possibly the worst way of doing this, but cannot disable AA on sfml without this.
+    // quite possibly the worst way of doing this, but cannot disable AA on sfml text without this.
     const_cast<sf::Texture&>(m_defaultFont.getTexture(11)).setSmooth(false);
     m_currentState = eGameState::Playing;
 }
@@ -54,12 +54,12 @@ void Game::run()
 
     GameUI ui;
 
-    Level level(40, 40);
-    for (unsigned i = 0; i < 40; i++) {
+    Level level(60, 60);
+    for (unsigned i = 0; i < 60; i++) {
         level(i, 0).m_type = eTileType::Wall;
     }
 
-    for (unsigned i = 2; i < 40; i++) {
+    for (unsigned i = 2; i < 60; i++) {
         level(0, i).m_type = eTileType::Wall;
     }
     level.generate();
@@ -149,7 +149,7 @@ void Game::run()
 
         if (m_currentState == eGameState::Playing) {
             vector2d pos = m_playerObject->getPosition();
-            if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
+            if (hasKeyEvents && event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Down) {
                     if (level.isFreeSpace(pos.x, pos.y + 1) == true) {
                         m_playerObject->moveDown();

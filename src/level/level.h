@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "../object/object.h"
+#include "trigger.h"
 
 enum eTileMaterial { Stone, Wood, Dirt, Grass };
 enum eTileType { Ground, Wall };
@@ -66,6 +67,7 @@ public:
     std::vector<Object*> getObjectsAtLocation(vector2d position);
 
 private:
+    std::vector<Trigger> m_triggers;
     std::vector<Object*> m_objects;
     std::vector<Object*> m_toDelete;
     int m_width;

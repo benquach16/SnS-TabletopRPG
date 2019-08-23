@@ -27,7 +27,7 @@
         "message": "I must leave now."
     },
     "greeting_intro" : {
-        "message": "Glad you made it. Hope it didn't take too long to get here. I'll have you clear this place out. The rest of the mercenaries are securing the other caves. This shouldn't be too difficult. Maybe just a few underequipped bandits. Once you're done, head back to the capital. Do you need a run down on fighting?",
+        "message": "Glad you made it. Hope it didn't take too long to get here. I'll have you clear this place out. The rest of the mercenaries are securing the other caves. This shouldn't be too difficult. Maybe just a few underequipped bandits. Once you're done, head back to the capital. If you find anything interesting, let me know. Do you need a run down on fighting?",
         "responses": ["whatamidoing", "needhelp", "imgood"]  
     },
     "whatamidoing": {
@@ -35,7 +35,7 @@
         "responses": ["here"]
     },
     "here": {
-        "message": "You responded to the Eidgen Confederacy's need for mercenaries to help secure the White Groves to the northern border of the country. There seems to be increased bandit activity here. Any other questions?",
+        "message": "You volunteered to help secure the White Groves to the northern border of the country. There seems to be increased bandit activity here. Any other questions?",
         "responses": ["needhelp","imgood"]
     },
     "needhelp" : {

@@ -184,6 +184,7 @@ protected:
 
     // index
     int m_primaryWeaponId;
+    int m_disableWeaponId;
     eGrips m_currentGrip;
 
     int m_bloodLoss;
@@ -204,6 +205,7 @@ protected:
 
     int m_combatPool;
     int m_bonusDice;
+    int m_disarm;
 
     std::unordered_map<eWeaponTypes, int> m_proficiencies;
 };

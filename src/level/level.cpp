@@ -50,12 +50,12 @@ void Level::generate()
 
     rooms.push_back(carveRoom(1, 1, 6, 6, 10, 10));
 
-    for (int i = 0; i < 7; ++i) {
+    for (int i = 0; i < 9; ++i) {
         rooms.push_back(carveRoom());
         int idx = rooms.size() - 1;
         createCorridor(rooms[idx - 1], rooms[idx]);
     }
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 5; ++i) {
         rooms.push_back(carveSeperateRoom());
         int idx = rooms.size() - 1;
         createCorridor(rooms[idx - 1], rooms[idx]);
