@@ -149,7 +149,7 @@ void Game::run()
 
         if (m_currentState == eGameState::Playing) {
             vector2d pos = m_playerObject->getPosition();
-            if (hasKeyEvents && event.type == sf::Event::KeyPressed) {
+            if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
                 if (event.key.code == sf::Keyboard::Down) {
                     if (level.isFreeSpace(pos.x, pos.y + 1) == true) {
                         m_playerObject->moveDown();
@@ -249,7 +249,7 @@ void Game::run()
             }
 
         } else if (m_currentState == eGameState::SelectionMode) {
-            if (event.type == sf::Event::KeyReleased) {
+            if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
                 doMoveSelector(event, false);
                 if (event.key.code == sf::Keyboard::Enter) {
                     const Object* object = level.getObject(m_selector.getPosition());
