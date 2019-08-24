@@ -2,11 +2,11 @@
 
 #include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
+#include "../3rdparty/json.hpp"
 #include "types.h"
-
-enum class eRank : unsigned { Recruit, Soldier, Veteran, Knight, Lord };
 
 class EquipmentManager {
 public:
@@ -20,8 +20,8 @@ public:
 
     std::string getRandomName(eCreatureRace race) const;
 
-    std::vector<int> getRandomArmors(eCreatureFaction) const;
-    int getRandomWeapon(eCreatureFaction) const;
+    std::vector<int> getRandomArmors(eCreatureFaction faction, eRank rank) const;
+    int getRandomWeapon(eCreatureFaction faction, eRank rank) const;
 
 private:
     struct Loadout {
@@ -40,9 +40,10 @@ private:
     };
     EquipmentManager();
     void loadNames();
+    void loadLoadout(eCreatureFaction faction, eRank rank, nlohmann::json values);
 
     static EquipmentManager* singleton;
 
-    std::map<eCreatureFaction, Loadout> m_loadouts;
-    std::map<eCreatureRace, std::vector<std::string>> m_names;
+    std::unordered_map<eCreatureFaction, std::unordered_map<eRank, Loadout>> m_loadouts;
+    std::unordered_map<eCreatureRace, std::vector<std::string>> m_names;
 };

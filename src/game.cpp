@@ -68,7 +68,7 @@ void Game::run()
 
     HumanObject* human1 = new HumanObject;
     human1->setFaction(eCreatureFaction::EidgenConfederacy);
-    human1->setLoadout(eCreatureFaction::EidgenConfederacy);
+    human1->setLoadout(eCreatureFaction::EidgenConfederacy, eRank::Soldier);
     human1->setPosition(2, 2);
     human1->setAIRole(eAIRoles::Standing);
     human1->setStartingDialogueLabel("greeting_intro");
@@ -149,7 +149,7 @@ void Game::run()
 
         if (m_currentState == eGameState::Playing) {
             vector2d pos = m_playerObject->getPosition();
-            if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
+            if (hasKeyEvents && event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Down) {
                     if (level.isFreeSpace(pos.x, pos.y + 1) == true) {
                         m_playerObject->moveDown();
@@ -170,6 +170,7 @@ void Game::run()
                         m_playerObject->moveRight();
                     }
                 }
+            } else if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
                 if (event.key.code == sf::Keyboard::A) {
                     m_selector.setPosition(m_playerObject->getPosition());
                     m_currentState = eGameState::AttackMode;

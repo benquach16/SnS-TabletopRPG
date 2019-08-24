@@ -21,6 +21,27 @@ std::string factionToString(eCreatureFaction faction)
     }
 }
 
+std::string rankToString(eRank rank)
+{
+    switch (rank) {
+    case eRank::Recruit:
+        return "recruit";
+        break;
+    case eRank::Soldier:
+        return "soldier";
+        break;
+    case eRank::Veteran:
+        return "veteran";
+        break;
+    case eRank::Lord:
+        return "lord";
+        break;
+    default:
+        return "";
+        break;
+    }
+}
+
 std::string raceToString(eCreatureRace race)
 {
     switch (race) {
@@ -52,4 +73,16 @@ eCreatureRace stringToRace(const std::string& str)
         return eCreatureRace::Goblin;
     }
     return eCreatureRace::Human;
+}
+
+eRank stringToRank(const std::string& str)
+{
+    if (str == "recruit") {
+        return eRank::Recruit;
+    } else if (str == "soldier") {
+        return eRank::Soldier;
+    } else if (str == "veteran") {
+        return eRank::Veteran;
+    }
+    return eRank::Lord;
 }

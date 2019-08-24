@@ -6,9 +6,9 @@ Player::Player()
     : Human()
     , m_flagInitiative(false)
 {
-    m_brawn = 7;
-    m_agility = 7;
-    m_cunning = 7;
+    m_brawn = 6;
+    m_agility = 6;
+    m_cunning = 6;
     m_will = 5;
     m_perception = 6;
 }

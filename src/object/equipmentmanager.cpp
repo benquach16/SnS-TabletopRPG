@@ -25,36 +25,49 @@ EquipmentManager::EquipmentManager()
         string key = iter.key();
         auto values = iter.value();
 
-        std::vector<int> baseChests = values["baseChests"];
-        std::vector<int> baseLegs = values["baseLegs"];
-        std::vector<int> helmets = values["helmets"];
-        std::vector<int> chests = values["chests"];
-        std::vector<int> plateChests = values["plateChests"];
-        std::vector<int> leggings = values["leggings"];
-        std::vector<int> plateLeggings = values["plateLeggings"];
-        std::vector<int> skirts = values["skirts"];
-        std::vector<int> weapons = values["weapons"];
-        std::vector<int> gloves = values["gloves"];
-        std::vector<int> plateGloves = values["plateGloves"];
-        std::vector<int> shoes = values["shoes"];
+        auto recruit = values["recruit"];
+        auto soldier = values["soldier"];
+        auto veteran = values["veteran"];
+        auto lord = values["lord"];
 
         eCreatureFaction faction = stringToFaction(key);
 
-        m_loadouts[faction].baseChests = baseChests;
-        m_loadouts[faction].helmets = helmets;
-        m_loadouts[faction].baseLegs = baseLegs;
-        m_loadouts[faction].chests = chests;
-        m_loadouts[faction].plateChests = plateChests;
-        m_loadouts[faction].leggings = leggings;
-        m_loadouts[faction].skirts = skirts;
-        m_loadouts[faction].plateLeggings = plateLeggings;
-        m_loadouts[faction].weapons = weapons;
-        m_loadouts[faction].gloves = gloves;
-        m_loadouts[faction].plateGloves = plateGloves;
-        m_loadouts[faction].shoes = shoes;
+        loadLoadout(faction, eRank::Recruit, recruit);
+        loadLoadout(faction, eRank::Soldier, soldier);
+        loadLoadout(faction, eRank::Veteran, veteran);
+        loadLoadout(faction, eRank::Lord, lord);
     }
 
     loadNames();
+}
+
+void EquipmentManager::loadLoadout(eCreatureFaction faction, eRank rank, nlohmann::json values)
+{
+    std::vector<int> baseChests = values["baseChests"];
+    std::vector<int> baseLegs = values["baseLegs"];
+    std::vector<int> helmets = values["helmets"];
+    std::vector<int> chests = values["chests"];
+    std::vector<int> plateChests = values["plateChests"];
+    std::vector<int> leggings = values["leggings"];
+    std::vector<int> plateLeggings = values["plateLeggings"];
+    std::vector<int> skirts = values["skirts"];
+    std::vector<int> weapons = values["weapons"];
+    std::vector<int> gloves = values["gloves"];
+    std::vector<int> plateGloves = values["plateGloves"];
+    std::vector<int> shoes = values["shoes"];
+
+    m_loadouts[faction][rank].baseChests = baseChests;
+    m_loadouts[faction][rank].helmets = helmets;
+    m_loadouts[faction][rank].baseLegs = baseLegs;
+    m_loadouts[faction][rank].chests = chests;
+    m_loadouts[faction][rank].plateChests = plateChests;
+    m_loadouts[faction][rank].leggings = leggings;
+    m_loadouts[faction][rank].skirts = skirts;
+    m_loadouts[faction][rank].plateLeggings = plateLeggings;
+    m_loadouts[faction][rank].weapons = weapons;
+    m_loadouts[faction][rank].gloves = gloves;
+    m_loadouts[faction][rank].plateGloves = plateGloves;
+    m_loadouts[faction][rank].shoes = shoes;
 }
 
 void EquipmentManager::loadNames()
@@ -84,12 +97,12 @@ std::string EquipmentManager::getRandomName(eCreatureRace race) const
     return names[effolkronium::random_static::get(0, static_cast<int>(names.size()) - 1)];
 }
 
-std::vector<int> EquipmentManager::getRandomArmors(eCreatureFaction faction) const
+std::vector<int> EquipmentManager::getRandomArmors(eCreatureFaction faction, eRank rank) const
 {
     auto it = m_loadouts.find(faction);
     assert(it != m_loadouts.end());
 
-    Loadout loadout = it->second;
+    Loadout loadout = it->second.at(rank);
     std::vector<int> ret;
     if (loadout.baseChests.size() > 0) {
         ret.push_back(loadout.baseChests[random_static::get(
@@ -138,11 +151,11 @@ std::vector<int> EquipmentManager::getRandomArmors(eCreatureFaction faction) con
     return ret;
 }
 
-int EquipmentManager::getRandomWeapon(eCreatureFaction faction) const
+int EquipmentManager::getRandomWeapon(eCreatureFaction faction, eRank rank) const
 {
     auto it = m_loadouts.find(faction);
     assert(it != m_loadouts.end());
 
-    std::vector<int> weapons = it->second.weapons;
+    std::vector<int> weapons = it->second.at(rank).weapons;
     return weapons[effolkronium::random_static::get(0, static_cast<int>(weapons.size()) - 1)];
 }

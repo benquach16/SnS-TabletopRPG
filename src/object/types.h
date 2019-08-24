@@ -13,3 +13,5 @@ enum class eCreatureFaction : unsigned {
 };
 
 enum class eCreatureRace { Human, Goblin };
+
+enum class eRank : unsigned { Recruit, Soldier, Veteran, Lord };

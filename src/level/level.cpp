@@ -70,7 +70,7 @@ void Level::generate()
             HumanObject* object = new HumanObject;
             object->setPosition(rooms[i].x, rooms[i].y);
             object->setFaction(eCreatureFaction::Bandit);
-            object->setLoadout(eCreatureFaction::Bandit);
+            object->setLoadout(eCreatureFaction::Bandit, eRank::Veteran);
             m_objects.push_back(object);
         }
     }

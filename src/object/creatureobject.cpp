@@ -74,11 +74,11 @@ void CreatureObject::startCombatWith(const CreatureObject* creature)
     m_manager->startCombatWith(creature);
 }
 
-void CreatureObject::setLoadout(eCreatureFaction faction)
+void CreatureObject::setLoadout(eCreatureFaction faction, eRank rank)
 {
-    int weaponId = EquipmentManager::getSingleton()->getRandomWeapon(faction);
+    int weaponId = EquipmentManager::getSingleton()->getRandomWeapon(faction, rank);
     m_creature->setWeapon(weaponId);
-    std::vector<int> armor = EquipmentManager::getSingleton()->getRandomArmors(faction);
+    std::vector<int> armor = EquipmentManager::getSingleton()->getRandomArmors(faction, rank);
     for (auto i : armor) {
         if (m_creature->canEquipArmor(i)) {
             m_creature->equipArmor(i);
