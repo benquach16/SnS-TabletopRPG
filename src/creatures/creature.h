@@ -134,6 +134,9 @@ public:
 
     void setProne() { m_currentStance = eCreatureStance::Prone; }
     void setStand() { m_currentStance = eCreatureStance::Standing; }
+    void disableWeapon();
+    void disarmWeapon();
+    void enableWeapon();
 
     eCreatureStance getStance() const { return m_currentStance; }
 
@@ -153,6 +156,13 @@ public:
     bool rollFatigue();
 
     CreatureId getId() const { return m_id; }
+
+    void setBrawn(int brawn) { m_brawn = brawn; }
+    void setAgility(int agility) { m_agility = agility; }
+    void setCunning(int cunning) { m_cunning = cunning; }
+    void setPerception(int perception) { m_perception = perception; }
+    void setWill(int will) { m_will = will; }
+    void setProficiency(eWeaponTypes type, int value) { m_proficiencies[type] = value; }
 
 protected:
     CreatureId m_id;

@@ -70,10 +70,32 @@ void Level::generate()
             HumanObject* object = new HumanObject;
             object->setPosition(rooms[i].x, rooms[i].y);
             object->setFaction(eCreatureFaction::Bandit);
-            object->setLoadout(eCreatureFaction::Bandit, eRank::Veteran);
+            object->setLoadout(eCreatureFaction::Bandit, eRank::Recruit);
             m_objects.push_back(object);
         }
     }
+
+    // add enemy to farthest room as a boss
+    int minDist = 0;
+    int idx = 0;
+    for (int i = 1; i < rooms.size(); ++i) {
+        int a = rooms[i].x - rooms[0].x;
+        int b = rooms[i].y - rooms[0].y;
+
+        int dist = (a * a) + (b * b);
+        if (dist > minDist) {
+            minDist = dist;
+            idx = i;
+        }
+    }
+    HumanObject* object = new HumanObject;
+    object->setPosition(rooms[idx].x, rooms[idx].y);
+    object->setFaction(eCreatureFaction::Bandit);
+    object->setLoadout(eCreatureFaction::Bandit, eRank::Veteran);
+    object->getCreatureComponent()->setAgility(6);
+    object->getCreatureComponent()->setCunning(6);
+    object->setName("One-Eyed Doyt");
+    m_objects.push_back(object);
 }
 
 Room Level::carveRoom()

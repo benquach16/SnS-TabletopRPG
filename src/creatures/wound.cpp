@@ -202,7 +202,7 @@ void WoundTable::initHitLocationTable()
     m_hitTable[eHitLocations::Belly].m_thrust[0] = eBodyParts::Ribs;
     m_hitTable[eHitLocations::Belly].m_thrust[1] = eBodyParts::Ribs;
     m_hitTable[eHitLocations::Belly].m_thrust[2] = eBodyParts::Abs;
-    m_hitTable[eHitLocations::Belly].m_thrust[3] = eBodyParts::Abs;
+    m_hitTable[eHitLocations::Belly].m_thrust[3] = eBodyParts::SecondLocationArm;
     m_hitTable[eHitLocations::Belly].m_thrust[4] = eBodyParts::Hip;
     m_hitTable[eHitLocations::Belly].m_thrust[5] = eBodyParts::Groin;
 

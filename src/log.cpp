@@ -107,6 +107,9 @@ sf::Text Log::createLogText(const std::string& str, eMessageTypes type)
     case eMessageTypes::Dialogue:
         text.setFillColor(sf::Color::Magenta);
         break;
+    case eMessageTypes::OtherDialogue:
+        text.setFillColor(sf::Color(255, 200, 255));
+        break;
     case eMessageTypes::Background:
         text.setFillColor(sf::Color(77, 77, 77));
         break;

@@ -56,7 +56,7 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
         str += to_string(pinpointCost);
     }
 
-    str += "AP)\nd - Beat (1AP)\ne - Hook\nf - Wrap (1AP)\ng - Slam\nh - Mordhau(";
+    str += "AP)\nd - Beat (1AP)\ne - Hook\nf - Disarm (1AP)\ng - Slam\nh - Mordhau(";
 
     int mordhauCost = offenseManueverCost(eOffensiveManuevers::Mordhau);
     bool freeMordhau = player->getGrip() == eGrips::HalfSword;
@@ -97,6 +97,15 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
                 m_currentState = eUiState::ChooseFeint;
             } else {
                 Log::push("This weapon cannot hook");
+            }
+            break;
+        case 'f':
+            if (player->getCombatPool() >= 1) {
+                player->setOffenseManuever(eOffensiveManuevers::Disarm);
+                player->reduceCombatPool(1);
+                m_currentState = eUiState::ChooseFeint;
+            } else {
+                Log::push("1 AP needed");
             }
             break;
         case 'h':

@@ -19,6 +19,8 @@ std::string offensiveManueverToString(eOffensiveManuevers manuever)
         return "Mordhau";
     case eOffensiveManuevers::Slam:
         return "Slam";
+    case eOffensiveManuevers::Disarm:
+        return "Disarm";
     default:
         return "";
     }

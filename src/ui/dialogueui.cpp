@@ -116,8 +116,8 @@ void DialogueUI::doTalkingPlayer(
         if (hasKeyEvents && event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;
             if (c == idx) {
-                Log::push(
-                    player->getName() + ": " + node->getMessage(), Log::eMessageTypes::Dialogue);
+                Log::push(player->getName() + ": " + node->getMessage(),
+                    Log::eMessageTypes::OtherDialogue);
 
                 vector<string> chosenResponses = node->getResponses();
                 if (chosenResponses.size() == 0) {

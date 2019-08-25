@@ -29,12 +29,6 @@ public:
     void run();
     void generate();
     void makeRoom();
-    void createHuman(int x, int y);
-    Room carveRoom();
-    Room carveRoom(int xStart, int yStart, int minSizeX, int minSizeY, int maxSizeX, int maxSizeY);
-    Room carveSeperateRoom();
-    void removeIslands();
-    void createCorridor(Room room1, Room room2);
     void cleanup();
     void clearObjects();
 
@@ -67,6 +61,12 @@ public:
     std::vector<Object*> getObjectsAtLocation(vector2d position);
 
 private:
+    Room carveRoom();
+    Room carveRoom(int xStart, int yStart, int minSizeX, int minSizeY, int maxSizeX, int maxSizeY);
+    Room carveSeperateRoom();
+    void removeIslands();
+    void createCorridor(Room room1, Room room2);
+
     std::vector<Trigger> m_triggers;
     std::vector<Object*> m_objects;
     std::vector<Object*> m_toDelete;

@@ -29,6 +29,7 @@ enum class eOffensiveManuevers : unsigned {
     Hook,
     Slam,
     Grab,
+    Disarm,
     // grapple moves
     Snap,
     Throw,
@@ -63,6 +64,7 @@ inline int offenseManueverCost(eOffensiveManuevers manuever)
     case eOffensiveManuevers::Mordhau:
     case eOffensiveManuevers::Snap:
     case eOffensiveManuevers::Throw:
+    case eOffensiveManuevers::Disarm:
     case eOffensiveManuevers::Grab:
         return 1;
     default:

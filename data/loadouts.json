@@ -33,14 +33,14 @@
             "baseLegs": [2048, 2044],
             "helmets": [2051],
             "chests": [2041],
-            "plateChests": [],
+            "plateChests": [2059],
             "skirts": [2056],
             "leggings": [],
             "plateLeggings": [],
             "shoes": [2046],
             "gloves": [2047],
             "plateGloves": [],
-            "weapons": [1041, 1052, 1050]
+            "weapons": [1052, 1050]
         },
         "lord": {
             "baseChests": [2040, 2045],

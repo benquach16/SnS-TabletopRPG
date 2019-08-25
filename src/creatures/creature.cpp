@@ -170,6 +170,34 @@ void Creature::inflictWound(Wound* wound, bool manueverFirst)
     if (m_bloodLoss >= cBaseBloodLoss) {
         m_currentState = eCreatureState::Unconscious;
     }
+
+    auto drop1 = effects.find(eEffects::drop1);
+    auto drop2 = effects.find(eEffects::drop2);
+    auto drop3 = effects.find(eEffects::drop3);
+    auto drop = effects.find(eEffects::drop);
+    if (drop1 != effects.end()) {
+        if (DiceRoller::rollGetSuccess(getBTN(), getBrawn()) < 1) {
+            disableWeapon();
+            m_disarm = -1;
+        }
+    }
+    if (drop2 != effects.end()) {
+        if (DiceRoller::rollGetSuccess(getBTN(), getBrawn()) < 2) {
+            disableWeapon();
+            m_disarm = -1;
+        }
+    }
+    if (drop3 != effects.end()) {
+        if (DiceRoller::rollGetSuccess(getBTN(), getBrawn()) < 3) {
+            disableWeapon();
+            m_disarm = -1;
+        }
+    }
+    if (drop != effects.end()) {
+        disableWeapon();
+        m_disarm = -1;
+    }
+
     m_BTN = max(m_BTN, wound->getBTN());
 }
 
@@ -271,6 +299,23 @@ bool Creature::rollFatigue()
         return true;
     }
     return false;
+}
+
+void Creature::disableWeapon()
+{
+    m_disarm = cDisableTick;
+    m_disableWeaponId = m_primaryWeaponId;
+    m_primaryWeaponId = cFistsId;
+}
+
+void Creature::enableWeapon()
+{
+    // don't do anything if we have an actual weapon
+    if (m_primaryWeaponId != cFistsId) {
+        return;
+    }
+
+    swap(m_primaryWeaponId, m_disableWeaponId);
 }
 
 bool Creature::canPerformManuever(eOffensiveManuevers manuever)
@@ -398,16 +443,16 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
 {
     int diceAllocated = attacker->getQueuedOffense().dice;
 
-    int combatPool = attacker->getCombatPool() + attacker->getSpeed();
+    int combatPool = attacker->getCombatPool() + attacker->getSpeed() / 2;
 
     int bufferDie = random_static::get(3, 5);
 
     float disadvantageMult = 1.0;
     float mult = random_static::get(3, 5);
     mult += m_BTN - cBaseBTN;
-    mult += attacker->getQueuedOffense().manuever == eOffensiveManuevers::Thrust ? 2 : 0;
+    // mult += attacker->getQueuedOffense().manuever == eOffensiveManuevers::Thrust ? 2 : 0;
     disadvantageMult += (mult / 10);
-    if ((combatPool * disadvantageMult) + bufferDie < m_combatPool + getSpeed()) {
+    if ((combatPool * disadvantageMult) + bufferDie < m_combatPool + getSpeed() / 2) {
         int diff = abs((getSpeed() - attacker->getSpeed()) * disadvantageMult);
         int dice = diff + bufferDie;
         if (m_combatPool > dice) {
@@ -483,6 +528,13 @@ void Creature::clearCreatureManuevers()
     m_hasPrecombat = false;
 
     m_favoredLocations.clear();
+
+    if (m_disarm > 0) {
+        m_disarm--;
+        if (m_disarm == 0) {
+            enableWeapon();
+        }
+    }
 }
 
 void Creature::clearArmor()

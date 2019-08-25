@@ -884,7 +884,7 @@
 			},
 			"5": {
 				"text": ["Arm severed at the elbow in a spray of blood."],
-				"effects": ["BL2"]
+				"effects": ["BL2", "drop"]
 			}
 		},
 		"forearm": {
@@ -905,7 +905,7 @@
 			},
 			"5": {
 				"text": ["Forearm completely mangled"],
-				"effects": ["BL2"]
+				"effects": ["BL2", "drop"]
 			}
 		},
 		"hand": {
@@ -927,7 +927,7 @@
 			},
 			"5": {
 				"text": ["Hand completely mangled."],
-				"effects": ["BL2"]
+				"effects": ["BL2", "drop"]
 			}
 		},
 		"armpit": {
@@ -947,7 +947,7 @@
 			},
 			"5": {
 				"text": ["Arm severed at a shoulder in a spray of blood."],
-				"effects": ["BL3"]
+				"effects": ["BL3", "drop"]
 			}
 		},
 		"ribs": {

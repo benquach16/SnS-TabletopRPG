@@ -186,6 +186,15 @@ void CombatInstance::doPreexchangeActions()
     }
 }
 
+void CombatInstance::doPosition()
+{
+    if (m_dualRedThrow == true) {
+        m_currentState = eCombatState::DualOffense1;
+    } else {
+        m_currentState = eCombatState::Offense;
+    }
+}
+
 void CombatInstance::doResetState() { m_currentState = eCombatState::RollInitiative; }
 
 bool CombatInstance::doOffense()
@@ -778,6 +787,13 @@ bool CombatInstance::inflictWound(
         return false;
     }
 
+    if (attack.manuever == eOffensiveManuevers::Disarm) {
+        writeMessage(target->getName() + "'s weapon has been disabled for 1 tempo.",
+            Log::eMessageTypes::Alert);
+        target->disableWeapon();
+        return false;
+    }
+
     bool doBlunt = false;
     eDamageTypes damageType = attack.component->getType();
 
@@ -873,7 +889,11 @@ bool CombatInstance::inflictWound(
         writeMessage(target->getName() + " begins to struggle from the pain",
             Log::eMessageTypes::Alert, true);
     }
+    bool hasWeapon = target->getPrimaryWeaponId() != cFistsId;
     target->inflictWound(wound, manueverFirst);
+    if (target->getPrimaryWeaponId() == cFistsId) {
+        writeMessage(target->getName() + " has been disarmed!", Log::eMessageTypes::Alert);
+    }
 
     if (target->getCreatureState() == eCreatureState::Dead) {
         // end combat
@@ -944,6 +964,9 @@ void CombatInstance::run()
         break;
     case eCombatState::PreexchangeActions:
         doPreexchangeActions();
+        break;
+    case eCombatState::PositionActions:
+        doPosition();
         break;
     case eCombatState::ResetState:
         doResetState();
