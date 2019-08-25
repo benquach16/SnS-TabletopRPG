@@ -891,7 +891,7 @@ bool CombatInstance::inflictWound(
     }
     bool hasWeapon = target->getPrimaryWeaponId() != cFistsId;
     target->inflictWound(wound, manueverFirst);
-    if (target->getPrimaryWeaponId() == cFistsId) {
+    if (target->getPrimaryWeaponId() == cFistsId && hasWeapon == true) {
         writeMessage(target->getName() + " has been disarmed!", Log::eMessageTypes::Alert);
     }
 

@@ -1,7 +1,10 @@
 #pragma once
 #include "../items/types.h"
+#include "types.h"
 
 enum class eManueverTypes { Offense, Defense, Position };
+
+class Component;
 
 struct Manuever {
     virtual eManueverTypes getType() = 0;
@@ -27,4 +30,5 @@ struct Defense : public Manuever {
 
 struct Position : public Manuever {
     eManueverTypes getType() override { return eManueverTypes::Position; }
+    ePositionManuevers manuever;
 };
