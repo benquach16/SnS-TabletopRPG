@@ -179,11 +179,7 @@ void CombatInstance::doPreexchangeActions()
     if (length < m_currentReach) {
         m_currentReach = length;
     }
-    if (m_dualRedThrow == true) {
-        m_currentState = eCombatState::DualOffense1;
-    } else {
-        m_currentState = eCombatState::Offense;
-    }
+    m_currentState = eCombatState::PositionActions;
 }
 
 void CombatInstance::doPosition()

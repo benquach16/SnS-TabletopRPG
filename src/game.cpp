@@ -104,10 +104,6 @@ void Game::run()
                 break;
             }
         }
-        sf::Time elapsedTime = clock.getElapsedTime();
-        // as milliseconds returns 0, so we have to go more granular
-        tick += elapsedTime.asSeconds();
-        aiTick += elapsedTime.asSeconds();
 
         sf::View v = getWindow().getDefaultView();
         v.setSize(v.getSize().x, v.getSize().y * 2);
@@ -145,6 +141,11 @@ void Game::run()
         case eGameState::InCombat:
         default:
             break;
+        }
+
+        if (m_playerObject->isConscious() == false && m_currentState != eGameState::Dead) {
+            m_currentState = eGameState::Dead;
+            Log::push("You have died!", Log::eMessageTypes::Damage);
         }
 
         if (m_currentState == eGameState::Playing) {
@@ -216,7 +217,7 @@ void Game::run()
                 }
             }
 
-            if (aiTick > 0.3) {
+            if (aiTick > 0.4) {
                 level.run();
                 aiTick = 0;
                 level.cleanup();
@@ -341,11 +342,14 @@ void Game::run()
             if (ui.runDialog(hasKeyEvents, event, m_playerObject, m_talking) == false) {
                 m_currentState = eGameState::Playing;
             }
+        } else if (m_currentState == eGameState::Dead) {
         }
 
         Log::run();
 
         float currentTime = clock.restart().asSeconds();
+        aiTick += currentTime;
+        tick += currentTime;
         float fps = 1.f / currentTime;
         // cout << "FPS"  << fps << endl;
         m_window.setTitle(std::to_string(fps));

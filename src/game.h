@@ -32,6 +32,7 @@ private:
         Pickup,
         InCombat,
         PauseMenu,
+        Dead,
         Exiting
     };
     SelectorObject m_selector;
