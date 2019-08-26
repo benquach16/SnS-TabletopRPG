@@ -21,7 +21,7 @@ Weapon::Weapon(const std::string& name, const std::string& description, eLength 
     , m_hook(hook)
     , m_naturalWeapon(naturalWeapon)
 {
-    for (int i = 0; i < components.size(); ++i) {
+    for (unsigned i = 0; i < components.size(); ++i) {
         if (components[i]->getAttack() == eAttacks::Thrust) {
             m_thrustComponents.push_back(components[i]);
         }
@@ -50,7 +50,7 @@ Weapon::Weapon(const std::string& name, const std::string& description, eLength 
 
 Weapon::~Weapon()
 {
-    for (int i = 0; i < m_components.size(); ++i) {
+    for (unsigned i = 0; i < m_components.size(); ++i) {
         delete m_components[i];
     }
     m_components.clear();
@@ -63,7 +63,7 @@ Component* Weapon::getBestAttack() const
     assert(m_components.size() > 0);
 
     Component* ret = m_components[0];
-    for (int i = 1; i < m_components.size(); ++i) {
+    for (unsigned i = 1; i < m_components.size(); ++i) {
         if (m_components[i]->getDamage() > ret->getDamage()
             && m_components[i]->isPommel() == false) {
             ret = m_components[i];
@@ -119,7 +119,7 @@ WeaponTable::WeaponTable()
         bool hook = values["hook"];
         vector<Component*> weaponComponents;
 
-        for (int i = 0; i < componentJson.size(); ++i) {
+        for (unsigned i = 0; i < componentJson.size(); ++i) {
             // cout << components[i] << endl;
             assert(componentJson[i]["name"].is_null() == false);
             assert(componentJson[i]["damage"].is_null() == false);
@@ -137,7 +137,7 @@ WeaponTable::WeaponTable()
             if (componentJson[i]["properties"].is_null() == false) {
                 // is an array
                 auto propertiesJson = componentJson[i]["properties"];
-                for (int j = 0; j < propertiesJson.size(); ++j) {
+                for (unsigned j = 0; j < propertiesJson.size(); ++j) {
                     eWeaponProperties property = convertPropertiesFromStr(propertiesJson[j]);
                     properties.insert(property);
                 }
@@ -174,7 +174,7 @@ WeaponTable::WeaponTable()
             if (addStandardGrips == true) {
                 if (componentJson[i]["grips"].is_null() == false) {
                     auto gripsJson = componentJson[i]["grips"];
-                    for (int j = 0; j < gripsJson.size(); ++j) {
+                    for (unsigned j = 0; j < gripsJson.size(); ++j) {
                         eGrips grip = stringToGrip(gripsJson[j]["grip"]);
                         bool linked = false;
                         if (gripsJson[j]["linked"].is_null() == false) {

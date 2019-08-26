@@ -95,7 +95,7 @@ void WoundTable::initWoundTable(eDamageTypes type, nlohmann::json woundJson)
 
             set<eEffects> effects;
             if (woundJson["effects"].is_null() == false) {
-                for (int j = 0; j < woundJson["effects"].size(); ++j) {
+                for (unsigned j = 0; j < woundJson["effects"].size(); ++j) {
                     eEffects effect = stringToEffect(woundJson["effects"][j]);
                     effects.insert(effect);
                 }

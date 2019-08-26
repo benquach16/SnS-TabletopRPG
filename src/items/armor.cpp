@@ -76,7 +76,7 @@ ArmorTable::ArmorTable()
         set<eBodyParts> coverage;
 
         auto coverageJson = values["coverage"];
-        for (int i = 0; i < coverageJson.size(); ++i) {
+        for (unsigned i = 0; i < coverageJson.size(); ++i) {
             eBodyParts part = stringToBodyPart(coverageJson[i]);
             coverage.insert(part);
         }

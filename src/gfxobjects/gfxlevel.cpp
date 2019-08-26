@@ -9,8 +9,8 @@ using namespace std;
 sf::Texture test;
 
 // rounding
-constexpr int cWallWidthOffset = cWidth * cCos45 + 1;
-constexpr int cWallHeightOffset = cHeight * cCos45;
+constexpr int cWallWidthOffset = static_cast<int>(cWidth * cCos45 + 1);
+constexpr int cWallHeightOffset = static_cast<int>(cHeight * cCos45);
 
 GFXLevel::GFXLevel()
 {
@@ -207,7 +207,7 @@ void GFXLevel::run(const Level* level, vector2d center)
 
     const std::vector<Object*> rLevelObjs = level->getObjects();
 
-    for (int i = 0; i < rLevelObjs.size(); ++i) {
+    for (unsigned i = 0; i < rLevelObjs.size(); ++i) {
         vector2d position = rLevelObjs[i]->getPosition();
         int dist = (position.x - center.x) * (position.x - center.x)
             + (position.y - center.y) * (position.y - center.y);

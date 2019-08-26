@@ -55,7 +55,7 @@ private:
 // node for a graph. instances act as edges
 class CombatManager {
 public:
-    static constexpr float cTick = 0.8;
+    static constexpr float cTick = 0.8f;
     static constexpr int cMaxEngaged = 4;
     CombatManager(CreatureObject* creature);
     ~CombatManager();

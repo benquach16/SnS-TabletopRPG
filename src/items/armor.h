@@ -10,8 +10,8 @@
 
 struct ArmorSegment {
     int AV = 0;
-    int isMetal = false;
-    int isRigid = false;
+    bool isMetal = false;
+    bool isRigid = false;
     eArmorTypes type = eArmorTypes::None;
 };
 

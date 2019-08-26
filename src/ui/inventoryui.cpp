@@ -120,7 +120,7 @@ void InventoryUI::doEquipped(bool hasKeyEvents, sf::Event event, PlayerObject* p
     string str = "Equipped Armor - ";
     str += to_string(player->getCreatureComponent()->getAP()) + "AP\n";
     std::vector<int> armorId = player->getCreatureComponent()->getArmorId();
-    int i = 0;
+    unsigned i = 0;
     for (i = 0; i < armorId.size(); ++i) {
         const Armor* armor = ArmorTable::getSingleton()->get(armorId[i]);
         char idx = ('a' + i);
@@ -223,7 +223,7 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
         str += "Proficiency: " + weaponTypeToString(weapon->getType()) + '\n';
         str += "Weapon Parts: \n";
         std::vector<Component*> components = weapon->getComponents();
-        for (int i = 0; i < components.size(); ++i) {
+        for (unsigned i = 0; i < components.size(); ++i) {
             str += components[i]->getName() + " - ";
             str += "Damage: " + to_string(components[i]->getDamage()) + ' '
                 + damageTypeToString(components[i]->getType()) + " [ ";

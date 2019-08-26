@@ -12,10 +12,10 @@ void Log::push(std::string str, eMessageTypes type)
 {
     // split if the string is too long
     auto windowSize = Game::getWindow().getSize();
-    int width = str.size() * cCharWidth;
+    unsigned width = static_cast<unsigned>(str.size() * cCharWidth);
     if (width > windowSize.x) {
         while (width > windowSize.x) {
-            int diff = width - windowSize.x;
+            unsigned diff = width - windowSize.x;
             int count = diff / cCharWidth;
             int size = str.size() - count;
             m_queue.push_back({ str.substr(0, size), type });
@@ -75,7 +75,7 @@ void Log::run()
 
         Game::getWindow().draw(historyBkg);
 
-        for (int i = 0; i < m_queue.size(); ++i) {
+        for (unsigned i = 0; i < m_queue.size(); ++i) {
             sf::Text text = createLogText(m_queue[i].text, m_queue[i].type);
             text.setPosition(cSpace / 2, cSpace / 2 + (i * cCharSize));
             Game::getWindow().draw(text);

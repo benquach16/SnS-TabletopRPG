@@ -20,7 +20,7 @@ void Level::load() {}
 
 void Level::run()
 {
-    for (int i = 0; i < m_objects.size(); ++i) {
+    for (unsigned i = 0; i < m_objects.size(); ++i) {
         if (m_objects[i]->deleteMe() == true) {
             Object* object = m_objects[i];
             if (object->getObjectType() == eObjectTypes::Creature) {
@@ -78,7 +78,7 @@ void Level::generate()
     // add enemy to farthest room as a boss
     int minDist = 0;
     int idx = 0;
-    for (int i = 1; i < rooms.size(); ++i) {
+    for (unsigned i = 1; i < rooms.size(); ++i) {
         int a = rooms[i].x - rooms[0].x;
         int b = rooms[i].y - rooms[0].y;
 
@@ -302,7 +302,7 @@ void Level::removeIslands()
 
 void Level::cleanup()
 {
-    for (int i = 0; i < m_toDelete.size(); ++i) {
+    for (unsigned i = 0; i < m_toDelete.size(); ++i) {
         cout << "clearing.." << endl;
         delete m_toDelete[i];
     }
@@ -311,7 +311,7 @@ void Level::cleanup()
 
 void Level::clearObjects()
 {
-    for (int i = 0; i < m_objects.size(); ++i) {
+    for (unsigned i = 0; i < m_objects.size(); ++i) {
         if (m_objects[i]->preserveBetweenLevels() == false) {
             delete m_objects[i];
         }
@@ -321,7 +321,7 @@ void Level::clearObjects()
 
 const Object* Level::getObject(vector2d position)
 {
-    for (int i = 0; i < m_objects.size(); ++i) {
+    for (unsigned i = 0; i < m_objects.size(); ++i) {
         vector2d objectPosition = m_objects[i]->getPosition();
         if (position.x == objectPosition.x && position.y == objectPosition.y) {
             return m_objects[i];
@@ -332,7 +332,7 @@ const Object* Level::getObject(vector2d position)
 
 Object* Level::getObjectMutable(vector2d position, const Object* exclude)
 {
-    for (int i = 0; i < m_objects.size(); ++i) {
+    for (unsigned i = 0; i < m_objects.size(); ++i) {
         vector2d objectPosition = m_objects[i]->getPosition();
         if (position.x == objectPosition.x && position.y == objectPosition.y
             && exclude != m_objects[i]) {
@@ -350,7 +350,7 @@ bool Level::isFreeSpace(int x, int y) const
     if ((*this)(x, y).m_type == eTileType::Wall) {
         return false;
     }
-    for (int i = 0; i < m_objects.size(); ++i) {
+    for (unsigned i = 0; i < m_objects.size(); ++i) {
         vector2d position = m_objects[i]->getPosition();
         if (position.x == x && position.y == y && m_objects[i]->hasCollision() == true) {
             return false;
@@ -362,7 +362,7 @@ bool Level::isFreeSpace(int x, int y) const
 std::vector<Object*> Level::getObjectsAtLocation(vector2d position)
 {
     std::vector<Object*> ret;
-    for (int i = 0; i < m_objects.size(); ++i) {
+    for (unsigned i = 0; i < m_objects.size(); ++i) {
         vector2d objectPosition = m_objects[i]->getPosition();
         if (position.x == objectPosition.x && position.y == objectPosition.y) {
             ret.push_back(m_objects[i]);

@@ -20,7 +20,7 @@ void AIController::run(const Level* level, CreatureObject* controlledCreature)
     constexpr int cMinDist = 64;
     int minDist = cMinDist;
     CreatureObject* target = nullptr;
-    for (int i = 0; i < rLevelObjs.size(); ++i) {
+    for (unsigned i = 0; i < rLevelObjs.size(); ++i) {
         Object* object = rLevelObjs[i];
         if (object == controlledCreature) {
             continue;

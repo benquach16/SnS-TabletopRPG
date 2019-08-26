@@ -162,7 +162,7 @@ void CombatManager::doRunCombat(float tick)
     if (change == true) {
         m_positionDone = false;
         m_edges[m_edgeId]->setCurrent(false);
-        if (m_edgeId < static_cast<int>(m_edges.size()) - 1) {
+        if (m_edgeId < static_cast<unsigned>(m_edges.size()) - 1) {
             m_edgeId++;
         } else {
             if (m_currentTempo == eTempo::Second && m_edges.size() > 1) {

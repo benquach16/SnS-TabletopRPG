@@ -19,8 +19,8 @@ using namespace std;
 sf::RenderWindow Game::m_window;
 sf::Font Game::m_defaultFont;
 
-constexpr float cMaxZoom = 0.6;
-constexpr float cMinZoom = 1.4;
+constexpr float cMaxZoom = 0.6f;
+constexpr float cMinZoom = 1.4f;
 
 Game::Game()
     : m_pickup(nullptr)

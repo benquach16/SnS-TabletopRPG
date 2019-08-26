@@ -1,6 +1,6 @@
 #include "utils.h"
 
-constexpr float transform = 0.7071;
+constexpr float transform = 0.7071f;
 sf::Vector2f coordsToScreen(sf::Vector2f coords)
 {
     sf::Vector2f newCoords;

@@ -57,7 +57,7 @@ eLength Creature::getCurrentReach() const
 std::vector<const Armor*> Creature::getArmor() const
 {
     std::vector<const Armor*> ret;
-    for (int i = 0; i < m_armor.size(); ++i) {
+    for (unsigned i = 0; i < m_armor.size(); ++i) {
         ret.push_back(ArmorTable::getSingleton()->get(m_armor[i]));
     }
     return ret;
@@ -291,7 +291,7 @@ const std::vector<eHitLocations> Creature::getHitLocations() const
 bool Creature::rollFatigue()
 {
     int requiredSuccesses = 1;
-    requiredSuccesses += m_AP;
+    requiredSuccesses += static_cast<int>(m_AP);
 
     int successes = DiceRoller::rollGetSuccess(getBTN(), getGrit());
     if (successes < requiredSuccesses) {
@@ -448,12 +448,12 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
     int bufferDie = random_static::get(3, 5);
 
     float disadvantageMult = 1.0;
-    float mult = random_static::get(3, 5);
+    float mult = static_cast<float>(random_static::get(3, 5));
     mult += m_BTN - cBaseBTN;
     // mult += attacker->getQueuedOffense().manuever == eOffensiveManuevers::Thrust ? 2 : 0;
     disadvantageMult += (mult / 10);
     if ((combatPool * disadvantageMult) + bufferDie < m_combatPool + getSpeed() / 2) {
-        int diff = abs((getSpeed() - attacker->getSpeed()) * disadvantageMult);
+        int diff = static_cast<int>(abs((getSpeed() - attacker->getSpeed()) * disadvantageMult));
         int dice = diff + bufferDie;
         if (m_combatPool > dice) {
             outDie = dice;

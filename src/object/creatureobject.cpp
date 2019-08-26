@@ -37,7 +37,7 @@ void CreatureObject::run(const Level* level)
     }
     if (m_manager->isParent() == true) {
         // definitely engaged, no need to run ai controller
-        m_manager->run(0.9);
+        m_manager->run(0.9f);
     } else {
         m_controller.run(level, this);
     }
