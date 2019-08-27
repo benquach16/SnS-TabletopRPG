@@ -28,6 +28,7 @@ public:
     void setDefenseManuever(eDefensiveManuevers manuever) { m_currentDefense.manuever = manuever; }
     void setDefenseDice(int dice) { m_currentDefense.dice = dice; }
 
+    void setPositionManuever(ePositionManuevers manuever) { m_currentPosition.manuever = manuever; }
     void setPositionDice(int dice) { m_currentPosition.dice = dice; }
 
     void setOffenseReady() { m_hasOffense = true; }

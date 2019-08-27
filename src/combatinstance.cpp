@@ -184,6 +184,10 @@ void CombatInstance::doPreexchangeActions()
 
 void CombatInstance::doPosition()
 {
+    if (m_side1->isPlayer() == true) {
+
+    } else {
+    }
     if (m_dualRedThrow == true) {
         m_currentState = eCombatState::DualOffense1;
     } else {
@@ -670,6 +674,12 @@ void CombatInstance::doResolution()
         }
     }
 
+    if (m_side1->getHasPosition() == true) {
+        resolvePosition(m_side1);
+    }
+    if (m_side2->getHasPosition() == true) {
+        resolvePosition(m_side2);
+    }
     m_currentState = eCombatState::PostResolution;
 }
 
@@ -755,6 +765,21 @@ void CombatInstance::doPostResolution()
         m_currentState = eCombatState::Offense;
     }
     switchTempo();
+}
+
+void CombatInstance::resolvePosition(Creature* creature)
+{
+    Position position = creature->getQueuedPosition();
+    int successes = DiceRoller::rollGetSuccess(creature->getBTN(), position.dice);
+    if (successes < 1) {
+        return;
+    }
+    if (position.manuever == ePositionManuevers::Pickup) {
+        creature->enableWeapon();
+    }
+    if (position.manuever == ePositionManuevers::Stand) {
+        creature->setStand();
+    }
 }
 
 void CombatInstance::doEndCombat()

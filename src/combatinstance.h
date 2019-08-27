@@ -79,6 +79,7 @@ private:
     // this is a special case because if both sides roll to attack since both of
     // their attacks resolve at the same time
     void doDualOffenseResolve();
+    void resolvePosition(Creature* creature);
     void doPostResolution();
     void doEndCombat();
     void setSides(Creature*& attacker, Creature*& defender);

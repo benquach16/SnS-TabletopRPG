@@ -11,7 +11,7 @@ PlayerObject::PlayerObject()
     m_creature->equipArmor(2044);
     m_creature->equipArmor(2040);
     m_creature->equipArmor(2046);
-    m_creature->equipArmor(2043);
+    // m_creature->equipArmor(2043);
     // m_creature->equipArmor(2056);
     // m_creature->equipArmor(2057);
     m_creature->setName("John");

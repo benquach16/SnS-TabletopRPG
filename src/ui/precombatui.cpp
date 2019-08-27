@@ -30,7 +30,13 @@ void PrecombatUI::doFavoring(bool hasKeyEvents, sf::Event event, Player* player)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setString("Favor location (1AP)?\na - Skip all pre-exchange actions\nb - Yes\nc - No");
+    string str = "Favor location (1AP)?\na - Skip all pre-exchange actions\nb - Yes\nc - No";
+
+    if (player->getHasPosition() == false) {
+        str += "\nd - Attempt to stand";
+        str += "\ne - Attempt to pick up weapon";
+    }
+    text.setString(str);
 
     Game::getWindow().draw(text);
 
@@ -46,6 +52,12 @@ void PrecombatUI::doFavoring(bool hasKeyEvents, sf::Event event, Player* player)
             break;
         case 'c':
             m_currentState = eUiState::ChooseGrip;
+            break;
+        case 'd':
+            player->setPositionReady();
+            break;
+        case 'e':
+            player->setPositionReady();
             break;
         }
     }

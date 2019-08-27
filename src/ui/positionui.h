@@ -9,6 +9,7 @@ public:
     void resetState() { m_currentState = eUiState::ChooseDice; }
 
 private:
+    void doChooseManuever(bool hasKeyEvents, sf::Event event, Player* player);
     void doPositionRoll(bool hasKeyEvents, sf::Event event, Player* player);
     enum class eUiState : unsigned { ChooseDice, Finished };
 
