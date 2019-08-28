@@ -54,10 +54,10 @@ void PrecombatUI::doFavoring(bool hasKeyEvents, sf::Event event, Player* player)
             m_currentState = eUiState::ChooseGrip;
             break;
         case 'd':
-            player->setPositionReady();
+            player->attemptStand();
             break;
         case 'e':
-            player->setPositionReady();
+            player->attemptPickup();
             break;
         }
     }

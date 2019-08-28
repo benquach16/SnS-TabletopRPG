@@ -83,22 +83,31 @@ void Creature::inflictImpact(int impact)
     }
 }
 
-void Creature::inflictWound(Wound* wound, bool manueverFirst)
+void Creature::inflictWound(Wound* wound)
 {
-    if (manueverFirst == true) {
-        m_currentOffense.dice -= wound->getImpact();
+    int impact = wound->getImpact();
+    if (getHasOffense() == true) {
+        m_currentOffense.dice -= impact;
         if (m_currentOffense.dice < 0) {
-            int diff = abs(m_currentOffense.dice);
+            impact = abs(m_currentOffense.dice);
             m_currentOffense.dice = 0;
-            m_currentPosition.dice -= diff;
-            if (m_currentPosition.dice < 0) {
-                m_combatPool -= -m_currentPosition.dice;
-                m_currentPosition.dice = 0;
-            }
+        } else {
+            impact = 0;
         }
-    } else {
-        m_combatPool -= wound->getImpact();
     }
+
+    if (getHasPosition() == true) {
+        m_currentPosition.dice -= impact;
+        if (m_currentPosition.dice < 0) {
+            impact = abs(m_currentPosition.dice);
+            m_currentPosition.dice = 0;
+        } else {
+            impact = 0;
+        }
+    }
+
+    m_combatPool -= impact;
+
     m_wounds.push_back(wound);
 
     if (wound->causesDeath() == true) {
@@ -333,6 +342,22 @@ bool Creature::canPerformManuever(eOffensiveManuevers manuever)
     default:
         return true;
     }
+}
+
+void Creature::attemptStand()
+{
+    m_currentPosition.manuever = ePositionManuevers::Stand;
+    m_currentPosition.dice = 3;
+    reduceCombatPool(3);
+    m_hasPosition = true;
+}
+
+void Creature::attemptPickup()
+{
+    m_currentPosition.manuever = ePositionManuevers::Pickup;
+    m_currentPosition.dice = 3;
+    reduceCombatPool(3);
+    m_hasPosition = true;
 }
 
 void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool dualRedThrow)

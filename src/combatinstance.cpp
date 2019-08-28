@@ -558,8 +558,7 @@ void CombatInstance::doResolution()
 
         bool wasStanding = defender->getStance() == eCreatureStance::Standing;
         if (attackerSuccesses > 0) {
-            if (inflictWound(
-                    attacker, attackerSuccesses, attacker->getQueuedOffense(), defender, true)
+            if (inflictWound(attacker, attackerSuccesses, attacker->getQueuedOffense(), defender)
                 == true) {
                 m_currentState = eCombatState::FinishedCombat;
                 return;
@@ -587,8 +586,8 @@ void CombatInstance::doResolution()
             int defendSuccesses
                 = DiceRoller::rollGetSuccess(defender->getBTN(), defender->getQueuedOffense().dice);
             if (defendSuccesses > 0) {
-                if (inflictWound(defender, defendSuccesses, defender->getQueuedOffense(), attacker)
-                    == true) {
+                if (inflictWound(
+                        defender, defendSuccesses, defender->getQueuedOffense(), attacker)) {
                     m_currentState = eCombatState::FinishedCombat;
                     return;
                 }
@@ -793,8 +792,7 @@ void CombatInstance::doEndCombat()
     m_currentState = eCombatState::Uninitialized;
 }
 
-bool CombatInstance::inflictWound(
-    Creature* attacker, int MoS, Offense attack, Creature* target, bool manueverFirst)
+bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, Creature* target)
 {
     if (attack.manuever == eOffensiveManuevers::Hook) {
         writeMessage(target->getName() + " loses " + to_string(MoS) + " action points from impact",
@@ -911,7 +909,7 @@ bool CombatInstance::inflictWound(
             Log::eMessageTypes::Alert, true);
     }
     bool hasWeapon = target->getPrimaryWeaponId() != cFistsId;
-    target->inflictWound(wound, manueverFirst);
+    target->inflictWound(wound);
     if (target->getPrimaryWeaponId() == cFistsId && hasWeapon == true) {
         writeMessage(target->getName() + " has been disarmed!", Log::eMessageTypes::Alert);
     }

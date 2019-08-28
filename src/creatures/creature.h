@@ -72,7 +72,7 @@ public:
     int getProficiency(eWeaponTypes type) { return m_proficiencies[type]; }
 
     void inflictImpact(int impact);
-    void inflictWound(Wound* wound, bool manueverFirst = false);
+    void inflictWound(Wound* wound);
     const std::vector<Wound*>& getWounds() const { return m_wounds; }
     int getSuccessRate() const;
 
@@ -163,6 +163,9 @@ public:
     void setPerception(int perception) { m_perception = perception; }
     void setWill(int will) { m_will = will; }
     void setProficiency(eWeaponTypes type, int value) { m_proficiencies[type] = value; }
+
+    void attemptStand();
+    void attemptPickup();
 
 protected:
     CreatureId m_id;

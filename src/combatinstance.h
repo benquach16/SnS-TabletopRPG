@@ -93,8 +93,7 @@ private:
     }
     void switchTempo();
 
-    bool inflictWound(
-        Creature* attacker, int MoS, Offense attack, Creature* target, bool manueverFirst = false);
+    bool inflictWound(Creature* attacker, int MoS, Offense attack, Creature* target);
     void writeMessage(const std::string& str,
         Log::eMessageTypes type = Log::eMessageTypes::Standard, bool important = false);
     void outputReachCost(int cost, Creature* attacker);
