@@ -33,8 +33,8 @@ void PrecombatUI::doFavoring(bool hasKeyEvents, sf::Event event, Player* player)
     string str = "Favor location (1AP)?\na - Skip all pre-exchange actions\nb - Yes\nc - No";
 
     if (player->getHasPosition() == false) {
-        str += "\nd - Attempt to stand";
-        str += "\ne - Attempt to pick up weapon";
+        str += "\nd - Attempt to stand (3AP)";
+        str += "\ne - Attempt to pick up weapon (3AP)";
     }
     text.setString(str);
 
@@ -54,10 +54,22 @@ void PrecombatUI::doFavoring(bool hasKeyEvents, sf::Event event, Player* player)
             m_currentState = eUiState::ChooseGrip;
             break;
         case 'd':
-            player->attemptStand();
+            if (player->getHasPosition() == false) {
+                if (player->getCombatPool() >= 3) {
+                    player->attemptStand();
+                } else {
+                    Log::push("Requires 3 AP");
+                }
+            }
             break;
         case 'e':
-            player->attemptPickup();
+            if (player->getHasPosition() == false) {
+                if (player->getCombatPool() >= 3) {
+                    player->attemptPickup();
+                } else {
+                    Log::push("Requires 3 AP");
+                }
+            }
             break;
         }
     }

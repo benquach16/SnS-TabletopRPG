@@ -379,7 +379,7 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
     m_currentOffense.target = target->getHitLocations()[random_static::get(
         0, static_cast<int>(target->getHitLocations().size()) - 1)];
     int dice = m_combatPool / 2 + random_static::get(0, m_combatPool / 3)
-        - effolkronium::random_static::get(0, m_combatPool / 3);
+        - random_static::get(0, m_combatPool / 3);
 
     // bound
     dice += reachCost;

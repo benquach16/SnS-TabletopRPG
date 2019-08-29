@@ -769,8 +769,11 @@ void CombatInstance::doPostResolution()
 void CombatInstance::resolvePosition(Creature* creature)
 {
     Position position = creature->getQueuedPosition();
-    int successes = DiceRoller::rollGetSuccess(creature->getBTN(), position.dice);
+    // don't roll, because not being able to stand or pick up weapon is frustrating
+    int successes = position.dice;
     if (successes < 1) {
+        writeMessage("Impact prevented " + creature->getName() + " from repositioning",
+            Log::eMessageTypes::Alert);
         return;
     }
     if (position.manuever == ePositionManuevers::Pickup) {

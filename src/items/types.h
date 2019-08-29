@@ -100,6 +100,8 @@ inline int defenseManueverCost(eDefensiveManuevers manuever)
     }
 }
 
+inline int positionManueverCost() { return 3; }
+
 enum class eLength : unsigned {
     Nonexistent = 0,
     Half = 1,
