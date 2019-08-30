@@ -23,7 +23,7 @@ static constexpr int cMaxBTN = 6;
 static constexpr int cBaseBloodLoss = 8;
 static constexpr int cTapFactor = 3;
 
-enum class eCreatureType { Human };
+enum class eCreatureType { Human, Goblin };
 
 enum class eCreatureState { Idle = 0, Dead = 2, Unconscious = 3 };
 
@@ -166,6 +166,11 @@ public:
 
     void attemptStand();
     void attemptPickup();
+
+    bool droppedWeapon() const
+    {
+        return m_disableWeaponId != cFistsId && m_primaryWeaponId == cFistsId;
+    }
 
 protected:
     CreatureId m_id;

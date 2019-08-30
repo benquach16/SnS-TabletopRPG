@@ -12,7 +12,7 @@
 
 using namespace std;
 
-constexpr int cMinFatigueTempos = 3;
+constexpr int cMinFatigueTempos = 0;
 
 CombatInstance::CombatInstance()
     : m_initiative(eInitiative::Side1)
@@ -777,9 +777,11 @@ void CombatInstance::resolvePosition(Creature* creature)
         return;
     }
     if (position.manuever == ePositionManuevers::Pickup) {
+        writeMessage(creature->getName() + " picked up dropped weapon");
         creature->enableWeapon();
     }
     if (position.manuever == ePositionManuevers::Stand) {
+        writeMessage(creature->getName() + " stood up");
         creature->setStand();
     }
 }

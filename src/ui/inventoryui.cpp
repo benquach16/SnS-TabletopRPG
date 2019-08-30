@@ -209,6 +209,9 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
                     player->removeItem(m_id);
                     m_uiState = eUiState::Equipped;
                     Log::push("You equip the " + item->getName());
+                } else {
+                    Log::push("You cannot equip this armor, there is another piece of armor that "
+                              "occupies the same spot");
                 }
             } else {
                 player->getCreatureComponent()->removeArmor(m_id);

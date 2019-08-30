@@ -10,6 +10,7 @@ using namespace effolkronium;
 static Creature::CreatureId ids = static_cast<Creature::CreatureId>(0);
 
 constexpr int cDisableTick = 2;
+constexpr int cFatigueDivisor = 10;
 
 Creature::Creature()
     : m_BTN(cBaseBTN)
@@ -85,6 +86,7 @@ void Creature::inflictImpact(int impact)
 
 void Creature::inflictWound(Wound* wound)
 {
+    // m_fatigue[eCreatureFatigue::Stamina]++;
     int impact = wound->getImpact();
     if (getHasOffense() == true) {
         m_currentOffense.dice -= impact;
@@ -266,9 +268,11 @@ void Creature::resetCombatPool()
     m_combatPool -= static_cast<int>(m_AP);
 
     // apply fatigue
+    /*
     for (auto it : m_fatigue) {
         m_combatPool -= it.second;
-    }
+        }*/
+    m_combatPool -= m_fatigue[eCreatureFatigue::Stamina] / cFatigueDivisor;
 
     // prone gives us less CP
     if (m_currentStance == eCreatureStance::Prone) {
@@ -302,9 +306,11 @@ bool Creature::rollFatigue()
     int requiredSuccesses = 1;
     requiredSuccesses += static_cast<int>(m_AP);
 
-    int successes = DiceRoller::rollGetSuccess(getBTN(), getGrit());
-    if (successes < requiredSuccesses) {
-        m_fatigue[eCreatureFatigue::Stamina]++;
+    // int successes = DiceRoller::rollGetSuccess(getBTN(), getGrit());
+    int temp = m_fatigue[eCreatureFatigue::Stamina] / cFatigueDivisor;
+    m_fatigue[eCreatureFatigue::Stamina] += requiredSuccesses;
+    cout << m_fatigue[eCreatureFatigue::Stamina] << endl;
+    if (temp < m_fatigue[eCreatureFatigue::Stamina] / cFatigueDivisor) {
         return true;
     }
     return false;
@@ -431,6 +437,7 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
         // use all dice because we're going to refresh anyway
         m_currentDefense.dice = m_combatPool;
         m_currentDefense.dice = max(m_currentDefense.dice, 0);
+        reduceCombatPool(m_currentDefense.dice);
         return;
     }
     int dice = std::min(diceAllocated + random_static::get(0, diceAllocated / 3)
@@ -497,7 +504,13 @@ void Creature::doPrecombat()
         reduceCombatPool(1);
     }
      */
+    if (m_combatPool > 3 && droppedWeapon()) {
+        attemptPickup();
+    }
 
+    if (m_combatPool > 3 && getStance() == eCreatureStance::Prone) {
+        attemptStand();
+    }
     m_hasPrecombat = true;
 }
 

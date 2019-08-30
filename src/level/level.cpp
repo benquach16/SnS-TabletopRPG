@@ -66,7 +66,7 @@ void Level::generate()
 
     // temporary, to add enemies
     for (unsigned i = 1; i < rooms.size(); ++i) {
-        if (random_static::get(1, 3) == 1) {
+        if (random_static::get(1, 2) == 1) {
             HumanObject* object = new HumanObject;
             object->setPosition(rooms[i].x, rooms[i].y);
             object->setFaction(eCreatureFaction::Bandit);
