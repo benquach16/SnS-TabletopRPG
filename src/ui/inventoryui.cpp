@@ -92,6 +92,9 @@ void InventoryUI::doBackpack(bool hasKeyEvents, sf::Event event, PlayerObject* p
             m_uiState = eUiState::Equipped;
             break;
         case '3':
+            m_uiState = eUiState::Wounds;
+            break;
+        case '4':
             m_uiState = eUiState::Profile;
             break;
         }
@@ -161,6 +164,9 @@ void InventoryUI::doEquipped(bool hasKeyEvents, sf::Event event, PlayerObject* p
         case '2':
             break;
         case '3':
+            m_uiState = eUiState::Wounds;
+            break;
+        case '4':
             m_uiState = eUiState::Profile;
             break;
         }
@@ -268,34 +274,11 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
 void InventoryUI::doWounds(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
     auto windowSize = Game::getWindow().getSize();
-    sf::RectangleShape bkg(sf::Vector2f(windowSize.x / 2, cCharSize * cDisplayLines));
+    sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize * cDisplayLines));
     bkg.setFillColor(sf::Color(12, 12, 23));
     bkg.setOutlineThickness(1);
     bkg.setOutlineColor(sf::Color(22, 22, 33));
     Game::getWindow().draw(bkg);
-    sf::RectangleShape bkg2(sf::Vector2f(windowSize.x / 2, cCharSize * cDisplayLines));
-    bkg2.setPosition(sf::Vector2f(windowSize.x / 2, 0));
-    bkg2.setFillColor(sf::Color(12, 12, 23));
-    bkg2.setOutlineThickness(1);
-    bkg2.setOutlineColor(sf::Color(22, 22, 33));
-    Game::getWindow().draw(bkg2);
-}
-
-void InventoryUI::doProfile(bool hasKeyEvents, sf::Event event, PlayerObject* player)
-{
-    auto windowSize = Game::getWindow().getSize();
-
-    sf::RectangleShape bkg(sf::Vector2f(windowSize.x / 2, cCharSize * cDisplayLines));
-    bkg.setFillColor(sf::Color(12, 12, 23));
-    bkg.setOutlineThickness(1);
-    bkg.setOutlineColor(sf::Color(22, 22, 33));
-    Game::getWindow().draw(bkg);
-    sf::RectangleShape bkg2(sf::Vector2f(windowSize.x / 2, cCharSize * cDisplayLines));
-    bkg2.setPosition(sf::Vector2f(windowSize.x / 2, 0));
-    bkg2.setFillColor(sf::Color(12, 12, 23));
-    bkg2.setOutlineThickness(1);
-    bkg2.setOutlineColor(sf::Color(22, 22, 33));
-    Game::getWindow().draw(bkg2);
 
     Creature* creature = player->getCreatureComponent();
 
@@ -326,19 +309,46 @@ void InventoryUI::doProfile(bool hasKeyEvents, sf::Event event, PlayerObject* pl
         bleeding.setStyle(sf::Text::Bold);
         Game::getWindow().draw(bleeding);
     }
+    Game::getWindow().draw(ap);
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
+        char c = event.text.unicode;
+        switch (c) {
+        case '1':
+            m_uiState = eUiState::Backpack;
+            break;
+        case '2':
+            m_uiState = eUiState::Equipped;
+            break;
+        case '4':
+            m_uiState = eUiState::Profile;
+            break;
+        }
+    }
+}
+
+void InventoryUI::doProfile(bool hasKeyEvents, sf::Event event, PlayerObject* player)
+{
+    auto windowSize = Game::getWindow().getSize();
+
+    sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize * cDisplayLines));
+    bkg.setFillColor(sf::Color(12, 12, 23));
+    bkg.setOutlineThickness(1);
+    bkg.setOutlineColor(sf::Color(22, 22, 33));
+    Game::getWindow().draw(bkg);
+
+    Creature* creature = player->getCreatureComponent();
 
     sf::Text stats;
     stats.setCharacterSize(cCharSize);
     stats.setFont(Game::getDefaultFont());
-    stats.setPosition(sf::Vector2f(windowSize.x / 2, 0));
     string statStr = "Primary Attributes\nBrawn: " + to_string(creature->getBrawn()) + '\n'
         + "Agility: " + to_string(creature->getAgility()) + '\n'
         + "Cunning: " + to_string(creature->getCunning()) + '\n' + "Perception: "
         + to_string(creature->getPerception()) + '\n' + "Will: " + to_string(creature->getWill())
-        + '\n' + "Derived Attributes\n" + "Grit: " + to_string(creature->getGrit()) + '\n'
+        + "\n\n" + "Derived Attributes\n" + "Grit: " + to_string(creature->getGrit()) + '\n'
         + "Keen: " + to_string(creature->getKeen()) + '\n'
         + "Reflex: " + to_string(creature->getReflex()) + '\n'
-        + "Speed: " + to_string(creature->getSpeed()) + '\n';
+        + "Speed: " + to_string(creature->getSpeed()) + "\n\n";
 
     statStr += "Proficiencies\n";
     statStr += "Brawling: " + to_string(creature->getProficiency(eWeaponTypes::Brawling)) + '\n';
@@ -347,7 +357,7 @@ void InventoryUI::doProfile(bool hasKeyEvents, sf::Event event, PlayerObject* pl
     statStr
         += "Longswords: " + to_string(creature->getProficiency(eWeaponTypes::Longswords)) + '\n';
     stats.setString(statStr);
-    Game::getWindow().draw(ap);
+
     Game::getWindow().draw(stats);
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
@@ -357,6 +367,9 @@ void InventoryUI::doProfile(bool hasKeyEvents, sf::Event event, PlayerObject* pl
             break;
         case '2':
             m_uiState = eUiState::Equipped;
+            break;
+        case '3':
+            m_uiState = eUiState::Wounds;
             break;
         }
     }

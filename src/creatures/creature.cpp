@@ -366,6 +366,11 @@ void Creature::attemptPickup()
     m_hasPosition = true;
 }
 
+int Creature::getFatigue() const
+{
+    return m_fatigue.at(eCreatureFatigue::Stamina) / cFatigueDivisor;
+}
+
 void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool dualRedThrow)
 {
     cout << "allin : " << allin << endl;
