@@ -2,6 +2,7 @@
 
 #include "../3rdparty/random.hpp"
 #include "../dice.h"
+#include "../items/utils.h"
 #include "creature.h"
 
 using namespace std;
@@ -390,7 +391,18 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
     m_currentOffense.target = target->getHitLocations()[random_static::get(
         0, static_cast<int>(target->getHitLocations().size()) - 1)];
     int dice = m_combatPool / 2 + random_static::get(0, m_combatPool / 3)
-        - random_static::get(0, m_combatPool / 3);
+        - random_static::get(0, m_combatPool / 4);
+
+    if (target->getBTN() < getBTN()) {
+        dice += getBTN() - target->getBTN();
+    }
+
+    if (m_combatPool > target->getCombatPool()) {
+        dice += random_static::get(0, m_combatPool - target->getCombatPool());
+    }
+    if (weapon->getLength() > target->getPrimaryWeapon()->getLength()) {
+        dice += weapon->getLength() - target->getPrimaryWeapon()->getLength();
+    }
 
     // bound
     dice += reachCost;

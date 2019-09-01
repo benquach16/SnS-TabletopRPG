@@ -6,6 +6,7 @@
 #include "combatmanager.h"
 #include "object/playerobject.h"
 #include "object/selectorobject.h"
+#include "ui/gameui.h"
 
 class Game {
 public:
@@ -19,6 +20,10 @@ public:
     static sf::RenderWindow& getWindow() { return m_window; }
 
 private:
+    void setupLevel();
+    void charCreation();
+    void gameloop();
+
     void doMoveSelector(sf::Event event, bool limit);
     enum eGameState {
         Uninitialized,
@@ -39,6 +44,8 @@ private:
     Object* m_pickup;
     CreatureObject* m_talking;
     PlayerObject* m_playerObject;
+    Level* m_currentLevel;
+    GameUI m_ui;
 
     eGameState m_currentState;
     static sf::RenderWindow m_window;

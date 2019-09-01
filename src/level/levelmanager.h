@@ -7,7 +7,7 @@
 class LevelManager {
 public:
     LevelManager();
-    enum eLevels { Intro, City };
+    enum eLevels { Intro, City, Dungeon };
 
 private:
     void createIntro();

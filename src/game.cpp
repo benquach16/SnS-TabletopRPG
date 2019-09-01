@@ -12,7 +12,6 @@
 #include "object/playerobject.h"
 #include "object/relationmanager.h"
 #include "object/selectorobject.h"
-#include "ui/gameui.h"
 
 using namespace std;
 
@@ -26,11 +25,19 @@ Game::Game()
     : m_pickup(nullptr)
     , m_talking(nullptr)
     , m_playerObject(nullptr)
+    , m_currentLevel(nullptr)
 {
-    m_playerObject = new PlayerObject;
 }
 
-Game::~Game() { delete m_playerObject; }
+Game::~Game()
+{
+    if (m_playerObject != nullptr) {
+        delete m_playerObject;
+        m_playerObject = nullptr;
+    }
+
+    // m_currentlevel should be cleared by level manager, when it exists
+}
 
 void Game::initialize()
 {
@@ -42,29 +49,27 @@ void Game::initialize()
     // quite possibly the worst way of doing this, but cannot disable AA on sfml text without this.
     const_cast<sf::Texture&>(m_defaultFont.getTexture(11)).setSmooth(false);
     m_currentState = eGameState::Playing;
+
+    setupLevel();
 }
 
-void Game::run()
+void Game::run() { gameloop(); }
+
+void Game::charCreation() {}
+
+void Game::setupLevel()
 {
-    sf::Clock clock;
-
-    // main game loop
-    float tick = 0;
-    float aiTick = 0;
-
-    GameUI ui;
-
-    Level level(60, 60);
+    m_playerObject = new PlayerObject;
+    m_currentLevel = new Level(60, 60);
+    m_currentLevel->generate();
     for (unsigned i = 0; i < 60; i++) {
-        level(i, 0).m_type = eTileType::Wall;
+        (*m_currentLevel)(i, 0).m_type = eTileType::Wall;
     }
 
     for (unsigned i = 2; i < 60; i++) {
-        level(0, i).m_type = eTileType::Wall;
+        (*m_currentLevel)(0, i).m_type = eTileType::Wall;
     }
-    level.generate();
-    GFXLevel gfxlevel;
-    level.addObject(m_playerObject);
+    m_currentLevel->addObject(m_playerObject);
 
     HumanObject* human1 = new HumanObject;
     human1->setFaction(eCreatureFaction::EidgenConfederacy);
@@ -74,11 +79,22 @@ void Game::run()
     human1->setStartingDialogueLabel("greeting_intro");
     human1->setName("Sir Wilhelm");
     m_talking = human1;
-    ui.initDialog(human1);
+    m_ui.initDialog(human1);
     m_currentState = eGameState::DialogueMode;
-    level.addObject(human1);
+    m_currentLevel->addObject(human1);
 
     m_playerObject->setPosition(1, 1);
+}
+
+void Game::gameloop()
+{
+    sf::Clock clock;
+
+    // main game loop
+    float tick = 0;
+    float aiTick = 0;
+
+    GFXLevel gfxlevel;
 
     GFXSelector gfxSelector;
 
@@ -113,7 +129,7 @@ void Game::run()
         v.setCenter(center.x, center.y + 200);
         v.zoom(zoom);
         getWindow().setView(v);
-        gfxlevel.run(&level, m_playerObject->getPosition());
+        gfxlevel.run(m_currentLevel, m_playerObject->getPosition());
         // temporary until we get graphics queue up and running
         if (m_currentState == eGameState::AttackMode || m_currentState == eGameState::SelectionMode
             || m_currentState == eGameState::DialogueSelect) {
@@ -122,7 +138,7 @@ void Game::run()
         gfxlevel.renderText();
         getWindow().setView(getWindow().getDefaultView());
 
-        ui.run();
+        m_ui.run();
 
         if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Equal) {
             zoom = max(cMaxZoom, zoom - .1f);
@@ -152,22 +168,22 @@ void Game::run()
             vector2d pos = m_playerObject->getPosition();
             if (hasKeyEvents && event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Down) {
-                    if (level.isFreeSpace(pos.x, pos.y + 1) == true) {
+                    if (m_currentLevel->isFreeSpace(pos.x, pos.y + 1) == true) {
                         m_playerObject->moveDown();
                     }
                 }
                 if (event.key.code == sf::Keyboard::Up) {
-                    if (level.isFreeSpace(pos.x, pos.y - 1) == true) {
+                    if (m_currentLevel->isFreeSpace(pos.x, pos.y - 1) == true) {
                         m_playerObject->moveUp();
                     }
                 }
                 if (event.key.code == sf::Keyboard::Left) {
-                    if (level.isFreeSpace(pos.x - 1, pos.y) == true) {
+                    if (m_currentLevel->isFreeSpace(pos.x - 1, pos.y) == true) {
                         m_playerObject->moveLeft();
                     }
                 }
                 if (event.key.code == sf::Keyboard::Right) {
-                    if (level.isFreeSpace(pos.x + 1, pos.y) == true) {
+                    if (m_currentLevel->isFreeSpace(pos.x + 1, pos.y) == true) {
                         m_playerObject->moveRight();
                     }
                 }
@@ -184,8 +200,8 @@ void Game::run()
                     m_currentState = eGameState::SelectionMode;
                 }
                 if (event.key.code == sf::Keyboard::P) {
-                    Object* object
-                        = level.getObjectMutable(m_playerObject->getPosition(), m_playerObject);
+                    Object* object = m_currentLevel->getObjectMutable(
+                        m_playerObject->getPosition(), m_playerObject);
                     if (object != nullptr) {
                         switch (object->getObjectType()) {
                         case eObjectTypes::Corpse:
@@ -218,9 +234,9 @@ void Game::run()
             }
 
             if (aiTick > 0.4) {
-                level.run();
+                m_currentLevel->run();
                 aiTick = 0;
-                level.cleanup();
+                m_currentLevel->cleanup();
             }
             if (m_playerObject->isInCombat() == true) {
                 m_currentState = eGameState::InCombat;
@@ -230,14 +246,14 @@ void Game::run()
             if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
                 doMoveSelector(event, true);
                 if (event.key.code == sf::Keyboard::Enter) {
-                    Object* object
-                        = level.getObjectMutable(m_selector.getPosition(), m_playerObject);
+                    Object* object = m_currentLevel->getObjectMutable(
+                        m_selector.getPosition(), m_playerObject);
                     if (object != nullptr) {
                         if (object->getObjectType() == eObjectTypes::Creature) {
                             CreatureObject* creatureObject = static_cast<CreatureObject*>(object);
                             if (creatureObject->isConscious() == true) {
                                 m_talking = creatureObject;
-                                ui.initDialog(m_talking);
+                                m_ui.initDialog(m_talking);
                                 m_currentState = eGameState::DialogueMode;
                             } else {
                                 Log::push("You can't talk to an unconscious creature");
@@ -254,7 +270,7 @@ void Game::run()
             if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
                 doMoveSelector(event, false);
                 if (event.key.code == sf::Keyboard::Enter) {
-                    const Object* object = level.getObject(m_selector.getPosition());
+                    const Object* object = m_currentLevel->getObject(m_selector.getPosition());
                     if (object != nullptr) {
                         Log::push("You see " + object->getDescription());
                         if (object->getObjectType() == eObjectTypes::Creature) {
@@ -286,7 +302,7 @@ void Game::run()
             if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
                 doMoveSelector(event, true);
                 if (event.key.code == sf::Keyboard::Enter) {
-                    const Object* object = level.getObject(m_selector.getPosition());
+                    const Object* object = m_currentLevel->getObject(m_selector.getPosition());
                     if (object != nullptr) {
                         if (object->getObjectType() == eObjectTypes::Creature) {
                             const CreatureObject* creatureObject
@@ -306,14 +322,14 @@ void Game::run()
                 }
             }
         } else if (m_currentState == eGameState::Inventory) {
-            ui.runInventory(hasKeyEvents, event, m_playerObject);
+            m_ui.runInventory(hasKeyEvents, event, m_playerObject);
             if (hasKeyEvents && event.type == sf::Event::KeyReleased
                 && event.key.code == sf::Keyboard::I) {
                 m_currentState = eGameState::Playing;
             }
         } else if (m_currentState == eGameState::Pickup) {
             assert(m_pickup != nullptr);
-            ui.runTrade(hasKeyEvents, event, m_playerObject->getInventoryMutable(),
+            m_ui.runTrade(hasKeyEvents, event, m_playerObject->getInventoryMutable(),
                 m_pickup->getInventoryMutable());
             if (hasKeyEvents && event.type == sf::Event::KeyReleased
                 && event.key.code == sf::Keyboard::P) {
@@ -321,7 +337,7 @@ void Game::run()
             }
 
         } else if (m_currentState == eGameState::InCombat) {
-            ui.runCombat(hasKeyEvents, event, m_playerObject->getCombatManager());
+            m_ui.runCombat(hasKeyEvents, event, m_playerObject->getCombatManager());
 
             if (m_playerObject->runCombat(tick) == false) {
                 m_currentState = eGameState::Playing;
@@ -334,12 +350,12 @@ void Game::run()
             if (tick > CombatManager::cTick) {
                 // issue here is if player is engaged and is not the parent. the ai updates so
                 // slowly that its hard for the player to understand whats going on
-                level.run();
+                m_currentLevel->run();
                 tick = 0;
             }
         } else if (m_currentState == eGameState::DialogueMode) {
             assert(m_talking != nullptr);
-            if (ui.runDialog(hasKeyEvents, event, m_playerObject, m_talking) == false) {
+            if (m_ui.runDialog(hasKeyEvents, event, m_playerObject, m_talking) == false) {
                 m_currentState = eGameState::Playing;
             }
         } else if (m_currentState == eGameState::Dead) {

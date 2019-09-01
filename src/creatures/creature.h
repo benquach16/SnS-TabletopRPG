@@ -203,6 +203,7 @@ protected:
     // index
     int m_primaryWeaponId;
     int m_disableWeaponId;
+    std::vector<int> m_quickDrawItems;
     eGrips m_currentGrip;
 
     int m_bloodLoss;
