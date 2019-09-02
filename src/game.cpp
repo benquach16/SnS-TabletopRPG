@@ -54,8 +54,26 @@ void Game::initialize()
 void Game::run()
 {
     while (m_window.isOpen()) {
+        sf::Event event;
+        bool hasKeyEvents = false;
+        while (m_window.pollEvent(event)) {
+            switch (event.type) {
+            case sf::Event::Closed:
+                m_window.close();
+                break;
+            case sf::Event::KeyPressed:
+            case sf::Event::TextEntered:
+            case sf::Event::KeyReleased:
+                hasKeyEvents = true;
+                break;
+            default:
+                hasKeyEvents = false;
+                break;
+            }
+        }
+
         m_window.clear();
-        gameloop();
+        gameloop(hasKeyEvents, event);
         m_window.display();
     }
 }
@@ -91,26 +109,8 @@ void Game::setupLevel()
     m_playerObject->setPosition(1, 1);
 }
 
-void Game::gameloop()
+void Game::gameloop(bool hasKeyEvents, sf::Event event)
 {
-    sf::Event event;
-    bool hasKeyEvents = false;
-    while (m_window.pollEvent(event)) {
-        switch (event.type) {
-        case sf::Event::Closed:
-            m_window.close();
-            break;
-        case sf::Event::KeyPressed:
-        case sf::Event::TextEntered:
-        case sf::Event::KeyReleased:
-            hasKeyEvents = true;
-            break;
-        default:
-            hasKeyEvents = false;
-            break;
-        }
-    }
-
     sf::View v = getWindow().getDefaultView();
     v.setSize(v.getSize().x, v.getSize().y * 2);
     // v.setCenter(v.getSize() *.5f);

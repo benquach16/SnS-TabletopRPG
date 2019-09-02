@@ -24,7 +24,7 @@ public:
 private:
     void setupLevel();
     void charCreation();
-    void gameloop();
+    void gameloop(bool hasKeyEvents, sf::Event event);
 
     void doMoveSelector(sf::Event event, bool limit);
     enum eGameState {

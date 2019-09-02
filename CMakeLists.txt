@@ -53,6 +53,8 @@ set(SOURCES
     ./src/ui/numberinput.cpp
     ./src/ui/tradeui.cpp
     ./src/ui/dialogueui.cpp
+    ./src/ui/textinput.cpp
+    ./src/ui/createcharui.cpp
     ./src/gfxobjects/gfxlevel.cpp
     ./src/gfxobjects/gfxobject.cpp
     ./src/gfxobjects/gfxqueue.cpp
