@@ -4,6 +4,8 @@
 
 #include "combatinstance.h"
 #include "combatmanager.h"
+#include "gfxobjects/gfxlevel.h"
+#include "gfxobjects/gfxselector.h"
 #include "object/playerobject.h"
 #include "object/selectorobject.h"
 #include "ui/gameui.h"
@@ -46,6 +48,16 @@ private:
     PlayerObject* m_playerObject;
     Level* m_currentLevel;
     GameUI m_ui;
+
+    sf::Clock clock;
+    float tick = 0;
+    float aiTick = 0;
+
+    GFXLevel m_gfxlevel;
+
+    GFXSelector m_gfxSelector;
+
+    float zoom = 1.0f;
 
     eGameState m_currentState;
     static sf::RenderWindow m_window;
