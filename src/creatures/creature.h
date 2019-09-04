@@ -134,8 +134,7 @@ public:
 
     void setProne() { m_currentStance = eCreatureStance::Prone; }
     void setStand() { m_currentStance = eCreatureStance::Standing; }
-    void disableWeapon();
-    void disarmWeapon();
+    void disableWeapon(bool drop = false);
     void enableWeapon();
 
     eCreatureStance getStance() const { return m_currentStance; }
@@ -169,7 +168,7 @@ public:
 
     bool droppedWeapon() const
     {
-        return m_disableWeaponId != cFistsId && m_primaryWeaponId == cFistsId;
+        return m_disableWeaponId != cFistsId && m_primaryWeaponId == cFistsId && m_disarm > 0;
     }
 
 protected:

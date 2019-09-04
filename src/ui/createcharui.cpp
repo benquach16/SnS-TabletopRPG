@@ -14,10 +14,9 @@ CreateCharUI::CreateCharUI()
     nlohmann::json parsedLoadouts;
     file >> parsedLoadouts;
 
-    for(auto& iter : parsedLoadouts.items()) {
+    for (auto& iter : parsedLoadouts.items()) {
         string key = iter.key();
     }
-    
 }
 
 void CreateCharUI::run() {}

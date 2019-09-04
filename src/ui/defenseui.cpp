@@ -33,15 +33,16 @@ void DefenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player)
     Game::getWindow().draw(text);
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
-        if (c == 'a') {
+        switch (c) {
+        case 'a':
             player->setDefenseManuever(eDefensiveManuevers::Parry);
             m_currentState = eUiState::ChooseDice;
-        }
-        if (c == 'b') {
+            break;
+        case 'b':
             player->setDefenseManuever(eDefensiveManuevers::Dodge);
             m_currentState = eUiState::ChooseDice;
-        }
-        if (c == 'c') {
+            break;
+        case 'c': {
             // costs 1 die
             int cost = defenseManueverCost(eDefensiveManuevers::ParryLinked);
             if (player->getCombatPool() < cost) {
@@ -51,12 +52,23 @@ void DefenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player)
                 player->reduceCombatPool(cost);
                 m_currentState = eUiState::ChooseDice;
             }
+            break;
         }
-        if (c == 'd') {
+        case 'd':
             player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
             m_currentState = eUiState::ChooseDice;
+            break;
+        case 'f': {
+            if (player->getCombatPool() >= 1) {
+                player->setDefenseManuever(eDefensiveManuevers::Expulsion);
+                player->reduceCombatPool(1);
+                m_currentState = eUiState::ChooseDice;
+            } else {
+                Log::push("Requires 1 AP");
+            }
+            break;
         }
-        if (c == 'e') {
+        case 'e': {
             int cost = defenseManueverCost(eDefensiveManuevers::Counter);
             if (player->getCombatPool() < cost) {
                 Log::push("Requires 2 action points");
@@ -65,6 +77,8 @@ void DefenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player)
                 player->reduceCombatPool(cost);
                 m_currentState = eUiState::ChooseDice;
             }
+            break;
+        }
         }
     }
 }

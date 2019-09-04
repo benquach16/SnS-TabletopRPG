@@ -189,25 +189,21 @@ void Creature::inflictWound(Wound* wound)
     auto drop = effects.find(eEffects::drop);
     if (drop1 != effects.end()) {
         if (DiceRoller::rollGetSuccess(getBTN(), getBrawn()) < 1) {
-            disableWeapon();
-            m_disarm = -1;
+            disableWeapon(true);
         }
     }
     if (drop2 != effects.end()) {
         if (DiceRoller::rollGetSuccess(getBTN(), getBrawn()) < 2) {
-            disableWeapon();
-            m_disarm = -1;
+            disableWeapon(true);
         }
     }
     if (drop3 != effects.end()) {
         if (DiceRoller::rollGetSuccess(getBTN(), getBrawn()) < 3) {
-            disableWeapon();
-            m_disarm = -1;
+            disableWeapon(true);
         }
     }
     if (drop != effects.end()) {
-        disableWeapon();
-        m_disarm = -1;
+        disableWeapon(true);
     }
 
     m_BTN = max(m_BTN, wound->getBTN());
@@ -317,9 +313,13 @@ bool Creature::rollFatigue()
     return false;
 }
 
-void Creature::disableWeapon()
+void Creature::disableWeapon(bool drop)
 {
-    m_disarm = cDisableTick;
+    // do nothing, since we cannot drop fists
+    if (m_primaryWeaponId == cFistsId) {
+        return;
+    }
+    m_disarm = drop == false ? cDisableTick : -1;
     m_disableWeaponId = m_primaryWeaponId;
     m_primaryWeaponId = cFistsId;
 }

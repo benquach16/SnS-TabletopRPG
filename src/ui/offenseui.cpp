@@ -91,6 +91,15 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
                 Log::push(to_string(pinpointCost) + " AP needed.");
             }
             break;
+        case 'd':
+            if (player->getCombatPool() >= 1) {
+                player->setOffenseManuever(eOffensiveManuevers::Beat);
+                m_currentState = eUiState::ChooseFeint;
+                player->reduceCombatPool(1);
+            } else {
+                Log::push("1 AP needed.");
+            }
+            break;
         case 'e':
             if (player->canPerformManuever(eOffensiveManuevers::Hook)) {
                 player->setOffenseManuever(eOffensiveManuevers::Hook);

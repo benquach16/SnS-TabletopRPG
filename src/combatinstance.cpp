@@ -642,6 +642,10 @@ void CombatInstance::doResolution()
                     inflictWound(attacker, 0, attack, defender);
                 }
             }
+            if (defend.manuever == eDefensiveManuevers::Expulsion) {
+                attacker->disableWeapon();
+                Log::push("Attacker's weapon disabled");
+            }
             if (defend.manuever == eDefensiveManuevers::ParryLinked) {
                 // resolve offense
                 Offense offense = defender->getQueuedOffense();
@@ -812,9 +816,21 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
     }
 
     if (attack.manuever == eOffensiveManuevers::Disarm) {
+        if (MoS >= 2) {
+            writeMessage(target->getName() + " has been disarmed!", Log::eMessageTypes::Alert);
+        } else {
+            writeMessage(target->getName() + "'s weapon has been disabled for 1 tempo.",
+                Log::eMessageTypes::Alert);
+        }
+        target->disableWeapon(MoS >= 2);
+        return false;
+    }
+
+    if (attack.manuever == eOffensiveManuevers::Beat) {
         writeMessage(target->getName() + "'s weapon has been disabled for 1 tempo.",
             Log::eMessageTypes::Alert);
         target->disableWeapon();
+        target->inflictImpact(MoS);
         return false;
     }
 
@@ -903,7 +919,8 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
             + bodyPartToString(bodyPart),
         Log::eMessageTypes::Standard, true);
     eDamageTypes finalType = doBlunt == true ? eDamageTypes::Blunt : attack.component->getType();
-    if (finalType == eDamageTypes::Blunt && armorAtLocation.isRigid == true) {
+    if (finalType == eDamageTypes::Blunt && armorAtLocation.isRigid == true
+        && attack.component->hasProperty(eWeaponProperties::Crushing) == false) {
         constexpr int cMaxRigid = 3;
         finalDamage = min(cMaxRigid, finalDamage);
     }
