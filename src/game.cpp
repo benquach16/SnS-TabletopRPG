@@ -47,7 +47,7 @@ void Game::initialize()
     // quite possibly the worst way of doing this, but cannot disable AA on sfml text without this.
     const_cast<sf::Texture&>(m_defaultFont.getTexture(11)).setSmooth(false);
     m_currentState = eGameState::Playing;
-
+    m_appState = eApplicationState::CharCreation;
     setupLevel();
 }
 
@@ -73,12 +73,24 @@ void Game::run()
         }
 
         m_window.clear();
-        gameloop(hasKeyEvents, event);
+        switch (m_appState) {
+        case eApplicationState::CharCreation:
+            charCreation(hasKeyEvents, event);
+            break;
+        case eApplicationState::MainMenu:
+            break;
+        case eApplicationState::Gameplay:
+            gameloop(hasKeyEvents, event);
+            break;
+        }
         m_window.display();
     }
 }
 
-void Game::charCreation() {}
+void Game::charCreation(bool hasKeyEvents, sf::Event event)
+{
+    m_ui.runCreate(hasKeyEvents, event, m_playerObject);
+}
 
 void Game::setupLevel()
 {

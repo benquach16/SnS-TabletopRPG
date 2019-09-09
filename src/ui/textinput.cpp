@@ -12,9 +12,11 @@ void TextInput::run(bool hasKeyEvents, sf::Event event)
 {
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
-        m_string += c;
+
         if (c == '\b' && m_string.size() > 0) {
             m_string.pop_back();
+        } else if (c != '\b') {
+            m_string += c;
         }
     }
 

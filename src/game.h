@@ -23,13 +23,13 @@ public:
 
 private:
     void setupLevel();
-    void charCreation();
+    void charCreation(bool hasKeyEvents, sf::Event event);
     void gameloop(bool hasKeyEvents, sf::Event event);
 
     void doMoveSelector(sf::Event event, bool limit);
+    enum eApplicationState { CharCreation, MainMenu, Gameplay };
     enum eGameState {
         Uninitialized,
-        MainMenu,
         Playing,
         SelectionMode,
         DialogueSelect,
@@ -59,6 +59,7 @@ private:
 
     float zoom = 1.0f;
 
+    eApplicationState m_appState;
     eGameState m_currentState;
     static sf::RenderWindow m_window;
     static sf::Font m_defaultFont;

@@ -168,6 +168,11 @@ public:
 
     bool droppedWeapon() const
     {
+        return m_disableWeaponId != cFistsId && m_primaryWeaponId == cFistsId && m_disarm < 0;
+    }
+
+    bool isWeaponDisabled() const
+    {
         return m_disableWeaponId != cFistsId && m_primaryWeaponId == cFistsId && m_disarm > 0;
     }
 

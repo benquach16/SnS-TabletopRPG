@@ -1,6 +1,7 @@
 #pragma once
 
 #include "combatui.h"
+#include "createcharui.h"
 #include "dialogueui.h"
 #include "inventoryui.h"
 #include "tradeui.h"
@@ -22,10 +23,13 @@ public:
     void runTrade(bool hasKeyEvents, sf::Event event, std::map<int, int>& inventory,
         std::map<int, int>& container);
 
+    void runCreate(bool hasKeyEvents, sf::Event event, PlayerObject* player);
+
 private:
     sf::Text m_helpText;
     sf::RectangleShape m_bkg;
 
+    CreateCharUI m_createUI;
     CombatUI m_combatUI;
     InventoryUI m_inventoryUI;
     TradeUI m_tradeUI;

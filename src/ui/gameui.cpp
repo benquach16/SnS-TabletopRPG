@@ -47,3 +47,8 @@ void GameUI::runTrade(bool hasKeyEvents, sf::Event event, std::map<int, int>& in
 {
     m_tradeUI.run(event, inventory, container);
 }
+
+void GameUI::runCreate(bool hasKeyEvents, sf::Event event, PlayerObject* player)
+{
+    m_createUI.run(hasKeyEvents, event, player);
+}

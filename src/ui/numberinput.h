@@ -10,14 +10,14 @@ public:
 
     void run(bool hasKeyEvents, sf::Event event) override;
     bool pollForCompletion();
-    int getNumber() { return m_number; }
+    int getNumber() const { return m_number; }
     void reset()
     {
         m_number = 0;
         m_max = -1;
     }
     void setMax(int max) { m_max = max; }
-    void setPosition(sf::Vector2f position);
+    void setPosition(sf::Vector2f position) override { m_text.setPosition(position); }
 
 private:
     int m_number;

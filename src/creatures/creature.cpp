@@ -258,7 +258,9 @@ void Creature::removeArmor(int id)
 void Creature::resetCombatPool()
 {
     // carryover impact damage across tempos
-    const Weapon* weapon = getPrimaryWeapon();
+    const Weapon* weapon = isWeaponDisabled() == false
+        ? getPrimaryWeapon()
+        : WeaponTable::getSingleton()->get(m_disableWeaponId);
     int carry = m_combatPool;
     carry = min(0, carry);
     m_combatPool = getProficiency(weapon->getType()) + getReflex() + carry;

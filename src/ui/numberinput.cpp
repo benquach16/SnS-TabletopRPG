@@ -35,5 +35,3 @@ void NumberInput::run(bool hasKeyEvents, sf::Event event)
     m_text.setString(std::to_string(m_number));
     Game::getWindow().draw(m_text);
 }
-
-void NumberInput::setPosition(sf::Vector2f position) { m_text.setPosition(position); }
