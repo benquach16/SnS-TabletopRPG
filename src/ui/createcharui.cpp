@@ -19,6 +19,19 @@ CreateCharUI::CreateCharUI()
 
     for (auto& iter : parsedLoadouts.items()) {
         string key = iter.key();
+        auto values = iter.value();
+
+        string description = values["description"];
+        vector<int> armor = values["armor"];
+        int weapon = values["weapon"];
+
+        StartingLoadouts loadout;
+        loadout.name = values["name"];
+        loadout.description = description;
+        loadout.armor = armor;
+        loadout.weapon = weapon;
+
+        m_loadouts.push_back(loadout);
     }
 
     resetState();
@@ -31,6 +44,7 @@ void CreateCharUI::run(bool hasKeyEvents, sf::Event event, PlayerObject* player)
         doName(hasKeyEvents, event, player);
         break;
     case eUiState::Loadout:
+        doLoadout(hasKeyEvents, event, player);
         break;
     case eUiState::Attributes:
         break;
@@ -39,6 +53,11 @@ void CreateCharUI::run(bool hasKeyEvents, sf::Event event, PlayerObject* player)
     default:
         break;
     }
+}
+
+bool CreateCharUI::isDone()
+{
+    return false;
 }
 
 void CreateCharUI::doName(bool hasKeyEvents, sf::Event event, PlayerObject* player)
@@ -61,4 +80,26 @@ void CreateCharUI::doName(bool hasKeyEvents, sf::Event event, PlayerObject* play
             m_currentState = eUiState::Loadout;
         }
     }
+}
+
+void CreateCharUI::doLoadout(bool hasKeyEvents, sf::Event event, PlayerObject* player)
+{
+    sf::Text text;
+    text.setCharacterSize(cCharSize);
+    text.setFont(Game::getDefaultFont());
+    string str;
+    for(unsigned i = 0; i < m_loadouts.size(); ++i) {
+        char idx = 'a' + i;
+        str += idx;
+        str += " - " + m_loadouts[i].name + '\n';
+
+        if(hasKeyEvents && event.type == sf::Event::TextEntered) {
+            char c = event.text.unicode;
+            if(c == idx) {
+                
+            }
+        }
+    }
+    text.setString(str);
+    Game::getWindow().draw(text);    
 }

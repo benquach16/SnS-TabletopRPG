@@ -41,6 +41,7 @@ set(SOURCES
     ./src/object/relationmanager.cpp
     ./src/object/utils.cpp
     ./src/object/equipmentmanager.cpp
+    ./src/ui/utils.cpp
     ./src/ui/gameui.cpp
     ./src/ui/combatui.cpp
     ./src/ui/offenseui.cpp
