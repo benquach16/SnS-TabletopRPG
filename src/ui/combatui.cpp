@@ -220,7 +220,7 @@ void CombatUI::doInitiative(bool hasKeyEvents, sf::Event event, Player* player, 
         text.setFont(Game::getDefaultFont());
         text.setString(target->getName() + " looks aggressive");
         Game::getWindow().draw(text);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) == true) {
+        if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
             m_initiativeState = eInitiativeSubState::ChooseInitiative;
         }
     }

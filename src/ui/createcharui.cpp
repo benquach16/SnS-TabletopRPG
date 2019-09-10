@@ -11,6 +11,7 @@ using namespace std;
 const string filepath = "data/starting.json";
 
 CreateCharUI::CreateCharUI()
+    : m_loadoutIdx(-1)
 {
     ifstream file(filepath);
 
@@ -46,7 +47,11 @@ void CreateCharUI::run(bool hasKeyEvents, sf::Event event, PlayerObject* player)
     case eUiState::Loadout:
         doLoadout(hasKeyEvents, event, player);
         break;
+    case eUiState::Description:
+        doDescription(hasKeyEvents, event, player);
+        break;
     case eUiState::Attributes:
+        doAttributes(hasKeyEvents, event, player);
         break;
     case eUiState::Proficiencies:
         break;
@@ -55,7 +60,7 @@ void CreateCharUI::run(bool hasKeyEvents, sf::Event event, PlayerObject* player)
     }
 }
 
-bool CreateCharUI::isDone() { return false; }
+bool CreateCharUI::isDone() { return (m_currentState == eUiState::Finished); }
 
 void CreateCharUI::doName(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
@@ -98,9 +103,58 @@ void CreateCharUI::doLoadout(bool hasKeyEvents, sf::Event event, PlayerObject* p
         if (hasKeyEvents && event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;
             if (c == idx) {
+                m_loadoutIdx = i;
+                m_currentState = eUiState::Description;
             }
         }
     }
     text.setString(str);
     Game::getWindow().draw(text);
+}
+
+void CreateCharUI::doDescription(bool hasKeyEvents, sf::Event event, PlayerObject* player)
+{
+    auto windowSize = Game::getWindow().getSize();
+    sf::RectangleShape bkg(sf::Vector2f(windowSize.x, windowSize.y));
+    bkg.setFillColor(sf::Color(12, 12, 23));
+    Game::getWindow().draw(bkg);
+
+    sf::Text text;
+    text.setCharacterSize(cCharSize);
+    text.setFont(Game::getDefaultFont());
+    string str;
+    str = m_loadouts[m_loadoutIdx].description;
+    str += "\n\nEnter - Choose class ESC - Go back";
+    text.setString(str);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) == true) {
+        m_currentState = eUiState::Attributes;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) == true) {
+        m_currentState = eUiState::Loadout;
+    }
+    Game::getWindow().draw(text);
+}
+
+void CreateCharUI::doAttributes(bool hasKeyEvents, sf::Event event, PlayerObject* player)
+{
+    auto windowSize = Game::getWindow().getSize();
+    sf::RectangleShape bkg(sf::Vector2f(windowSize.x, windowSize.y));
+    bkg.setFillColor(sf::Color(12, 12, 23));
+    Game::getWindow().draw(bkg);
+
+    sf::Text text;
+    text.setCharacterSize(cCharSize);
+    text.setFont(Game::getDefaultFont());
+    text.setString("a - Brawn\nb - Agility\nc - Cunning\nd - Perception\ne - "
+                   "Will\n\nGrit\nKeen\nReflex\nSpeed\n");
+
+    Game::getWindow().draw(text);
+}
+
+void CreateCharUI::doProficiencies(bool hasKeyEvents, sf::Event event, PlayerObject* player)
+{
+    auto windowSize = Game::getWindow().getSize();
+    sf::RectangleShape bkg(sf::Vector2f(windowSize.x, windowSize.y));
+    bkg.setFillColor(sf::Color(12, 12, 23));
+    Game::getWindow().draw(bkg);
 }

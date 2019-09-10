@@ -19,15 +19,21 @@ private:
         std::string name;
         std::string description;
         std::vector<int> armor;
+        std::vector<int> inventory;
         int weapon;
     };
 
     enum eUiState { Name, Loadout, Description, Attributes, Proficiencies, Finished };
     void doName(bool hasKeyEvents, sf::Event event, PlayerObject* player);
     void doLoadout(bool hasKeyEvents, sf::Event event, PlayerObject* player);
+    void doDescription(bool hasKeyEvents, sf::Event event, PlayerObject* player);
+    void doAttributes(bool hasKeyEvents, sf::Event event, PlayerObject* player);
+    void doProficiencies(bool hasKeyEvents, sf::Event event, PlayerObject* player);
     TextInput m_text;
 
     eUiState m_currentState;
+
+    unsigned m_loadoutIdx;
 
     std::vector<StartingLoadouts> m_loadouts;
 };
