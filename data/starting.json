@@ -1,0 +1,27 @@
+{
+    "knight": {
+        "name": "Knight",
+        "description": "The quintessential knight, unmatched in melee combat. Armed with the most knightly weapon, the pollaxe, and equipped with plate armor, the knight is a force to be feared.\n\nRecommended Proficiencies: Polearms, Brawling.\n\nDifficulty: Very Easy",
+        "armor": [],
+        "weapon": 1040,
+        "inventory": []
+    },
+    "noble": {
+        "name": "Noble",
+        "description": "The noble comes from a high class background. They carry their longsword as a sign of status. Recommended Proficiencies: Longswords, Brawling.",
+        "armor": [],
+        "weapon": 1050
+    },
+    "ranger": {
+        "name": "Ranger",
+        "description": "The ranger is a soldier who prefers to strike from range, with a bow. They are strong from years of practice with a warbow.\n\nRecommended Proficiencies: Bow, swords",
+        "armor": [],
+        "weapon": 1050
+    },
+    "doppelsoldner": {
+        "name": "Doppelsoldner",
+        "description": "Doppelsoldner means double-pay mercenary. Armed with the gigantic zweihander, they take the riskiest jobs possible for twice the pay. They are often employed as bodyguards.\n\nRecommended Proficiencies: Longswords",
+        "armor": [],
+        "weapon": 1050
+    }
+}
