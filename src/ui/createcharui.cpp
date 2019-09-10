@@ -55,10 +55,7 @@ void CreateCharUI::run(bool hasKeyEvents, sf::Event event, PlayerObject* player)
     }
 }
 
-bool CreateCharUI::isDone()
-{
-    return false;
-}
+bool CreateCharUI::isDone() { return false; }
 
 void CreateCharUI::doName(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
@@ -84,22 +81,26 @@ void CreateCharUI::doName(bool hasKeyEvents, sf::Event event, PlayerObject* play
 
 void CreateCharUI::doLoadout(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
+    auto windowSize = Game::getWindow().getSize();
+    sf::RectangleShape bkg(sf::Vector2f(windowSize.x, windowSize.y));
+    bkg.setFillColor(sf::Color(12, 12, 23));
+    Game::getWindow().draw(bkg);
+
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
     string str;
-    for(unsigned i = 0; i < m_loadouts.size(); ++i) {
+    for (unsigned i = 0; i < m_loadouts.size(); ++i) {
         char idx = 'a' + i;
         str += idx;
         str += " - " + m_loadouts[i].name + '\n';
 
-        if(hasKeyEvents && event.type == sf::Event::TextEntered) {
+        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;
-            if(c == idx) {
-                
+            if (c == idx) {
             }
         }
     }
     text.setString(str);
-    Game::getWindow().draw(text);    
+    Game::getWindow().draw(text);
 }

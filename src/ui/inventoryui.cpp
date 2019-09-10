@@ -9,6 +9,7 @@
 #include "../object/creatureobject.h"
 #include "../object/playerobject.h"
 #include "types.h"
+#include "utils.h"
 
 using namespace std;
 
@@ -194,7 +195,7 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
     const Item* item = ItemTable::getSingleton()->get(m_id);
     str += "Selected Item (E to equip/use, D to drop)\n\n";
     str += item->getName() + '\n';
-    str += item->getDescription() + '\n';
+    str += item->getDescription() + "\n\n";
     str += "Type: " + itemTypeToString(item->getItemType()) + '\n';
 
     if (item->getItemType() == eItemType::Armor) {
@@ -261,6 +262,8 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
     }
     str += '\n';
     str += "Worth " + to_string(item->getCost()) + " silvers\n";
+
+    insertLineBreaks(str);
     txt.setString(str);
 
     Game::getWindow().draw(txt);
