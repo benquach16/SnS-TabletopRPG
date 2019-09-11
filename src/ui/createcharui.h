@@ -34,6 +34,7 @@ private:
     eUiState m_currentState;
 
     unsigned m_loadoutIdx;
+    unsigned m_pointsLeft;
 
     std::vector<StartingLoadouts> m_loadouts;
 };

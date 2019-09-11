@@ -6,11 +6,11 @@ Player::Player()
     : Human()
     , m_flagInitiative(false)
 {
-    m_brawn = 6;
-    m_agility = 6;
-    m_cunning = 6;
-    m_will = 5;
-    m_perception = 6;
+    m_brawn = 1;
+    m_agility = 1;
+    m_cunning = 1;
+    m_will = 1;
+    m_perception = 1;
 }
 
 bool Player::pollForInitiative()

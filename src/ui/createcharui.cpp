@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 
 #include "../3rdparty/json.hpp"
 #include "../game.h"
@@ -10,8 +11,13 @@ using namespace std;
 
 const string filepath = "data/starting.json";
 
+constexpr unsigned cAttributes = 12;
+constexpr unsigned cProficiencies = 12;
+constexpr unsigned cMax = 7;
+
 CreateCharUI::CreateCharUI()
     : m_loadoutIdx(-1)
+    , m_pointsLeft(cAttributes)
 {
     ifstream file(filepath);
 
@@ -54,6 +60,7 @@ void CreateCharUI::run(bool hasKeyEvents, sf::Event event, PlayerObject* player)
         doAttributes(hasKeyEvents, event, player);
         break;
     case eUiState::Proficiencies:
+        doProficiencies(hasKeyEvents, event, player);
         break;
     default:
         break;
@@ -141,14 +148,73 @@ void CreateCharUI::doAttributes(bool hasKeyEvents, sf::Event event, PlayerObject
     sf::RectangleShape bkg(sf::Vector2f(windowSize.x, windowSize.y));
     bkg.setFillColor(sf::Color(12, 12, 23));
     Game::getWindow().draw(bkg);
-
+    Creature* creature = player->getCreatureComponent();
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setString("a - Brawn\nb - Agility\nc - Cunning\nd - Perception\ne - "
-                   "Will\n\nGrit\nKeen\nReflex\nSpeed\n");
+    string str = "Points left: " + to_string(m_pointsLeft);
+    str += '\n';
+    str += "a - Brawn: " + to_string(creature->getBrawn()) + "\nb - Agility: "
+        + to_string(creature->getAgility()) + "\nc - Cunning: " + to_string(creature->getCunning())
+        + "\nd - Perception: " + to_string(creature->getPerception())
+        + "\ne - "
+          "Will: "
+        + to_string(creature->getWill())
+        + "\n\nGrit (Average of Brawn + Will): " + to_string(creature->getGrit())
+        + "\nKeen (Average of Cunning and Perception): " + to_string(creature->getKeen())
+        + "\nReflex (Average of Agility and Cunning): " + to_string(creature->getReflex())
+        + "\nSpeed (Average of Agility and Brawn): " + to_string(creature->getSpeed())
+        + "\n\nr - Reset Points\n\nEnter - Continue";
 
+    text.setString(str);
     Game::getWindow().draw(text);
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
+        char c = event.text.unicode;
+        switch (c) {
+        case 'a':
+            if (m_pointsLeft > 0) {
+                creature->setBrawn(creature->getBrawn() + 1);
+                m_pointsLeft -= 1;
+            }
+            break;
+        case 'b':
+            if (m_pointsLeft > 0) {
+                creature->setAgility(creature->getAgility() + 1);
+                m_pointsLeft -= 1;
+            }
+            break;
+        case 'c':
+            if (m_pointsLeft > 0) {
+                creature->setCunning(creature->getCunning() + 1);
+                m_pointsLeft -= 1;
+            }
+            break;
+        case 'd':
+            if (m_pointsLeft > 0) {
+                creature->setPerception(creature->getPerception() + 1);
+                m_pointsLeft -= 1;
+            }
+            break;
+        case 'e':
+            if (m_pointsLeft > 0) {
+                creature->setWill(creature->getWill() + 1);
+                m_pointsLeft -= 1;
+            }
+            break;
+        case 'r':
+            creature->setBrawn(1);
+            creature->setAgility(1);
+            creature->setCunning(1);
+            creature->setPerception(1);
+            creature->setWill(1);
+            m_pointsLeft = cAttributes;
+            break;
+        case '\r':
+            m_currentState = eUiState::Proficiencies;
+            m_pointsLeft = cProficiencies;
+            break;
+        }
+    }
 }
 
 void CreateCharUI::doProficiencies(bool hasKeyEvents, sf::Event event, PlayerObject* player)
