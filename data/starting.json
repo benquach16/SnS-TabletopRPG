@@ -2,19 +2,31 @@
     "knight": {
         "name": "Knight",
         "description": "The quintessential knight, unmatched in melee combat. Armed with the most knightly weapon, the pollaxe, and equipped with plate armor, the knight is a force to be feared.\n\nRecommended Proficiencies: Polearms, Brawling.\n\nDifficulty: Very Easy",
-        "armor": [],
+        "armor": [2040, 2044, 2055, 2043, 2056, 2057, 2070, 2046],
         "weapon": 1040,
         "inventory": []
     },
     "noble": {
         "name": "Noble",
-        "description": "The noble comes from a high class background. They carry their longsword as a sign of status. Recommended Proficiencies: Longswords, Brawling.",
-        "armor": [],
+        "description": "The noble comes from a high class background. They carry their longsword as a sign of status.\n\nRecommended Proficiencies: Longswords, Brawling.\n\nDifficulty: Hard",
+        "armor": [2040, 2044],
         "weapon": 1050
+    },
+    "soldier": {
+        "name": "Soldier",
+        "description": "The soldier is a veteran of battlefields across the continent. Armed with a halberd, the soldier relies on their reach and striking power to eliminate enemies.\n\nRecommended Proficiencies: Polearms, Swords, Brawling.\n\nDifficult: Easy",
+        "armor": [],
+        "weapon": 1048
     },
     "ranger": {
         "name": "Ranger",
         "description": "The ranger is a soldier who prefers to strike from range, with a bow. They are strong from years of practice with a warbow.\n\nRecommended Proficiencies: Bow, swords",
+        "armor": [],
+        "weapon": 1050
+    },
+    "arquebusier": {
+        "name": "Arquebusier",
+        "description": "The arquebusier is a mercenary armed with a gun meant to be fired from a stand. Firearms technology makes the arquebusier a dangerous foe.",
         "armor": [],
         "weapon": 1050
     },

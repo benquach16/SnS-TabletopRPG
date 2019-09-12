@@ -25,6 +25,8 @@ public:
 
     void runCreate(bool hasKeyEvents, sf::Event event, PlayerObject* player);
 
+    bool charCreated() { return m_createUI.isDone(); }
+
 private:
     sf::Text m_helpText;
     sf::RectangleShape m_bkg;

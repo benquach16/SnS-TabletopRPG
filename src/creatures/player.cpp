@@ -11,6 +11,12 @@ Player::Player()
     m_cunning = 1;
     m_will = 1;
     m_perception = 1;
+
+    m_proficiencies[eWeaponTypes::Polearms] = 1;
+    m_proficiencies[eWeaponTypes::Swords] = 1;
+    m_proficiencies[eWeaponTypes::Longswords] = 1;
+    m_proficiencies[eWeaponTypes::Brawling] = 1;
+    m_proficiencies[eWeaponTypes::Mass] = 1;
 }
 
 bool Player::pollForInitiative()

@@ -90,6 +90,9 @@ void Game::run()
 void Game::charCreation(bool hasKeyEvents, sf::Event event)
 {
     m_ui.runCreate(hasKeyEvents, event, m_playerObject);
+    if (m_ui.charCreated() == true) {
+        m_appState = eApplicationState::Gameplay;
+    }
 }
 
 void Game::setupLevel()

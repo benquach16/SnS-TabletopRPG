@@ -5,6 +5,7 @@
 PlayerObject::PlayerObject()
     : CreatureObject(new Player)
 {
+    /*
     m_creature->setWeapon(1040);
     // m_creature->equipArmor(2055);
     // m_creature->equipArmor(2052);
@@ -23,6 +24,7 @@ PlayerObject::PlayerObject()
     m_inventory[4] = 1;
     m_inventory[5] = 3;
     m_inventory[6] = 1;
+    */
 }
 
 PlayerObject::~PlayerObject() {}

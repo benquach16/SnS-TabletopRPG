@@ -101,7 +101,7 @@ void CreateCharUI::doLoadout(bool hasKeyEvents, sf::Event event, PlayerObject* p
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    string str;
+    string str = "Choose starting background: \n\n";
     for (unsigned i = 0; i < m_loadouts.size(); ++i) {
         char idx = 'a' + i;
         str += idx;
@@ -134,6 +134,10 @@ void CreateCharUI::doDescription(bool hasKeyEvents, sf::Event event, PlayerObjec
     str += "\n\nEnter - Choose class ESC - Go back";
     text.setString(str);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) == true) {
+        player->getCreatureComponent()->setWeapon(m_loadouts[m_loadoutIdx].weapon);
+        for (auto i : m_loadouts[m_loadoutIdx].armor) {
+            player->getCreatureComponent()->equipArmor(i);
+        }
         m_currentState = eUiState::Attributes;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) == true) {
@@ -152,7 +156,7 @@ void CreateCharUI::doAttributes(bool hasKeyEvents, sf::Event event, PlayerObject
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    string str = "Points left: " + to_string(m_pointsLeft);
+    string str = "Attributes\n\nPoints left: " + to_string(m_pointsLeft);
     str += '\n';
     str += "a - Brawn: " + to_string(creature->getBrawn()) + "\nb - Agility: "
         + to_string(creature->getAgility()) + "\nc - Cunning: " + to_string(creature->getCunning())
@@ -223,4 +227,72 @@ void CreateCharUI::doProficiencies(bool hasKeyEvents, sf::Event event, PlayerObj
     sf::RectangleShape bkg(sf::Vector2f(windowSize.x, windowSize.y));
     bkg.setFillColor(sf::Color(12, 12, 23));
     Game::getWindow().draw(bkg);
+    Creature* creature = player->getCreatureComponent();
+    sf::Text text;
+    text.setCharacterSize(cCharSize);
+    text.setFont(Game::getDefaultFont());
+    string str = "Proficiencies\n\nPoints left: " + to_string(m_pointsLeft);
+    str += '\n';
+    str += "a - Brawling: " + to_string(creature->getProficiency(eWeaponTypes::Brawling))
+        + "\nb - Swords: " + to_string(creature->getProficiency(eWeaponTypes::Swords))
+        + "\nc - Longswords: " + to_string(creature->getProficiency(eWeaponTypes::Longswords))
+        + "\nd - Mass Weapons: " + to_string(creature->getProficiency(eWeaponTypes::Mass))
+        + "\ne - Polearms: " + to_string(creature->getProficiency(eWeaponTypes::Polearms))
+        + "\n\nr - Reset Points\n\nEnter - "
+          "Continue";
+
+    text.setString(str);
+    Game::getWindow().draw(text);
+
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
+        char c = event.text.unicode;
+        switch (c) {
+        case 'a':
+            if (m_pointsLeft > 0) {
+                creature->setProficiency(
+                    eWeaponTypes::Brawling, creature->getProficiency(eWeaponTypes::Brawling) + 1);
+                m_pointsLeft -= 1;
+            }
+            break;
+        case 'b':
+            if (m_pointsLeft > 0) {
+                creature->setProficiency(
+                    eWeaponTypes::Swords, creature->getProficiency(eWeaponTypes::Swords) + 1);
+                m_pointsLeft -= 1;
+            }
+            break;
+        case 'c':
+            if (m_pointsLeft > 0) {
+                creature->setProficiency(eWeaponTypes::Longswords,
+                    creature->getProficiency(eWeaponTypes::Longswords) + 1);
+                m_pointsLeft -= 1;
+            }
+            break;
+        case 'd':
+            if (m_pointsLeft > 0) {
+                creature->setProficiency(
+                    eWeaponTypes::Mass, creature->getProficiency(eWeaponTypes::Mass) + 1);
+                m_pointsLeft -= 1;
+            }
+            break;
+        case 'e':
+            if (m_pointsLeft > 0) {
+                creature->setProficiency(
+                    eWeaponTypes::Polearms, creature->getProficiency(eWeaponTypes::Polearms) + 1);
+                m_pointsLeft -= 1;
+            }
+            break;
+        case 'r':
+            creature->setProficiency(eWeaponTypes::Brawling, 1);
+            creature->setProficiency(eWeaponTypes::Swords, 1);
+            creature->setProficiency(eWeaponTypes::Longswords, 1);
+            creature->setProficiency(eWeaponTypes::Mass, 1);
+            creature->setProficiency(eWeaponTypes::Polearms, 1);
+            m_pointsLeft = cProficiencies;
+            break;
+        case '\r':
+            m_currentState = eUiState::Finished;
+            break;
+        }
+    }
 }
