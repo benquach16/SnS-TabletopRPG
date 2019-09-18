@@ -296,6 +296,9 @@ eWeaponProperties WeaponTable::convertPropertiesFromStr(const std::string& str)
     if (str == "hook") {
         return eWeaponProperties::Hook;
     }
+    if (str == "platepiercing") {
+        return eWeaponProperties::PlatePiercing;
+    }
     assert(true);
     return eWeaponProperties::Hook;
 }

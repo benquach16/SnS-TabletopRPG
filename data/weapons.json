@@ -300,7 +300,7 @@
 			},
 			{
 				"name": "Buttspike, Thrust",
-				"damage": 2,
+				"damage": 1,
 				"type": "piercing",
 				"attack": "thrust",
 				"buttspike": true
