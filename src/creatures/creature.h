@@ -29,6 +29,11 @@ enum class eCreatureState { Idle = 0, Dead = 2, Unconscious = 3 };
 
 enum class eCreatureFatigue { Hunger, Thirst, Sleepiness, Stamina };
 
+static int getTap(int attribute) {
+    constexpr int cTapValue = 3;
+    return attribute / cTapValue;
+}
+
 class Creature {
 public:
     BOOST_STRONG_TYPEDEF(unsigned, CreatureId);

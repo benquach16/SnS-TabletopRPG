@@ -871,6 +871,10 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
 
     // complicated armor calcs go here
     finalDamage -= armorAtLocation.AV;
+    // add brawn tap values
+    finalDamage += getTap(attacker->getBrawn());
+    finalDamage -= getTap(target->getBrawn());
+    
     if (armorAtLocation.isMetal == true && damageType != eDamageTypes::Blunt && finalDamage > 0) {
         if (attack.component->hasProperty(eWeaponProperties::MaillePiercing) == false
             && armorAtLocation.type == eArmorTypes::Maille) {
