@@ -13,7 +13,7 @@ const string filepath = "data/starting.json";
 
 constexpr unsigned cAttributes = 12;
 constexpr unsigned cProficiencies = 12;
-constexpr unsigned cMax = 7;
+constexpr unsigned cMax = 6;
 
 CreateCharUI::CreateCharUI()
     : m_loadoutIdx(-1)
@@ -176,31 +176,31 @@ void CreateCharUI::doAttributes(bool hasKeyEvents, sf::Event event, PlayerObject
         char c = event.text.unicode;
         switch (c) {
         case 'a':
-            if (m_pointsLeft > 0) {
+            if (m_pointsLeft > 0 && creature->getBrawn() < cMax) {
                 creature->setBrawn(creature->getBrawn() + 1);
                 m_pointsLeft -= 1;
             }
             break;
         case 'b':
-            if (m_pointsLeft > 0) {
+            if (m_pointsLeft > 0 && creature->getAgility() < cMax) {
                 creature->setAgility(creature->getAgility() + 1);
                 m_pointsLeft -= 1;
             }
             break;
         case 'c':
-            if (m_pointsLeft > 0) {
+            if (m_pointsLeft > 0 && creature->getCunning() < cMax) {
                 creature->setCunning(creature->getCunning() + 1);
                 m_pointsLeft -= 1;
             }
             break;
         case 'd':
-            if (m_pointsLeft > 0) {
+            if (m_pointsLeft > 0 && creature->getPerception() < cMax) {
                 creature->setPerception(creature->getPerception() + 1);
                 m_pointsLeft -= 1;
             }
             break;
         case 'e':
-            if (m_pointsLeft > 0) {
+            if (m_pointsLeft > 0 && creature->getWill() < cMax) {
                 creature->setWill(creature->getWill() + 1);
                 m_pointsLeft -= 1;
             }
@@ -248,35 +248,35 @@ void CreateCharUI::doProficiencies(bool hasKeyEvents, sf::Event event, PlayerObj
         char c = event.text.unicode;
         switch (c) {
         case 'a':
-            if (m_pointsLeft > 0) {
+            if (m_pointsLeft > 0 && creature->getProficiency(eWeaponTypes::Brawling) < cMax){
                 creature->setProficiency(
                     eWeaponTypes::Brawling, creature->getProficiency(eWeaponTypes::Brawling) + 1);
                 m_pointsLeft -= 1;
             }
             break;
         case 'b':
-            if (m_pointsLeft > 0) {
+            if (m_pointsLeft > 0 && creature->getProficiency(eWeaponTypes::Swords) < cMax) {
                 creature->setProficiency(
                     eWeaponTypes::Swords, creature->getProficiency(eWeaponTypes::Swords) + 1);
                 m_pointsLeft -= 1;
             }
             break;
         case 'c':
-            if (m_pointsLeft > 0) {
+            if (m_pointsLeft > 0 && creature->getProficiency(eWeaponTypes::Longswords) < cMax) {
                 creature->setProficiency(eWeaponTypes::Longswords,
                     creature->getProficiency(eWeaponTypes::Longswords) + 1);
                 m_pointsLeft -= 1;
             }
             break;
         case 'd':
-            if (m_pointsLeft > 0) {
+            if (m_pointsLeft > 0 && creature->getProficiency(eWeaponTypes::Mass) < cMax) {
                 creature->setProficiency(
                     eWeaponTypes::Mass, creature->getProficiency(eWeaponTypes::Mass) + 1);
                 m_pointsLeft -= 1;
             }
             break;
         case 'e':
-            if (m_pointsLeft > 0) {
+            if (m_pointsLeft > 0 && creature->getProficiency(eWeaponTypes::Polearms) < cMax) {
                 creature->setProficiency(
                     eWeaponTypes::Polearms, creature->getProficiency(eWeaponTypes::Polearms) + 1);
                 m_pointsLeft -= 1;
