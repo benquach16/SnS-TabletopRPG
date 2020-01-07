@@ -76,9 +76,8 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
     reachBkg.setPosition(2, windowSize.y - logHeight - rectHeight - cCharSize - 2);
     reachBkg.setOutlineThickness(2);
     reachBkg.setOutlineColor(sf::Color(22, 22, 33));
-    int reachCost = static_cast<int>(instance->getCurrentReach())
-        - static_cast<int>(player->getCurrentReach());
-    reachCost = abs(reachCost);
+    int reachCost = calculateReachCost(instance->getCurrentReach(), player->getCurrentReach());
+
     sf::Text reachTxt;
     reachTxt.setCharacterSize(cCharSize);
     reachTxt.setFont(Game::getDefaultFont());

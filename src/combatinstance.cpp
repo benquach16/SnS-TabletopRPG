@@ -226,7 +226,7 @@ bool CombatInstance::doOffense()
 
     const Weapon* offenseWeapon = attacker->getPrimaryWeapon();
 
-    int reachCost = m_currentReach - attacker->getCurrentReach();
+    int reachCost = calculateReachCost(m_currentReach, attacker->getCurrentReach());
 
     if (attacker->isPlayer() == true) {
         // wait until we get input from player
@@ -291,7 +291,8 @@ void CombatInstance::doDualOffenseStealInitiative()
     Creature* defender = nullptr;
     setSides(attacker, defender);
 
-    int reachCost = m_currentReach - defender->getCurrentReach();
+    int reachCost = calculateReachCost(m_currentReach, defender->getCurrentReach());
+    
     if (defender->isPlayer() == true) {
         // wait until player inputs
         Player* player = static_cast<Player*>(defender);
@@ -495,7 +496,7 @@ void CombatInstance::doStolenOffense()
 
     writeMessage(attacker->getName() + " allocates " + to_string(attacker->getQueuedDefense().dice)
         + " action points to contest initiative steal");
-    int reachCost = defender->getCurrentReach() - m_currentReach;
+    int reachCost = calculateReachCost(defender->getCurrentReach(), m_currentReach);
     reachCost = abs(reachCost);
     outputReachCost(reachCost, defender);
 
@@ -506,6 +507,10 @@ void CombatInstance::doStolenOffense()
         + defender->getQueuedOffense().component->getName() + " with "
         + to_string(defender->getQueuedOffense().dice) + " action points");
     m_currentState = eCombatState::Resolution;
+}
+
+void CombatInstance::doPreResolution()
+{
 }
 
 void CombatInstance::doResolution()
@@ -1073,6 +1078,7 @@ void CombatInstance::writeMessage(const std::string& str, Log::eMessageTypes typ
 
 void CombatInstance::outputReachCost(int cost, Creature* attacker)
 {
+    //reach costs shouldn't be so extreme
     int reachCost = abs(cost);
     if (reachCost != 0) {
         writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost)

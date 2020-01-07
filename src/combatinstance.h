@@ -23,20 +23,24 @@ enum class eCombatState : unsigned {
     PreexchangeActions = 3,
     PositionActions = 4,
     ResetState = 5, // used only for ui to observe combat manager state
-    DualOffenseStealInitiative = 6,
+    // These enums are confusingly named.
+    // They are meant to be used on a red/red throw
+    DualOffenseStealInitiative = 6, // on a red/red throw, if first attacker decides to steal initiative
     DualOffense1 = 7,
     DualOffense2 = 8,
-    DualOffenseSecondInitiative = 9,
+    DualOffenseSecondInitiative = 9, // if first attacker didn't chose to steal initiative and second does
+    
     Offense = 10,
-    StolenOffense = 11,
+    StolenOffense = 11, // defender tries to steal initiative, attacker now allocates
     Defense = 12,
     ParryLinked = 13,
     StealInitiative = 14,
     PostDefense = 15,
-    Resolution = 16,
-    DualOffenseResolve = 17,
-    PostResolution = 18,
-    FinishedCombat = 19
+    PreResolution = 16, // for feinting
+    Resolution = 17,
+    DualOffenseResolve = 18,
+    PostResolution = 19,
+    FinishedCombat = 20
 };
 
 class CombatInstance {
@@ -75,6 +79,7 @@ private:
     void doParryLinked();
     void doStealInitiative();
     void doPostDefense();
+    void doPreResolution();
     void doResolution();
     // this is a special case because if both sides roll to attack since both of
     // their attacks resolve at the same time
