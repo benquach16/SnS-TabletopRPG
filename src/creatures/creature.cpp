@@ -583,6 +583,7 @@ void Creature::clearCreatureManuevers()
     m_hasDefense = false;
     m_hasPosition = false;
     m_hasPrecombat = false;
+    m_hasPreResolution = false;
 
     m_favoredLocations.clear();
 

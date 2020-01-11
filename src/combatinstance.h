@@ -25,11 +25,13 @@ enum class eCombatState : unsigned {
     ResetState = 5, // used only for ui to observe combat manager state
     // These enums are confusingly named.
     // They are meant to be used on a red/red throw
-    DualOffenseStealInitiative = 6, // on a red/red throw, if first attacker decides to steal initiative
+    DualOffenseStealInitiative
+    = 6, // on a red/red throw, if first attacker decides to steal initiative
     DualOffense1 = 7,
     DualOffense2 = 8,
-    DualOffenseSecondInitiative = 9, // if first attacker didn't chose to steal initiative and second does
-    
+    DualOffenseSecondInitiative
+    = 9, // if first attacker didn't chose to steal initiative and second does
+
     Offense = 10,
     StolenOffense = 11, // defender tries to steal initiative, attacker now allocates
     Defense = 12,

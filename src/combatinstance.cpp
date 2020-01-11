@@ -292,7 +292,7 @@ void CombatInstance::doDualOffenseStealInitiative()
     setSides(attacker, defender);
 
     int reachCost = calculateReachCost(m_currentReach, defender->getCurrentReach());
-    
+
     if (defender->isPlayer() == true) {
         // wait until player inputs
         Player* player = static_cast<Player*>(defender);
@@ -414,7 +414,7 @@ void CombatInstance::doDefense()
     writeMessage(defender->getName() + " defends with " + defenseWeapon->getName() + " using "
         + to_string(defend.dice) + " action points");
 
-    m_currentState = eCombatState::Resolution;
+    m_currentState = eCombatState::PreResolution;
 }
 
 void CombatInstance::doParryLinked()
@@ -511,6 +511,21 @@ void CombatInstance::doStolenOffense()
 
 void CombatInstance::doPreResolution()
 {
+    Creature* attacker = nullptr;
+    Creature* defender = nullptr;
+    setSides(attacker, defender);
+
+    if (attacker->isPlayer() == true) {
+        // wait until player inputs
+        Player* player = static_cast<Player*>(attacker);
+        if (player->getHasPreResolution() == false) {
+            m_currentState = eCombatState::PreResolution;
+            return;
+        }
+    } else {
+    }
+
+    m_currentState = eCombatState::Resolution;
 }
 
 void CombatInstance::doResolution()
@@ -535,7 +550,7 @@ void CombatInstance::doResolution()
             : m_side2->getBTN();
 
         // special case for thrust manuever, get an extra die
-        constexpr unsigned cThrustDie = 2;
+        constexpr unsigned cThrustDie = 1;
         int side1Dice = (m_side1->getQueuedOffense().manuever == eOffensiveManuevers::Thrust)
             ? m_side1->getQueuedDefense().dice + cThrustDie
             : m_side1->getQueuedDefense().dice;
@@ -607,34 +622,34 @@ void CombatInstance::doResolution()
             }
         }
     } else {
+        // standard attacker-defender resolution
+        // if stomp discard everything
         // roll dice
         int offenseSuccesses = DiceRoller::rollGetSuccess(attacker->getBTN(), attack.dice);
         int defenseSuccesses = DiceRoller::rollGetSuccess(defender->getBTN(), defend.dice);
 
-        int MoS = offenseSuccesses - defenseSuccesses;
+        if (attack.feint == true) {
+            // resolve feint to change successes
+            int attackerKeen = DiceRoller::rollGetSuccess(attacker->getBTN(), attacker->getKeen());
+            int defenderKeen = DiceRoller::rollGetSuccess(defender->getBTN(), defender->getKeen());
 
+            int keenDifference = attackerKeen - defenderKeen;
+            cout << "keen difference " << keenDifference << endl;
+            writeMessage(attacker->getName() + " feints their attack and reduces defense by "
+                + to_string(keenDifference) + " successes");
+            defenseSuccesses -= keenDifference;
+        }
+
+        int MoS = offenseSuccesses - defenseSuccesses;
+        cout << MoS << endl;
         if (MoS > 0) {
-            if (attack.feint == true) {
-                attacker->setBonusDice(defenseSuccesses);
-                writeMessage(attacker->getName() + " feints their attack and receives "
-                    + to_string(defenseSuccesses) + " action points on their next attack");
-            } else {
-                if (inflictWound(attacker, MoS, attack, defender) == true) {
-                    m_currentState = eCombatState::FinishedCombat;
-                    return;
-                }
+            if (inflictWound(attacker, MoS, attack, defender) == true) {
+                m_currentState = eCombatState::FinishedCombat;
+                return;
             }
             m_currentReach = attacker->getCurrentReach();
         } else if (MoS == 0) {
-            // this is pretty non against rules, but a feint shouldnt be able to have this effect
-            if (attack.feint == true) {
-                attacker->setBonusDice(defenseSuccesses);
-                writeMessage(attacker->getName() + " feints their attack and receives "
-                    + to_string(defenseSuccesses) + " action points on their next attack");
-            } else {
-                // nothing happens
-                writeMessage("no net successes");
-            }
+            writeMessage("no net successes");
         } else {
             if (defend.manuever == eDefensiveManuevers::Dodge) {
                 writeMessage("attack dodged with " + to_string(-MoS) + " successes");
@@ -879,7 +894,7 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
     // add brawn tap values
     finalDamage += getTap(attacker->getBrawn());
     finalDamage -= getTap(target->getBrawn());
-    
+
     if (armorAtLocation.isMetal == true && damageType != eDamageTypes::Blunt && finalDamage > 0) {
         if (attack.component->hasProperty(eWeaponProperties::MaillePiercing) == false
             && armorAtLocation.type == eArmorTypes::Maille) {
@@ -916,6 +931,12 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
             finalDamage = max(finalDamage, 1);
             doBlunt = true;
         }
+    }
+    constexpr int cCrushingImpact = 2;
+    if (attack.component->hasProperty(eWeaponProperties::Crushing)
+        && getHitLocation(bodyPart) == eHitLocations::Head) {
+        writeMessage("Crushing weapon inflicts extra impact to head", Log::eMessageTypes::Alert);
+        target->inflictImpact(cCrushingImpact);
     }
 
     if (finalDamage <= 0) {
@@ -1050,6 +1071,9 @@ void CombatInstance::run()
     case eCombatState::ParryLinked:
         doParryLinked();
         break;
+    case eCombatState::PreResolution:
+        doPreResolution();
+        break;
     case eCombatState::Resolution:
         doResolution();
         break;
@@ -1078,7 +1102,7 @@ void CombatInstance::writeMessage(const std::string& str, Log::eMessageTypes typ
 
 void CombatInstance::outputReachCost(int cost, Creature* attacker)
 {
-    //reach costs shouldn't be so extreme
+    // reach costs shouldn't be so extreme
     int reachCost = abs(cost);
     if (reachCost != 0) {
         writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost)

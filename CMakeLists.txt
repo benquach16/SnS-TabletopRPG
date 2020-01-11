@@ -47,6 +47,7 @@ set(SOURCES
     ./src/ui/offenseui.cpp
     ./src/ui/defenseui.cpp
     ./src/ui/precombatui.cpp
+    ./src/ui/preresolveui.cpp
     ./src/ui/createcharui.cpp
     ./src/ui/inventoryui.cpp
     ./src/ui/positionui.cpp

@@ -23,13 +23,14 @@ static constexpr int cMaxBTN = 6;
 static constexpr int cBaseBloodLoss = 8;
 static constexpr int cTapFactor = 3;
 
-enum class eCreatureType { Human, Goblin };
+enum class eCreatureType { Human, Goblin, Elf, Dwarf };
 
 enum class eCreatureState { Idle = 0, Dead = 2, Unconscious = 3 };
 
 enum class eCreatureFatigue { Hunger, Thirst, Sleepiness, Stamina };
 
-static int getTap(int attribute) {
+static int getTap(int attribute)
+{
     constexpr int cTapValue = 3;
     return attribute / cTapValue;
 }
@@ -134,6 +135,7 @@ public:
     bool getHasDefense() const { return m_hasDefense; }
     bool getHasPosition() const { return m_hasPosition; }
     bool getHasPrecombat() const { return m_hasPrecombat; }
+    bool getHasPreResolution() const { return m_hasPreResolution; }
 
     virtual void clearCreatureManuevers();
 
@@ -206,6 +208,7 @@ protected:
     bool m_hasDefense;
     bool m_hasPosition;
     bool m_hasPrecombat;
+    bool m_hasPreResolution;
 
     std::vector<Manuever*> m_secondaryManuevers;
 

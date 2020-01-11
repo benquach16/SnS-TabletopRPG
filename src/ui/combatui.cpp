@@ -23,6 +23,7 @@ void CombatUI::resetState()
     m_offenseUI.resetState();
     m_positionUI.resetState();
     m_precombatUI.resetState();
+    m_preresolveUI.resetState();
     m_initiativeState = eInitiativeSubState::ChooseInitiative;
     m_stolenOffenseState = eStolenOffenseSubState::ChooseDice;
     m_dualRedState = eDualRedStealSubState::ChooseInitiative;
@@ -129,6 +130,8 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
         m_offenseUI.run(hasKeyEvents, event, player, target, false, true);
         return;
     }
+
+    // TODO: make dual red force initiative steal from both characters, this is hacky and bad
     if (instance->getState() == eCombatState::DualOffense1
         && instance->isAttackerPlayer() == true) {
         if (m_dualRedState == eDualRedStealSubState::Finished) {
@@ -154,6 +157,7 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
     }
     if (instance->getState() == eCombatState::DualOffenseStealInitiative
         && instance->isDefenderPlayer() == true) {
+        // absurdly ugly and probably unnecessary
         if (m_stolenOffenseState == eStolenOffenseSubState::Finished) {
             m_offenseUI.run(hasKeyEvents, event, player, target);
         } else {
@@ -170,6 +174,11 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
         m_offenseUI.run(hasKeyEvents, event, player, target);
         return;
     }
+    if (instance->getState() == eCombatState::PreResolution
+        && instance->isAttackerPlayer() == true) {
+        m_preresolveUI.run(hasKeyEvents, event, player);
+        return;
+    }
     if (instance->getState() == eCombatState::Resolution) {
         resetState();
         m_defenseUI.resetState();
@@ -179,6 +188,7 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
         resetState();
         return;
     }
+
     if (instance->getState() == eCombatState::FinishedCombat) {
         return;
     }
@@ -259,7 +269,7 @@ void CombatUI::doStolenOffense(bool hasKeyEvents, sf::Event event, Player* playe
 void CombatUI::doDualRedSteal(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();
-
+    // TODO :remove this, make everyone steal initiatve on dual red
     if (m_dualRedState == eDualRedStealSubState::ChooseInitiative) {
         sf::Text text;
         text.setCharacterSize(cCharSize);

@@ -11,9 +11,9 @@ using namespace std;
 
 const string filepath = "data/starting.json";
 
-constexpr unsigned cAttributes = 12;
-constexpr unsigned cProficiencies = 12;
-constexpr unsigned cMax = 6;
+constexpr unsigned cAttributes = 21;
+constexpr unsigned cProficiencies = 14;
+constexpr unsigned cMax = 7;
 
 CreateCharUI::CreateCharUI()
     : m_loadoutIdx(-1)
@@ -248,7 +248,7 @@ void CreateCharUI::doProficiencies(bool hasKeyEvents, sf::Event event, PlayerObj
         char c = event.text.unicode;
         switch (c) {
         case 'a':
-            if (m_pointsLeft > 0 && creature->getProficiency(eWeaponTypes::Brawling) < cMax){
+            if (m_pointsLeft > 0 && creature->getProficiency(eWeaponTypes::Brawling) < cMax) {
                 creature->setProficiency(
                     eWeaponTypes::Brawling, creature->getProficiency(eWeaponTypes::Brawling) + 1);
                 m_pointsLeft -= 1;

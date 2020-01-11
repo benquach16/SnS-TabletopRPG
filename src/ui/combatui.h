@@ -9,6 +9,7 @@
 #include "offenseui.h"
 #include "positionui.h"
 #include "precombatui.h"
+#include "preresolveui.h"
 
 class CombatInstance;
 
@@ -42,6 +43,8 @@ private:
     void doStolenOffense(bool hasKeyEvents, sf::Event event, Player* player);
     void doDualRedSteal(bool hasKeyEvents, sf::Event event, Player* player);
 
+    void allowFeint(bool hasKeyEvents, sf::Event event, Player* player);
+
     void showSide1Stats(const CombatInstance* instance);
     void showSide2Stats(const CombatInstance* instance);
 
@@ -56,4 +59,5 @@ private:
     OffenseUI m_offenseUI;
     PositionUI m_positionUI;
     PrecombatUI m_precombatUI;
+    PreresolveUI m_preresolveUI;
 };

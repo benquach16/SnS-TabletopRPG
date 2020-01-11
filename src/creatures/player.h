@@ -36,6 +36,7 @@ public:
     void setPositionReady() { m_hasPosition = true; }
     void addFavored(eHitLocations location) { m_favoredLocations.insert(location); }
     void setPrecombatReady() { m_hasPrecombat = true; }
+    void setPreResolutionReady() { m_hasPreResolution = true; }
 
     void clearCreatureManuevers() override;
 

@@ -13,7 +13,7 @@ enum class eWeaponTypes : unsigned {
 
 enum class eDamageTypes { Blunt, Piercing, Cutting };
 
-enum class eWeaponProperties { Crushing, Hook, MaillePiercing, PlatePiercing };
+enum class eWeaponProperties { Crushing, Hook, MaillePiercing, PlatePiercing, Draw };
 
 enum class eAttacks {
     Thrust,
@@ -37,6 +37,8 @@ enum class eOffensiveManuevers : unsigned {
 };
 
 enum class ePositionManuevers : unsigned { Stand, Pickup };
+
+enum class ePreResolveManuevers : unsigned { Stomp, Feint };
 
 enum class eGrips : unsigned { Standard, Staff, HalfSword, Overhand };
 

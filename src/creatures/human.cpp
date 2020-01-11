@@ -1,4 +1,5 @@
 #include "human.h"
+#include "3rdparty/random.hpp"
 
 Human::Human()
     : Creature()
@@ -15,9 +16,9 @@ Human::Human()
     m_proficiencies[eWeaponTypes::Longswords] = 5;
     m_proficiencies[eWeaponTypes::Brawling] = 2;
 
-    m_brawn = 4;
-    m_agility = 4;
-    m_cunning = 4;
-    m_perception = 4;
-    m_will = 4;
+    m_brawn = effolkronium::random_static::get(2, 6);
+    m_agility = effolkronium::random_static::get(2, 6);
+    m_cunning = effolkronium::random_static::get(2, 6);
+    m_perception = effolkronium::random_static::get(2, 6);
+    m_will = effolkronium::random_static::get(2, 6);
 }

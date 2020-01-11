@@ -2,7 +2,7 @@
 #include "../items/types.h"
 #include "types.h"
 
-enum class eManueverTypes { Offense, Defense, Position };
+enum class eManueverTypes { Offense, Defense, Position, PreResolve };
 
 class Component;
 
@@ -17,6 +17,7 @@ struct Offense : public Manuever {
     bool linked = false;
     bool feint = false;
     bool pinpoint = false;
+    bool stomp = false;
     int heavyblow = 0;
     eHitLocations target;
     eBodyParts pinpointTarget;
@@ -31,4 +32,8 @@ struct Defense : public Manuever {
 struct Position : public Manuever {
     eManueverTypes getType() override { return eManueverTypes::Position; }
     ePositionManuevers manuever;
+};
+
+struct PreResolve : public Manuever {
+    eManueverTypes getType() override { return eManueverTypes::PreResolve; }
 };

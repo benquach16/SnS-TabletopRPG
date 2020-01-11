@@ -11,6 +11,8 @@ std::string bodyPartToString(eBodyParts part)
         return "Face";
     case eBodyParts::Chin:
         return "Chin";
+    case eBodyParts::Eyes:
+        return "Eyes";
     case eBodyParts::Neck:
         return "Neck";
     case eBodyParts::Shoulder:
@@ -50,6 +52,8 @@ std::string bodyPartToString(eBodyParts part)
     case eBodyParts::Tail:
         return "Tail";
     default:
+        // never hit this
+        assert(true);
         return "";
     }
 }
@@ -62,6 +66,8 @@ eBodyParts stringToBodyPart(const std::string& str)
         return eBodyParts::Face;
     } else if (str == "chin") {
         return eBodyParts::Chin;
+    } else if (str == "eyes") {
+        return eBodyParts::Eyes;
     } else if (str == "neck") {
         return eBodyParts::Neck;
     } else if (str == "shoulder") {
@@ -115,6 +121,8 @@ std::string hitLocationToString(eHitLocations location)
         return "Shin";
     case eHitLocations::Wing:
         return "Wing";
+    case eHitLocations::Tail:
+        return "Tail";
     }
     // std::cout << "bad thing : " << static_cast<int>(location) << std::endl;
     return "";
@@ -143,5 +151,38 @@ bool isLimb(eHitLocations location)
         return true;
     default:
         return false;
+    }
+}
+
+eHitLocations getHitLocation(eBodyParts part)
+{
+    switch (part) {
+    case eBodyParts::Crown:
+    case eBodyParts::Face:
+    case eBodyParts::Chin:
+    case eBodyParts::Eyes:
+        return eHitLocations::Head;
+    case eBodyParts::Shoulder:
+    case eBodyParts::Abs:
+    case eBodyParts::Ribs:
+        return eHitLocations::Chest;
+    case eBodyParts::UpperArm:
+    case eBodyParts::Elbow:
+    case eBodyParts::Forearm:
+    case eBodyParts::Hand:
+        return eHitLocations::Arm;
+    case eBodyParts::Groin:
+        return eHitLocations::Belly;
+    case eBodyParts::Thigh:
+    case eBodyParts::Hip:
+        return eHitLocations::Thigh;
+    case eBodyParts::Knee:
+    case eBodyParts::Shin:
+    case eBodyParts::Foot:
+        return eHitLocations::Shin;
+    default:
+        // never hit this
+        assert(true);
+        return eHitLocations::Head;
     }
 }

@@ -79,12 +79,12 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
             break;
         case 'b':
             player->setOffenseManuever(eOffensiveManuevers::Thrust);
-            m_currentState = eUiState::ChooseFeint;
+            m_currentState = eUiState::ChooseComponent;
             break;
         case 'c':
             if (player->getCombatPool() >= pinpointCost) {
                 player->setOffenseManuever(eOffensiveManuevers::PinpointThrust);
-                m_currentState = eUiState::ChooseFeint;
+                m_currentState = eUiState::ChooseComponent;
                 player->reduceCombatPool(pinpointCost);
             } else {
                 // need 2 dice
@@ -94,7 +94,7 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
         case 'd':
             if (player->getCombatPool() >= 1) {
                 player->setOffenseManuever(eOffensiveManuevers::Beat);
-                m_currentState = eUiState::ChooseFeint;
+                m_currentState = eUiState::ChooseComponent;
                 player->reduceCombatPool(1);
             } else {
                 Log::push("1 AP needed.");
@@ -103,7 +103,7 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
         case 'e':
             if (player->canPerformManuever(eOffensiveManuevers::Hook)) {
                 player->setOffenseManuever(eOffensiveManuevers::Hook);
-                m_currentState = eUiState::ChooseFeint;
+                m_currentState = eUiState::ChooseComponent;
             } else {
                 Log::push("This weapon cannot hook");
             }
@@ -112,7 +112,7 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
             if (player->getCombatPool() >= 1) {
                 player->setOffenseManuever(eOffensiveManuevers::Disarm);
                 player->reduceCombatPool(1);
-                m_currentState = eUiState::ChooseFeint;
+                m_currentState = eUiState::ChooseComponent;
             } else {
                 Log::push("1 AP needed");
             }
@@ -153,7 +153,7 @@ void OffenseUI::doFeint(bool hasKeyEvents, sf::Event event, Player* player)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setString("Feint attack? (2AP)\na - No\nb - Yes");
+    text.setString("Feint attack? (1AP)\na - No\nb - Yes");
     Game::getWindow().draw(text);
 
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
@@ -162,8 +162,9 @@ void OffenseUI::doFeint(bool hasKeyEvents, sf::Event event, Player* player)
             m_currentState = eUiState::ChooseComponent;
         }
         if (c == 'b') {
+            // TODO : REPLACE ME WITH CODE IN CREATURE TO REDUCE COMBAT POOL
             player->setOffenseFeint();
-            player->reduceCombatPool(2);
+            player->reduceCombatPool(1);
             m_currentState = eUiState::ChooseComponent;
         }
     }
@@ -184,7 +185,7 @@ void OffenseUI::doHeavyBlow(bool hasKeyEvents, sf::Event event, Player* player)
         player->reduceCombatPool(dice);
         player->setOffenseHeavyDice(dice);
         m_numberInput.reset();
-        m_currentState = eUiState::ChooseFeint;
+        m_currentState = eUiState::ChooseComponent;
     }
 
     constexpr int cMaxHeavyDice = 3;
