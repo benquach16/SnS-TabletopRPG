@@ -634,9 +634,13 @@ void CombatInstance::doResolution()
             int defenderKeen = DiceRoller::rollGetSuccess(defender->getBTN(), defender->getKeen());
 
             int keenDifference = attackerKeen - defenderKeen;
+            if(keenDifference > 0) {
+                writeMessage(attacker->getName() + " successfully feints and weakens " + defender->getName() + "'s defense by " + to_string(keenDifference));
+            } else {
+                writeMessage(defender->getName() + " was able to catch the feint in time!");
+            }
             cout << "keen difference " << keenDifference << endl;
-            writeMessage(attacker->getName() + " feints their attack and reduces defense by "
-                + to_string(keenDifference) + " successes");
+
             defenseSuccesses -= keenDifference;
         }
 
@@ -649,7 +653,7 @@ void CombatInstance::doResolution()
             }
             m_currentReach = attacker->getCurrentReach();
         } else if (MoS == 0) {
-            writeMessage("no net successes");
+            writeMessage("no net successes, " + attacker->getName() + " retains initiative");
         } else {
             if (defend.manuever == eDefensiveManuevers::Dodge) {
                 writeMessage("attack dodged with " + to_string(-MoS) + " successes");
