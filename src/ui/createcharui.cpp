@@ -11,8 +11,8 @@ using namespace std;
 
 const string filepath = "data/starting.json";
 
-constexpr unsigned cAttributes = 21;
-constexpr unsigned cProficiencies = 14;
+constexpr unsigned cAttributes = 16;
+constexpr unsigned cProficiencies = 12;
 constexpr unsigned cMax = 7;
 
 CreateCharUI::CreateCharUI()
