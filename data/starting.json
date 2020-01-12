@@ -2,7 +2,7 @@
     "knight": {
         "name": "Knight",
         "description": "The quintessential knight, unmatched in melee combat. Armed with the most knightly weapon, the pollaxe, and equipped with plate armor, the knight is a force to be feared.\n\nRecommended Proficiencies: Polearms, Brawling.\n\nDifficulty: Very Easy",
-        "armor": [2040, 2044, 2055, 2043, 2056, 2057, 2070, 2046, 2076, 2064, 2071],
+        "armor": [2040, 2044, 2055, 2043, 2056, 2057, 2070, 2046, 2076, 2064, 2071, 2052],
         "weapon": 1040,
         "inventory": []
     },

@@ -138,6 +138,10 @@ public:
     bool getHasPreResolution() const { return m_hasPreResolution; }
 
     virtual void clearCreatureManuevers();
+    int getOffenseManueverCost(eOffensiveManuevers manuever);
+    bool setCreatureOffenseManeuver(eOffensiveManuevers manuever);
+    int getDefenseManueverCost(eDefensiveManuevers manuever);
+    bool setCreatureDefenseManuever(eDefensiveManuevers manuever);
 
     void setProne() { m_currentStance = eCreatureStance::Prone; }
     void setStand() { m_currentStance = eCreatureStance::Standing; }

@@ -248,10 +248,10 @@ void WoundTable::initHitLocationTable()
     m_hitTable[eHitLocations::Shin].m_thrust[4] = eBodyParts::Shin;
     m_hitTable[eHitLocations::Shin].m_thrust[5] = eBodyParts::Foot;
 
-    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Thigh);
-    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Knee);
-    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Shin);
-    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Foot);
+    m_partsTable[eHitLocations::Shin].push_back(eBodyParts::Thigh);
+    m_partsTable[eHitLocations::Shin].push_back(eBodyParts::Knee);
+    m_partsTable[eHitLocations::Shin].push_back(eBodyParts::Shin);
+    m_partsTable[eHitLocations::Shin].push_back(eBodyParts::Foot);
 }
 
 eEffects WoundTable::stringToEffect(const std::string& str)

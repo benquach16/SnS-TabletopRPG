@@ -274,9 +274,11 @@ void Creature::resetCombatPool()
     m_combatPool -= m_fatigue[eCreatureFatigue::Stamina] / cFatigueDivisor;
 
     // prone gives us less CP
+    /* too imbalanced right now
     if (m_currentStance == eCreatureStance::Prone) {
         m_combatPool -= 2;
     }
+    */
 
     // cant go below 0 for CP even if impact took out a lot of dice
     m_combatPool = max(0, m_combatPool);
@@ -374,6 +376,7 @@ int Creature::getFatigue() const
     return m_fatigue.at(eCreatureFatigue::Stamina) / cFatigueDivisor;
 }
 
+//not good to have creature as an AI god class
 void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool dualRedThrow)
 {
     cout << "allin : " << allin << endl;
@@ -392,6 +395,29 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
     // replace me
     m_currentOffense.target = target->getHitLocations()[random_static::get(
         0, static_cast<int>(target->getHitLocations().size()) - 1)];
+
+    // get least armored location
+    int highestUnarmoredLocations = 0;
+    for(auto location : target->getHitLocations()) {
+        vector<eBodyParts> parts = WoundTable::getSingleton()->getUniqueParts(location);
+
+        int unarmoredLocations = 0;
+        for(auto part : parts) {
+            //ignore the secondpart arm/head
+            if(part != eBodyParts::SecondLocationArm && part != eBodyParts::SecondLocationHead) {
+                ArmorSegment segment = getArmorAtPart(part);
+                if(segment.isMetal == false && segment.isRigid == false) {
+                    unarmoredLocations++;
+                }
+            }
+        }
+        if(unarmoredLocations > highestUnarmoredLocations) {
+            m_currentOffense.target = location;
+            highestUnarmoredLocations = unarmoredLocations;
+        }
+
+    }
+    
     int dice = m_combatPool / 2 + random_static::get(0, m_combatPool / 3)
         - random_static::get(0, m_combatPool / 4);
 
@@ -593,6 +619,30 @@ void Creature::clearCreatureManuevers()
             enableWeapon();
         }
     }
+}
+
+int Creature::getOffenseManueverCost(eOffensiveManuevers manuever)
+{
+    int cost = offenseManueverCost(manuever);
+    switch(m_currentGrip) {
+    case eGrips::HalfSword:
+    case eGrips::Staff:
+    {
+        if(manuever == eOffensiveManuevers::PinpointThrust || manuever == eOffensiveManuevers::Mordhau) {
+            cost -= 1;
+        }
+        break;
+    }
+    default:
+        break;
+    }    
+    return cost;
+}
+
+bool Creature::setCreatureOffenseManeuver(eOffensiveManuevers manuever)
+{
+    int cost = getOffenseManueverCost(manuever);
+    return cost <= getCombatPool();
 }
 
 void Creature::clearArmor()
