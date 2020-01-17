@@ -227,21 +227,27 @@ void CombatUI::doInitiative(bool hasKeyEvents, sf::Event event, Player* player, 
         sf::Text text;
         text.setCharacterSize(cCharSize);
         text.setFont(Game::getDefaultFont());
-        string str = target->getName();
+        string str = "They ";
         if (target->getBrawn() < player->getBrawn()) {
-            str += " has less brawn than you. ";
+            str += "have less brawn than you. ";
         } else {
-            str += " has more brawn than you. ";
+            str += "have more brawn than you. ";
         }
-        str += target->getName();
+        str += "They ";
         if (target->getKeen() < player->getKeen()) {
-            str += " has less keen than you.";
+            str += "have less keen than you.";
         } else {
-            str += " has more keen than you.";
+            str += "have more keen than you.";
+        }
+        str += "They ";
+        if (target->getSpeed() < player->getSpeed()) {
+            str += "are slower than you.";
+        } else {
+            str += "are faster than you.";
         }
         text.setString(str);
         Game::getWindow().draw(text);
-        if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
+        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
             m_initiativeState = eInitiativeSubState::ChooseInitiative;
         }
     }
