@@ -26,6 +26,10 @@ public:
 
     Component* getPommelStrike() const;
 
+    Component* getBestThrust() const;
+
+    Component* getBestBlunt() const;
+
     bool canHook() const { return m_hook; }
 
     bool getNaturalWeapon() const { return m_naturalWeapon; }

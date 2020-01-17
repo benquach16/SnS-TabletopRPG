@@ -169,10 +169,10 @@ void CombatInstance::doPreexchangeActions()
             return;
         }
     } else {
-        m_side1->doPrecombat();
+        m_side1->doPrecombat(m_side2);
     }
 
-    m_side2->doPrecombat();
+    m_side2->doPrecombat(m_side1);
 
     // check if grip causes combatants to move closer
     eLength length = max(m_side1->getCurrentReach(), m_side2->getCurrentReach());
@@ -523,6 +523,7 @@ void CombatInstance::doPreResolution()
             return;
         }
     } else {
+        attacker->doPreresolution(defender);
     }
 
     m_currentState = eCombatState::Resolution;
@@ -634,8 +635,9 @@ void CombatInstance::doResolution()
             int defenderKeen = DiceRoller::rollGetSuccess(defender->getBTN(), defender->getKeen());
 
             int keenDifference = attackerKeen - defenderKeen;
-            if(keenDifference > 0) {
-                writeMessage(attacker->getName() + " successfully feints and weakens " + defender->getName() + "'s defense by " + to_string(keenDifference));
+            if (keenDifference > 0) {
+                writeMessage(attacker->getName() + " successfully feints and weakens "
+                    + defender->getName() + "'s defense by " + to_string(keenDifference));
             } else {
                 writeMessage(defender->getName() + " was able to catch the feint in time!");
             }

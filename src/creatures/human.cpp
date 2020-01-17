@@ -16,9 +16,9 @@ Human::Human()
     m_proficiencies[eWeaponTypes::Longswords] = 5;
     m_proficiencies[eWeaponTypes::Brawling] = 2;
 
-    m_brawn = effolkronium::random_static::get(2, 6);
-    m_agility = effolkronium::random_static::get(2, 6);
-    m_cunning = effolkronium::random_static::get(2, 6);
-    m_perception = effolkronium::random_static::get(2, 6);
-    m_will = effolkronium::random_static::get(2, 6);
+    m_brawn = effolkronium::random_static::get(2, 7);
+    m_agility = effolkronium::random_static::get(2, 7);
+    m_cunning = effolkronium::random_static::get(2, 7);
+    m_perception = effolkronium::random_static::get(2, 7);
+    m_will = effolkronium::random_static::get(2, 7);
 }

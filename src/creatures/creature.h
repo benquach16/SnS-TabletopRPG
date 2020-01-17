@@ -84,7 +84,7 @@ public:
 
     void equipArmor(int id);
     bool canEquipArmor(int id);
-    ArmorSegment getArmorAtPart(eBodyParts part);
+    ArmorSegment getArmorAtPart(eBodyParts part) const;
     void removeArmor(int id);
     float getAP() const { return m_AP; }
 
@@ -109,7 +109,7 @@ public:
     // AI functions
     // move these to ai combat controller
     virtual bool isPlayer() { return false; }
-    void doPrecombat();
+    void doPrecombat(const Creature* opponent);
     void doOffense(
         const Creature* target, int reachCost, bool allin = false, bool dualRedThrow = false);
 
@@ -122,6 +122,8 @@ public:
     eInitiativeRoll doInitiative(const Creature* opponent);
 
     void doPositionRoll(const Creature* opponent);
+
+    void doPreresolution(const Creature* opponent);
 
     void doStand();
 
@@ -164,6 +166,8 @@ public:
     bool getBleeding() const { return m_bleeding; }
 
     bool rollFatigue();
+
+    bool hasEnoughMetalArmor() const;
 
     CreatureId getId() const { return m_id; }
 

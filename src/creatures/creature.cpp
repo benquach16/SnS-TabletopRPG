@@ -219,7 +219,14 @@ int Creature::getSuccessRate() const
     return static_cast<int>(val);
 }
 
-ArmorSegment Creature::getArmorAtPart(eBodyParts part) { return m_armorValues[part]; }
+ArmorSegment Creature::getArmorAtPart(eBodyParts part) const
+{
+    auto it = m_armorValues.find(part);
+    if (it != m_armorValues.end()) {
+        return it->second;
+    }
+    return ArmorSegment();
+}
 
 void Creature::equipArmor(int id)
 {
@@ -376,7 +383,26 @@ int Creature::getFatigue() const
     return m_fatigue.at(eCreatureFatigue::Stamina) / cFatigueDivisor;
 }
 
-//not good to have creature as an AI god class
+bool Creature::hasEnoughMetalArmor() const
+{
+    // if there are more than half hit locations with metal armor on them, return true
+    int metalArmorCount = 0;
+    for (auto location : m_hitLocations) {
+        vector<eBodyParts> parts = WoundTable::getSingleton()->getUniqueParts(location);
+        for (auto part : parts) {
+            // ignore the secondpart arm/head
+            if (part != eBodyParts::SecondLocationArm && part != eBodyParts::SecondLocationHead) {
+                ArmorSegment segment = getArmorAtPart(part);
+                if (segment.isMetal) {
+                    metalArmorCount++;
+                }
+            }
+        }
+    }
+    return metalArmorCount > m_hitLocations.size() / 2;
+}
+
+// not good to have creature as an AI god class
 void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool dualRedThrow)
 {
     cout << "allin : " << allin << endl;
@@ -397,27 +423,43 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
         0, static_cast<int>(target->getHitLocations().size()) - 1)];
 
     // get least armored location
-    int highestUnarmoredLocations = 0;
-    for(auto location : target->getHitLocations()) {
-        vector<eBodyParts> parts = WoundTable::getSingleton()->getUniqueParts(location);
 
-        int unarmoredLocations = 0;
-        for(auto part : parts) {
-            //ignore the secondpart arm/head
-            if(part != eBodyParts::SecondLocationArm && part != eBodyParts::SecondLocationHead) {
-                ArmorSegment segment = getArmorAtPart(part);
-                if(segment.isMetal == false && segment.isRigid == false) {
-                    unarmoredLocations++;
+    if (target->hasEnoughMetalArmor()) {
+        // full of metal armor, so lets do some fancy shit
+        if (weapon->getType() == eWeaponTypes::Polearms) {
+            // temporary
+            m_currentOffense.target = eHitLocations::Arm;
+            m_currentOffense.pinpointTarget = eBodyParts::Armpit;
+            // change
+            m_currentOffense.manuever = eOffensiveManuevers::PinpointThrust;
+        } else if (weapon->getType() == eWeaponTypes::Swords) {
+            m_currentOffense.target = eHitLocations::Arm;
+            m_currentOffense.pinpointTarget = eBodyParts::Armpit;
+            m_currentOffense.manuever = eOffensiveManuevers::PinpointThrust;
+        }
+    } else {
+        int highestUnarmoredLocations = 0;
+        for (auto location : target->getHitLocations()) {
+            vector<eBodyParts> parts = WoundTable::getSingleton()->getUniqueParts(location);
+
+            int unarmoredLocations = 0;
+            for (auto part : parts) {
+                // ignore the secondpart arm/head
+                if (part != eBodyParts::SecondLocationArm
+                    && part != eBodyParts::SecondLocationHead) {
+                    ArmorSegment segment = target->getArmorAtPart(part);
+                    if (segment.isMetal == false && segment.isRigid == false) {
+                        unarmoredLocations++;
+                    }
                 }
             }
+            if (unarmoredLocations > highestUnarmoredLocations) {
+                m_currentOffense.target = location;
+                highestUnarmoredLocations = unarmoredLocations;
+            }
         }
-        if(unarmoredLocations > highestUnarmoredLocations) {
-            m_currentOffense.target = location;
-            highestUnarmoredLocations = unarmoredLocations;
-        }
-
     }
-    
+
     int dice = m_combatPool / 2 + random_static::get(0, m_combatPool / 3)
         - random_static::get(0, m_combatPool / 4);
 
@@ -541,7 +583,7 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
     return false;
 }
 
-void Creature::doPrecombat()
+void Creature::doPrecombat(const Creature* opponent)
 {
     /*
         if(m_combatPool > 1) {
@@ -549,6 +591,14 @@ void Creature::doPrecombat()
         reduceCombatPool(1);
     }
      */
+    const Weapon* weapon = getPrimaryWeapon();
+    if (opponent->hasEnoughMetalArmor()) {
+        if (weapon->getType() == eWeaponTypes::Polearms) {
+            setGrip(eGrips::Staff);
+        } else if (weapon->getType() == eWeaponTypes::Longswords) {
+            setGrip(eGrips::HalfSword);
+        }
+    }
     if (m_combatPool > 3 && droppedWeapon()) {
         attemptPickup();
     }
@@ -558,6 +608,8 @@ void Creature::doPrecombat()
     }
     m_hasPrecombat = true;
 }
+
+void Creature::doPreresolution(const Creature* opponent) { m_currentOffense.feint = true; }
 
 void Creature::doStolenInitiative(const Creature* defender, bool allin)
 {
@@ -624,18 +676,18 @@ void Creature::clearCreatureManuevers()
 int Creature::getOffenseManueverCost(eOffensiveManuevers manuever)
 {
     int cost = offenseManueverCost(manuever);
-    switch(m_currentGrip) {
+    switch (m_currentGrip) {
     case eGrips::HalfSword:
-    case eGrips::Staff:
-    {
-        if(manuever == eOffensiveManuevers::PinpointThrust || manuever == eOffensiveManuevers::Mordhau) {
+    case eGrips::Staff: {
+        if (manuever == eOffensiveManuevers::PinpointThrust
+            || manuever == eOffensiveManuevers::Mordhau) {
             cost -= 1;
         }
         break;
     }
     default:
         break;
-    }    
+    }
     return cost;
 }
 
