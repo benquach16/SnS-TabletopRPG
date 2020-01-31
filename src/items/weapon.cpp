@@ -85,6 +85,20 @@ Component* Weapon::getPommelStrike() const
     return ret;
 }
 
+Component* Weapon::getBestThrust() const
+{
+    // should make sure that we can even use in a particular grip
+    assert(m_components.size() > 0);
+    Component* ret = m_thrustComponents[0];
+    for (unsigned i = 1; i < m_thrustComponents.size(); ++i) {
+        if (m_thrustComponents[i]->getDamage() > ret->getDamage()
+            && m_thrustComponents[i]->isPommel() == false) {
+            ret = m_thrustComponents[i];
+        }
+    }
+    return ret;
+}
+
 WeaponTable::WeaponTable()
 {
     ifstream file(filepath);

@@ -428,14 +428,27 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
         // full of metal armor, so lets do some fancy shit
         if (weapon->getType() == eWeaponTypes::Polearms) {
             // temporary
-            m_currentOffense.target = eHitLocations::Arm;
-            m_currentOffense.pinpointTarget = eBodyParts::Armpit;
-            // change
-            m_currentOffense.manuever = eOffensiveManuevers::PinpointThrust;
-        } else if (weapon->getType() == eWeaponTypes::Swords) {
-            m_currentOffense.target = eHitLocations::Arm;
-            m_currentOffense.pinpointTarget = eBodyParts::Armpit;
-            m_currentOffense.manuever = eOffensiveManuevers::PinpointThrust;
+            if (getOffenseManueverCost(eOffensiveManuevers::PinpointThrust) <= m_combatPool) {
+                m_currentOffense.target = eHitLocations::Arm;
+                m_currentOffense.pinpointTarget = eBodyParts::Armpit;
+                m_currentOffense.component = weapon->getBestThrust();
+                // change
+                setCreatureOffenseManuever(eOffensiveManuevers::PinpointThrust);
+            } else {
+                m_currentOffense.manuever = eOffensiveManuevers::Hook;
+            }
+        } else if (weapon->getType() == eWeaponTypes::Longswords) {
+            // temporary
+            if (getOffenseManueverCost(eOffensiveManuevers::PinpointThrust) <= m_combatPool) {
+                m_currentOffense.target = eHitLocations::Arm;
+                m_currentOffense.pinpointTarget = eBodyParts::Armpit;
+                m_currentOffense.component = weapon->getBestThrust();
+                // change
+                setCreatureOffenseManuever(eOffensiveManuevers::PinpointThrust);
+            } else {
+                m_currentOffense.component = weapon->getPommelStrike();
+                m_currentOffense.manuever = eOffensiveManuevers::Mordhau;
+            }
         }
     } else {
         int highestUnarmoredLocations = 0;
@@ -691,9 +704,13 @@ int Creature::getOffenseManueverCost(eOffensiveManuevers manuever)
     return cost;
 }
 
-bool Creature::setCreatureOffenseManeuver(eOffensiveManuevers manuever)
+bool Creature::setCreatureOffenseManuever(eOffensiveManuevers manuever)
 {
     int cost = getOffenseManueverCost(manuever);
+    if (cost <= m_combatPool) {
+        m_currentOffense.manuever = manuever;
+        reduceCombatPool(cost);
+    }
     return cost <= getCombatPool();
 }
 

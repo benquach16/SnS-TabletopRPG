@@ -141,7 +141,7 @@ public:
 
     virtual void clearCreatureManuevers();
     int getOffenseManueverCost(eOffensiveManuevers manuever);
-    bool setCreatureOffenseManeuver(eOffensiveManuevers manuever);
+    bool setCreatureOffenseManuever(eOffensiveManuevers manuever);
     int getDefenseManueverCost(eDefensiveManuevers manuever);
     bool setCreatureDefenseManuever(eDefensiveManuevers manuever);
 
