@@ -402,6 +402,26 @@ bool Creature::hasEnoughMetalArmor() const
     return metalArmorCount > m_hitLocations.size() / 2;
 }
 
+void Creature::getLowestArmorPart(eBodyParts* pPartOut, eHitLocations* pHitOut) const
+{
+    int lowestAV = -1;
+    for (auto location : m_hitLocations) {
+        vector<eBodyParts> parts = WoundTable::getSingleton()->getUniqueParts(location);
+        for (auto part : parts) {
+            // ignore the secondpart arm/head
+            if (part != eBodyParts::SecondLocationArm && part != eBodyParts::SecondLocationHead) {
+                ArmorSegment segment = getArmorAtPart(part);
+                if (lowestAV == -1 || segment.AV < lowestAV) {
+                    *pHitOut = location;
+                    *pPartOut = part;
+                    lowestAV = segment.AV;
+                }
+            }
+        }
+    }
+    assert(lowestAV != -1);
+}
+
 // not good to have creature as an AI god class
 void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool dualRedThrow)
 {
@@ -412,10 +432,10 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
         allin = true;
     }
 
-    m_currentOffense.manuever = eOffensiveManuevers::Thrust;
+    setCreatureOffenseManuever(eOffensiveManuevers::Thrust);
     m_currentOffense.component = weapon->getBestAttack();
     if (m_currentOffense.component->getAttack() == eAttacks::Swing) {
-        m_currentOffense.manuever = eOffensiveManuevers::Swing;
+        setCreatureOffenseManuever(eOffensiveManuevers::Swing);
     }
 
     // replace me
@@ -429,8 +449,8 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
         if (weapon->getType() == eWeaponTypes::Polearms) {
             // temporary
             if (getOffenseManueverCost(eOffensiveManuevers::PinpointThrust) <= m_combatPool) {
-                m_currentOffense.target = eHitLocations::Arm;
-                m_currentOffense.pinpointTarget = eBodyParts::Armpit;
+                target->getLowestArmorPart(
+                    &m_currentOffense.pinpointTarget, &m_currentOffense.target);
                 m_currentOffense.component = weapon->getBestThrust();
                 // change
                 setCreatureOffenseManuever(eOffensiveManuevers::PinpointThrust);

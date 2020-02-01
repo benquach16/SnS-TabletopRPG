@@ -169,6 +169,8 @@ public:
 
     bool hasEnoughMetalArmor() const;
 
+    void getLowestArmorPart(eBodyParts* pPartOut, eHitLocations* pHitOut) const;
+
     CreatureId getId() const { return m_id; }
 
     void setBrawn(int brawn) { m_brawn = brawn; }
