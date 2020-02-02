@@ -28,7 +28,7 @@ public:
     BOOST_STRONG_TYPEDEF(unsigned, ObjectId);
 
     Object();
-    virtual ~Object();
+    virtual ~Object() {};
     vector2d getPosition() const { return m_position; }
     virtual bool hasCollision() const { return false; }
     virtual std::string getDescription() const = 0;

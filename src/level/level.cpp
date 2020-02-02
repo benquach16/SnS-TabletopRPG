@@ -14,7 +14,11 @@ Level::Level(int width, int height)
 {
 }
 
-Level::~Level() { clearObjects(); }
+Level::~Level()
+{
+    cleanup();
+    clearObjects();
+}
 
 void Level::load() {}
 

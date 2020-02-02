@@ -29,12 +29,15 @@ Game::Game()
 
 Game::~Game()
 {
+    /*
     if (m_playerObject != nullptr) {
         delete m_playerObject;
         m_playerObject = nullptr;
     }
-
+    */
     // m_currentlevel should be cleared by level manager, when it exists
+    // temporary, move level management to levelmanager
+    delete m_currentLevel;
 }
 
 void Game::initialize()

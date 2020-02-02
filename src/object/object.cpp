@@ -8,6 +8,4 @@ Object::Object()
 {
 }
 
-Object::~Object() {}
-
 void Object::run(const Level* level) {}
