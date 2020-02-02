@@ -19,8 +19,8 @@ HumanObject::~HumanObject() {}
 std::string HumanObject::getDescription() const
 {
     std::string ret;
-    ret += m_creature->getName() + ", human " + factionToString(m_creatureFaction) + " armed with "
-        + m_creature->getPrimaryWeapon()->getName() + ", wearing ";
+    ret += m_creature->getName() + ", human of the " + factionToString(m_creatureFaction)
+        + " armed with " + m_creature->getPrimaryWeapon()->getName() + ", wearing ";
 
     for (auto it : m_creature->getArmor()) {
         ret += it->getName() + ", ";

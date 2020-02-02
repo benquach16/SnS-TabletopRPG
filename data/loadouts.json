@@ -57,7 +57,7 @@
             "weapons": [1042, 1045, 1046, 1041, 1052]
         }
     },
-    "eidgen": {
+    "confederacy": {
         "recruit": {
             "baseChests": [2040],
             "baseLegs": [2044],

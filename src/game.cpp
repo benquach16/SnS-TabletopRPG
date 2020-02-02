@@ -110,8 +110,8 @@ void Game::setupLevel()
     m_currentLevel->addObject(m_playerObject);
 
     HumanObject* human1 = new HumanObject;
-    human1->setFaction(eCreatureFaction::EidgenConfederacy);
-    human1->setLoadout(eCreatureFaction::EidgenConfederacy, eRank::Soldier);
+    human1->setFaction(eCreatureFaction::Confederacy);
+    human1->setLoadout(eCreatureFaction::Confederacy, eRank::Soldier);
     human1->setPosition(2, 2);
     human1->setAIRole(eAIRoles::Standing);
     human1->setStartingDialogueLabel("greeting_intro");

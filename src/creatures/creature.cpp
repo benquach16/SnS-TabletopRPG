@@ -405,7 +405,7 @@ bool Creature::hasEnoughMetalArmor() const
 void Creature::getLowestArmorPart(eBodyParts* pPartOut, eHitLocations* pHitOut) const
 {
     int lowestAV = -1;
-    for (auto location : m_hitLocations) {
+    for (auto location : getHitLocations()) {
         vector<eBodyParts> parts = WoundTable::getSingleton()->getUniqueParts(location);
         for (auto part : parts) {
             // ignore the secondpart arm/head
@@ -446,7 +446,11 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
 
     if (target->hasEnoughMetalArmor()) {
         // full of metal armor, so lets do some fancy shit
-        if (weapon->getType() == eWeaponTypes::Polearms) {
+        if (hasEnoughMetalArmor() == false && weapon->canHook() == true
+            && target->getStance() != eCreatureStance::Prone) {
+            // try to trip
+            setCreatureOffenseManuever(eOffensiveManuevers::Hook);
+        } else if (weapon->getType() == eWeaponTypes::Polearms) {
             // temporary
             if (getOffenseManueverCost(eOffensiveManuevers::PinpointThrust) <= m_combatPool) {
                 target->getLowestArmorPart(
@@ -460,8 +464,8 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
         } else if (weapon->getType() == eWeaponTypes::Longswords) {
             // temporary
             if (getOffenseManueverCost(eOffensiveManuevers::PinpointThrust) <= m_combatPool) {
-                m_currentOffense.target = eHitLocations::Arm;
-                m_currentOffense.pinpointTarget = eBodyParts::Armpit;
+                target->getLowestArmorPart(
+                    &m_currentOffense.pinpointTarget, &m_currentOffense.target);
                 m_currentOffense.component = weapon->getBestThrust();
                 // change
                 setCreatureOffenseManuever(eOffensiveManuevers::PinpointThrust);
@@ -626,7 +630,9 @@ void Creature::doPrecombat(const Creature* opponent)
      */
     const Weapon* weapon = getPrimaryWeapon();
     if (opponent->hasEnoughMetalArmor()) {
-        if (weapon->getType() == eWeaponTypes::Polearms) {
+        if (hasEnoughMetalArmor() == false && weapon->canHook()) {
+            setGrip(eGrips::Standard);
+        } else if (weapon->getType() == eWeaponTypes::Polearms) {
             setGrip(eGrips::Staff);
         } else if (weapon->getType() == eWeaponTypes::Longswords) {
             setGrip(eGrips::HalfSword);

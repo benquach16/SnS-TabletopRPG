@@ -12,8 +12,8 @@ std::string factionToString(eCreatureFaction faction)
     case eCreatureFaction::Wildlife:
         return "Wildlife";
         break;
-    case eCreatureFaction::EidgenConfederacy:
-        return "Eidgen Confederacy";
+    case eCreatureFaction::Confederacy:
+        return "Confederacy of the Three";
         break;
     default:
         return "";
@@ -61,8 +61,8 @@ eCreatureFaction stringToFaction(const std::string& str)
         return eCreatureFaction::Bandit;
     } else if (str == "wildlife") {
         return eCreatureFaction::Wildlife;
-    } else if (str == "eidgen") {
-        return eCreatureFaction::EidgenConfederacy;
+    } else if (str == "confederacy") {
+        return eCreatureFaction::Confederacy;
     }
     return eCreatureFaction::None;
 }

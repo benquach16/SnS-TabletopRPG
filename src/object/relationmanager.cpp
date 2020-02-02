@@ -7,8 +7,8 @@ RelationManager* RelationManager::singleton = nullptr;
 RelationManager::RelationManager()
 {
     setRelationship(eCreatureFaction::Player, eCreatureFaction::Bandit, cHostile);
-    setRelationship(eCreatureFaction::Player, eCreatureFaction::EidgenConfederacy, cFriends);
-    setRelationship(eCreatureFaction::Bandit, eCreatureFaction::EidgenConfederacy, cHostile);
+    setRelationship(eCreatureFaction::Player, eCreatureFaction::Confederacy, cFriends);
+    setRelationship(eCreatureFaction::Bandit, eCreatureFaction::Confederacy, cHostile);
 }
 
 int RelationManager::getRelationship(eCreatureFaction faction1, eCreatureFaction faction2) const
