@@ -215,7 +215,7 @@ bool CombatInstance::doOffense()
         }
         if (attacker->getCombatPool() <= 0 && defender->getCombatPool() <= 0) {
             writeMessage("Neither side has any action points left, starting "
-                         "new exchange and resetting combat pools");
+                         "new exchange and resetting combat pools. It is now first tempo");
             m_currentTempo = eTempo::First;
             attacker->resetCombatPool();
             defender->resetCombatPool();
@@ -626,9 +626,6 @@ void CombatInstance::doResolution()
         // standard attacker-defender resolution
         // if stomp discard everything
         // roll dice
-        int offenseSuccesses = DiceRoller::rollGetSuccess(attacker->getBTN(), attack.dice);
-        int defenseSuccesses = DiceRoller::rollGetSuccess(defender->getBTN(), defend.dice);
-
         if (attack.feint == true) {
             // resolve feint to change successes
             int attackerKeen = DiceRoller::rollGetSuccess(attacker->getBTN(), attacker->getKeen());
@@ -643,8 +640,10 @@ void CombatInstance::doResolution()
             }
             cout << "keen difference " << keenDifference << endl;
 
-            defenseSuccesses -= keenDifference;
+            defend.dice -= keenDifference;
         }
+        int offenseSuccesses = DiceRoller::rollGetSuccess(attacker->getBTN(), attack.dice);
+        int defenseSuccesses = DiceRoller::rollGetSuccess(defender->getBTN(), defend.dice);
 
         int MoS = offenseSuccesses - defenseSuccesses;
         cout << MoS << endl;
@@ -1003,9 +1002,12 @@ void CombatInstance::forceRefresh()
 void CombatInstance::switchTempo()
 {
     if (m_currentTempo == eTempo::First) {
+        writeMessage("Second tempo of current exchange.", Log::eMessageTypes::Announcement);
         m_currentTempo = eTempo::Second;
     } else {
-        writeMessage("Exchange has ended, combat pools have reset");
+        writeMessage(
+            "Exchange has ended, combat pools have reset. First tempo of current exchange.",
+            Log::eMessageTypes::Announcement);
         forceRefresh();
     }
 }

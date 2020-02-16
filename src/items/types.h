@@ -102,6 +102,8 @@ inline int defenseManueverCost(eDefensiveManuevers manuever)
     }
 }
 
+inline int feintManueverCost() { return 1; }
+
 inline int positionManueverCost() { return 3; }
 
 enum class eLength : unsigned {

@@ -144,6 +144,7 @@ public:
     bool setCreatureOffenseManuever(eOffensiveManuevers manuever);
     int getDefenseManueverCost(eDefensiveManuevers manuever);
     bool setCreatureDefenseManuever(eDefensiveManuevers manuever);
+    bool setCreatureFeint();
 
     void setProne() { m_currentStance = eCreatureStance::Prone; }
     void setStand() { m_currentStance = eCreatureStance::Standing; }

@@ -648,7 +648,12 @@ void Creature::doPrecombat(const Creature* opponent)
     m_hasPrecombat = true;
 }
 
-void Creature::doPreresolution(const Creature* opponent) { m_currentOffense.feint = true; }
+void Creature::doPreresolution(const Creature* opponent)
+{
+    if (feintManueverCost() < getCombatPool()) {
+        setCreatureFeint();
+    }
+}
 
 void Creature::doStolenInitiative(const Creature* defender, bool allin)
 {
@@ -733,11 +738,23 @@ int Creature::getOffenseManueverCost(eOffensiveManuevers manuever)
 bool Creature::setCreatureOffenseManuever(eOffensiveManuevers manuever)
 {
     int cost = getOffenseManueverCost(manuever);
-    if (cost <= m_combatPool) {
+    bool canUse = (cost <= getCombatPool());
+    if (canUse) {
         m_currentOffense.manuever = manuever;
         reduceCombatPool(cost);
     }
-    return cost <= getCombatPool();
+    return canUse;
+}
+
+bool Creature::setCreatureFeint()
+{
+    int cost = feintManueverCost();
+    bool canUse = (cost <= getCombatPool());
+    if (canUse) {
+        m_currentOffense.feint = true;
+        reduceCombatPool(cost);
+    }
+    return canUse;
 }
 
 void Creature::clearArmor()

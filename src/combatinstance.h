@@ -98,6 +98,7 @@ private:
     {
         m_initiative = m_initiative == eInitiative::Side1 ? eInitiative::Side2 : eInitiative::Side1;
     }
+
     void switchTempo();
 
     bool inflictWound(Creature* attacker, int MoS, Offense attack, Creature* target);
