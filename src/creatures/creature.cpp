@@ -15,11 +15,11 @@ constexpr int cFatigueDivisor = 10;
 
 Creature::Creature()
     : m_BTN(cBaseBTN)
-    , m_brawn(1)
+    , m_strength(1)
     , m_agility(1)
-    , m_cunning(1)
+    , m_intuition(1)
     , m_perception(1)
-    , m_will(1)
+    , m_willpower(1)
     , m_primaryWeaponId(cFistsId)
     , m_disableWeaponId(cFistsId)
     , m_combatPool(0)
@@ -188,17 +188,17 @@ void Creature::inflictWound(Wound* wound)
     auto drop3 = effects.find(eEffects::drop3);
     auto drop = effects.find(eEffects::drop);
     if (drop1 != effects.end()) {
-        if (DiceRoller::rollGetSuccess(getBTN(), getBrawn()) < 1) {
+        if (DiceRoller::rollGetSuccess(getBTN(), getReflex()) < 1) {
             disableWeapon(true);
         }
     }
     if (drop2 != effects.end()) {
-        if (DiceRoller::rollGetSuccess(getBTN(), getBrawn()) < 2) {
+        if (DiceRoller::rollGetSuccess(getBTN(), getReflex()) < 2) {
             disableWeapon(true);
         }
     }
     if (drop3 != effects.end()) {
-        if (DiceRoller::rollGetSuccess(getBTN(), getBrawn()) < 3) {
+        if (DiceRoller::rollGetSuccess(getBTN(), getReflex()) < 3) {
             disableWeapon(true);
         }
     }
@@ -638,11 +638,11 @@ void Creature::doPrecombat(const Creature* opponent)
             setGrip(eGrips::HalfSword);
         }
     }
-    if (m_combatPool > 3 && droppedWeapon()) {
+    if (getCombatPool() > 3 && droppedWeapon()) {
         attemptPickup();
     }
 
-    if (m_combatPool > 3 && getStance() == eCreatureStance::Prone) {
+    if (getCombatPool() > 3 && getStance() == eCreatureStance::Prone) {
         attemptStand();
     }
     m_hasPrecombat = true;

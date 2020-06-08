@@ -11,9 +11,9 @@ using namespace std;
 
 const string filepath = "data/starting.json";
 
-constexpr unsigned cAttributes = 16;
-constexpr unsigned cProficiencies = 12;
-constexpr unsigned cMax = 7;
+constexpr unsigned cAttributes = 23;
+constexpr unsigned cProficiencies = 14;
+constexpr unsigned cMax = 9;
 
 CreateCharUI::CreateCharUI()
     : m_loadoutIdx(-1)
@@ -158,17 +158,17 @@ void CreateCharUI::doAttributes(bool hasKeyEvents, sf::Event event, PlayerObject
     text.setFont(Game::getDefaultFont());
     string str = "Attributes\n\nPoints left: " + to_string(m_pointsLeft);
     str += '\n';
-    str += "a - Brawn: " + to_string(creature->getBrawn()) + "\nb - Agility: "
-        + to_string(creature->getAgility()) + "\nc - Cunning: " + to_string(creature->getCunning())
+    str += "a - Strength: " + to_string(creature->getStrength())
+        + "\nb - Agility: " + to_string(creature->getAgility())
+        + "\nc - Intuition: " + to_string(creature->getIntuition())
         + "\nd - Perception: " + to_string(creature->getPerception())
         + "\ne - "
-          "Will: "
-        + to_string(creature->getWill())
-        + "\n\nGrit (Average of Brawn + Will): " + to_string(creature->getGrit())
-        + "\nKeen (Average of Cunning and Perception): " + to_string(creature->getKeen())
-        + "\nReflex (Average of Agility and Cunning): " + to_string(creature->getReflex())
-        + "\nSpeed (Average of Agility and Brawn): " + to_string(creature->getSpeed())
-        + "\n\nr - Reset Points\n\nEnter - Continue";
+          "Willpower: "
+        + to_string(creature->getWillpower()) + "\n\nGrit (Average of Strength + Willpower): "
+        + to_string(creature->getGrit()) + "\nShrewdness (Average of Intuition and Perception): "
+        + to_string(creature->getShrewdness()) + "\nReflex (Average of Agility and Intuition): "
+        + to_string(creature->getReflex()) + "\nSpeed (Average of Agility and Strength): "
+        + to_string(creature->getSpeed()) + "\n\nr - Reset Points\n\nEnter - Continue";
 
     text.setString(str);
     Game::getWindow().draw(text);
@@ -176,8 +176,8 @@ void CreateCharUI::doAttributes(bool hasKeyEvents, sf::Event event, PlayerObject
         char c = event.text.unicode;
         switch (c) {
         case 'a':
-            if (m_pointsLeft > 0 && creature->getBrawn() < cMax) {
-                creature->setBrawn(creature->getBrawn() + 1);
+            if (m_pointsLeft > 0 && creature->getStrength() < cMax) {
+                creature->setStrength(creature->getStrength() + 1);
                 m_pointsLeft -= 1;
             }
             break;
@@ -188,8 +188,8 @@ void CreateCharUI::doAttributes(bool hasKeyEvents, sf::Event event, PlayerObject
             }
             break;
         case 'c':
-            if (m_pointsLeft > 0 && creature->getCunning() < cMax) {
-                creature->setCunning(creature->getCunning() + 1);
+            if (m_pointsLeft > 0 && creature->getIntuition() < cMax) {
+                creature->setIntuition(creature->getIntuition() + 1);
                 m_pointsLeft -= 1;
             }
             break;
@@ -200,17 +200,17 @@ void CreateCharUI::doAttributes(bool hasKeyEvents, sf::Event event, PlayerObject
             }
             break;
         case 'e':
-            if (m_pointsLeft > 0 && creature->getWill() < cMax) {
-                creature->setWill(creature->getWill() + 1);
+            if (m_pointsLeft > 0 && creature->getWillpower() < cMax) {
+                creature->setWillpower(creature->getWillpower() + 1);
                 m_pointsLeft -= 1;
             }
             break;
         case 'r':
-            creature->setBrawn(1);
+            creature->setStrength(1);
             creature->setAgility(1);
-            creature->setCunning(1);
+            creature->setIntuition(1);
             creature->setPerception(1);
-            creature->setWill(1);
+            creature->setWillpower(1);
             m_pointsLeft = cAttributes;
             break;
         case '\r':

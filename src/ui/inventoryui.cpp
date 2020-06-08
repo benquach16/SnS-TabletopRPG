@@ -344,12 +344,13 @@ void InventoryUI::doProfile(bool hasKeyEvents, sf::Event event, PlayerObject* pl
     sf::Text stats;
     stats.setCharacterSize(cCharSize);
     stats.setFont(Game::getDefaultFont());
-    string statStr = "Primary Attributes\nBrawn: " + to_string(creature->getBrawn()) + '\n'
+    string statStr = "Primary Attributes\nStrength: " + to_string(creature->getStrength()) + '\n'
         + "Agility: " + to_string(creature->getAgility()) + '\n'
-        + "Cunning: " + to_string(creature->getCunning()) + '\n' + "Perception: "
-        + to_string(creature->getPerception()) + '\n' + "Will: " + to_string(creature->getWill())
-        + "\n\n" + "Derived Attributes\n" + "Grit: " + to_string(creature->getGrit()) + '\n'
-        + "Keen: " + to_string(creature->getKeen()) + '\n'
+        + "Intuition: " + to_string(creature->getIntuition()) + '\n'
+        + "Perception: " + to_string(creature->getPerception()) + '\n'
+        + "Willpower: " + to_string(creature->getWillpower()) + "\n\n" + "Derived Attributes\n"
+        + "Grit: " + to_string(creature->getGrit()) + '\n'
+        + "Shrewdness: " + to_string(creature->getShrewdness()) + '\n'
         + "Reflex: " + to_string(creature->getReflex()) + '\n'
         + "Speed: " + to_string(creature->getSpeed()) + "\n\n";
 

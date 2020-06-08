@@ -68,6 +68,7 @@ inline int offenseManueverCost(eOffensiveManuevers manuever)
     case eOffensiveManuevers::Throw:
     case eOffensiveManuevers::Disarm:
     case eOffensiveManuevers::Grab:
+    case eOffensiveManuevers::Hook:
         return 1;
     default:
         return 0;

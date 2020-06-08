@@ -228,16 +228,16 @@ void CombatUI::doInitiative(bool hasKeyEvents, sf::Event event, Player* player, 
         text.setCharacterSize(cCharSize);
         text.setFont(Game::getDefaultFont());
         string str = "They ";
-        if (target->getBrawn() < player->getBrawn()) {
-            str += "have less brawn than you. ";
+        if (target->getStrength() < player->getStrength()) {
+            str += "have less strength than you. ";
         } else {
-            str += "have more brawn than you. ";
+            str += "have more strength than you. ";
         }
         str += "They ";
-        if (target->getKeen() < player->getKeen()) {
-            str += "have less keen than you.";
+        if (target->getShrewdness() < player->getShrewdness()) {
+            str += "have less shrewdness than you.";
         } else {
-            str += "have more keen than you.";
+            str += "have more shrewdness than you.";
         }
         str += "They ";
         if (target->getSpeed() < player->getSpeed()) {

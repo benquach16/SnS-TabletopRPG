@@ -21,6 +21,8 @@ static constexpr int cMinBTN = 2;
 static constexpr int cMaxBTN = 6;
 // different based on race
 static constexpr int cBaseBloodLoss = 8;
+static constexpr int cBaseConstitution = 2;
+
 static constexpr int cTapFactor = 3;
 
 enum class eCreatureType { Human, Goblin, Elf, Dwarf };
@@ -43,16 +45,18 @@ public:
     virtual ~Creature() {}
     virtual eCreatureType getCreatureType() = 0;
 
-    int getBrawn() const { return m_brawn; }
+    int getStrength() const { return m_strength; }
     int getAgility() const { return m_agility; }
-    int getCunning() const { return m_cunning; }
+    int getIntuition() const { return m_intuition; }
     int getPerception() const { return m_perception; }
-    int getWill() const { return m_will; }
+    int getWillpower() const { return m_willpower; }
 
-    int getGrit() const { return (m_brawn + m_will) / 2; }
-    int getKeen() const { return (m_cunning + m_perception) / 2; }
-    int getReflex() const { return (m_agility + m_cunning) / 2; }
-    int getSpeed() const { return (m_agility + m_brawn) / 2; }
+    int getGrit() const { return (m_strength + m_willpower) / 2; }
+    int getShrewdness() const { return (m_intuition + m_perception) / 2; }
+    int getReflex() const { return (m_agility + m_intuition) / 2; }
+    int getSpeed() const { return (m_agility + m_strength) / 2; }
+
+    int getConstitution() const { return cBaseConstitution; }
 
     int getBTN() const
     {
@@ -174,11 +178,11 @@ public:
 
     CreatureId getId() const { return m_id; }
 
-    void setBrawn(int brawn) { m_brawn = brawn; }
+    void setStrength(int strength) { m_strength = strength; }
     void setAgility(int agility) { m_agility = agility; }
-    void setCunning(int cunning) { m_cunning = cunning; }
+    void setIntuition(int intuition) { m_intuition = intuition; }
     void setPerception(int perception) { m_perception = perception; }
-    void setWill(int will) { m_will = will; }
+    void setWillpower(int willpower) { m_willpower = willpower; }
     void setProficiency(eWeaponTypes type, int value) { m_proficiencies[type] = value; }
 
     void attemptStand();
@@ -239,11 +243,11 @@ protected:
     bool m_isPlayer;
 
     // stats
-    int m_brawn;
+    int m_strength;
     int m_agility;
-    int m_cunning;
+    int m_intuition;
     int m_perception;
-    int m_will;
+    int m_willpower;
 
     int m_combatPool;
     int m_bonusDice;

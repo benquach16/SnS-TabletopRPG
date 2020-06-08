@@ -97,7 +97,7 @@ void Level::generate()
     object->setFaction(eCreatureFaction::Bandit);
     object->setLoadout(eCreatureFaction::Bandit, eRank::Veteran);
     object->getCreatureComponent()->setAgility(6);
-    object->getCreatureComponent()->setCunning(6);
+    object->getCreatureComponent()->setIntuition(6);
     object->setName("One-Eyed Doyt");
     m_objects.push_back(object);
 }

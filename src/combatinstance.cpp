@@ -108,8 +108,10 @@ void CombatInstance::doRollInitiative()
         if (m_dualWhiteTimes > 1) {
             writeMessage("Defense chosen too many times, initiative going to "
                          "willpower contest");
-            int side1Successes = DiceRoller::rollGetSuccess(m_side1->getBTN(), m_side1->getWill());
-            int side2Successes = DiceRoller::rollGetSuccess(m_side2->getBTN(), m_side2->getWill());
+            int side1Successes
+                = DiceRoller::rollGetSuccess(m_side1->getBTN(), m_side1->getWillpower());
+            int side2Successes
+                = DiceRoller::rollGetSuccess(m_side2->getBTN(), m_side2->getWillpower());
 
             m_initiative
                 = side1Successes < side2Successes ? eInitiative::Side1 : eInitiative::Side2;
@@ -628,8 +630,10 @@ void CombatInstance::doResolution()
         // roll dice
         if (attack.feint == true) {
             // resolve feint to change successes
-            int attackerKeen = DiceRoller::rollGetSuccess(attacker->getBTN(), attacker->getKeen());
-            int defenderKeen = DiceRoller::rollGetSuccess(defender->getBTN(), defender->getKeen());
+            int attackerKeen
+                = DiceRoller::rollGetSuccess(attacker->getBTN(), attacker->getShrewdness());
+            int defenderKeen
+                = DiceRoller::rollGetSuccess(defender->getBTN(), defender->getShrewdness());
 
             int keenDifference = attackerKeen - defenderKeen;
             if (keenDifference > 0) {
@@ -639,7 +643,7 @@ void CombatInstance::doResolution()
                 writeMessage(defender->getName() + " was able to catch the feint in time!");
             }
             cout << "keen difference " << keenDifference << endl;
-
+            keenDifference = max(0, keenDifference);
             defend.dice -= keenDifference;
         }
         int offenseSuccesses = DiceRoller::rollGetSuccess(attacker->getBTN(), attack.dice);
@@ -896,9 +900,9 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
 
     // complicated armor calcs go here
     finalDamage -= armorAtLocation.AV;
-    // add brawn tap values
-    finalDamage += getTap(attacker->getBrawn());
-    finalDamage -= getTap(target->getBrawn());
+    // add strength bonus minus constitution
+    finalDamage += getTap(attacker->getStrength());
+    finalDamage -= getTap(target->getConstitution());
 
     if (armorAtLocation.isMetal == true && damageType != eDamageTypes::Blunt && finalDamage > 0) {
         if (attack.component->hasProperty(eWeaponProperties::MaillePiercing) == false
@@ -1002,11 +1006,10 @@ void CombatInstance::forceRefresh()
 void CombatInstance::switchTempo()
 {
     if (m_currentTempo == eTempo::First) {
-        writeMessage("Second tempo of current exchange.", Log::eMessageTypes::Announcement);
+        writeMessage("Second tempo of exchange.", Log::eMessageTypes::Announcement);
         m_currentTempo = eTempo::Second;
     } else {
-        writeMessage(
-            "Exchange has ended, combat pools have reset. First tempo of current exchange.",
+        writeMessage("Exchange has ended, combat pools have reset. First tempo of exchange.",
             Log::eMessageTypes::Announcement);
         forceRefresh();
     }

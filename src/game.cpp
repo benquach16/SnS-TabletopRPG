@@ -119,7 +119,7 @@ void Game::setupLevel()
     human1->setAIRole(eAIRoles::Standing);
     human1->setStartingDialogueLabel("greeting_intro");
     human1->getCreatureComponent()->setAgility(9);
-    human1->getCreatureComponent()->setCunning(9);
+    human1->getCreatureComponent()->setIntuition(9);
     human1->getCreatureComponent()->setPerception(9);
     human1->setName("Sir Wilhelm");
     m_talking = human1;
