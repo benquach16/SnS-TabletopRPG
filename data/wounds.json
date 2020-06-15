@@ -4,30 +4,30 @@
 		"impact": [1, 2, 3, 4, 5],
 		"crown": {
 			"1": {
-				"text": ["Glancing blow."]
+				"text": ["Mild blow to the forehead."]
 			},
 			"2": {
-				"text": ["Solid blow, causing momentary dizziness"]
+				"text": ["Blow to the temple causes disorientation."]
 			},
 			"3": {
-				"text": ["Mild concussion. Ears ringing, bad headache and dizziness. Some blood in the hair."],
-				"effects": ["KO2"]
+				"text": ["Everything goes black for a few seconds, can see stars, and head throbs."],
+				"effects": ["KO1"]
 			},
 			"4": {
-				"text": ["Cracked skull. Severe concussion. Wound starts bleeding immediately.", "Cracked skull. Brain damage. Wound starts bleeding immediately.", "Cracked skull. Ear trauma. Wound starts bleeidng immediately."],
+				"text": ["Skull cracks loudly under the blow. Blow exposes bone."],
 				"effects": ["KO3", "BL1"]
 			},
 			"5": {
-				"text": ["The skull shatters like a ripe melon. Really messy. Instant death."],
+				"text": ["Skull shatters like a melon. Bits of brain and bone fly everywhere. Dead."],
 				"effects": ["death"]
 			}
 		},
 		"face": {
 			"1": {
-				"text": ["Slight bump. Won't even leave a shiner."]
+				"text": ["A very minor, but shocking injury."]
 			},
 			"2": {
-				"text": ["Solid blow. Will leave a shiner.","Solid blow. Split a lip.","Solid blow. Caused a nosebleed."]
+				"text": ["Blow to the face leaves a black eye and a taste of blood in the mouth."]
 			},
 			"3": {
 				"text": ["Blunt eye trauma.", "Broken nose.", "Dislocated jaw.", "Split lip with lost teeth."],
@@ -38,7 +38,7 @@
 				"effects": ["KO2", "BL1"]
 			},
 			"5": {
-				"text": ["Face caves in from a massive blow. Death is almost instantaneous"],
+				"text": ["Face is pulverized. Facial bones and tissue reduced to a bloody mush. Dead."],
 				"effects": ["death"]
 			}
 		},
@@ -238,7 +238,7 @@
 				"effects": ["KD", "BL1"]
 			},
 			"5": {
-				"text": ["Damage to internal organs causes heavy internal bleeding."],
+				"text": ["Spleen explodes, and diaphragmatic rupture puts intestines inside chest. Internal bleeding everywhere."],
 				"effects": ["BL2", "KO3", "KD"]
 			}
 		},
