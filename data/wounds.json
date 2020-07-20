@@ -30,7 +30,7 @@
 				"text": ["Blow to the face leaves a black eye and a taste of blood in the mouth."]
 			},
 			"3": {
-				"text": ["Blunt eye trauma.", "Broken nose.", "Dislocated jaw.", "Split lip with lost teeth."],
+				"text": ["Blunt eye trauma, and eye socket bruised", "Broken nose.", "Dislocated jaw, with teeth chipped", "Lower jaw broken and teeth gone."],
 				"effects": ["KO1"]
 			},
 			"4": {
@@ -64,35 +64,35 @@
 		},
 		"neck": {
 			"1": {
-				"text": ["Barely connects."]
+				"text": ["A glancing blow. Slight pain"]
 			},
 			"2": {
-				"text": ["Solid blow leaves neck stiff and sore."]
+				"text": ["Temporary choking and pain occurs."]
 			},
 			"3": {
-				"text": ["Something cracks. Hard and painful to breathe, but no danger of suffocation."]
+				"text": ["Blow causes choking, raspy wheezing accompanies breath."]
 			},
 			"4": {
-				"text": ["Damaged windpipe. Esophagus injury."]
+				"text": ["Windpipe is crushed. It takes everything to breathe."]
 			},
 			"5": {
-				"text": ["Head tilts in an unnatural angle. Neck snapped. Instant death."],
+				"text": ["Vertebrae in the neck are shattered, contorting the head unnaturally.  Instant death."],
 				"effects": ["death"]
 			}
 		},
 		"shoulder": {
 			"1": {
-				"text": ["Bump."]
+				"text": ["Impact is felt, but no bruise."]
 			},
 			"2": {
 				"text": ["Distracting buzzing sensation."]
 			},
 			"3": {
-				"text": ["Minor shoulder fracture makes the arm hard to use."],
+				"text": ["Shoulder is bruised and swollen. Every movement of the arm sends stinging pain."],
 				"effects": ["drop1"]
 			},
 			"4": {
-				"text": ["Torn tendons."],
+				"text": ["Shoulder is dislocated by the blow. Arm hangs uselessly by side."],
 				"effects": ["drop2"]
 			},
 			"5": {
@@ -108,15 +108,15 @@
 				"text": ["Will leave a bruise."]
 			},
 			"3": {
-				"text": ["Swollen bruise makes arm hard to use."],
+				"text": ["Bicep is heavily bruised and inflamed, sending sharp pain with every movement."],
 				"effects": ["drop1"]
 			},
 			"4": {
-				"text": ["Fractured humerus. Arm disabled until fixed."],
+				"text": ["Fractured humerus, with major swelling. Moving the arm is extremely painful."],
 				"effects": ["drop2"]
 			},
 			"5": {
-				"text": ["Open humerus fracture. Arm useless."],
+				"text": ["Broken humerus. Arm is limp and bleeding profusely."],
 				"effects": ["drop"]
 			}
 		},
@@ -129,15 +129,15 @@
 				"effects": ["drop1"]
 			},
 			"3": {
-				"text": ["Solid blow hits the bone. Whole arm buzzes and fingers are numb."],
+				"text": ["Blow strikes a nerve and causes forearm to go numb. Elbow swells up."],
 				"effects": ["drop3"]
 			},
 			"4": {
-				"text": ["Elbow bandly strained or concussed. Swelling. Arm useless."],
+				"text": ["Elbow dislocated. Recoverable, but arm refuses to move."],
 				"effects": ["drop"]
 			},
 			"5": {
-				"text": ["Elbow shattered. Arm useless."],
+				"text": ["Elbow joint broken into many pieces. Lower arm can bend in opposite direction."],
 				"effects": ["drop"]
 			}
 		},
@@ -214,12 +214,12 @@
 				"text": ["Knocks out the wind. Bad brusing. Taking deep breaths is going to be painful for a while."]
 			},
 			"4": {
-				"text": ["Fractured ribs. Chest swells up and painful to breathe."],
+				"text": ["A few ribs fractured. Every breath sends sharp pain throughout your body."],
 				"effects": ["KO2"]
 			},
 			"5": {
-				"text": ["Several broken ribs and internal bleeding. Punctured lung."],
-				"effects": ["BL1", "KO2"]
+				"text": ["Sternum explodes, and lungs are punctured. You cough up blood and breathing is ragged."],
+				"effects": ["BL2", "KO3"]
 			}
 		},
 		"abs": {
@@ -234,7 +234,7 @@
 				"effects": ["KD2", "KO1"]
 			},
 			"4": {
-				"text": ["Ruptured internal organs and internal bleeding."],
+				"text": ["Spleen ruptured. Intestines compressed against spinal cord. You will need a good doctor."],
 				"effects": ["KD", "BL1"]
 			},
 			"5": {
@@ -254,11 +254,11 @@
 				"effects": ["KD1"]
 			},
 			"4": {
-				"text": ["Fractured pelvis. Ruptured internal organs and internal bleeding."],
+				"text": ["Fractured hipbone. Joint feels like it can give at any moment."],
 				"effects": ["KD2"]
 			},
 			"5": {
-				"text": ["Shattered pelvis. May never walk again."],
+				"text": ["Hipbones shatter, internal organs rupture. Can never walk again."],
 				"effects": ["KD", "BL1"]
 			}
 		},
@@ -271,15 +271,15 @@
 				"effects": ["KD1"]
 			},
 			"3": {
-				"text": ["Bad swelling and lots of pain. Nausea."],
+				"text": ["Swelling and some tearing on reproductive organs. Pain causes you to double over."],
 				"effects": ["KO2"]
 			},
 			"4": {
-				"text": ["Damage and swelling are real bad."],
+				"text": ["Surface organs crushed. Nausea hits like a truck."],
 				"effects": ["KO2"]
 			},
 			"5": {
-				"text": ["Surface organs crushed, say goodbye to reproduction."],
+				"text": ["Pelvic bones shattered, nearest organs reduced to a bloody mess. You will never walk again."],
 				"effects": ["KO"]
 			}
 		},
