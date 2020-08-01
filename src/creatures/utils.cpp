@@ -109,8 +109,6 @@ std::string hitLocationToString(eHitLocations location)
         return "Head";
     case eHitLocations::Chest:
         return "Chest";
-    case eHitLocations::Neck:
-        return "Neck";
     case eHitLocations::Arm:
         return "Arm";
     case eHitLocations::Belly:

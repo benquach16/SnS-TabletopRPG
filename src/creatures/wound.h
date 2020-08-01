@@ -47,7 +47,7 @@ public:
 
     Wound* getWound(eDamageTypes type, eBodyParts part, int level);
 
-    static constexpr unsigned cPartsPerLocation = 6;
+    static constexpr unsigned cPartsPerLocation = 10;
 
     struct woundParts {
         eBodyParts m_swing[cPartsPerLocation];

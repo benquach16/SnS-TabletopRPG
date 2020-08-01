@@ -3,11 +3,11 @@
 using namespace std;
 
 namespace DiceRoller {
-std::vector<int> roll(int number)
+std::vector<int> roll(int number, int sides)
 {
     std::vector<int> ret;
     for (int i = 0; i < number; ++i) {
-        ret.push_back(roll());
+        ret.push_back(rollSides(sides));
     }
     return ret;
 }
