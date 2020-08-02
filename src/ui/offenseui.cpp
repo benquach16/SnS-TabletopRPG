@@ -51,101 +51,69 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
     std::map<eOffensiveManuevers, int> manuevers
         = getAvailableManuevers(player->getPrimaryWeapon(), player->getGrip());
 
+    string str = "Choose attack:\n";
+    std::map<char, std::pair<eOffensiveManuevers,int>> indices;
+    char idx = 'a';
     for(auto manuever : manuevers) {
-        
+        str += idx;
+        str += " - ";
+        str += offensiveManueverToString(manuever.first);
+        if(manuever.second > 0) {
+            str += " (" + std::to_string(manuever.second) + " AP)";
+        }
+        str += '\n';
+        indices[idx] = std::pair<eOffensiveManuevers, int>(manuever.first, manuever.second);
+        idx++;
     }
-    bool halfPrice = player->getGrip() == eGrips::Staff || player->getGrip() == eGrips::HalfSword;
-    string str = "Choose attack:\na - Swing\nb - Thrust\nc - Pinpoint Thrust (";
-    int pinpointCost = offenseManueverCost(eOffensiveManuevers::PinpointThrust);
-    if (halfPrice == true) {
-        str += "1";
-        pinpointCost = 1;
-    } else {
-        str += to_string(pinpointCost);
-    }
-
-    str += "AP)\nd - Beat\ne - Hook\nf - Disarm (1AP)\ng - Slam\nh - Mordhau(";
-
-    int mordhauCost = offenseManueverCost(eOffensiveManuevers::Mordhau);
-    bool freeMordhau = player->getGrip() == eGrips::HalfSword;
-    if (freeMordhau == true) {
-        str += "0";
-        mordhauCost = 0;
-    } else {
-        str += to_string(mordhauCost);
-    }
-    str += "AP)\ni - Grab (1AP)\nj - Inspect Target";
+    str += idx;
+    str += " - Inspect Target";
     text.setString(str);
     Game::getWindow().draw(text);
 
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
-        switch (c) {
-        case 'a':
-            player->setOffenseManuever(eOffensiveManuevers::Swing);
-            m_currentState = eUiState::ChooseHeavyBlow;
-            break;
-        case 'b':
-            player->setOffenseManuever(eOffensiveManuevers::Thrust);
-            m_currentState = eUiState::ChooseComponent;
-            break;
-        case 'c':
-            if (player->getCombatPool() >= pinpointCost) {
-                player->setOffenseManuever(eOffensiveManuevers::PinpointThrust);
-                m_currentState = eUiState::ChooseComponent;
-                player->reduceCombatPool(pinpointCost);
-            } else {
-                // need 2 dice
-                Log::push(to_string(pinpointCost) + " AP needed.");
-            }
-            break;
-        case 'd':
-            player->setOffenseManuever(eOffensiveManuevers::Beat);
-            m_currentState = eUiState::ChooseComponent;
-            break;
-        case 'e':
-            if (player->canPerformManuever(eOffensiveManuevers::Hook)) {
-                player->setOffenseManuever(eOffensiveManuevers::Hook);
-                m_currentState = eUiState::ChooseComponent;
-            } else {
-                Log::push("This weapon cannot hook");
-            }
-            break;
-        case 'f':
-            if (player->getCombatPool() >= 1) {
-                player->setOffenseManuever(eOffensiveManuevers::Disarm);
-                player->reduceCombatPool(1);
-                m_currentState = eUiState::ChooseComponent;
-            } else {
-                Log::push("1 AP needed");
-            }
-            break;
-        case 'h':
-            if (player->canPerformManuever(eOffensiveManuevers::Mordhau)) {
-                if (player->getCombatPool() >= mordhauCost) {
-                    player->reduceCombatPool(mordhauCost);
-                    const Weapon* weapon = player->getPrimaryWeapon();
-                    player->setOffenseManuever(eOffensiveManuevers::Mordhau);
-                    player->setOffenseComponent(weapon->getPommelStrike());
-                    player->setOffenseTarget(eHitLocations::Head);
-                    if (linkedParry == true) {
-                        player->setOffenseReady();
-                        m_currentState = eUiState::Finished;
-                    } else {
-                        m_currentState = eUiState::ChooseDice;
-                    }
-                } else {
-                    Log::push(to_string(mordhauCost) + " AP needed.");
-                }
-            } else {
-                Log::push("You need a sword to use this manuever");
-            }
-            break;
-        case 'j':
+        if (c == idx) {
             m_currentState = eUiState::InspectTarget;
-            break;
-        default:
-            break;
+            return;
+        }
+        auto iter = indices.find(c);
+        
+        if(iter != indices.end()) {
+            auto cost = iter->second;
+            if(player->getCombatPool() < cost.second) {
+                Log::push(to_string(cost.second) + " AP needed.");                
+                return;
+            }
+            player->reduceCombatPool(cost.second);
+            player->setOffenseManuever(cost.first);
+
+            switch(cost.first) {
+            case eOffensiveManuevers::Swing:
+                m_currentState = eUiState::ChooseHeavyBlow;            
+                break;
+            case eOffensiveManuevers::PinpointThrust:
+            case eOffensiveManuevers::Thrust:
+            case eOffensiveManuevers::Beat:
+            case eOffensiveManuevers::Hook:
+                m_currentState = eUiState::ChooseComponent;                
+                break;
+            case eOffensiveManuevers::Mordhau: {
+                const Weapon* weapon = player->getPrimaryWeapon();
+                player->setOffenseManuever(eOffensiveManuevers::Mordhau);
+                player->setOffenseComponent(weapon->getPommelStrike());
+                player->setOffenseTarget(eHitLocations::Head);
+                if (linkedParry == true) {
+                    player->setOffenseReady();
+                    m_currentState = eUiState::Finished;
+                } else {
+                    m_currentState = eUiState::ChooseDice;
+                }
+                break;
+            }
+            default:
+                m_currentState = eUiState::ChooseManuever;
+                break;
+            }
         }
     }
 }
