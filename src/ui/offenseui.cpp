@@ -1,8 +1,9 @@
 #include "offenseui.h"
-#include "../creatures/utils.h"
-#include "../game.h"
+#include "creatures/utils.h"
+#include "game.h"
 #include "common.h"
 #include "types.h"
+#include "items/utils.h"
 
 using namespace std;
 
@@ -46,6 +47,13 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
+
+    std::map<eOffensiveManuevers, int> manuevers
+        = getAvailableManuevers(player->getPrimaryWeapon(), player->getGrip());
+
+    for(auto manuever : manuevers) {
+        
+    }
     bool halfPrice = player->getGrip() == eGrips::Staff || player->getGrip() == eGrips::HalfSword;
     string str = "Choose attack:\na - Swing\nb - Thrust\nc - Pinpoint Thrust (";
     int pinpointCost = offenseManueverCost(eOffensiveManuevers::PinpointThrust);
@@ -56,7 +64,7 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
         str += to_string(pinpointCost);
     }
 
-    str += "AP)\nd - Beat (1AP)\ne - Hook\nf - Disarm (1AP)\ng - Slam\nh - Mordhau(";
+    str += "AP)\nd - Beat\ne - Hook\nf - Disarm (1AP)\ng - Slam\nh - Mordhau(";
 
     int mordhauCost = offenseManueverCost(eOffensiveManuevers::Mordhau);
     bool freeMordhau = player->getGrip() == eGrips::HalfSword;
@@ -92,13 +100,8 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
             }
             break;
         case 'd':
-            if (player->getCombatPool() >= 1) {
-                player->setOffenseManuever(eOffensiveManuevers::Beat);
-                m_currentState = eUiState::ChooseComponent;
-                player->reduceCombatPool(1);
-            } else {
-                Log::push("1 AP needed.");
-            }
+            player->setOffenseManuever(eOffensiveManuevers::Beat);
+            m_currentState = eUiState::ChooseComponent;
             break;
         case 'e':
             if (player->canPerformManuever(eOffensiveManuevers::Hook)) {

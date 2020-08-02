@@ -319,7 +319,7 @@ eEffects WoundTable::stringToEffect(const std::string& str)
 
 eBodyParts WoundTable::getSwing(eHitLocations location)
 {
-    // dice returns an actual dice roll 1-6, so we have to offset by 1
+    // dice returns an actual dice roll 1-10, so we have to offset by 1
     int roll = DiceRoller::rollSides(cPartsPerLocation) - 1;
     eBodyParts part = m_hitTable[location].m_swing[roll];
     if (part == eBodyParts::SecondLocationHead) {
@@ -334,7 +334,7 @@ eBodyParts WoundTable::getSwing(eHitLocations location)
 
 eBodyParts WoundTable::getThrust(eHitLocations location)
 {
-    // dice returns an actual dice roll 1-6, so we have to offset by 1
+    // dice returns an actual dice roll 1-10, so we have to offset by 1
     int roll = DiceRoller::rollSides(cPartsPerLocation) - 1;
     return m_hitTable[location].m_thrust[roll];
 }

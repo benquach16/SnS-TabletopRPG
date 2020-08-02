@@ -1,8 +1,10 @@
 #pragma once
 
+#include <map>
 #include <string>
 
 #include "types.h"
+#include "weapon.h"
 
 std::string offensiveManueverToString(eOffensiveManuevers manuever);
 
@@ -34,3 +36,6 @@ inline int operator-(eLength length1, eLength length2)
 }
 
 int calculateReachCost(eLength length1, eLength length2);
+
+//<maneuver, cost>
+std::map<eOffensiveManuevers, int> getAvailableManuevers(const Weapon* weapon, eGrips grip);

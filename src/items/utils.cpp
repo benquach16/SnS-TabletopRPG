@@ -235,3 +235,25 @@ int calculateReachCost(eLength length1, eLength length2)
     reachCost = (reachCost + 1) / 2;
     return reachCost;
 }
+
+std::map<eOffensiveManuevers, int> getAvailableManuevers(const Weapon* weapon, eGrips grip)
+{
+    std::map<eOffensiveManuevers, int> ret;
+
+    ret[eOffensiveManuevers::Swing] = 0;
+    ret[eOffensiveManuevers::Thrust] = 0;
+    ret[eOffensiveManuevers::Beat] = 0;
+    ret[eOffensiveManuevers::PinpointThrust]
+        = (grip == eGrips::HalfSword || grip == eGrips::Staff) ? 1 : 2;
+
+    eWeaponTypes type = weapon->getType();
+    if (type == eWeaponTypes::Swords || type == eWeaponTypes::Longswords) {
+        ret[eOffensiveManuevers::Mordhau] = (grip == eGrips::HalfSword) ? 0 : 2;
+    }
+
+    if (weapon->canHook()) {
+        ret[eOffensiveManuevers::Hook] = 0;
+    }
+
+    return ret;
+}
