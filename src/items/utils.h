@@ -38,4 +38,7 @@ inline int operator-(eLength length1, eLength length2)
 int calculateReachCost(eLength length1, eLength length2);
 
 //<maneuver, cost>
-std::map<eOffensiveManuevers, int> getAvailableManuevers(const Weapon* weapon, eGrips grip);
+std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Weapon* weapon, eGrips grip);
+
+//<maneuver, cost>
+std::map<eDefensiveManuevers, int> getAvailableDefManuevers(const Weapon* weapon, eGrips grip);

@@ -1,7 +1,10 @@
 #include "defenseui.h"
-#include "../game.h"
 #include "common.h"
+#include "game.h"
+#include "items/utils.h"
 #include "types.h"
+
+using namespace std;
 
 void DefenseUI::run(bool hasKeyEvents, sf::Event event, Player* player)
 {
@@ -27,58 +30,53 @@ void DefenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setString(
-        "Choose defense:\na - Parry\nb - Dodge\nc - Linked Parry "
-        "(1AP)\nd - Steal Initiative\ne - Counter (2AP)\nf - Expulsion (1AP)\ng - Disengage");
+
+    string str = "Choose defense:\n";
+
+    map<eDefensiveManuevers, int> manuevers
+        = getAvailableDefManuevers(player->getPrimaryWeapon(), player->getGrip());
+    map<char, std::pair<eDefensiveManuevers, int>> indices;
+    char idx = 'a';
+    for (auto manuever : manuevers) {
+        str += idx;
+        str += " - ";
+        str += defensiveManueverToString(manuever.first);
+        if (manuever.second > 0) {
+            str += " (" + to_string(manuever.second) + " AP)";
+        }
+        str += '\n';
+        indices[idx] = pair<eDefensiveManuevers, int>(manuever.first, manuever.second);
+        idx++;
+    }
+
+    text.setString(str);
     Game::getWindow().draw(text);
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
-        switch (c) {
-        case 'a':
-            player->setDefenseManuever(eDefensiveManuevers::Parry);
-            m_currentState = eUiState::ChooseDice;
-            break;
-        case 'b':
-            player->setDefenseManuever(eDefensiveManuevers::Dodge);
-            m_currentState = eUiState::ChooseDice;
-            break;
-        case 'c': {
-            // costs 1 die
-            int cost = defenseManueverCost(eDefensiveManuevers::ParryLinked);
-            if (player->getCombatPool() < cost) {
-                Log::push("Requires 1 action point");
-            } else {
-                player->setDefenseManuever(eDefensiveManuevers::ParryLinked);
-                player->reduceCombatPool(cost);
-                m_currentState = eUiState::ChooseDice;
+        auto iter = indices.find(c);
+
+        if (iter != indices.end()) {
+            auto cost = iter->second;
+            if (player->getCombatPool() < cost.second) {
+                Log::push(to_string(cost.second) + " AP needed.");
+                return;
             }
-            break;
-        }
-        case 'd':
-            player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
-            m_currentState = eUiState::ChooseDice;
-            break;
-        case 'f': {
-            if (player->getCombatPool() >= 1) {
-                player->setDefenseManuever(eDefensiveManuevers::Expulsion);
-                player->reduceCombatPool(1);
+            player->reduceCombatPool(cost.second);
+            player->setDefenseManuever(cost.first);
+
+            switch (cost.first) {
+            case eDefensiveManuevers::StealInitiative:
+            case eDefensiveManuevers::Parry:
+            case eDefensiveManuevers::Dodge:
+            case eDefensiveManuevers::ParryLinked:
+            case eDefensiveManuevers::Expulsion:
+            case eDefensiveManuevers::DodgeLinked:
                 m_currentState = eUiState::ChooseDice;
-            } else {
-                Log::push("Requires 1 AP");
+                break;
+            default:
+                m_currentState = eUiState::ChooseManuever;
+                break;
             }
-            break;
-        }
-        case 'e': {
-            int cost = defenseManueverCost(eDefensiveManuevers::Counter);
-            if (player->getCombatPool() < cost) {
-                Log::push("Requires 2 action points");
-            } else {
-                player->setDefenseManuever(eDefensiveManuevers::Counter);
-                player->reduceCombatPool(cost);
-                m_currentState = eUiState::ChooseDice;
-            }
-            break;
-        }
         }
     }
 }

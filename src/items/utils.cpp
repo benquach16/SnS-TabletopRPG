@@ -33,6 +33,14 @@ std::string defensiveManueverToString(eDefensiveManuevers manuever)
         return "Parry";
     case eDefensiveManuevers::Dodge:
         return "Dodge";
+    case eDefensiveManuevers::Counter:
+        return "Riposte";
+    case eDefensiveManuevers::ParryLinked:
+        return "Block and Strike";
+    case eDefensiveManuevers::StealInitiative:
+        return "Steal Initiative";
+    case eDefensiveManuevers::Expulsion:
+        return "Expulsion";
     default:
         return "";
     }
@@ -236,7 +244,7 @@ int calculateReachCost(eLength length1, eLength length2)
     return reachCost;
 }
 
-std::map<eOffensiveManuevers, int> getAvailableManuevers(const Weapon* weapon, eGrips grip)
+std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Weapon* weapon, eGrips grip)
 {
     std::map<eOffensiveManuevers, int> ret;
 
@@ -254,6 +262,20 @@ std::map<eOffensiveManuevers, int> getAvailableManuevers(const Weapon* weapon, e
     if (weapon->canHook()) {
         ret[eOffensiveManuevers::Hook] = 0;
     }
+
+    return ret;
+}
+
+std::map<eDefensiveManuevers, int> getAvailableDefManuevers(const Weapon* weapon, eGrips grip)
+{
+    std::map<eDefensiveManuevers, int> ret;
+
+    ret[eDefensiveManuevers::Dodge] = 0;
+    ret[eDefensiveManuevers::Parry] = 0;
+    ret[eDefensiveManuevers::ParryLinked] = 1;
+    ret[eDefensiveManuevers::Counter] = 1;
+    ret[eDefensiveManuevers::Expulsion] = 1;
+    ret[eDefensiveManuevers::StealInitiative] = 0;
 
     return ret;
 }

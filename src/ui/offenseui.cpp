@@ -1,9 +1,9 @@
 #include "offenseui.h"
+#include "common.h"
 #include "creatures/utils.h"
 #include "game.h"
-#include "common.h"
-#include "types.h"
 #include "items/utils.h"
+#include "types.h"
 
 using namespace std;
 
@@ -48,21 +48,21 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
 
-    std::map<eOffensiveManuevers, int> manuevers
-        = getAvailableManuevers(player->getPrimaryWeapon(), player->getGrip());
+    map<eOffensiveManuevers, int> manuevers
+        = getAvailableOffManuevers(player->getPrimaryWeapon(), player->getGrip());
 
     string str = "Choose attack:\n";
-    std::map<char, std::pair<eOffensiveManuevers,int>> indices;
+    map<char, std::pair<eOffensiveManuevers, int>> indices;
     char idx = 'a';
-    for(auto manuever : manuevers) {
+    for (auto manuever : manuevers) {
         str += idx;
         str += " - ";
         str += offensiveManueverToString(manuever.first);
-        if(manuever.second > 0) {
-            str += " (" + std::to_string(manuever.second) + " AP)";
+        if (manuever.second > 0) {
+            str += " (" + to_string(manuever.second) + " AP)";
         }
         str += '\n';
-        indices[idx] = std::pair<eOffensiveManuevers, int>(manuever.first, manuever.second);
+        indices[idx] = pair<eOffensiveManuevers, int>(manuever.first, manuever.second);
         idx++;
     }
     str += idx;
@@ -77,25 +77,25 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
             return;
         }
         auto iter = indices.find(c);
-        
-        if(iter != indices.end()) {
+
+        if (iter != indices.end()) {
             auto cost = iter->second;
-            if(player->getCombatPool() < cost.second) {
-                Log::push(to_string(cost.second) + " AP needed.");                
+            if (player->getCombatPool() < cost.second) {
+                Log::push(to_string(cost.second) + " AP needed.");
                 return;
             }
             player->reduceCombatPool(cost.second);
             player->setOffenseManuever(cost.first);
 
-            switch(cost.first) {
+            switch (cost.first) {
             case eOffensiveManuevers::Swing:
-                m_currentState = eUiState::ChooseHeavyBlow;            
+                m_currentState = eUiState::ChooseHeavyBlow;
                 break;
             case eOffensiveManuevers::PinpointThrust:
             case eOffensiveManuevers::Thrust:
             case eOffensiveManuevers::Beat:
             case eOffensiveManuevers::Hook:
-                m_currentState = eUiState::ChooseComponent;                
+                m_currentState = eUiState::ChooseComponent;
                 break;
             case eOffensiveManuevers::Mordhau: {
                 const Weapon* weapon = player->getPrimaryWeapon();
