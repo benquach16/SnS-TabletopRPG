@@ -54,7 +54,7 @@ public:
     int getGrit() const { return (m_strength + m_willpower) / 2; }
     int getShrewdness() const { return (m_intuition + m_perception) / 2; }
     int getReflex() const { return (m_agility + m_intuition) / 2; }
-    int getSpeed() const { return (m_agility + m_strength) / 2; }
+    int getMobility() const { return (m_agility + m_strength) / 2; }
 
     int getConstitution() const { return cBaseConstitution; }
 

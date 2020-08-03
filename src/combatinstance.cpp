@@ -145,8 +145,8 @@ void CombatInstance::doRollInitiative()
         // no defense here!
         // hopefully you don't die horribly
         // roll speed to determine who goes first
-        int side1Successes = DiceRoller::rollGetSuccess(m_side1->getBTN(), m_side1->getSpeed());
-        int side2Successes = DiceRoller::rollGetSuccess(m_side2->getBTN(), m_side2->getSpeed());
+        int side1Successes = DiceRoller::rollGetSuccess(m_side1->getBTN(), m_side1->getMobility());
+        int side2Successes = DiceRoller::rollGetSuccess(m_side2->getBTN(), m_side2->getMobility());
 
         m_initiative = side1Successes < side2Successes ? eInitiative::Side1 : eInitiative::Side2;
 
@@ -561,11 +561,10 @@ void CombatInstance::doResolution()
             ? m_side2->getQueuedDefense().dice + cThrustDie
             : m_side2->getQueuedDefense().dice;
 
-        constexpr unsigned cSpeedFactor = 2;
-        int side1InitiativeSuccesses = DiceRoller::rollGetSuccess(
-            side1BTN, side1Dice + (m_side1->getSpeed() / cSpeedFactor));
-        int side2InitiativeSuccesses = DiceRoller::rollGetSuccess(
-            side2BTN, side2Dice + (m_side2->getSpeed() / cSpeedFactor));
+        int side1InitiativeSuccesses
+            = DiceRoller::rollGetSuccess(side1BTN, side1Dice + getTap(m_side1->getMobility()));
+        int side2InitiativeSuccesses
+            = DiceRoller::rollGetSuccess(side2BTN, side2Dice + getTap(m_side2->getMobility()));
 
         if (side1InitiativeSuccesses > side2InitiativeSuccesses) {
             m_initiative = eInitiative::Side1;

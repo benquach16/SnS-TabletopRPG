@@ -167,8 +167,8 @@ void CreateCharUI::doAttributes(bool hasKeyEvents, sf::Event event, PlayerObject
         + to_string(creature->getWillpower()) + "\n\nGrit (Average of Strength + Willpower): "
         + to_string(creature->getGrit()) + "\nShrewdness (Average of Intuition and Perception): "
         + to_string(creature->getShrewdness()) + "\nReflex (Average of Agility and Intuition): "
-        + to_string(creature->getReflex()) + "\nSpeed (Average of Agility and Strength): "
-        + to_string(creature->getSpeed()) + "\n\nr - Reset Points\n\nEnter - Continue";
+        + to_string(creature->getReflex()) + "\nMobility (Average of Agility and Strength): "
+        + to_string(creature->getMobility()) + "\n\nr - Reset Points\n\nEnter - Continue";
 
     text.setString(str);
     Game::getWindow().draw(text);

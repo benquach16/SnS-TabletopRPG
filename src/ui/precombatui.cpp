@@ -30,7 +30,7 @@ void PrecombatUI::doFavoring(bool hasKeyEvents, sf::Event event, Player* player)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    string str = "Favor location (1AP)?\na - Skip all pre-exchange actions\nb - Yes\nc - No";
+    string str = "Guard location (1AP)?\na - Skip all pre-exchange actions\nb - Yes\nc - No";
 
     if (player->getHasPosition() == false) {
         str += "\nd - Attempt to stand (3AP)";
@@ -114,8 +114,7 @@ void PrecombatUI::doChooseGrip(bool hasKeyEvents, sf::Event event, Player* playe
     text.setFont(Game::getDefaultFont());
     const Weapon* weapon = player->getPrimaryWeapon();
     if (weapon->getType() == eWeaponTypes::Polearms) {
-        text.setString(
-            "Switch Grip?\na - Standard\nb - Staff Grip\nc - Reverse (Tail-end forward)");
+        text.setString("Switch Grip?\na - Standard\nb - Staff Grip\n");
         if (hasKeyEvents && event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;
             switch (c) {
@@ -126,11 +125,6 @@ void PrecombatUI::doChooseGrip(bool hasKeyEvents, sf::Event event, Player* playe
                 break;
             case 'b':
                 player->setGrip(eGrips::Staff);
-                player->setPrecombatReady();
-                m_currentState = eUiState::Finished;
-                break;
-            case 'c':
-                player->setGrip(eGrips::Overhand);
                 player->setPrecombatReady();
                 m_currentState = eUiState::Finished;
                 break;

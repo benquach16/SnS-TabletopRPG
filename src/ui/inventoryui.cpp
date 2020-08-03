@@ -352,7 +352,7 @@ void InventoryUI::doProfile(bool hasKeyEvents, sf::Event event, PlayerObject* pl
         + "Grit: " + to_string(creature->getGrit()) + '\n'
         + "Shrewdness: " + to_string(creature->getShrewdness()) + '\n'
         + "Reflex: " + to_string(creature->getReflex()) + '\n'
-        + "Speed: " + to_string(creature->getSpeed()) + "\n\n";
+        + "Mobility: " + to_string(creature->getMobility()) + "\n\n";
 
     statStr += "Proficiencies\n";
     statStr += "Brawling: " + to_string(creature->getProficiency(eWeaponTypes::Brawling)) + '\n';

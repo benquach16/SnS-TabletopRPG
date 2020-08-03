@@ -599,7 +599,7 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
 {
     int diceAllocated = attacker->getQueuedOffense().dice;
 
-    int combatPool = attacker->getCombatPool() + attacker->getSpeed() / 2;
+    int combatPool = attacker->getCombatPool() + getTap(attacker->getMobility());
 
     int bufferDie = random_static::get(3, 5);
 
@@ -608,8 +608,9 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
     mult += m_BTN - cBaseBTN;
     // mult += attacker->getQueuedOffense().manuever == eOffensiveManuevers::Thrust ? 2 : 0;
     disadvantageMult += (mult / 10);
-    if ((combatPool * disadvantageMult) + bufferDie < m_combatPool + getSpeed() / 2) {
-        int diff = static_cast<int>(abs((getSpeed() - attacker->getSpeed()) * disadvantageMult));
+    if ((combatPool * disadvantageMult) + bufferDie < m_combatPool + getTap(getMobility())) {
+        int diff
+            = static_cast<int>(abs((getMobility() - attacker->getMobility()) * disadvantageMult));
         int dice = diff + bufferDie;
         if (m_combatPool > dice) {
             outDie = dice;
@@ -680,7 +681,7 @@ eInitiativeRoll Creature::doInitiative(const Creature* opponent)
     constexpr int cBase = 8;
     int base = cBase;
     base += reachDiff;
-    base += opponent->getSpeed() - getSpeed();
+    base += opponent->getMobility() - getMobility();
     base += opponent->getCombatPool() - getCombatPool();
 
     int passiveness = random_static::get(2, 4);

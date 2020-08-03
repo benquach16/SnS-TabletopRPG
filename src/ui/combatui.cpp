@@ -240,7 +240,7 @@ void CombatUI::doInitiative(bool hasKeyEvents, sf::Event event, Player* player, 
             str += "have more shrewdness than you.";
         }
         str += "They ";
-        if (target->getSpeed() < player->getSpeed()) {
+        if (target->getMobility() < player->getMobility()) {
             str += "are slower than you.";
         } else {
             str += "are faster than you.";
