@@ -662,7 +662,7 @@ void CombatInstance::doResolution()
             if (defend.manuever == eDefensiveManuevers::Dodge) {
                 writeMessage("attack dodged with " + to_string(-MoS) + " successes");
             } else {
-                writeMessage("attack deflected with " + to_string(-MoS) + " successes");
+                writeMessage("attack parried with " + to_string(-MoS) + " successes");
 
                 // natural weapon parries still take damage thru the parry
                 if (defender->getPrimaryWeapon()->getNaturalWeapon() == true) {
@@ -955,15 +955,15 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
         return false;
     }
 
-    writeMessage(target->getName() + " received a level " + to_string(finalDamage) + " wound to "
-            + bodyPartToString(bodyPart),
-        Log::eMessageTypes::Standard, true);
     eDamageTypes finalType = doBlunt == true ? eDamageTypes::Blunt : attack.component->getType();
     if (finalType == eDamageTypes::Blunt && armorAtLocation.isRigid == true
         && attack.component->hasProperty(eWeaponProperties::Crushing) == false) {
         constexpr int cMaxRigid = 3;
         finalDamage = min(cMaxRigid, finalDamage);
     }
+    writeMessage(target->getName() + " received a level " + to_string(finalDamage) + " " + damageTypeToString(finalType) + " wound to "
+            + bodyPartToString(bodyPart),
+        Log::eMessageTypes::Standard, true);
     Wound* wound = WoundTable::getSingleton()->getWound(finalType, bodyPart, finalDamage);
     writeMessage(wound->getText(), Log::eMessageTypes::Damage);
     if (wound->getBTN() > target->getBTN()) {
