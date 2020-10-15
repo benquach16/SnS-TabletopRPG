@@ -12,8 +12,9 @@ using namespace std;
 const string filepath = "data/starting.json";
 
 constexpr unsigned cAttributes = 23;
-constexpr unsigned cProficiencies = 14;
+constexpr unsigned cProficiencies = 23;
 constexpr unsigned cMax = 9;
+constexpr unsigned cMaxProficiency = 14;
 
 CreateCharUI::CreateCharUI()
     : m_loadoutIdx(-1)
@@ -248,35 +249,40 @@ void CreateCharUI::doProficiencies(bool hasKeyEvents, sf::Event event, PlayerObj
         char c = event.text.unicode;
         switch (c) {
         case 'a':
-            if (m_pointsLeft > 0 && creature->getProficiency(eWeaponTypes::Brawling) < cMax) {
+            if (m_pointsLeft > 0
+                && creature->getProficiency(eWeaponTypes::Brawling) < cMaxProficiency) {
                 creature->setProficiency(
                     eWeaponTypes::Brawling, creature->getProficiency(eWeaponTypes::Brawling) + 1);
                 m_pointsLeft -= 1;
             }
             break;
         case 'b':
-            if (m_pointsLeft > 0 && creature->getProficiency(eWeaponTypes::Swords) < cMax) {
+            if (m_pointsLeft > 0
+                && creature->getProficiency(eWeaponTypes::Swords) < cMaxProficiency) {
                 creature->setProficiency(
                     eWeaponTypes::Swords, creature->getProficiency(eWeaponTypes::Swords) + 1);
                 m_pointsLeft -= 1;
             }
             break;
         case 'c':
-            if (m_pointsLeft > 0 && creature->getProficiency(eWeaponTypes::Longswords) < cMax) {
+            if (m_pointsLeft > 0
+                && creature->getProficiency(eWeaponTypes::Longswords) < cMaxProficiency) {
                 creature->setProficiency(eWeaponTypes::Longswords,
                     creature->getProficiency(eWeaponTypes::Longswords) + 1);
                 m_pointsLeft -= 1;
             }
             break;
         case 'd':
-            if (m_pointsLeft > 0 && creature->getProficiency(eWeaponTypes::Mass) < cMax) {
+            if (m_pointsLeft > 0
+                && creature->getProficiency(eWeaponTypes::Mass) < cMaxProficiency) {
                 creature->setProficiency(
                     eWeaponTypes::Mass, creature->getProficiency(eWeaponTypes::Mass) + 1);
                 m_pointsLeft -= 1;
             }
             break;
         case 'e':
-            if (m_pointsLeft > 0 && creature->getProficiency(eWeaponTypes::Polearms) < cMax) {
+            if (m_pointsLeft > 0
+                && creature->getProficiency(eWeaponTypes::Polearms) < cMaxProficiency) {
                 creature->setProficiency(
                     eWeaponTypes::Polearms, creature->getProficiency(eWeaponTypes::Polearms) + 1);
                 m_pointsLeft -= 1;

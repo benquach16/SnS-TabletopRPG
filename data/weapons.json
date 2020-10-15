@@ -1,4 +1,50 @@
 {
+	"1020": {
+		"name": "Polearm Buttspike",
+		"description": "The buttspike of a polearm. Typically found on nicer polearms.",
+		"length" : "medium",
+		"type": "polearm",
+		"hands": 1,
+		"cost": 0,
+		"hook": false,
+		"components": [
+			{
+				"name": "Buttspike, Thrust",
+				"damage": 1,
+				"type": "piercing",
+				"attack": "thrust"
+			},		
+			{
+				"name": "Buttspike, Swing",
+				"damage": 1,
+				"type": "blunt",
+				"attack": "swing"
+			}			
+		]
+	},
+	"1021": {
+		"name": "Polearm Buttend",
+		"description": "The butt end of a polearm.",
+		"length" : "medium",
+		"type": "polearm",
+		"hands": 1,
+		"cost": 0,
+		"hook": false,
+		"components": [
+			{
+				"name": "Buttspike, Thrust",
+				"damage": 1,
+				"type": "piercing",
+				"attack": "thrust"
+			},		
+			{
+				"name": "Buttspike, Swing",
+				"damage": 1,
+				"type": "blunt",
+				"attack": "swing"
+			}			
+		]
+	},
 	"1040": {
 		"name": "Pollaxe",
 		"description":"A knightly polearm that consists of a top spike, an axe blade, and a hammer. Particularly effective against plate armor.",
@@ -45,7 +91,8 @@
 				"attack": "swing",
 				"buttspike": true
 			}
-		]
+		],
+		"secondary" : 1020
 	},
 	"1041": {
 		"name": "Arming Sword",
@@ -354,8 +401,8 @@
 		]
 	},
 	"1051": {
-		"name": "Meteor Metal Pollaxe",
-		"description":"A pollaxe made from the rarest metal on the planet, meteor metal. You can feel the power radiating from this weapon.",
+		"name": "Seraphim Steel Pollaxe",
+		"description":"A pollaxe made from the rarest metal on the planet, seraphim steel. You can feel the power radiating from this weapon.",
 		"length": "verylong",
 		"type": "polearm",
 		"hands": 2,
@@ -372,7 +419,7 @@
 			},
 			{
 				"name": "Axe head",
-				"damage": 4,
+				"damage": 3,
 				"attack": "swing",
 				"type": "cutting",
 				"polearmhead": true

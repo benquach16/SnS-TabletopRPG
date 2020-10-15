@@ -16,9 +16,9 @@
 
 #include <boost/serialization/strong_typedef.hpp>
 
-static constexpr int cBaseBTN = 3;
-static constexpr int cMinBTN = 2;
-static constexpr int cMaxBTN = 6;
+static constexpr int cBaseBTN = 7;
+static constexpr int cMinBTN = 5;
+static constexpr int cMaxBTN = 10;
 // different based on race
 static constexpr int cBaseBloodLoss = 8;
 static constexpr int cBaseConstitution = 2;
@@ -69,6 +69,8 @@ public:
 
     const Weapon* getPrimaryWeapon() const;
     int getPrimaryWeaponId() const { return m_primaryWeaponId; }
+    const Weapon* getSecondaryWeapon() const;
+    int getSecondaryWeaponId() const { return m_secondaryWeaponId; }
     eLength getCurrentReach() const;
     void setGrip(eGrips grip) { m_currentGrip = grip; }
     eGrips getGrip() const { return m_currentGrip; }
@@ -229,6 +231,7 @@ protected:
 
     // index
     int m_primaryWeaponId;
+    int m_secondaryWeaponId;
     int m_disableWeaponId;
     std::vector<int> m_quickDrawItems;
     eGrips m_currentGrip;

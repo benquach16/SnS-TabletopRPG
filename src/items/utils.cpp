@@ -240,7 +240,7 @@ int calculateReachCost(eLength length1, eLength length2)
 {
     int reachCost = length1 - length2;
     reachCost = abs(reachCost);
-    reachCost = (reachCost + 1) / 2;
+    // reachCost = (reachCost + 1) / 2;
     return reachCost;
 }
 

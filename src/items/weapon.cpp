@@ -13,13 +13,15 @@ using namespace std;
 const string filepath = "data/weapons.json";
 
 Weapon::Weapon(const std::string& name, const std::string& description, eLength length,
-    std::vector<Component*> components, eWeaponTypes type, int cost, bool hook, bool naturalWeapon)
+    std::vector<Component*> components, eWeaponTypes type, int cost, bool hook, bool naturalWeapon,
+    int secondaryWeaponId)
     : Item(name, description, cost, eItemType::Weapon)
     , m_length(length)
     , m_components(components)
     , m_type(type)
     , m_hook(hook)
     , m_naturalWeapon(naturalWeapon)
+    , m_secondaryWeaponId(secondaryWeaponId)
 {
     for (unsigned i = 0; i < components.size(); ++i) {
         if (components[i]->getAttack() == eAttacks::Thrust) {
@@ -133,6 +135,10 @@ WeaponTable::WeaponTable()
         bool hook = values["hook"];
         vector<Component*> weaponComponents;
 
+        if (values["secondary"].is_null() == false) {
+            int secondaryWeaponId = values["secondary"];
+        }
+
         for (unsigned i = 0; i < componentJson.size(); ++i) {
             // cout << components[i] << endl;
             assert(componentJson[i]["name"].is_null() == false);
@@ -157,6 +163,7 @@ WeaponTable::WeaponTable()
                 }
             }
 
+            // DELETE ALL THIS TERRIBLE CODE
             bool addStandardGrips = true;
             // templatize polearm components for smaller jsons
             if (componentJson[i]["buttspike"].is_null() == false) {
