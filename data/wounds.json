@@ -1,7 +1,7 @@
 {
 	"blunt": {
-		"BTN": [3, 3, 4, 5, 6],
-		"impact": [1, 2, 3, 4, 5],
+		"BTN": [7, 7, 8, 9, 10],
+		"impact": [2, 4, 6, 8, 10],
 		"crown": {
 			"1": {
 				"text": ["Mild blow to the forehead."]
@@ -366,8 +366,8 @@
 		}
 	},
 	"piercing": {
-		"BTN": [3, 4, 5, 6, 6],
-		"impact": [1, 1, 2, 2, 3],
+		"BTN": [7, 8, 9, 10, 10],
+		"impact": [1, 2, 3, 4, 5],
 		"crown": {
 			"1": {
 				"text":["Some torn skin, a little blood."]
@@ -631,7 +631,7 @@
 				"effects":["BL1", "KD2"]
 			},
 			"5": {
-				"text":["Pelvis pierced. Messy and lots of blood. Unstable fracture."],
+				"text":["Drives straight through hip and into pelvis. Blood vessels ventilated, and bladder ruptured."],
 				"effects":["BL2", "KD3"]
 			}
 		},
@@ -640,7 +640,7 @@
 				"text":["Nothing serious."]
 			},
 			"2": {
-				"text":["Some blood, but can still be considered lucky."],
+				"text":["Painful stab, but organs still functional."],
 				"effects": ["KD1"]
 			},
 			"3": {
@@ -648,11 +648,11 @@
 				"effects":["KO1"]
 			},
 			"4": {
-				"text":["Say goodbye to reproduction. Lots of blood."],
+				"text":["Weapon drives into pelvis and severs reproductive organs."],
 				"effects":["BL1", "KO2"]
 			},
 			"5": {
-				"text":["Pelvis pierced, lots of blood. Dismembered organ."],
+				"text":["Point splits pelvis in two and lands in abdomen, tearing apart all organs and causes fatal bloodloss"],
 				"effects":["death"]
 			}
 		},

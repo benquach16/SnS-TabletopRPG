@@ -912,9 +912,11 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
                 finalDamage = (finalDamage + 1) / 2;
             } else {
                 finalDamage = finalDamage / 2;
+                // only slashing attacks get converted to blunt against maille
+                doBlunt = true;
             }
             finalDamage = max(finalDamage, 1);
-            doBlunt = true;
+
         } else if (attack.component->hasProperty(eWeaponProperties::PlatePiercing) == false
             && armorAtLocation.type == eArmorTypes::Plate) {
             writeMessage("Plate armor reduces wound level by half");
@@ -928,7 +930,7 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
             doBlunt = true;
         } else if (armorAtLocation.type != eArmorTypes::Plate
             && armorAtLocation.type != eArmorTypes::Maille) {
-            // weird case
+            // weird case where we have metal armor but not maille or plate (?)
             writeMessage("Metal armor reduces wound level by half");
             // piercing attacks round up, otherwise round down
             if (attack.component->getType() == eDamageTypes::Piercing) {
@@ -940,7 +942,7 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
             doBlunt = true;
         }
     }
-    constexpr int cCrushingImpact = 2;
+    constexpr int cCrushingImpact = 3;
     if (attack.component->hasProperty(eWeaponProperties::Crushing)
         && getHitLocation(bodyPart) == eHitLocations::Head) {
         writeMessage("Crushing weapon inflicts extra impact to head", Log::eMessageTypes::Alert);

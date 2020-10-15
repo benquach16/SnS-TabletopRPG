@@ -133,10 +133,11 @@ WeaponTable::WeaponTable()
         eWeaponTypes weaponType = convertTypeFromStr(values["type"]);
         int cost = values["cost"];
         bool hook = values["hook"];
+        int secondaryWeaponId = -1;
         vector<Component*> weaponComponents;
 
         if (values["secondary"].is_null() == false) {
-            int secondaryWeaponId = values["secondary"];
+            secondaryWeaponId = values["secondary"];
         }
 
         for (unsigned i = 0; i < componentJson.size(); ++i) {
@@ -227,7 +228,7 @@ WeaponTable::WeaponTable()
         }
 
         Weapon* weapon
-            = new Weapon(weaponName, description, length, weaponComponents, weaponType, cost, hook);
+            = new Weapon(weaponName, description, length, weaponComponents, weaponType, cost, hook, secondaryWeaponId);
         assert(m_weaponsList.find(id) == m_weaponsList.end());
         m_weaponsList[id] = weapon;
         ItemTable::getSingleton()->addWeapon(id, weapon);
