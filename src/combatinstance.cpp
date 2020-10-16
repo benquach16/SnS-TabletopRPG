@@ -1,3 +1,4 @@
+
 // I have lots of redundant code, refactor me!
 
 #include <assert.h>
@@ -554,12 +555,13 @@ void CombatInstance::doResolution()
 
         // special case for thrust manuever, get an extra die
         constexpr unsigned cThrustDie = 1;
+        // divide dice allocation by 2
         int side1Dice = (m_side1->getQueuedOffense().manuever == eOffensiveManuevers::Thrust)
-            ? m_side1->getQueuedDefense().dice + cThrustDie
-            : m_side1->getQueuedDefense().dice;
+            ? (m_side1->getQueuedDefense().dice+1)/2 + cThrustDie
+            : (m_side1->getQueuedDefense().dice+1)/2;
         int side2Dice = (m_side2->getQueuedOffense().manuever == eOffensiveManuevers::Thrust)
-            ? m_side2->getQueuedDefense().dice + cThrustDie
-            : m_side2->getQueuedDefense().dice;
+            ? (m_side2->getQueuedDefense().dice+1)/2 + cThrustDie
+            : (m_side2->getQueuedDefense().dice+1)/2;
 
         int side1InitiativeSuccesses
             = DiceRoller::rollGetSuccess(side1BTN, side1Dice + getTap(m_side1->getMobility()));
@@ -604,6 +606,13 @@ void CombatInstance::doResolution()
                   "is dropped.");
             m_currentState = eCombatState::Offense;
             m_currentReach = attacker->getCurrentReach();
+        } else if (defender->isWeaponDisabled() || defender->droppedWeapon()){
+            // if the attack disabled or caused their weapon to drop
+            // if the attack wiped out their combat pool, do nothing
+            writeMessage(defender->getName()
+                + " had their weapon disabled!");
+            m_currentState = eCombatState::Offense;
+            m_currentReach = attacker->getCurrentReach();            
         } else {
             int defendSuccesses
                 = DiceRoller::rollGetSuccess(defender->getBTN(), defender->getQueuedOffense().dice);
@@ -651,6 +660,7 @@ void CombatInstance::doResolution()
         int MoS = offenseSuccesses - defenseSuccesses;
         cout << MoS << endl;
         if (MoS > 0) {
+            writeMessage("attack landed with " + to_string(MoS) + " successes");            
             if (inflictWound(attacker, MoS, attack, defender) == true) {
                 m_currentState = eCombatState::FinishedCombat;
                 return;
@@ -901,7 +911,8 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
     finalDamage -= armorAtLocation.AV;
     // add strength bonus minus constitution
     finalDamage += getTap(attacker->getStrength());
-    finalDamage -= getTap(target->getConstitution());
+    
+    finalDamage -= target->getConstitution();
 
     if (armorAtLocation.isMetal == true && damageType != eDamageTypes::Blunt && finalDamage > 0) {
         if (attack.component->hasProperty(eWeaponProperties::MaillePiercing) == false

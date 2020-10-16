@@ -272,9 +272,9 @@ std::map<eDefensiveManuevers, int> getAvailableDefManuevers(const Weapon* weapon
 
     ret[eDefensiveManuevers::Dodge] = 0;
     ret[eDefensiveManuevers::Parry] = 0;
-    ret[eDefensiveManuevers::ParryLinked] = 1;
-    ret[eDefensiveManuevers::Counter] = 1;
-    ret[eDefensiveManuevers::Expulsion] = 1;
+    ret[eDefensiveManuevers::ParryLinked] = 2;
+    ret[eDefensiveManuevers::Counter] = 2;
+    ret[eDefensiveManuevers::Expulsion] = 2;
     ret[eDefensiveManuevers::StealInitiative] = 0;
 
     return ret;
