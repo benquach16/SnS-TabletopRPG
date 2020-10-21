@@ -23,7 +23,7 @@ int rollGetSuccess(int BTN, int number)
             count++;
         }
     }
-    cout << endl;
+    cout << "successes: " << count << endl;
     return count;
 }
 } // namespace DiceRoller

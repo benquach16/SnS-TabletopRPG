@@ -408,7 +408,7 @@ void CombatInstance::doDefense()
         return;
     }
     if (defend.manuever == eDefensiveManuevers::ParryLinked) {
-        writeMessage(defender->getName() + " performs a linked parry with "
+        writeMessage(defender->getName() + " performs a block and strike with "
             + defenseWeapon->getName() + " using " + to_string(defend.dice) + " action points");
         m_currentState = eCombatState::ParryLinked;
         return;
@@ -442,8 +442,8 @@ void CombatInstance::doParryLinked()
 
     Offense offense = defender->getQueuedOffense();
 
-    writeMessage(
-        defender->getName() + " links defense to counter with " + offense.component->getName());
+    writeMessage(defender->getName() + " performs a Block and Strike with "
+        + offense.component->getName() + " at " + hitLocationToString(offense.target));
 
     m_currentState = eCombatState::Resolution;
 }
@@ -557,11 +557,11 @@ void CombatInstance::doResolution()
         constexpr unsigned cThrustDie = 1;
         // divide dice allocation by 2
         int side1Dice = (m_side1->getQueuedOffense().manuever == eOffensiveManuevers::Thrust)
-            ? (m_side1->getQueuedDefense().dice+1)/2 + cThrustDie
-            : (m_side1->getQueuedDefense().dice+1)/2;
+            ? (m_side1->getQueuedDefense().dice + 1) / 2 + cThrustDie
+            : (m_side1->getQueuedDefense().dice + 1) / 2;
         int side2Dice = (m_side2->getQueuedOffense().manuever == eOffensiveManuevers::Thrust)
-            ? (m_side2->getQueuedDefense().dice+1)/2 + cThrustDie
-            : (m_side2->getQueuedDefense().dice+1)/2;
+            ? (m_side2->getQueuedDefense().dice + 1) / 2 + cThrustDie
+            : (m_side2->getQueuedDefense().dice + 1) / 2;
 
         int side1InitiativeSuccesses
             = DiceRoller::rollGetSuccess(side1BTN, side1Dice + getTap(m_side1->getMobility()));
@@ -606,13 +606,12 @@ void CombatInstance::doResolution()
                   "is dropped.");
             m_currentState = eCombatState::Offense;
             m_currentReach = attacker->getCurrentReach();
-        } else if (defender->isWeaponDisabled() || defender->droppedWeapon()){
+        } else if (defender->isWeaponDisabled() || defender->droppedWeapon()) {
             // if the attack disabled or caused their weapon to drop
             // if the attack wiped out their combat pool, do nothing
-            writeMessage(defender->getName()
-                + " had their weapon disabled!");
+            writeMessage(defender->getName() + " had their weapon disabled!");
             m_currentState = eCombatState::Offense;
-            m_currentReach = attacker->getCurrentReach();            
+            m_currentReach = attacker->getCurrentReach();
         } else {
             int defendSuccesses
                 = DiceRoller::rollGetSuccess(defender->getBTN(), defender->getQueuedOffense().dice);
@@ -660,7 +659,7 @@ void CombatInstance::doResolution()
         int MoS = offenseSuccesses - defenseSuccesses;
         cout << MoS << endl;
         if (MoS > 0) {
-            writeMessage("attack landed with " + to_string(MoS) + " successes");            
+            writeMessage("attack landed with " + to_string(MoS) + " successes");
             if (inflictWound(attacker, MoS, attack, defender) == true) {
                 m_currentState = eCombatState::FinishedCombat;
                 return;
@@ -841,6 +840,8 @@ void CombatInstance::doEndCombat()
 
 bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, Creature* target)
 {
+    writeMessage(attacker->getName() + " got " + to_string(MoS) + " successes!",
+        Log::eMessageTypes::Announcement);
     if (attack.manuever == eOffensiveManuevers::Hook) {
         writeMessage(target->getName() + " loses " + to_string(MoS) + " action points from impact",
             Log::eMessageTypes::Alert);
@@ -911,7 +912,7 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
     finalDamage -= armorAtLocation.AV;
     // add strength bonus minus constitution
     finalDamage += getTap(attacker->getStrength());
-    
+
     finalDamage -= target->getConstitution();
 
     if (armorAtLocation.isMetal == true && damageType != eDamageTypes::Blunt && finalDamage > 0) {
@@ -972,8 +973,8 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
         constexpr int cMaxRigid = 3;
         finalDamage = min(cMaxRigid, finalDamage);
     }
-    writeMessage(target->getName() + " received a level " + to_string(finalDamage) + " " + damageTypeToString(finalType) + " wound to "
-            + bodyPartToString(bodyPart),
+    writeMessage(target->getName() + " received a level " + to_string(finalDamage) + " "
+            + damageTypeToString(finalType) + " wound to " + bodyPartToString(bodyPart),
         Log::eMessageTypes::Standard, true);
     Wound* wound = WoundTable::getSingleton()->getWound(finalType, bodyPart, finalDamage);
     writeMessage(wound->getText(), Log::eMessageTypes::Damage);
