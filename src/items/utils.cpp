@@ -276,6 +276,7 @@ std::map<eDefensiveManuevers, int> getAvailableDefManuevers(const Weapon* weapon
     ret[eDefensiveManuevers::Counter] = 2;
     ret[eDefensiveManuevers::Expulsion] = 2;
     ret[eDefensiveManuevers::StealInitiative] = 0;
+    ret[eDefensiveManuevers::AttackFromDef] = 0;
 
     return ret;
 }

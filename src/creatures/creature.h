@@ -145,7 +145,7 @@ public:
     bool getHasPrecombat() const { return m_hasPrecombat; }
     bool getHasPreResolution() const { return m_hasPreResolution; }
 
-    virtual void clearCreatureManuevers();
+    virtual void clearCreatureManuevers(bool skipDisable = false);
     int getOffenseManueverCost(eOffensiveManuevers manuever);
     bool setCreatureOffenseManuever(eOffensiveManuevers manuever);
     int getDefenseManueverCost(eDefensiveManuevers manuever);

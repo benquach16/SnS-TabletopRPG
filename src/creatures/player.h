@@ -38,7 +38,7 @@ public:
     void setPrecombatReady() { m_hasPrecombat = true; }
     void setPreResolutionReady() { m_hasPreResolution = true; }
 
-    void clearCreatureManuevers() override;
+    void clearCreatureManuevers(bool skipDisable = false) override;
 
 private:
     eInitiativeRoll m_initiative;

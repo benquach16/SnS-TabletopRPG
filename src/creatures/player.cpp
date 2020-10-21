@@ -34,9 +34,9 @@ void Player::setInitiative(eInitiativeRoll initiative)
     m_flagInitiative = true;
 }
 
-void Player::clearCreatureManuevers()
+void Player::clearCreatureManuevers(bool skipDisable)
 {
     // todo: switch this to the creature base m_hasOffense
-    Creature::clearCreatureManuevers();
+    Creature::clearCreatureManuevers(skipDisable);
     m_flagInitiative = false;
 }

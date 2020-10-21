@@ -327,6 +327,7 @@ bool Creature::rollFatigue()
 void Creature::disableWeapon(bool drop)
 {
     // do nothing, since we cannot drop fists
+    // or natural weapon
     if (m_primaryWeaponId == cFistsId) {
         return;
     }
@@ -548,7 +549,13 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
     } else {
         m_currentDefense.manuever = eDefensiveManuevers::Parry;
     }
-
+    if (isLastTempo == true) {
+        // use all dice because we're going to refresh anyway
+        m_currentDefense.dice = m_combatPool;
+        m_currentDefense.dice = max(m_currentDefense.dice, 0);
+        reduceCombatPool(m_currentDefense.dice);
+        return;
+    }
     int stealDie = 0;
     if (stealInitiative(attacker, stealDie) == true) {
         m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
@@ -557,13 +564,7 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
         reduceCombatPool(m_currentDefense.dice);
         return;
     }
-    if (isLastTempo == true) {
-        // use all dice because we're going to refresh anyway
-        m_currentDefense.dice = m_combatPool;
-        m_currentDefense.dice = max(m_currentDefense.dice, 0);
-        reduceCombatPool(m_currentDefense.dice);
-        return;
-    }
+
     int dice = std::min(diceAllocated + random_static::get(0, diceAllocated / 3)
             - random_static::get(0, diceAllocated / 4),
         m_combatPool);
@@ -691,7 +692,7 @@ eInitiativeRoll Creature::doInitiative(const Creature* opponent)
     return eInitiativeRoll::Defend;
 }
 
-void Creature::clearCreatureManuevers()
+void Creature::clearCreatureManuevers(bool skipDisable)
 {
     m_currentOffense.dice = 0;
     m_currentOffense.heavyblow = 0;
@@ -710,10 +711,12 @@ void Creature::clearCreatureManuevers()
 
     m_favoredLocations.clear();
 
-    if (m_disarm > 0) {
-        m_disarm--;
-        if (m_disarm == 0) {
-            enableWeapon();
+    if (skipDisable == false) {
+        if (m_disarm > 0) {
+            m_disarm--;
+            if (m_disarm == 0) {
+                enableWeapon();
+            }
         }
     }
 }

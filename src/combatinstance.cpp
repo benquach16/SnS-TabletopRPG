@@ -222,8 +222,8 @@ bool CombatInstance::doOffense()
             m_currentTempo = eTempo::First;
             attacker->resetCombatPool();
             defender->resetCombatPool();
-            attacker->clearCreatureManuevers();
-            defender->clearCreatureManuevers();
+            attacker->clearCreatureManuevers(true);
+            defender->clearCreatureManuevers(true);
         }
     }
 
@@ -239,7 +239,8 @@ bool CombatInstance::doOffense()
             return false;
         }
     } else {
-        attacker->doOffense(defender, reachCost, false, m_dualRedThrow);
+        bool allin = m_currentTempo == eTempo::Second;
+        attacker->doOffense(defender, reachCost, allin, m_dualRedThrow);
     }
     if (attacker->getHasOffense() == false) {
         m_currentState = eCombatState::Offense;
@@ -442,8 +443,8 @@ void CombatInstance::doParryLinked()
 
     Offense offense = defender->getQueuedOffense();
 
-    writeMessage(defender->getName() + " performs a Block and Strike with "
-        + offense.component->getName() + " at " + hitLocationToString(offense.target));
+    writeMessage(defender->getName() + " prepares to attack with " + offense.component->getName()
+        + " at " + hitLocationToString(offense.target));
 
     m_currentState = eCombatState::Resolution;
 }
@@ -570,8 +571,12 @@ void CombatInstance::doResolution()
 
         if (side1InitiativeSuccesses > side2InitiativeSuccesses) {
             m_initiative = eInitiative::Side1;
-        } else {
+        } else if (side1InitiativeSuccesses < side2InitiativeSuccesses) {
             m_initiative = eInitiative::Side2;
+        } else {
+            // tie
+            m_currentState = eCombatState::DualOffenseResolve;
+            return;
         }
         setSides(attacker, defender);
         writeMessage(attacker->getName() + " has taken the initiative!");
@@ -659,7 +664,7 @@ void CombatInstance::doResolution()
         int MoS = offenseSuccesses - defenseSuccesses;
         cout << MoS << endl;
         if (MoS > 0) {
-            writeMessage("attack landed with " + to_string(MoS) + " successes");
+            // writeMessage("attack landed with " + to_string(MoS) + " successes");
             if (inflictWound(attacker, MoS, attack, defender) == true) {
                 m_currentState = eCombatState::FinishedCombat;
                 return;
@@ -725,6 +730,7 @@ void CombatInstance::doResolution()
 
 void CombatInstance::doDualOffenseResolve()
 {
+    writeMessage("Both attacks land at the same time!", Log::eMessageTypes::Announcement);
     // dual aggression
     Offense attack = m_side1->getQueuedOffense();
     Offense attack2 = m_side2->getQueuedOffense();
@@ -840,7 +846,8 @@ void CombatInstance::doEndCombat()
 
 bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, Creature* target)
 {
-    writeMessage(attacker->getName() + " got " + to_string(MoS) + " successes!",
+    writeMessage(
+        attacker->getName() + "'s attack landed with " + to_string(MoS) + " net successes!",
         Log::eMessageTypes::Announcement);
     if (attack.manuever == eOffensiveManuevers::Hook) {
         writeMessage(target->getName() + " loses " + to_string(MoS) + " action points from impact",
