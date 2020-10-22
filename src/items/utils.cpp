@@ -254,7 +254,7 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Weapon* weapon
     ret[eOffensiveManuevers::Thrust] = 0;
     ret[eOffensiveManuevers::Beat] = 0;
     ret[eOffensiveManuevers::PinpointThrust]
-        = (grip == eGrips::HalfSword || grip == eGrips::Staff) ? 1 : 2;
+        = (grip == eGrips::HalfSword || grip == eGrips::Staff) ? 2 : 3;
 
     eWeaponTypes type = weapon->getType();
     if (type == eWeaponTypes::Swords || type == eWeaponTypes::Longswords) {

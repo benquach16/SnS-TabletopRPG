@@ -42,7 +42,8 @@ enum class eCombatState : unsigned {
     Resolution = 17,
     DualOffenseResolve = 18,
     PostResolution = 19,
-    FinishedCombat = 20
+    FinishedCombat = 20,
+    AttackFromDefense = 21,
 };
 
 class CombatInstance {
@@ -75,6 +76,7 @@ private:
     void doDualOffenseStealInitiative();
     void doDualOffense2();
     void doDualOffenseSecondInitiative();
+    void doAttackFromDefense();
     void doStolenOffense();
     // doOffense has a return type to poll player input for dual offense
     bool doOffense();

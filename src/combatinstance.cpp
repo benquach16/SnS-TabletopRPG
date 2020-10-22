@@ -382,6 +382,46 @@ void CombatInstance::doDualOffenseSecondInitiative()
     m_currentState = eCombatState::Resolution;
 }
 
+void CombatInstance::doAttackFromDefense()
+{
+    Creature* attacker = nullptr;
+    Creature* defender = nullptr;
+    setSides(attacker, defender);
+
+    const Weapon* offenseWeapon = defender->getPrimaryWeapon();
+
+    int reachCost = calculateReachCost(m_currentReach, defender->getCurrentReach());
+
+    if (defender->isPlayer() == true) {
+        // wait until we get input from player
+        Player* player = static_cast<Player*>(defender);
+        if (player->getHasOffense() == false) {
+            m_currentState = eCombatState::AttackFromDefense;
+            return;
+        }
+    } else {
+        attacker->doOffense(defender, reachCost, true, m_dualRedThrow);
+    }
+    if (attacker->getHasOffense() == false) {
+        m_currentState = eCombatState::AttackFromDefense;
+        return;
+    }
+
+    outputReachCost(reachCost, defender);
+    Offense attack = defender->getQueuedOffense();
+
+    assert(attack.component != nullptr);
+
+    defender->addAndResetBonusDice();
+
+    writeMessage(defender->getName() + " " + offensiveManueverToString(attack.manuever)
+        + "s from defense with " + offenseWeapon->getName() + " at "
+        + hitLocationToString(attack.target) + " using " + attack.component->getName() + " with "
+        + to_string(defender->getQueuedOffense().dice) + " action points");
+
+    m_currentState = eCombatState::Resolution;
+}
+
 void CombatInstance::doDefense()
 {
     Creature* attacker = nullptr;
@@ -406,6 +446,10 @@ void CombatInstance::doDefense()
     if (defend.manuever == eDefensiveManuevers::StealInitiative) {
         // need both sides to attempt to allocate dice
         m_currentState = eCombatState::StealInitiative;
+        return;
+    }
+    if (defend.manuever == eDefensiveManuevers::AttackFromDef) {
+        m_currentState = eCombatState::AttackFromDefense;
         return;
     }
     if (defend.manuever == eDefensiveManuevers::ParryLinked) {
@@ -544,7 +588,8 @@ void CombatInstance::doResolution()
     Defense defend = defender->getQueuedDefense();
 
     // determine who was originally attacking
-    if (defend.manuever == eDefensiveManuevers::StealInitiative) {
+    if (defend.manuever == eDefensiveManuevers::StealInitiative
+        || defend.manuever == eDefensiveManuevers::AttackFromDef) {
         // original attacker gets advantage
         // ptr compares bad
         int side1BTN = (m_side1->getId() == attacker->getId() && m_dualRedThrow == false)
@@ -569,17 +614,20 @@ void CombatInstance::doResolution()
         int side2InitiativeSuccesses
             = DiceRoller::rollGetSuccess(side2BTN, side2Dice + getTap(m_side2->getMobility()));
 
-        if (side1InitiativeSuccesses > side2InitiativeSuccesses) {
-            m_initiative = eInitiative::Side1;
-        } else if (side1InitiativeSuccesses < side2InitiativeSuccesses) {
-            m_initiative = eInitiative::Side2;
-        } else {
-            // tie
-            m_currentState = eCombatState::DualOffenseResolve;
-            return;
+        if (defend.manuever == eDefensiveManuevers::StealInitiative) {
+            // only steal initiative can change initiative
+            if (side1InitiativeSuccesses > side2InitiativeSuccesses) {
+                m_initiative = eInitiative::Side1;
+            } else if (side1InitiativeSuccesses < side2InitiativeSuccesses) {
+                m_initiative = eInitiative::Side2;
+            } else {
+                // tie
+                m_currentState = eCombatState::DualOffenseResolve;
+                return;
+            }
+            setSides(attacker, defender);
+            writeMessage(attacker->getName() + " has taken the initiative!");
         }
-        setSides(attacker, defender);
-        writeMessage(attacker->getName() + " has taken the initiative!");
 
         cout << "attack roll" << endl;
         int attackerSuccesses
@@ -687,7 +735,9 @@ void CombatInstance::doResolution()
             }
             if (defend.manuever == eDefensiveManuevers::Expulsion) {
                 attacker->disableWeapon();
-                Log::push("Attacker's weapon disabled");
+                attacker->inflictImpact(MoS + 2);
+                Log::push(
+                    "Attacker's weapon disabled and " + to_string(MoS + 2) + " impact inflicted!");
             }
             if (defend.manuever == eDefensiveManuevers::ParryLinked) {
                 // resolve offense
@@ -1086,6 +1136,9 @@ void CombatInstance::run()
         break;
     case eCombatState::StolenOffense:
         doStolenOffense();
+        break;
+    case eCombatState::AttackFromDefense:
+        doAttackFromDefense();
         break;
     case eCombatState::DualOffense1:
         doDualOffense1();

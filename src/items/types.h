@@ -61,7 +61,7 @@ inline int offenseManueverCost(eOffensiveManuevers manuever)
     switch (manuever) {
     case eOffensiveManuevers::PinpointThrust:
     case eOffensiveManuevers::Pin:
-        return 2;
+        return 3;
     case eOffensiveManuevers::Beat:
     case eOffensiveManuevers::Mordhau:
     case eOffensiveManuevers::Snap:

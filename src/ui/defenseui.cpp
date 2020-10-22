@@ -73,6 +73,10 @@ void DefenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
             case eDefensiveManuevers::DodgeLinked:
                 m_currentState = eUiState::ChooseDice;
                 break;
+            case eDefensiveManuevers::AttackFromDef:
+                player->setDefenseReady();
+                m_currentState = eUiState::Finished;
+                break;
             default:
                 m_currentState = eUiState::ChooseManuever;
                 break;

@@ -545,7 +545,7 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
     constexpr int buffer = 3;
     if (diceAllocated + buffer < m_combatPool && random_static::get(0, 2) == 0) {
         m_currentDefense.manuever = eDefensiveManuevers::ParryLinked;
-        reduceCombatPool(1);
+        reduceCombatPool(2);
     } else {
         m_currentDefense.manuever = eDefensiveManuevers::Parry;
     }
