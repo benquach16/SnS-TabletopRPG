@@ -63,6 +63,7 @@ public:
 
     bool getInGrapple() const { return m_inGrapple; }
     bool getInWind() const { return m_inWind; }
+    bool getLastTempo() const { return m_currentTempo == eTempo::Second; }
 
 private:
     void doInitialization();

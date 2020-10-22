@@ -41,4 +41,5 @@ int calculateReachCost(eLength length1, eLength length2);
 std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Weapon* weapon, eGrips grip);
 
 //<maneuver, cost>
-std::map<eDefensiveManuevers, int> getAvailableDefManuevers(const Weapon* weapon, eGrips grip);
+std::map<eDefensiveManuevers, int> getAvailableDefManuevers(
+    const Weapon* weapon, eGrips grip, bool isLastTempo);

@@ -6,11 +6,11 @@
 
 using namespace std;
 
-void DefenseUI::run(bool hasKeyEvents, sf::Event event, Player* player)
+void DefenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, bool lastTempo)
 {
     switch (m_currentState) {
     case eUiState::ChooseManuever:
-        doManuever(hasKeyEvents, event, player);
+        doManuever(hasKeyEvents, event, player, lastTempo);
         break;
     case eUiState::ChooseDice:
         doChooseDice(hasKeyEvents, event, player);
@@ -23,7 +23,7 @@ void DefenseUI::run(bool hasKeyEvents, sf::Event event, Player* player)
     }
 }
 
-void DefenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player)
+void DefenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, bool lastTempo)
 {
     UiCommon::drawTopPanel();
 
@@ -34,7 +34,7 @@ void DefenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player)
     string str = "Choose defense:\n";
 
     map<eDefensiveManuevers, int> manuevers
-        = getAvailableDefManuevers(player->getPrimaryWeapon(), player->getGrip());
+        = getAvailableDefManuevers(player->getPrimaryWeapon(), player->getGrip(), lastTempo);
     map<char, std::pair<eDefensiveManuevers, int>> indices;
     char idx = 'a';
     for (auto manuever : manuevers) {

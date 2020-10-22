@@ -6,11 +6,11 @@
 
 class DefenseUI {
 public:
-    void run(bool hasKeyEvents, sf::Event event, Player* player);
+    void run(bool hasKeyEvents, sf::Event event, Player* player, bool lastTempo);
     void resetState() { m_currentState = eUiState::ChooseManuever; }
 
 private:
-    void doManuever(bool hasKeyEvents, sf::Event event, Player* player);
+    void doManuever(bool hasKeyEvents, sf::Event event, Player* player, bool lastTempo);
     void doChooseDice(bool hasKeyEvents, sf::Event event, Player* player);
 
     enum class eUiState : unsigned {

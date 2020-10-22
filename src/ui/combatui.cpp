@@ -123,7 +123,7 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
         return;
     }
     if (instance->getState() == eCombatState::Defense && instance->isDefenderPlayer() == true) {
-        m_defenseUI.run(hasKeyEvents, event, player);
+        m_defenseUI.run(hasKeyEvents, event, player, instance->getLastTempo());
         return;
     }
     if (instance->getState() == eCombatState::ParryLinked) {

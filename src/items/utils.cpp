@@ -39,6 +39,8 @@ std::string defensiveManueverToString(eDefensiveManuevers manuever)
         return "Block and Strike";
     case eDefensiveManuevers::StealInitiative:
         return "Steal Initiative";
+    case eDefensiveManuevers::AttackFromDef:
+        return "Attack from Defense";
     case eDefensiveManuevers::Expulsion:
         return "Expulsion";
     default:
@@ -266,7 +268,8 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Weapon* weapon
     return ret;
 }
 
-std::map<eDefensiveManuevers, int> getAvailableDefManuevers(const Weapon* weapon, eGrips grip)
+std::map<eDefensiveManuevers, int> getAvailableDefManuevers(
+    const Weapon* weapon, eGrips grip, bool isLastTempo)
 {
     std::map<eDefensiveManuevers, int> ret;
 
@@ -275,7 +278,9 @@ std::map<eDefensiveManuevers, int> getAvailableDefManuevers(const Weapon* weapon
     ret[eDefensiveManuevers::ParryLinked] = 2;
     ret[eDefensiveManuevers::Counter] = 2;
     ret[eDefensiveManuevers::Expulsion] = 2;
-    ret[eDefensiveManuevers::StealInitiative] = 0;
+    if (isLastTempo == false) {
+        ret[eDefensiveManuevers::StealInitiative] = 0;
+    }
     ret[eDefensiveManuevers::AttackFromDef] = 0;
 
     return ret;

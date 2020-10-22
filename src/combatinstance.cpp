@@ -614,7 +614,8 @@ void CombatInstance::doResolution()
         } else if (defender->isWeaponDisabled() || defender->droppedWeapon()) {
             // if the attack disabled or caused their weapon to drop
             // if the attack wiped out their combat pool, do nothing
-            writeMessage(defender->getName() + " had their weapon disabled!");
+            writeMessage(defender->getName()
+                + " had their weapon disabled! Their attack can no longer resolve.");
             m_currentState = eCombatState::Offense;
             m_currentReach = attacker->getCurrentReach();
         } else {
@@ -868,15 +869,19 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
             writeMessage(target->getName() + "'s weapon has been disabled for 1 tempo.",
                 Log::eMessageTypes::Alert);
         }
+
         target->disableWeapon(MoS >= 2);
         return false;
     }
 
     if (attack.manuever == eOffensiveManuevers::Beat) {
-        writeMessage(target->getName() + "'s weapon has been disabled for 1 tempo.",
+        const int impact = MoS + 2;
+        writeMessage(target->getName() + "'s weapon has been disabled for 1 tempo and inflicts "
+                + to_string(impact) + " impact!",
             Log::eMessageTypes::Alert);
         target->disableWeapon();
-        target->inflictImpact(MoS);
+
+        target->inflictImpact(impact);
         return false;
     }
 
