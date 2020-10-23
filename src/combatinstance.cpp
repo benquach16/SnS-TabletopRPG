@@ -482,14 +482,13 @@ void CombatInstance::doParryLinked()
         }
 
     } else {
+
         defender->doOffense(attacker, reachCost, m_currentTempo == eTempo::Second, false, false);
     }
-
     Offense offense = defender->getQueuedOffense();
 
     writeMessage(defender->getName() + " prepares to attack with " + offense.component->getName()
         + " at " + hitLocationToString(offense.target));
-
     m_currentState = eCombatState::Resolution;
 }
 

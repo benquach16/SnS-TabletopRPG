@@ -552,9 +552,16 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
     int diceAllocated = attacker->getQueuedOffense().dice;
 
     constexpr int buffer = 3;
-    if (diceAllocated + buffer < m_combatPool && random_static::get(0, 2) == 0) {
-        m_currentDefense.manuever = eDefensiveManuevers::ParryLinked;
-        reduceCombatPool(getDefensiveManueverCost(eDefensiveManuevers::ParryLinked, getGrip()));
+    if ((diceAllocated + buffer < m_combatPool && random_static::get(0, 2) == 0)
+        || (isLastTempo && diceAllocated + buffer < getCombatPool())) {
+        if (random_static::get(0, 2) == 0) {
+            m_currentDefense.manuever = eDefensiveManuevers::ParryLinked;
+            reduceCombatPool(getDefensiveManueverCost(eDefensiveManuevers::ParryLinked, getGrip()));
+        } else {
+            m_currentDefense.manuever = eDefensiveManuevers::Expulsion;
+            reduceCombatPool(getDefensiveManueverCost(eDefensiveManuevers::Expulsion, getGrip()));
+        }
+
     } else {
         m_currentDefense.manuever = eDefensiveManuevers::Parry;
     }
