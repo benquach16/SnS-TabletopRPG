@@ -246,15 +246,56 @@ int calculateReachCost(eLength length1, eLength length2)
     return reachCost;
 }
 
+int getFeintCost() { return 2; }
+
+int getOffensiveManueverCost(eOffensiveManuevers manuever, eGrips grip, const Weapon* weapon)
+{
+    switch (manuever) {
+    case eOffensiveManuevers::Beat:
+    case eOffensiveManuevers::Disarm:
+    case eOffensiveManuevers::Hook:
+        return 1;
+    case eOffensiveManuevers::PinpointThrust: {
+        int cost = 2;
+        if (weapon->getLength() > eLength::Medium) {
+            cost++;
+        }
+        return cost;
+    }
+    case eOffensiveManuevers::Mordhau:
+        if (grip == eGrips::HalfSword) {
+            return 0;
+        }
+        return 2;
+    }
+    return 0;
+}
+
+int getDefensiveManueverCost(eDefensiveManuevers manuever, eGrips grip)
+{
+    switch (manuever) {
+    case eDefensiveManuevers::Expulsion:
+    case eDefensiveManuevers::ParryLinked:
+    case eDefensiveManuevers::Counter:
+        return 2;
+    default:
+        return 0;
+    }
+    return 0;
+}
+
 std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Weapon* weapon, eGrips grip)
 {
     std::map<eOffensiveManuevers, int> ret;
 
-    ret[eOffensiveManuevers::Swing] = 0;
-    ret[eOffensiveManuevers::Thrust] = 0;
-    ret[eOffensiveManuevers::Beat] = 0;
+    ret[eOffensiveManuevers::Swing]
+        = getOffensiveManueverCost(eOffensiveManuevers::Swing, grip, weapon);
+    ret[eOffensiveManuevers::Thrust]
+        = getOffensiveManueverCost(eOffensiveManuevers::Thrust, grip, weapon);
+    ret[eOffensiveManuevers::Beat]
+        = getOffensiveManueverCost(eOffensiveManuevers::Beat, grip, weapon);
     ret[eOffensiveManuevers::PinpointThrust]
-        = (grip == eGrips::HalfSword || grip == eGrips::Staff) ? 2 : 3;
+        = getOffensiveManueverCost(eOffensiveManuevers::PinpointThrust, grip, weapon);
 
     eWeaponTypes type = weapon->getType();
     if (type == eWeaponTypes::Swords || type == eWeaponTypes::Longswords) {
@@ -262,7 +303,8 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Weapon* weapon
     }
 
     if (weapon->canHook()) {
-        ret[eOffensiveManuevers::Hook] = 0;
+        ret[eOffensiveManuevers::Hook]
+            = getOffensiveManueverCost(eOffensiveManuevers::Hook, grip, weapon);
     }
 
     return ret;
@@ -273,15 +315,20 @@ std::map<eDefensiveManuevers, int> getAvailableDefManuevers(
 {
     std::map<eDefensiveManuevers, int> ret;
 
-    ret[eDefensiveManuevers::Dodge] = 0;
-    ret[eDefensiveManuevers::Parry] = 0;
-    ret[eDefensiveManuevers::ParryLinked] = 2;
-    ret[eDefensiveManuevers::Counter] = 2;
-    ret[eDefensiveManuevers::Expulsion] = 2;
+    ret[eDefensiveManuevers::Dodge] = getDefensiveManueverCost(eDefensiveManuevers::Dodge, grip);
+    ret[eDefensiveManuevers::Parry] = getDefensiveManueverCost(eDefensiveManuevers::Parry, grip);
+    ret[eDefensiveManuevers::ParryLinked]
+        = getDefensiveManueverCost(eDefensiveManuevers::ParryLinked, grip);
+    ret[eDefensiveManuevers::Counter]
+        = getDefensiveManueverCost(eDefensiveManuevers::Counter, grip);
+    ret[eDefensiveManuevers::Expulsion]
+        = getDefensiveManueverCost(eDefensiveManuevers::Expulsion, grip);
     if (isLastTempo == false) {
-        ret[eDefensiveManuevers::StealInitiative] = 0;
+        ret[eDefensiveManuevers::StealInitiative]
+            = getDefensiveManueverCost(eDefensiveManuevers::StealInitiative, grip);
     }
-    ret[eDefensiveManuevers::AttackFromDef] = 0;
+    ret[eDefensiveManuevers::AttackFromDef]
+        = getDefensiveManueverCost(eDefensiveManuevers::AttackFromDef, grip);
 
     return ret;
 }

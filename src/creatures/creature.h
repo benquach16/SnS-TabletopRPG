@@ -116,8 +116,9 @@ public:
     // move these to ai combat controller
     virtual bool isPlayer() { return false; }
     void doPrecombat(const Creature* opponent);
-    void doOffense(
-        const Creature* target, int reachCost, bool allin = false, bool dualRedThrow = false);
+    // paycosts to avoid losing dice from block and strike
+    void doOffense(const Creature* target, int reachCost, bool allin = false,
+        bool dualRedThrow = false, bool payCosts = true);
 
     void doDefense(const Creature* attacker, bool isLastTempo);
 
@@ -146,9 +147,9 @@ public:
     bool getHasPreResolution() const { return m_hasPreResolution; }
 
     virtual void clearCreatureManuevers(bool skipDisable = false);
-    int getOffenseManueverCost(eOffensiveManuevers manuever);
+
     bool setCreatureOffenseManuever(eOffensiveManuevers manuever);
-    int getDefenseManueverCost(eDefensiveManuevers manuever);
+
     bool setCreatureDefenseManuever(eDefensiveManuevers manuever);
     bool setCreatureFeint();
 

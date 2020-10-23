@@ -424,7 +424,8 @@ void Creature::getLowestArmorPart(eBodyParts* pPartOut, eHitLocations* pHitOut) 
 }
 
 // not good to have creature as an AI god class
-void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool dualRedThrow)
+void Creature::doOffense(
+    const Creature* target, int reachCost, bool allin, bool dualRedThrow, bool payCosts)
 {
     cout << "allin : " << allin << endl;
     const Weapon* weapon = getPrimaryWeapon();
@@ -453,7 +454,9 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
             setCreatureOffenseManuever(eOffensiveManuevers::Hook);
         } else if (weapon->getType() == eWeaponTypes::Polearms) {
             // temporary
-            if (getOffenseManueverCost(eOffensiveManuevers::PinpointThrust) <= m_combatPool) {
+            if (getOffensiveManueverCost(
+                    eOffensiveManuevers::PinpointThrust, getGrip(), getPrimaryWeapon())
+                <= m_combatPool) {
                 target->getLowestArmorPart(
                     &m_currentOffense.pinpointTarget, &m_currentOffense.target);
                 m_currentOffense.component = weapon->getBestThrust();
@@ -464,7 +467,9 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
             }
         } else if (weapon->getType() == eWeaponTypes::Longswords) {
             // temporary
-            if (getOffenseManueverCost(eOffensiveManuevers::PinpointThrust) <= m_combatPool) {
+            if (getOffensiveManueverCost(
+                    eOffensiveManuevers::PinpointThrust, getGrip(), getPrimaryWeapon())
+                <= m_combatPool) {
                 target->getLowestArmorPart(
                     &m_currentOffense.pinpointTarget, &m_currentOffense.target);
                 m_currentOffense.component = weapon->getBestThrust();
@@ -531,10 +536,14 @@ void Creature::doOffense(const Creature* target, int reachCost, bool allin, bool
         m_currentDefense.dice = m_combatPool - m_currentOffense.dice;
         m_hasDefense = true;
         assert(m_currentDefense.dice <= m_combatPool || m_currentDefense.dice == 0);
-        reduceCombatPool(m_currentDefense.dice);
+        if (payCosts) {
+            reduceCombatPool(m_currentDefense.dice);
+        }
     }
     assert(m_currentOffense.dice <= m_combatPool || m_currentOffense.dice == 0);
-    reduceCombatPool(m_currentOffense.dice);
+    if (payCosts) {
+        reduceCombatPool(m_currentOffense.dice);
+    }
     m_hasOffense = true;
 }
 
@@ -545,7 +554,7 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
     constexpr int buffer = 3;
     if (diceAllocated + buffer < m_combatPool && random_static::get(0, 2) == 0) {
         m_currentDefense.manuever = eDefensiveManuevers::ParryLinked;
-        reduceCombatPool(2);
+        reduceCombatPool(getDefensiveManueverCost(eDefensiveManuevers::ParryLinked, getGrip()));
     } else {
         m_currentDefense.manuever = eDefensiveManuevers::Parry;
     }
@@ -652,7 +661,7 @@ void Creature::doPrecombat(const Creature* opponent)
 
 void Creature::doPreresolution(const Creature* opponent)
 {
-    if (feintManueverCost() < getCombatPool()) {
+    if (getFeintCost() < getCombatPool()) {
         setCreatureFeint();
     }
 }
@@ -721,27 +730,9 @@ void Creature::clearCreatureManuevers(bool skipDisable)
     }
 }
 
-int Creature::getOffenseManueverCost(eOffensiveManuevers manuever)
-{
-    int cost = offenseManueverCost(manuever);
-    switch (m_currentGrip) {
-    case eGrips::HalfSword:
-    case eGrips::Staff: {
-        if (manuever == eOffensiveManuevers::PinpointThrust
-            || manuever == eOffensiveManuevers::Mordhau) {
-            cost -= 1;
-        }
-        break;
-    }
-    default:
-        break;
-    }
-    return cost;
-}
-
 bool Creature::setCreatureOffenseManuever(eOffensiveManuevers manuever)
 {
-    int cost = getOffenseManueverCost(manuever);
+    int cost = getOffensiveManueverCost(manuever, getGrip(), getPrimaryWeapon());
     bool canUse = (cost <= getCombatPool());
     if (canUse) {
         m_currentOffense.manuever = manuever;
@@ -752,7 +743,7 @@ bool Creature::setCreatureOffenseManuever(eOffensiveManuevers manuever)
 
 bool Creature::setCreatureFeint()
 {
-    int cost = feintManueverCost();
+    int cost = getFeintCost();
     bool canUse = (cost <= getCombatPool());
     if (canUse) {
         m_currentOffense.feint = true;

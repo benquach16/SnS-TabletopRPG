@@ -482,7 +482,7 @@ void CombatInstance::doParryLinked()
         }
 
     } else {
-        defender->doOffense(attacker, reachCost, m_currentTempo == eTempo::Second);
+        defender->doOffense(attacker, reachCost, m_currentTempo == eTempo::Second, false, false);
     }
 
     Offense offense = defender->getQueuedOffense();

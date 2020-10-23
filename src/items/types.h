@@ -55,26 +55,6 @@ inline int gripReachDifference(eGrips grip)
         return 0;
     }
 }
-
-inline int offenseManueverCost(eOffensiveManuevers manuever)
-{
-    switch (manuever) {
-    case eOffensiveManuevers::PinpointThrust:
-    case eOffensiveManuevers::Pin:
-        return 3;
-    case eOffensiveManuevers::Beat:
-    case eOffensiveManuevers::Mordhau:
-    case eOffensiveManuevers::Snap:
-    case eOffensiveManuevers::Throw:
-    case eOffensiveManuevers::Disarm:
-    case eOffensiveManuevers::Grab:
-    case eOffensiveManuevers::Hook:
-        return 1;
-    default:
-        return 0;
-    }
-}
-
 enum class eDefensiveManuevers : unsigned {
     // special manuevers used to tell combatmanager about special events
     NoDefense,
@@ -91,22 +71,6 @@ enum class eDefensiveManuevers : unsigned {
     Resist,
     Reverse
 };
-
-inline int defenseManueverCost(eDefensiveManuevers manuever)
-{
-    switch (manuever) {
-    case eDefensiveManuevers::ParryLinked:
-        return 1;
-    case eDefensiveManuevers::Counter:
-        return 2;
-    default:
-        return 0;
-    }
-}
-
-inline int feintManueverCost() { return 1; }
-
-inline int positionManueverCost() { return 3; }
 
 enum class eLength : unsigned {
     Nonexistent = 0,
