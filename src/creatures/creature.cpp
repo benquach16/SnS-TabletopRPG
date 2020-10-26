@@ -292,6 +292,20 @@ void Creature::resetCombatPool()
     // cout << getName() << m_combatPool << endl;
 }
 
+int Creature::getMaxCombatPool()
+{
+    // carryover impact damage across tempos
+    const Weapon* weapon = isWeaponDisabled() == false
+        ? getPrimaryWeapon()
+        : WeaponTable::getSingleton()->get(m_disableWeaponId);
+    int combatPool = getProficiency(weapon->getType()) + getReflex();
+    combatPool -= static_cast<int>(m_AP);
+
+    combatPool -= m_fatigue[eCreatureFatigue::Stamina] / cFatigueDivisor;
+
+    return combatPool;
+}
+
 void Creature::addAndResetBonusDice()
 {
     m_currentOffense.dice += m_bonusDice;
@@ -448,6 +462,7 @@ void Creature::doOffense(
 
     if (target->hasEnoughMetalArmor()) {
         // full of metal armor, so lets do some fancy shit
+
         if (hasEnoughMetalArmor() == false && weapon->canHook() == true
             && target->getStance() != eCreatureStance::Prone) {
             // try to trip
@@ -499,6 +514,13 @@ void Creature::doOffense(
             if (unarmoredLocations > highestUnarmoredLocations) {
                 m_currentOffense.target = location;
                 highestUnarmoredLocations = unarmoredLocations;
+            }
+            constexpr int bufferDice = 5;
+            if ((target->getCombatPool() + bufferDice < getCombatPool())
+                || (target->getBTN() > getBTN())) {
+                // we have enough of an advantage to do anything we want
+                // but if head and chest are fully armored and we don't have a blunt damage attack
+                // then thats bad
             }
         }
     }
@@ -554,7 +576,7 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
     constexpr int buffer = 3;
     if ((diceAllocated + buffer < m_combatPool && random_static::get(0, 2) == 0)
         || (isLastTempo && diceAllocated + buffer < getCombatPool())) {
-        if (random_static::get(0, 2) == 0) {
+        if (random_static::get(0, 3) == 0) {
             m_currentDefense.manuever = eDefensiveManuevers::ParryLinked;
             reduceCombatPool(getDefensiveManueverCost(eDefensiveManuevers::ParryLinked, getGrip()));
         } else {
@@ -616,18 +638,22 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
 {
     int diceAllocated = attacker->getQueuedOffense().dice;
 
-    int combatPool = attacker->getCombatPool() + getTap(attacker->getMobility());
+    int combatPool = attacker->getCombatPool() / 2 + getTap(attacker->getMobility());
+    combatPool += attacker->getQueuedOffense().manuever == eOffensiveManuevers::Thrust ? 1 : 0;
+    float maxDiff = cMaxBTN - cBaseBTN;
+    float attackerDisadvantage = (maxDiff - (attacker->getBTN() - cBaseBTN)) / maxDiff;
+    float myDisadvantage = (maxDiff - (getBTN() - cBaseBTN)) / maxDiff;
 
-    int bufferDie = random_static::get(3, 5);
-
-    float disadvantageMult = 1.0;
-    float mult = static_cast<float>(random_static::get(3, 5));
-    mult += m_BTN - cBaseBTN;
-    // mult += attacker->getQueuedOffense().manuever == eOffensiveManuevers::Thrust ? 2 : 0;
-    disadvantageMult += (mult / 10);
-    if ((combatPool * disadvantageMult) + bufferDie < m_combatPool + getTap(getMobility())) {
-        int diff
-            = static_cast<int>(abs((getMobility() - attacker->getMobility()) * disadvantageMult));
+    // make sure this is enough for an attack
+    int bufferDie = random_static::get(4, 7);
+    int reachCost = max(attacker->getCurrentReach() - getCurrentReach(), 0);
+    bufferDie += reachCost;
+    if ((combatPool * attackerDisadvantage) + bufferDie
+        < (m_combatPool + getTap(getMobility())) * myDisadvantage) {
+        float mult = 1.0;
+        // favor in my tn difference
+        mult += (getBTN() - cBaseBTN) / 10.f;
+        int diff = attacker->getCombatPool() * mult;
         int dice = diff + bufferDie;
         if (m_combatPool > dice) {
             outDie = dice;

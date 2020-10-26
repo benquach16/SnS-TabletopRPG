@@ -353,7 +353,8 @@ void CombatUI::showSide1Stats(const CombatInstance* instance)
     ap.setCharacterSize(cCharSize);
     ap.setFont(Game::getDefaultFont());
     ap.setPosition(6, windowSize.y - logHeight - rectHeight + cCharSize);
-    ap.setString("Action Points : " + to_string(creature->getCombatPool())
+    ap.setString("Action Points : " + to_string(creature->getCombatPool()) + " / "
+        + to_string(creature->getMaxCombatPool())
         + " - Success rate: " + to_string(creature->getSuccessRate()) + "%" + '\n' + "Blood loss: "
         + to_string(creature->getBloodLoss()) + '\n' + stanceToString(creature->getStance()));
 
@@ -380,7 +381,8 @@ void CombatUI::showSide2Stats(const CombatInstance* instance)
     ap.setCharacterSize(cCharSize);
     ap.setFont(Game::getDefaultFont());
     ap.setPosition(windowSize.x / 2 + 5, windowSize.y - logHeight - rectHeight + cCharSize);
-    ap.setString("Action Points : " + to_string(creature->getCombatPool())
+    ap.setString("Action Points : " + to_string(creature->getCombatPool()) + " / "
+        + to_string(creature->getMaxCombatPool())
         + " - Success rate: " + to_string(creature->getSuccessRate()) + "%" + '\n' + "Blood loss: "
         + to_string(creature->getBloodLoss()) + '\n' + stanceToString(creature->getStance()));
 

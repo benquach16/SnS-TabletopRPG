@@ -97,6 +97,7 @@ public:
     // for current weapon
     int getCombatPool() const { return m_combatPool; }
     void resetCombatPool();
+    int getMaxCombatPool();
     void reduceCombatPool(int num)
     {
         assert(num >= 0);

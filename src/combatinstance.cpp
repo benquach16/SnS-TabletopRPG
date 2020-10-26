@@ -700,7 +700,8 @@ void CombatInstance::doResolution()
                 writeMessage(attacker->getName() + " successfully feints and weakens "
                     + defender->getName() + "'s defense by " + to_string(keenDifference));
             } else {
-                writeMessage(defender->getName() + " was able to catch the feint in time!");
+                writeMessage(attacker->getName() + " attempted to feint but " + defender->getName()
+                    + " was able to catch the feint in time!");
             }
             cout << "keen difference " << keenDifference << endl;
             keenDifference = max(0, keenDifference);
@@ -734,9 +735,9 @@ void CombatInstance::doResolution()
             }
             if (defend.manuever == eDefensiveManuevers::Expulsion) {
                 attacker->disableWeapon();
-                attacker->inflictImpact(MoS + 2);
+                attacker->inflictImpact(-MoS + 2);
                 Log::push(
-                    "Attacker's weapon disabled and " + to_string(MoS + 2) + " impact inflicted!");
+                    "Attacker's weapon disabled and " + to_string(-MoS + 2) + " impact inflicted!");
             }
             if (defend.manuever == eDefensiveManuevers::ParryLinked) {
                 // resolve offense
@@ -793,11 +794,15 @@ void CombatInstance::doDualOffenseResolve()
     if (MoS > 0) {
         if (inflictWound(m_side1, MoS, attack, m_side2) == true) {
             death = true;
+        } else {
+            writeMessage(m_side1->getName() + " got no successes");
         }
     }
     if (MoS2 > 0) {
         if (inflictWound(m_side2, MoS2, attack2, m_side1) == true) {
             death = true;
+        } else {
+            writeMessage(m_side2->getName() + " got no successes");
         }
     }
 

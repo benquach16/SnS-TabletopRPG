@@ -162,8 +162,8 @@ void WoundTable::initHitLocationTable()
     m_hitTable[eHitLocations::Chest].m_thrust[9] = eBodyParts::Abs;
 
     m_partsTable[eHitLocations::Chest].push_back(eBodyParts::Ribs);
-    m_partsTable[eHitLocations::Chest].push_back(eBodyParts::Armpit);
     m_partsTable[eHitLocations::Chest].push_back(eBodyParts::Abs);
+    m_partsTable[eHitLocations::Chest].push_back(eBodyParts::Armpit);
 
     // arms
     m_hitTable[eHitLocations::Arm].m_swing[0] = eBodyParts::Shoulder;
@@ -189,11 +189,10 @@ void WoundTable::initHitLocationTable()
     m_hitTable[eHitLocations::Arm].m_thrust[9] = eBodyParts::Hand;
 
     m_partsTable[eHitLocations::Arm].push_back(eBodyParts::Shoulder);
-    m_partsTable[eHitLocations::Arm].push_back(eBodyParts::Armpit);
     m_partsTable[eHitLocations::Arm].push_back(eBodyParts::UpperArm);
-    m_partsTable[eHitLocations::Arm].push_back(eBodyParts::Elbow);
     m_partsTable[eHitLocations::Arm].push_back(eBodyParts::Forearm);
     m_partsTable[eHitLocations::Arm].push_back(eBodyParts::Hand);
+    m_partsTable[eHitLocations::Arm].push_back(eBodyParts::Elbow);
 
     // belly
     m_hitTable[eHitLocations::Belly].m_swing[0] = eBodyParts::Abs;
@@ -337,6 +336,26 @@ eBodyParts WoundTable::getThrust(eHitLocations location)
     // dice returns an actual dice roll 1-10, so we have to offset by 1
     int roll = DiceRoller::rollSides(cPartsPerLocation) - 1;
     return m_hitTable[location].m_thrust[roll];
+}
+
+std::vector<eBodyParts> WoundTable::getPinpointThrustTargets(
+    eHitLocations location, bool canHitX) const
+{
+    std::vector<eBodyParts> ret;
+    std::vector<eBodyParts> existingParts = m_partsTable.at(location);
+    // do a deep copy for this one
+    if (canHitX || (location != eHitLocations::Arm && location != eHitLocations::Chest)) {
+        ret = existingParts;
+    } else {
+        // ignore armpit and elbow locations
+        for (auto part : existingParts) {
+            if (part != eBodyParts::Armpit && part != eBodyParts::Elbow) {
+                ret.push_back(part);
+            }
+        }
+    }
+
+    return ret;
 }
 
 Wound* WoundTable::getWound(eDamageTypes type, eBodyParts part, int level)

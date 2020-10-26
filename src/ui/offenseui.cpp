@@ -314,8 +314,9 @@ void OffenseUI::doPinpointThrust(bool hasKeyEvents, sf::Event event, Player* pla
 
     string str = "Choose body part to pinpoint:\n";
     eHitLocations location = player->getQueuedOffense().target;
-
-    std::vector<eBodyParts> parts = WoundTable::getSingleton()->getUniqueParts(location);
+    bool canHitX = (player->getGrip() == eGrips::Staff || player->getGrip() == eGrips::HalfSword);
+    std::vector<eBodyParts> parts
+        = WoundTable::getSingleton()->getPinpointThrustTargets(location, canHitX);
 
     for (int i = 0; i < parts.size(); ++i) {
         char idx = ('a' + i);

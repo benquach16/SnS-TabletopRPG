@@ -45,6 +45,8 @@ public:
         return m_partsTable.at(location);
     }
 
+    std::vector<eBodyParts> getPinpointThrustTargets(eHitLocations location, bool canHitX) const;
+
     Wound* getWound(eDamageTypes type, eBodyParts part, int level);
 
     static constexpr unsigned cPartsPerLocation = 10;
