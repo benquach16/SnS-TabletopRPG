@@ -794,16 +794,16 @@ void CombatInstance::doDualOffenseResolve()
     if (MoS > 0) {
         if (inflictWound(m_side1, MoS, attack, m_side2) == true) {
             death = true;
-        } else {
-            writeMessage(m_side1->getName() + " got no successes");
         }
+    } else {
+        writeMessage(m_side1->getName() + " got no successes");
     }
     if (MoS2 > 0) {
         if (inflictWound(m_side2, MoS2, attack2, m_side1) == true) {
             death = true;
-        } else {
-            writeMessage(m_side2->getName() + " got no successes");
         }
+    } else {
+        writeMessage(m_side2->getName() + " got no successes");
     }
 
     // intiative goes to whoever got more hits

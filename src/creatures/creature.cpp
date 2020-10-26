@@ -553,7 +553,7 @@ void Creature::doOffense(
         m_currentOffense.dice = dice;
     }
 
-    if (dualRedThrow == true && m_combatPool > 0 && random_static::get(0, 1) == 0) {
+    if (dualRedThrow == true && m_combatPool > 0) {
         m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
         m_currentDefense.dice = m_combatPool - m_currentOffense.dice;
         m_hasDefense = true;
@@ -644,8 +644,8 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
     float attackerDisadvantage = (maxDiff - (attacker->getBTN() - cBaseBTN)) / maxDiff;
     float myDisadvantage = (maxDiff - (getBTN() - cBaseBTN)) / maxDiff;
 
-    // make sure this is enough for an attack
-    int bufferDie = random_static::get(4, 7);
+    // make sure this is enough for an attack + overcoming advantage
+    int bufferDie = random_static::get(8, 12);
     int reachCost = max(attacker->getCurrentReach() - getCurrentReach(), 0);
     bufferDie += reachCost;
     if ((combatPool * attackerDisadvantage) + bufferDie
@@ -654,7 +654,7 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
         // favor in my tn difference
         mult += (getBTN() - cBaseBTN) / 10.f;
         int diff = attacker->getCombatPool() * mult;
-        int dice = diff + bufferDie;
+        int dice = diff + random_static::get(4, 8);
         if (m_combatPool > dice) {
             outDie = dice;
             m_hasDefense = true;

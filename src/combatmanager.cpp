@@ -195,6 +195,7 @@ void CombatManager::doPositionRoll()
     assert(m_edges.size() > 1);
     // do player, this is hack
     if (m_mainCreature->getCreatureComponent()->getHasPosition() == false) {
+        cout << "positioning roll" << endl;
         if (m_mainCreature->isPlayer() == true) {
             m_currentState = eCombatManagerState::PositioningRoll;
             return;
