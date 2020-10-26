@@ -131,6 +131,8 @@ void CombatManager::doRunCombat(float tick)
     }
 
     m_edges[m_edgeId]->setCurrent(true);
+
+    // if change is true then we will increment m_edgeId
     bool change = m_edges[m_edgeId]->getInstance()->getState() == eCombatState::PostResolution;
 
     m_edges[m_edgeId]->getInstance()->run();
@@ -157,6 +159,19 @@ void CombatManager::doRunCombat(float tick)
             m_edges[0]->setActive(true);
         }
     }
+    if (m_edges[m_edgeId]->getInstance()->getInGrapple()) {
+        // if we are in a grapple, turn this into a duel
+        // since this function only runs on the parent, that means we disconnect all edges
+        // except for grapple
+        CombatEdge::EdgeId savedEdgeId = m_edges[m_edgeId]->getId();
+        for (unsigned i = 0; i < m_edges.size(); i++) {
+            if (m_edges[i]->getId() != savedEdgeId) {
+                m_edges[i]->remove();
+            }
+        }
+        m_edgeId = 0;
+    }
+
     // since we just deleted, make sure we clear if we don't have any more
     // combat
     if (change == true) {
@@ -190,20 +205,31 @@ void CombatManager::remove(CombatEdge::EdgeId id)
     assert(true);
 }
 
+bool CombatManager::hasPosition(Creature* creature, Creature* target)
+{
+    if (creature->getHasPosition() == false) {
+        if (creature->isPlayer() == true) {
+            return false;
+        } else {
+            creature->doPositionRoll(target);
+        }
+    }
+    return true;
+}
+
 void CombatManager::doPositionRoll()
 {
     assert(m_edges.size() > 1);
-    // do player, this is hack
-    if (m_mainCreature->getCreatureComponent()->getHasPosition() == false) {
-        cout << "positioning roll" << endl;
-        if (m_mainCreature->isPlayer() == true) {
-            m_currentState = eCombatManagerState::PositioningRoll;
-            return;
-        } else {
-            m_mainCreature->getCreatureComponent()->doPositionRoll(nullptr);
-        }
+    // do main creature positioning first
+    if (hasPosition(m_mainCreature->getCreatureComponent(), nullptr) == false) {
+        m_currentState = eCombatManagerState::PositioningRoll;
+        return;
     }
+
     Creature::CreatureId id = m_mainCreature->getCreatureComponent()->getId();
+
+    // make sure we also wait for player
+    bool allSidesReady = true;
     for (auto it : m_edges) {
         // do positioning roll
         // side 2 not guarenteed to be the other side
@@ -211,10 +237,16 @@ void CombatManager::doPositionRoll()
         Creature* side1 = it->getInstance()->getSide1();
         Creature* side2 = it->getInstance()->getSide2();
         if (side1->getId() != id) {
-            side1->doPositionRoll(m_mainCreature->getCreatureComponent());
+            if (hasPosition(side1, m_mainCreature->getCreatureComponent()) == false) {
+                m_currentState = eCombatManagerState::PositioningRoll;
+                return;
+            }
         }
         if (side2->getId() != id) {
-            side2->doPositionRoll(m_mainCreature->getCreatureComponent());
+            if (hasPosition(side2, m_mainCreature->getCreatureComponent()) == false) {
+                m_currentState = eCombatManagerState::PositioningRoll;
+                return;
+            }
         }
     }
     unsigned count = 0;
@@ -226,11 +258,13 @@ void CombatManager::doPositionRoll()
         Creature* side1 = it->getInstance()->getSide1();
         Creature* side2 = it->getInstance()->getSide2();
         Creature* creature = nullptr;
+        eInitiative forceInitiative = eInitiative::Side1;
         if (side1->getId() != id) {
             creature = side1;
         }
         if (side2->getId() != id) {
             creature = side2;
+            forceInitiative = eInitiative::Side2;
         }
         assert(creature != nullptr);
         int successes
@@ -240,6 +274,7 @@ void CombatManager::doPositionRoll()
                 creature->getName() + " kept up with " + m_mainCreature->getName() + "'s footwork");
             it->setActive(true);
             count++;
+            it->getInstance()->forceInitiative(forceInitiative);
         } else {
             it->setActive(false);
         }
@@ -282,6 +317,13 @@ void CombatManager::startCombatWith(const CreatureObject* creature)
 
     if (creature->getCombatManager()->canEngage() == false) {
         return;
+    }
+
+    if (m_edges.size() == 1) {
+        if (m_edges[0]->getInstance()->getInGrapple() == true) {
+            writeMessage("Cannot start combat while target is in a grapple.");
+            return;
+        }
     }
 
     // assume creature attempts to stand before attacking someone

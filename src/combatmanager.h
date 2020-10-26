@@ -74,6 +74,7 @@ public:
     void peel();
     unsigned getEngagementCount() const { return m_edges.size(); }
     bool isInDuel() const;
+    bool hasPosition(Creature* creature, Creature* target);
 
 private:
     CombatManager();
@@ -91,6 +92,9 @@ private:
 
     bool m_isParent;
     std::vector<CombatEdge*> m_edges;
+
+    // m_edgeId is basically the currently processing edge
+    // we go through all of these at a timing defined by the tick
     unsigned m_edgeId;
     bool m_positionDone;
     bool m_doPositionRoll;
