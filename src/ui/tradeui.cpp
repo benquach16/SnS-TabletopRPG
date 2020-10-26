@@ -11,7 +11,8 @@ TradeUI::TradeUI()
 {
 }
 
-void TradeUI::run(sf::Event event, std::map<int, int>& inventory, std::map<int, int>& container)
+void TradeUI::run(bool hasKeyEvents, sf::Event event, std::map<int, int>& inventory,
+    std::map<int, int>& container)
 {
     auto windowSize = Game::getWindow().getSize();
 
@@ -32,7 +33,7 @@ void TradeUI::run(sf::Event event, std::map<int, int>& inventory, std::map<int, 
     inventoryTxt.setCharacterSize(cCharSize);
 
     string inventoryStr;
-    inventoryStr += "Your inventory\n";
+    inventoryStr += "1 - Your inventory\n";
     int count = 0;
     for (auto it = inventory.begin(); it != inventory.end();) {
         if (it->second == 0) {
@@ -69,7 +70,7 @@ void TradeUI::run(sf::Event event, std::map<int, int>& inventory, std::map<int, 
     containerTxt.setPosition(sf::Vector2f(windowSize.x / 2, 0));
 
     string containerStr;
-    containerStr += "Container inventory\n";
+    containerStr += "2 - Container inventory\n";
     for (auto it = container.begin(); it != container.end();) {
         if (it->second == 0) {
             it = container.erase(it);
@@ -82,7 +83,7 @@ void TradeUI::run(sf::Event event, std::map<int, int>& inventory, std::map<int, 
                 containerStr += " - ";
                 count++;
 
-                if (event.type == sf::Event::TextEntered) {
+                if (hasKeyEvents && event.type == sf::Event::TextEntered) {
                     char c = event.text.unicode;
                     if (c == idx) {
                         inventory[it->first]++;
@@ -99,7 +100,7 @@ void TradeUI::run(sf::Event event, std::map<int, int>& inventory, std::map<int, 
 
     Game::getWindow().draw(containerTxt);
 
-    if (event.type == sf::Event::TextEntered) {
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
         if (c == '1') {
             m_uiState = eUiState::Inventory;
@@ -110,4 +111,7 @@ void TradeUI::run(sf::Event event, std::map<int, int>& inventory, std::map<int, 
     }
 }
 
-void TradeUI::displayContainer(sf::Event, std::map<int, int>& inventory, std::string& str) {}
+void TradeUI::displayContainer(
+    bool hasKeyEvents, sf::Event, std::map<int, int>& inventory, std::string& str)
+{
+}

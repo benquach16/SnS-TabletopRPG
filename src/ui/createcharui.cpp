@@ -134,14 +134,14 @@ void CreateCharUI::doDescription(bool hasKeyEvents, sf::Event event, PlayerObjec
     str = m_loadouts[m_loadoutIdx].description;
     str += "\n\nEnter - Choose class ESC - Go back";
     text.setString(str);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) == true) {
+    if (hasKeyEvents && sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) == true) {
         player->getCreatureComponent()->setWeapon(m_loadouts[m_loadoutIdx].weapon);
         for (auto i : m_loadouts[m_loadoutIdx].armor) {
             player->getCreatureComponent()->equipArmor(i);
         }
         m_currentState = eUiState::Attributes;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) == true) {
+    if (hasKeyEvents && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) == true) {
         m_currentState = eUiState::Loadout;
     }
     Game::getWindow().draw(text);
