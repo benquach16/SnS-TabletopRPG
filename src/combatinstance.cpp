@@ -865,6 +865,7 @@ void CombatInstance::doPostResolution()
     } else {
         m_currentState = eCombatState::Offense;
     }
+    // m_currentState = eCombatState::PreexchangeActions;
     switchTempo();
 }
 
@@ -1178,6 +1179,8 @@ void CombatInstance::run()
         break;
     case eCombatState::FinishedCombat:
         doEndCombat();
+        break;
+    case eCombatState::BetweenExchangeActions:
         break;
     }
 }

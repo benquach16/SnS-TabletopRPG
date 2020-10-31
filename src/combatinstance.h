@@ -44,6 +44,7 @@ enum class eCombatState : unsigned {
     PostResolution = 19,
     FinishedCombat = 20,
     AttackFromDefense = 21,
+    BetweenExchangeActions = 22
 };
 
 class CombatInstance {

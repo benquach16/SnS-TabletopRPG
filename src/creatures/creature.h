@@ -256,6 +256,8 @@ protected:
 
     int m_combatPool;
     int m_bonusDice;
+
+    // turns the character is disarmed or disabled
     int m_disarm;
 
     std::unordered_map<eWeaponTypes, int> m_proficiencies;

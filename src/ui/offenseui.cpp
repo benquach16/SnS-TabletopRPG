@@ -11,6 +11,9 @@ void OffenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, Creature
     bool allowStealInitiative, bool linkedParry)
 {
     switch (m_currentState) {
+    case eUiState::ChooseWeapon:
+        doChooseWeapon(hasKeyEvents, event, player);
+        break;
     case eUiState::ChooseManuever:
         doManuever(hasKeyEvents, event, player, linkedParry);
         break;
@@ -38,6 +41,19 @@ void OffenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, Creature
     case eUiState::Finished:
         break;
     }
+}
+
+void OffenseUI::doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* player)
+{
+    UiCommon::drawTopPanel();
+
+    sf::Text text;
+    UiCommon::initializeText(text);
+
+    string str = "Choose weapon to attack with:\n";
+
+    const Weapon* primaryWeapon = player->getPrimaryWeapon();
+    const Weapon* secondaryWeapon = player->getSecondaryWeapon();
 }
 
 void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, bool linkedParry)

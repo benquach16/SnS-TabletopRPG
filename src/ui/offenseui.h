@@ -10,6 +10,7 @@ public:
     void resetState() { m_currentState = eUiState::ChooseManuever; }
 
 private:
+    void doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* player);
     void doManuever(bool hasKeyEvents, sf::Event event, Player* player, bool linkedParry = false);
     void doFeint(bool hasKeyEvents, sf::Event event, Player* player);
     void doHeavyBlow(bool hasKeyEvents, sf::Event event, Player* player);
@@ -21,6 +22,7 @@ private:
     void doPinpointThrust(bool hasKeyEvents, sf::Event event, Player* player);
 
     enum class eUiState : unsigned {
+        ChooseWeapon,
         ChooseManuever,
         ChooseFeint,
         ChooseHeavyBlow,

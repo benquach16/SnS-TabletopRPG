@@ -7,7 +7,7 @@ enum class eCreatureFaction : unsigned {
     Wildlife = 3,
     Confederacy = 4,
     StoneEmpire = 5,
-    UhrEmpire = 6,
+    JewelCities = 6,
     Goblin = 7,
     Count = 8
 };

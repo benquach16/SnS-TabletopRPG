@@ -20,7 +20,9 @@ Creature::Creature()
     , m_intuition(1)
     , m_perception(1)
     , m_willpower(1)
+    // todo: not fists
     , m_primaryWeaponId(cFistsId)
+    , m_secondaryWeaponId(cFistsId)
     , m_disableWeaponId(cFistsId)
     , m_combatPool(0)
     , m_disarm(0)
@@ -42,6 +44,11 @@ Creature::Creature()
 const Weapon* Creature::getPrimaryWeapon() const
 {
     return WeaponTable::getSingleton()->get(m_primaryWeaponId);
+}
+
+const Weapon* Creature::getSecondaryWeapon() const
+{
+    return WeaponTable::getSingleton()->get(m_secondaryWeaponId);
 }
 
 eLength Creature::getCurrentReach() const

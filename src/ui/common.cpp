@@ -15,4 +15,10 @@ void drawTopPanel()
     Game::getWindow().draw(bkg);
 }
 
+void initializeText(sf::Text& text)
+{
+    text.setCharacterSize(cCharSize);
+    text.setFont(Game::getDefaultFont());
+}
+
 } // namespace UiCommon
