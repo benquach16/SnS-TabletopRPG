@@ -7,7 +7,7 @@ class OffenseUI {
 public:
     void run(bool hasKeyEvents, sf::Event event, Player* player, Creature* target,
         bool allowStealInitiative = false, bool linkedParry = false);
-    void resetState() { m_currentState = eUiState::ChooseManuever; }
+    void resetState() { m_currentState = eUiState::ChooseWeapon; }
 
 private:
     void doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* player);

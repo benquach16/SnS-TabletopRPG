@@ -21,11 +21,13 @@ struct Offense : public Manuever {
     int heavyblow = 0;
     eHitLocations target;
     eBodyParts pinpointTarget;
+    Weapon* weapon;
     Component* component;
 };
 
 struct Defense : public Manuever {
     eManueverTypes getType() override { return eManueverTypes::Defense; }
+    Weapon* weapon;
     eDefensiveManuevers manuever;
 };
 

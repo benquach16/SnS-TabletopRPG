@@ -54,6 +54,27 @@ void OffenseUI::doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* playe
 
     const Weapon* primaryWeapon = player->getPrimaryWeapon();
     const Weapon* secondaryWeapon = player->getSecondaryWeapon();
+
+    str += "a - ";
+    str += primaryWeapon->getName();
+    str += '\n';
+    str += "b - ";
+    str += secondaryWeapon->getName();
+    str += '\n';
+    text.setString(str);
+    Game::getWindow().draw(text);
+
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
+        char c = event.text.unicode;
+        switch (c) {
+        case 'a':
+            m_currentState = eUiState::ChooseManuever;
+            break;
+        case 'b':
+            m_currentState = eUiState::ChooseManuever;
+            break;
+        }
+    }
 }
 
 void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, bool linkedParry)
