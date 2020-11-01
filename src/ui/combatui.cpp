@@ -13,7 +13,7 @@
 using namespace std;
 
 constexpr unsigned logHeight = cCharSize * (cLinesDisplayed + 1);
-constexpr unsigned rectHeight = cCharSize * 5;
+constexpr unsigned rectHeight = cCharSize * 6;
 
 CombatUI::CombatUI() { resetState(); }
 
@@ -51,19 +51,6 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
     }
 
     auto windowSize = Game::getWindow().getSize();
-
-    sf::RectangleShape combatBkg(sf::Vector2f(windowSize.x / 2 - 4, rectHeight));
-    combatBkg.setPosition(2, windowSize.y - logHeight - rectHeight - 3);
-    combatBkg.setFillColor(sf::Color(12, 12, 23));
-    combatBkg.setOutlineThickness(2);
-    combatBkg.setOutlineColor(sf::Color(22, 22, 33));
-    Game::getWindow().draw(combatBkg);
-    sf::RectangleShape combatBkg2(sf::Vector2f(windowSize.x / 2 - 2, rectHeight));
-    combatBkg2.setPosition(windowSize.x / 2, windowSize.y - logHeight - rectHeight - 3);
-    combatBkg2.setFillColor(sf::Color(12, 12, 23));
-    combatBkg2.setOutlineThickness(2);
-    combatBkg2.setOutlineColor(sf::Color(22, 22, 33));
-    Game::getWindow().draw(combatBkg2);
 
     showSide1Stats(instance);
     showSide2Stats(instance);
@@ -337,12 +324,20 @@ void CombatUI::showSide1Stats(const CombatInstance* instance)
 {
     auto windowSize = Game::getWindow().getSize();
 
+    sf::RectangleShape combatBkg(sf::Vector2f(windowSize.x / 2 - 4, rectHeight));
+    combatBkg.setPosition(2, windowSize.y - logHeight - rectHeight - 3);
+    combatBkg.setFillColor(sf::Color(12, 12, 23));
+    combatBkg.setOutlineThickness(2);
+    combatBkg.setOutlineColor(sf::Color(22, 22, 33));
+    Game::getWindow().draw(combatBkg);
+
     assert(instance != nullptr);
     Creature* creature = instance->getSide1();
     sf::Text side1Info;
-    side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName()
-        + " - " + lengthToString(creature->getCurrentReach()) + " - "
-        + gripToString(creature->getGrip()) + " grip");
+    side1Info.setString(creature->getName()
+        + " \nPrimary: " + creature->getPrimaryWeapon()->getName() + " - "
+        + lengthToString(creature->getCurrentReach()) + " - " + gripToString(creature->getGrip())
+        + " grip / Secondary: " + creature->getSecondaryWeapon()->getName());
     side1Info.setCharacterSize(cCharSize);
     side1Info.setFont(Game::getDefaultFont());
     side1Info.setPosition(6, windowSize.y - logHeight - rectHeight);
@@ -352,7 +347,7 @@ void CombatUI::showSide1Stats(const CombatInstance* instance)
     sf::Text ap;
     ap.setCharacterSize(cCharSize);
     ap.setFont(Game::getDefaultFont());
-    ap.setPosition(6, windowSize.y - logHeight - rectHeight + cCharSize);
+    ap.setPosition(6, windowSize.y - logHeight - rectHeight + (cCharSize * 2));
     ap.setString("Action Points : " + to_string(creature->getCombatPool()) + " / "
         + to_string(creature->getMaxCombatPool())
         + " - Success rate: " + to_string(creature->getSuccessRate()) + "%" + '\n' + "Blood loss: "
@@ -365,12 +360,20 @@ void CombatUI::showSide2Stats(const CombatInstance* instance)
 {
     auto windowSize = Game::getWindow().getSize();
 
+    sf::RectangleShape combatBkg(sf::Vector2f(windowSize.x / 2 - 2, rectHeight));
+    combatBkg.setPosition(windowSize.x / 2, windowSize.y - logHeight - rectHeight - 3);
+    combatBkg.setFillColor(sf::Color(12, 12, 23));
+    combatBkg.setOutlineThickness(2);
+    combatBkg.setOutlineColor(sf::Color(22, 22, 33));
+    Game::getWindow().draw(combatBkg);
+
     assert(instance != nullptr);
     Creature* creature = instance->getSide2();
     sf::Text side1Info;
-    side1Info.setString(creature->getName() + " - " + creature->getPrimaryWeapon()->getName()
-        + " - " + lengthToString(creature->getCurrentReach()) + " - "
-        + gripToString(creature->getGrip()) + " grip");
+    side1Info.setString(creature->getName()
+        + " \nPrimary: " + creature->getPrimaryWeapon()->getName() + " - "
+        + lengthToString(creature->getCurrentReach()) + " - " + gripToString(creature->getGrip())
+        + " grip / Secondary: " + creature->getSecondaryWeapon()->getName());
     side1Info.setCharacterSize(cCharSize);
     side1Info.setFont(Game::getDefaultFont());
     side1Info.setPosition(windowSize.x / 2 + 5, windowSize.y - logHeight - rectHeight);
@@ -380,7 +383,7 @@ void CombatUI::showSide2Stats(const CombatInstance* instance)
     sf::Text ap;
     ap.setCharacterSize(cCharSize);
     ap.setFont(Game::getDefaultFont());
-    ap.setPosition(windowSize.x / 2 + 5, windowSize.y - logHeight - rectHeight + cCharSize);
+    ap.setPosition(windowSize.x / 2 + 5, windowSize.y - logHeight - rectHeight + (cCharSize * 2));
     ap.setString("Action Points : " + to_string(creature->getCombatPool()) + " / "
         + to_string(creature->getMaxCombatPool())
         + " - Success rate: " + to_string(creature->getSuccessRate()) + "%" + '\n' + "Blood loss: "
