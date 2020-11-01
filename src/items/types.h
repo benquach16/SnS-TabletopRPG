@@ -21,6 +21,7 @@ enum class eAttacks {
 };
 
 enum class eOffensiveManuevers : unsigned {
+    Invalid = 0,
     Swing,
     Thrust,
     PinpointThrust,
@@ -36,9 +37,9 @@ enum class eOffensiveManuevers : unsigned {
     Pin
 };
 
-enum class ePositionManuevers : unsigned { Stand, Pickup };
+enum class ePositionManuevers : unsigned { Invalid = 0, Stand, Pickup };
 
-enum class ePreResolveManuevers : unsigned { Stomp, Feint };
+enum class ePreResolveManuevers : unsigned { Invalid = 0, Stomp, Feint };
 
 enum class eGrips : unsigned { Standard, Staff, HalfSword, Overhand };
 

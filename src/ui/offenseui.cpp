@@ -68,9 +68,11 @@ void OffenseUI::doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* playe
         char c = event.text.unicode;
         switch (c) {
         case 'a':
+            player->setOffenseWeapon(primaryWeapon);
             m_currentState = eUiState::ChooseManuever;
             break;
         case 'b':
+            player->setOffenseWeapon(secondaryWeapon);
             m_currentState = eUiState::ChooseManuever;
             break;
         }
@@ -226,7 +228,7 @@ void OffenseUI::doComponent(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();
 
-    const Weapon* weapon = player->getPrimaryWeapon();
+    const Weapon* weapon = player->getQueuedOffense().weapon;
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());

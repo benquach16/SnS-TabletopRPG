@@ -456,6 +456,7 @@ void Creature::doOffense(
     }
 
     setCreatureOffenseManuever(eOffensiveManuevers::Thrust);
+    m_currentOffense.weapon = weapon;
     m_currentOffense.component = weapon->getBestAttack();
     if (m_currentOffense.component->getAttack() == eAttacks::Swing) {
         setCreatureOffenseManuever(eOffensiveManuevers::Swing);
@@ -561,6 +562,7 @@ void Creature::doOffense(
     }
 
     if (dualRedThrow == true && m_combatPool > 0) {
+        m_currentDefense.weapon = weapon;
         m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
         m_currentDefense.dice = m_combatPool - m_currentOffense.dice;
         m_hasDefense = true;
@@ -579,7 +581,8 @@ void Creature::doOffense(
 void Creature::doDefense(const Creature* attacker, bool isLastTempo)
 {
     int diceAllocated = attacker->getQueuedOffense().dice;
-
+    const Weapon* weapon = getPrimaryWeapon();
+    m_currentDefense.weapon = weapon;
     constexpr int buffer = 3;
     if ((diceAllocated + buffer < m_combatPool && random_static::get(0, 2) == 0)
         || (isLastTempo && diceAllocated + buffer < getCombatPool())) {
@@ -743,14 +746,9 @@ eInitiativeRoll Creature::doInitiative(const Creature* opponent)
 
 void Creature::clearCreatureManuevers(bool skipDisable)
 {
-    m_currentOffense.dice = 0;
-    m_currentOffense.heavyblow = 0;
-    m_currentOffense.linked = false;
-    m_currentOffense.feint = false;
-    m_currentOffense.component = nullptr;
-    m_currentDefense.manuever = eDefensiveManuevers::Parry;
-    m_currentDefense.dice = 0;
-    m_currentPosition.dice = 0;
+    m_currentOffense.reset();
+    m_currentDefense.reset();
+    m_currentPosition.reset();
 
     m_hasOffense = false;
     m_hasDefense = false;

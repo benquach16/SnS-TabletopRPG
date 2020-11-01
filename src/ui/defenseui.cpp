@@ -9,6 +9,9 @@ using namespace std;
 void DefenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, bool lastTempo)
 {
     switch (m_currentState) {
+    case eUiState::ChooseWeapon:
+        doChooseWeapon(hasKeyEvents, event, player);
+        break;
     case eUiState::ChooseManuever:
         doManuever(hasKeyEvents, event, player, lastTempo);
         break;
@@ -20,6 +23,42 @@ void DefenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, bool las
     default:
         assert(true);
         break;
+    }
+}
+
+void DefenseUI::doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* player)
+{
+    UiCommon::drawTopPanel();
+
+    sf::Text text;
+    UiCommon::initializeText(text);
+
+    string str = "Choose weapon to defend with:\n";
+
+    const Weapon* primaryWeapon = player->getPrimaryWeapon();
+    const Weapon* secondaryWeapon = player->getSecondaryWeapon();
+
+    str += "a - ";
+    str += primaryWeapon->getName();
+    str += '\n';
+    str += "b - ";
+    str += secondaryWeapon->getName();
+    str += '\n';
+    text.setString(str);
+    Game::getWindow().draw(text);
+
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
+        char c = event.text.unicode;
+        switch (c) {
+        case 'a':
+            player->setDefenseWeapon(primaryWeapon);
+            m_currentState = eUiState::ChooseManuever;
+            break;
+        case 'b':
+            player->setDefenseWeapon(secondaryWeapon);
+            m_currentState = eUiState::ChooseManuever;
+            break;
+        }
     }
 }
 
