@@ -233,34 +233,33 @@ void OffenseUI::doComponent(bool hasKeyEvents, sf::Event event, Player* player)
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
     std::string str("Choose weapon component:\n");
-    eGrips grip = player->getGrip();
     if (player->getQueuedOffense().manuever == eOffensiveManuevers::Swing
         || player->getQueuedOffense().manuever == eOffensiveManuevers::Hook) {
-        for (int i = 0; i < weapon->getSwingComponents(grip).size(); ++i) {
+        for (int i = 0; i < weapon->getSwingComponents().size(); ++i) {
             char idx = ('a' + i);
 
             str += idx;
-            str += " - " + weapon->getSwingComponents(grip)[i]->getName() + '\n';
+            str += " - " + weapon->getSwingComponents()[i]->getName() + '\n';
 
             if (hasKeyEvents && event.type == sf::Event::TextEntered) {
                 char c = event.text.unicode;
                 if (c == idx) {
-                    player->setOffenseComponent(weapon->getSwingComponents(grip)[i]);
+                    player->setOffenseComponent(weapon->getSwingComponents()[i]);
                     m_currentState = eUiState::ChooseTarget;
                 }
             }
         }
     } else {
-        for (int i = 0; i < weapon->getThrustComponents(grip).size(); ++i) {
+        for (int i = 0; i < weapon->getThrustComponents().size(); ++i) {
             char idx = ('a' + i);
 
             str += idx;
-            str += " - " + weapon->getThrustComponents(grip)[i]->getName() + '\n';
+            str += " - " + weapon->getThrustComponents()[i]->getName() + '\n';
 
             if (hasKeyEvents && event.type == sf::Event::TextEntered) {
                 char c = event.text.unicode;
                 if (c == idx) {
-                    player->setOffenseComponent(weapon->getThrustComponents(grip)[i]);
+                    player->setOffenseComponent(weapon->getThrustComponents()[i]);
                     m_currentState = eUiState::ChooseTarget;
                 }
             }

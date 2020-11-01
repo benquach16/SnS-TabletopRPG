@@ -19,16 +19,16 @@ public:
     eLength getLength() const { return m_length; }
     eWeaponTypes getType() const { return m_type; }
     const std::vector<Component*>& getComponents() const { return m_components; }
-    std::vector<Component*> getThrustComponents(eGrips grip) const { return m_thrust.at(grip); }
-    std::vector<Component*> getSwingComponents(eGrips grip) const { return m_swing.at(grip); }
+    std::vector<Component*> getThrustComponents() const { return m_thrustComponents; }
+    std::vector<Component*> getSwingComponents() const { return m_swingComponents; }
     // convinence functions
     Component* getBestAttack() const;
-
-    Component* getPommelStrike() const;
 
     Component* getBestThrust() const;
 
     Component* getBestBlunt() const;
+
+    Component* getPommelStrike() const;
 
     bool canHook() const { return m_hook; }
 
@@ -43,9 +43,6 @@ private:
     std::vector<Component*> m_thrustComponents;
     std::vector<Component*> m_swingComponents;
 
-    // horrendous code
-    std::unordered_map<eGrips, std::vector<Component*>> m_thrust;
-    std::unordered_map<eGrips, std::vector<Component*>> m_swing;
     eWeaponTypes m_type;
 
     int m_secondaryWeaponId;

@@ -743,11 +743,10 @@ void CombatInstance::doResolution()
             if (defend.manuever == eDefensiveManuevers::ParryLinked) {
                 // resolve offense
                 Offense offense = defender->getQueuedOffense();
-                bool linked = offense.component->isLinked(defender->getGrip());
+                bool linked = false;
                 int BTN = linked == true ? defender->getBTN() : defender->getDisadvantagedBTN();
 
                 int reachCost = abs(defender->getCurrentReach() - m_currentReach);
-                cout << "linked" << linked << endl;
                 MoS = (-MoS) - reachCost;
                 int linkedOffenseMoS = DiceRoller::rollGetSuccess(BTN, MoS);
                 cout << "Linked hits: " << linkedOffenseMoS << endl;
@@ -953,8 +952,7 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
     } else if (attack.manuever == eOffensiveManuevers::Swing) {
         // swings in these grips do less damage, unless its a linked component
         eGrips grip = attacker->getGrip();
-        if ((grip == eGrips::HalfSword || grip == eGrips::Staff || grip == eGrips::Overhand)
-            && attack.component->isLinked(grip) == false) {
+        if ((grip == eGrips::HalfSword || grip == eGrips::Staff || grip == eGrips::Overhand)) {
             // overhand swings should be VERY bad
             if (grip == eGrips::Overhand) {
                 MoS -= 1;
@@ -1213,7 +1211,6 @@ void CombatInstance::outputReachCost(int cost, Creature* attacker)
 bool CombatInstance::switchToStaffGrip(Creature* creature)
 {
     Offense offense = creature->getQueuedOffense();
-    return (creature->getGrip() == eGrips::Overhand
-        && offense.manuever == eOffensiveManuevers::Swing
-        && offense.component->isLinked(eGrips::Overhand));
+    return (
+        creature->getGrip() == eGrips::Overhand && offense.manuever == eOffensiveManuevers::Swing);
 }

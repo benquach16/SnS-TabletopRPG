@@ -31,23 +31,6 @@ Weapon::Weapon(const std::string& name, const std::string& description, eLength 
             m_swingComponents.push_back(components[i]);
         }
     }
-
-    for (auto it : components) {
-        std::set<eGrips> grips = it->getGrips();
-        for (auto grip : grips) {
-            switch (it->getAttack()) {
-            case eAttacks::Thrust:
-                m_thrust[grip].push_back(it);
-                break;
-            case eAttacks::Swing:
-                m_swing[grip].push_back(it);
-                break;
-            default:
-                assert(true);
-                break;
-            }
-        }
-    }
 }
 
 Weapon::~Weapon()
@@ -66,24 +49,11 @@ Component* Weapon::getBestAttack() const
 
     Component* ret = m_components[0];
     for (unsigned i = 1; i < m_components.size(); ++i) {
-        if (m_components[i]->getDamage() > ret->getDamage()
-            && m_components[i]->isPommel() == false) {
+        if (m_components[i]->getDamage() > ret->getDamage()) {
             ret = m_components[i];
         }
     }
 
-    return ret;
-}
-
-Component* Weapon::getPommelStrike() const
-{
-    Component* ret = nullptr;
-    for (auto it : m_components) {
-        if (it->isPommel() == true) {
-            ret = it;
-        }
-    }
-    assert(ret != nullptr);
     return ret;
 }
 
@@ -93,12 +63,18 @@ Component* Weapon::getBestThrust() const
     assert(m_components.size() > 0);
     Component* ret = m_thrustComponents[0];
     for (unsigned i = 1; i < m_thrustComponents.size(); ++i) {
-        if (m_thrustComponents[i]->getDamage() > ret->getDamage()
-            && m_thrustComponents[i]->isPommel() == false) {
+        if (m_thrustComponents[i]->getDamage() > ret->getDamage()) {
             ret = m_thrustComponents[i];
         }
     }
     return ret;
+}
+
+Component* Weapon::getPommelStrike() const
+{
+    const Weapon* pommel = getSecondaryWeapon();
+    assert(pommel->getSwingComponents().size() > 0);
+    return pommel->getSwingComponents()[0];
 }
 
 const Weapon* Weapon::getSecondaryWeapon() const
@@ -157,7 +133,6 @@ WeaponTable::WeaponTable()
             eDamageTypes damageType = convertDamageFromStr(componentJson[i]["type"]);
             eAttacks attack = convertAttackFromStr(componentJson[i]["attack"]);
             std::set<eWeaponProperties> properties;
-            std::unordered_map<eGrips, bool> grips;
 
             // check for component properties
             if (componentJson[i]["properties"].is_null() == false) {
@@ -169,65 +144,8 @@ WeaponTable::WeaponTable()
                 }
             }
 
-            // DELETE ALL THIS TERRIBLE CODE
-            bool addStandardGrips = true;
-            // templatize polearm components for smaller jsons
-            if (componentJson[i]["buttspike"].is_null() == false) {
-                grips[eGrips::Staff] = true;
-                grips[eGrips::Overhand] = false;
-                addStandardGrips = false;
-            }
-
-            if (componentJson[i]["polearmhead"].is_null() == false) {
-                grips[eGrips::Standard] = false;
-                grips[eGrips::Staff] = false;
-                grips[eGrips::Overhand] = true;
-                addStandardGrips = false;
-            }
-
-            if (componentJson[i]["polearmspike"].is_null() == false) {
-                grips[eGrips::Standard] = false;
-                grips[eGrips::Staff] = false;
-                addStandardGrips = false;
-            }
-            bool pommel = false;
-            if (componentJson[i]["pommel"].is_null() == false) {
-                addStandardGrips = false;
-                pommel = true;
-            }
-
-            // we have specialized grips. most grip info should come from templates (polearm grips,
-            // swords, etc), so this should not be a common code path
-            if (addStandardGrips == true) {
-                if (componentJson[i]["grips"].is_null() == false) {
-                    auto gripsJson = componentJson[i]["grips"];
-                    for (unsigned j = 0; j < gripsJson.size(); ++j) {
-                        eGrips grip = stringToGrip(gripsJson[j]["grip"]);
-                        bool linked = false;
-                        if (gripsJson[j]["linked"].is_null() == false) {
-                            linked = true;
-                        }
-                        grips[grip] = linked;
-                    }
-                } else {
-                    // add standard grip
-                    grips[eGrips::Standard] = false;
-                    switch (weaponType) {
-                    case eWeaponTypes::Polearms:
-                        grips[eGrips::Staff] = false;
-                        grips[eGrips::Overhand] = false;
-                        break;
-                    case eWeaponTypes::Longswords:
-                    case eWeaponTypes::Swords:
-                        grips[eGrips::HalfSword] = false;
-                    default:
-                        break;
-                    }
-                }
-            }
-
-            Component* component = new Component(
-                componentName, damage, damageType, attack, properties, grips, pommel);
+            Component* component
+                = new Component(componentName, damage, damageType, attack, properties);
 
             weaponComponents.push_back(component);
         }
@@ -250,9 +168,9 @@ void WeaponTable::createNaturalWeapons()
     grips[eGrips::Standard] = false;
     std::vector<Component*> components;
     components.push_back(
-        new Component("Fist", -1, eDamageTypes::Blunt, eAttacks::Swing, properties, grips));
+        new Component("Fist", -1, eDamageTypes::Blunt, eAttacks::Swing, properties));
     components.push_back(
-        new Component("Fist", -1, eDamageTypes::Blunt, eAttacks::Thrust, properties, grips));
+        new Component("Fist", -1, eDamageTypes::Blunt, eAttacks::Thrust, properties));
     Weapon* fists = new Weapon(
         name, "For punching", eLength::Hand, components, eWeaponTypes::Brawling, 0, false, true);
     assert(m_weaponsList.find(cFistsId) == m_weaponsList.end());

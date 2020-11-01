@@ -502,6 +502,8 @@ void Creature::doOffense(
                 // change
                 setCreatureOffenseManuever(eOffensiveManuevers::PinpointThrust);
             } else {
+
+                // todo : mordhau
                 m_currentOffense.component = weapon->getPommelStrike();
                 m_currentOffense.manuever = eOffensiveManuevers::Mordhau;
             }
@@ -668,7 +670,7 @@ bool Creature::stealInitiative(const Creature* attacker, int& outDie)
         mult += (getBTN() - cBaseBTN) / 10.f;
         int diff = attacker->getCombatPool() * mult;
         int dice = diff + random_static::get(4, 8);
-        if (m_combatPool > dice) {
+        if (m_combatPool - bufferDie > dice) {
             outDie = dice;
             m_hasDefense = true;
             return true;

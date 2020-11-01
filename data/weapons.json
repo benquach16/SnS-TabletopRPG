@@ -45,6 +45,29 @@
 			}			
 		]
 	},
+	"1022": {
+		"name": "Sword Pommel",
+		"description": "The pommel of a sword",
+		"length" : "medium",
+		"type": "sword",
+		"hands": 1,
+		"cost": 0,
+		"hook": false,
+		"components": [
+			{
+				"name": "Pommel",
+				"damage": 1,
+				"type": "piercing",
+				"attack": "thrust"
+			},		
+			{
+				"name": "Crossguard",
+				"damage": 1,
+				"type": "blunt",
+				"attack": "swing"
+			}			
+		]
+	},
 	"1040": {
 		"name": "Pollaxe",
 		"description":"A knightly polearm that consists of a top spike, an axe blade, and a hammer. Particularly effective against plate armor.",
@@ -90,18 +113,19 @@
 		"hook": false,
 		"components": [
 			{
-				"name": "Blade, Swing",
+				"name": "Blade Edge",
 				"damage": 1,
 				"type": "cutting",
 				"attack": "swing"
 			},
 			{
-				"name": "Blade, Thrust",
+				"name": "Blade Point",
 				"damage": 1,
 				"type": "piercing",
 				"attack": "thrust"
 			}
-		]
+		],
+		"secondary": 1022
 	},
 	"1042": {
 		"name": "Spear",
@@ -139,13 +163,13 @@
 		"hook": false,
 		"components": [
 			{
-				"name": "Blade, Swing",
+				"name": "Blade Edge",
 				"damage": -2,
 				"type": "cutting",
 				"attack": "swing"
 			},
 			{
-				"name": "Blade, Thrust",
+				"name": "Blade Point",
 				"damage": 0,
 				"type": "piercing",
 				"attack": "thrust",
@@ -198,18 +222,19 @@
 		"hook": false,
 		"components": [
 			{
-				"name": "Blade, Swing",
+				"name": "Blade Edge",
 				"damage": 1,
 				"type": "cutting",
 				"attack": "swing"
 			},
 			{
-				"name": "Blade, Thrust",
+				"name": "Blade Thrust",
 				"damage": 1,
 				"type": "piercing",
 				"attack": "thrust"
 			}
-		]
+		],
+		"secondary": 1022
 	},
 	"1046": {
 		"name": "Iron Short Sword",
@@ -221,18 +246,19 @@
 		"hook": false,
 		"components": [
 			{
-				"name": "Blade, Swing",
+				"name": "Blade Edge",
 				"damage": 0,
 				"type": "cutting",
 				"attack": "swing"
 			},
 			{
-				"name": "Blade, Thrust",
+				"name": "Blade Thrust",
 				"damage": 0,
 				"type": "piercing",
 				"attack": "thrust"
 			}
-		]
+		],
+		"secondary": 1022
 	},
 	"1047": {
 		"name": "Quarterstaff",
@@ -305,34 +331,19 @@
 		"hook": false,
 		"components": [
 			{
-				"name": "Blade, Thrust",
+				"name": "Blade Point",
 				"damage": 2,
 				"type": "piercing",
 				"attack": "thrust"
 			},
 			{
-				"name": "Blade, Swing",
+				"name": "Blade Edge",
 				"damage": 1,
 				"attack": "swing",
 				"type": "cutting"
-			},
-			{
-				"name": "Pommel, Thrust",
-				"damage": 1,
-				"attack": "thrust",
-				"type": "blunt",
-				"pommel": true
-			},
-			{
-				"name": "Pommel, Swing",
-				"damage": 1,
-				"attack": "swing",
-				"type": "blunt",
-				"pommel": true
 			}
-			
-
-		]
+		],
+		"secondary": 1022
 	},
 	"1051": {
 		"name": "Seraphim Steel Pollaxe",
@@ -365,22 +376,9 @@
 				"attack": "swing",
 				"properties": [ "crushing" ],
 				"polearmhead": true
-			},
-			{
-				"name": "Buttspike, Thrust",
-				"damage": 2,
-				"type": "piercing",
-				"attack": "thrust",
-				"buttspike": true
-			},		
-			{
-				"name": "Buttspike, Swing",
-				"damage": 2,
-				"type": "blunt",
-				"attack": "swing",
-				"buttspike": true
 			}
-		]
+		],
+		"secondary": 1020
 	},
 	"1052": {
 		"name": "Dane Axe",
@@ -402,21 +400,8 @@
 				"damage": 3,
 				"attack": "swing",
 				"type": "cutting"
-			},
-			{
-				"name": "Buttend, Thrust",
-				"damage": 1,
-				"type": "blunt",
-				"attack": "thrust",
-				"buttspike": true
-			},
-			{
-				"name": "Buttspike, Swing",
-				"damage": 1,
-				"type": "blunt",
-				"attack": "swing",
-				"buttspike": true
 			}
-		]
+		],
+		"secondary": 1021
 	}
 }
