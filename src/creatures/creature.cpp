@@ -48,6 +48,9 @@ const Weapon* Creature::getPrimaryWeapon() const
 
 const Weapon* Creature::getSecondaryWeapon() const
 {
+    if (getGrip() == eGrips::Staff) {
+        return getPrimaryWeapon()->getSecondaryWeapon();
+    }
     return WeaponTable::getSingleton()->get(m_secondaryWeaponId);
 }
 

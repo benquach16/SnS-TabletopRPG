@@ -34,7 +34,7 @@ public:
 
     bool getNaturalWeapon() const { return m_naturalWeapon; }
 
-    Weapon* getSecondaryWeapon() const;
+    const Weapon* getSecondaryWeapon() const;
 
 private:
     Weapon();

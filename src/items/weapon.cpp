@@ -101,6 +101,11 @@ Component* Weapon::getBestThrust() const
     return ret;
 }
 
+const Weapon* Weapon::getSecondaryWeapon() const
+{
+    return WeaponTable::getSingleton()->get(m_secondaryWeaponId);
+}
+
 WeaponTable::WeaponTable()
 {
     ifstream file(filepath);
