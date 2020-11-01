@@ -35,7 +35,7 @@
         "responses": ["here"]
     },
     "here": {
-        "message": "You volunteered to help secure the White Groves to the northern border of the country. There seems to be increased bandit activity here. Any other questions?",
+        "message": "You were one of the mercenaries who volunteered to help secure these mountains against bandits. Seems to be increased activity around here, for some reason.",
         "responses": ["needhelp","imgood"]
     },
     "needhelp" : {

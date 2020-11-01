@@ -76,20 +76,6 @@
 				"attack": "swing",
 				"properties": [ "crushing" ],
 				"polearmhead": true
-			},
-			{
-				"name": "Buttspike, Thrust",
-				"damage": 1,
-				"type": "piercing",
-				"attack": "thrust",
-				"buttspike": true
-			},		
-			{
-				"name": "Buttspike, Swing",
-				"damage": 1,
-				"type": "blunt",
-				"attack": "swing",
-				"buttspike": true
 			}
 		],
 		"secondary" : 1020
@@ -139,22 +125,9 @@
 				"type": "piercing",
 				"attack": "thrust",
 				"polearmspike": true
-			},
-			{
-				"name": "Buttend, Thrust",
-				"damage": 1,
-				"type": "blunt",
-				"attack": "thrust",
-				"buttspike": true
-			},		
-			{
-				"name": "Buttend, Swing",
-				"damage": 1,
-				"type": "blunt",
-				"attack": "swing",
-				"buttspike": true
 			}
-		]
+		],
+		"secondary": 1021
 	},
 	"1043": {
 		"name": "Rondel Dagger",
@@ -211,22 +184,9 @@
 				"attack": "swing",
 				"properties": [ "crushing" ],
 				"polearmhead": true
-			},
-			{
-				"name": "Buttspike, Thrust",
-				"damage": 2,
-				"type": "piercing",
-				"attack": "thrust",
-				"buttspike": true
-			},		
-			{
-				"name": "Buttspike, Swing",
-				"damage": 1,
-				"type": "blunt",
-				"attack": "swing",
-				"buttspike": true
 			}
-		]
+		],
+		"secondary": 1020
 	},
 	"1045": {
 		"name": "Short Sword",
@@ -296,22 +256,9 @@
 				"type": "blunt",
 				"attack": "thrust",
 				"polearmspike": true
-			},
-			{
-				"name": "Buttend, Thrust",
-				"damage": 1,
-				"type": "blunt",
-				"attack": "thrust",
-				"buttspike": true
-			},		
-			{
-				"name": "Buttend, Swing",
-				"damage": 1,
-				"type": "blunt",
-				"attack": "swing",
-				"buttspike": true
 			}
-		]
+		],
+		"secondary": 1021
 	},
 	"1048": {
 		"name": "Halberd",
@@ -344,22 +291,9 @@
 				"attack": "swing",
 				"properties": [ "platepiercing" ],
 				"polearmhead": true
-			},
-			{
-				"name": "Buttspike, Thrust",
-				"damage": 1,
-				"type": "piercing",
-				"attack": "thrust",
-				"buttspike": true
-			},		
-			{
-				"name": "Buttspike, Swing",
-				"damage": 1,
-				"type": "blunt",
-				"attack": "swing",
-				"buttspike": true
 			}
-		]
+		],
+		"secondary": 1020
 	},
 	"1050": {
 		"name": "Longsword",
