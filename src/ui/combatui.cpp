@@ -75,7 +75,10 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
     Game::getWindow().draw(reachBkg);
     Game::getWindow().draw(reachTxt);
 
-    if (manager->getState() == eCombatManagerState::PositioningRoll) {
+    // See comment in combatmanager.h
+    // The player's node is not guaranteed to be active, so this function
+    // will handle that case
+    if (manager->waitingForPosition()) {
         m_positionUI.run(hasKeyEvents, event, player);
         return;
     }

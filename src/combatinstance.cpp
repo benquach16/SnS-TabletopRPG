@@ -55,8 +55,8 @@ void CombatInstance::initCombat(Creature* side1, Creature* side2, bool showAllMe
     m_side1 = side1;
     m_side2 = side2;
 
-    m_side1->clearCreatureManuevers();
-    m_side2->clearCreatureManuevers();
+    // m_side1->clearCreatureManuevers();
+    // m_side2->clearCreatureManuevers();
 
     m_currentTempo = eTempo::First;
     m_initiative = eInitiative::Side1;
@@ -743,7 +743,15 @@ void CombatInstance::doResolution()
             if (defend.manuever == eDefensiveManuevers::ParryLinked) {
                 // resolve offense
                 Offense offense = defender->getQueuedOffense();
+
+                // disadvantage on the attack unless done with secondary weapon
+
                 bool linked = false;
+                assert(offense.weapon != nullptr);
+                assert(defend.weapon != nullptr);
+                if (offense.weapon != defend.weapon) {
+                    linked = true;
+                }
                 int BTN = linked == true ? defender->getBTN() : defender->getDisadvantagedBTN();
 
                 int reachCost = abs(defender->getCurrentReach() - m_currentReach);

@@ -77,6 +77,7 @@ bool CombatManager::run(float tick)
         cleanup();
         return false;
     }
+    cout << (int)m_currentState << endl;
     switch (m_currentState) {
     case eCombatManagerState::RunCombat:
         doRunCombat(tick);
@@ -291,6 +292,18 @@ void CombatManager::doPositionRoll()
     m_edgeId = 0;
     m_currentState = eCombatManagerState::RunCombat;
     m_doPositionRoll = false;
+}
+
+bool CombatManager::waitingForPosition() const
+{
+    if (isParent()) {
+        return m_currentState == eCombatManagerState::PositioningRoll;
+    } else {
+        // leaf node guaranteed to have 1 edge
+        assert(m_edges.size() == 1);
+        CombatManager* otherManager = m_edges[0]->findOtherVertex(this);
+        return otherManager->waitingForPosition();
+    }
 }
 
 void CombatManager::addEdge(CombatEdge* edge)

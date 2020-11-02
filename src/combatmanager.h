@@ -76,6 +76,12 @@ public:
     bool isInDuel() const;
     bool hasPosition(Creature* creature, Creature* target);
 
+    // This exists seperately from the state because
+    // The player node is read from the UI, but the player node is not the
+    // arbiter for waiting for positing rolls. So the active node must signal to
+    // all its children that a positioning roll is needed
+    bool waitingForPosition() const;
+
 private:
     CombatManager();
     enum class eOutnumberedSide { None, Side1, Side2 };

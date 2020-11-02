@@ -48,7 +48,11 @@ const Weapon* Creature::getPrimaryWeapon() const
 
 const Weapon* Creature::getSecondaryWeapon() const
 {
-    if (getGrip() == eGrips::Staff) {
+    if (getGrip() == eGrips::Staff && getPrimaryWeapon()->getType() == eWeaponTypes::Polearms) {
+        return getPrimaryWeapon()->getSecondaryWeapon();
+    }
+    if (getGrip() == eGrips::HalfSword
+        && getPrimaryWeapon()->getType() == eWeaponTypes::Longswords) {
         return getPrimaryWeapon()->getSecondaryWeapon();
     }
     return WeaponTable::getSingleton()->get(m_secondaryWeaponId);
