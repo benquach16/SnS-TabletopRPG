@@ -110,6 +110,7 @@ void DefenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
             case eDefensiveManuevers::ParryLinked:
             case eDefensiveManuevers::Expulsion:
             case eDefensiveManuevers::DodgeLinked:
+            case eDefensiveManuevers::Counter:
                 m_currentState = eUiState::ChooseDice;
                 break;
             case eDefensiveManuevers::AttackFromDef:

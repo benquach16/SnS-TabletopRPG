@@ -121,7 +121,8 @@ void InventoryUI::doEquipped(bool hasKeyEvents, sf::Event event, PlayerObject* p
     sf::Text txt;
     txt.setFont(Game::getDefaultFont());
     txt.setCharacterSize(cCharSize);
-    string str = "Equipped Armor - ";
+    string str = "Inventory (1 - Backpack, 2 - Equipment, 3 - Wounds, 4 - Profile):\n\n";
+    str += "Equipped Armor - ";
     str += to_string(player->getCreatureComponent()->getAP()) + "AP\n";
     std::vector<int> armorId = player->getCreatureComponent()->getArmorId();
     unsigned i = 0;
@@ -148,7 +149,7 @@ void InventoryUI::doEquipped(bool hasKeyEvents, sf::Event event, PlayerObject* p
     txt2.setFont(Game::getDefaultFont());
     txt2.setCharacterSize(cCharSize);
 
-    string weapontxt = "Equipped Weapons\n";
+    string weapontxt = "\nEquipped Weapons\n";
     const Weapon* weapon = player->getCreatureComponent()->getPrimaryWeapon();
     const char idx = ('a' + i);
     weapontxt += idx;
@@ -344,7 +345,9 @@ void InventoryUI::doProfile(bool hasKeyEvents, sf::Event event, PlayerObject* pl
     sf::Text stats;
     stats.setCharacterSize(cCharSize);
     stats.setFont(Game::getDefaultFont());
-    string statStr = "Primary Attributes\nStrength: " + to_string(creature->getStrength()) + '\n'
+
+    string statStr = "Inventory (1 - Backpack, 2 - Equipment, 3 - Wounds, 4 - Profile):\n\n";
+    statStr += "Primary Attributes\nStrength: " + to_string(creature->getStrength()) + '\n'
         + "Agility: " + to_string(creature->getAgility()) + '\n'
         + "Intuition: " + to_string(creature->getIntuition()) + '\n'
         + "Perception: " + to_string(creature->getPerception()) + '\n'

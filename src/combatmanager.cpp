@@ -77,7 +77,7 @@ bool CombatManager::run(float tick)
         cleanup();
         return false;
     }
-    cout << (int)m_currentState << endl;
+    // cout << (int)m_currentState << endl;
     switch (m_currentState) {
     case eCombatManagerState::RunCombat:
         doRunCombat(tick);

@@ -7,6 +7,7 @@
 		"hands": 1,
 		"cost": 0,
 		"hook": false,
+		"shield": false,
 		"components": [
 			{
 				"name": "Buttspike, Thrust",
