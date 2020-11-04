@@ -352,6 +352,13 @@ bool Creature::rollFatigue()
     return false;
 }
 
+void Creature::resetFatigue()
+{
+    for (auto it : m_fatigue) {
+        it.second = 0;
+    }
+}
+
 void Creature::disableWeapon(bool drop)
 {
     // do nothing, since we cannot drop fists

@@ -27,10 +27,11 @@ private:
     void gameloop(bool hasKeyEvents, sf::Event event);
 
     void doMoveSelector(sf::Event event, bool limit);
-    enum eApplicationState { CharCreation, MainMenu, Gameplay };
-    enum eGameState {
+    enum class eApplicationState : unsigned { CharCreation, MainMenu, Gameplay };
+    enum class eGameState : unsigned {
         Uninitialized,
         Playing,
+        Waiting,
         SelectionMode,
         DialogueSelect,
         DialogueMode,
@@ -52,7 +53,7 @@ private:
     sf::Clock clock;
     float tick = 0;
     float aiTick = 0;
-
+    int sleepTick = 0;
     GFXLevel m_gfxlevel;
 
     GFXSelector m_gfxSelector;

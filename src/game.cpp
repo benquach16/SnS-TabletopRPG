@@ -18,6 +18,7 @@ sf::Font Game::m_defaultFont;
 
 constexpr float cMaxZoom = 0.6f;
 constexpr float cMinZoom = 1.4f;
+constexpr int cRestTicks = 20;
 
 Game::Game()
     : m_pickup(nullptr)
@@ -174,7 +175,7 @@ void Game::gameloop(bool hasKeyEvents, sf::Event event)
         m_currentState = eGameState::Dead;
         Log::push("You have died!", Log::eMessageTypes::Damage);
     }
-
+    // cout << (int)m_currentState << endl;
     if (m_currentState == eGameState::Playing) {
         vector2d pos = m_playerObject->getPosition();
         if (hasKeyEvents && event.type == sf::Event::KeyPressed) {
@@ -241,6 +242,10 @@ void Game::gameloop(bool hasKeyEvents, sf::Event event)
             if (event.key.code == sf::Keyboard::K) {
                 m_selector.setPosition(m_playerObject->getPosition());
                 m_currentState = eGameState::DialogueSelect;
+            }
+            if (event.key.code == sf::Keyboard::R) {
+                Log::push("Resting..");
+                m_currentState = eGameState::Waiting;
             }
         }
 
@@ -368,6 +373,23 @@ void Game::gameloop(bool hasKeyEvents, sf::Event event)
         if (m_ui.runDialog(hasKeyEvents, event, m_playerObject, m_talking) == false) {
             m_currentState = eGameState::Playing;
         }
+    } else if (m_currentState == eGameState::Waiting) {
+        if (sleepTick < cRestTicks) {
+            // cout << aiTick << endl;
+            if (aiTick > 0.2) {
+                m_currentLevel->run();
+                aiTick = 0;
+                sleepTick++;
+                m_currentLevel->cleanup();
+                cout << "sleeping" << endl;
+            }
+        } else {
+            Log::push("You stop resting and recover all fatigue.");
+            m_playerObject->getCreatureComponent()->resetFatigue();
+            sleepTick = 0;
+            m_currentState = eGameState::Playing;
+        }
+
     } else if (m_currentState == eGameState::Dead) {
     }
 

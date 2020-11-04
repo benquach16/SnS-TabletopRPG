@@ -176,6 +176,8 @@ public:
 
     bool rollFatigue();
 
+    void resetFatigue();
+
     bool hasEnoughMetalArmor() const;
 
     void getLowestArmorPart(eBodyParts* pPartOut, eHitLocations* pHitOut) const;
