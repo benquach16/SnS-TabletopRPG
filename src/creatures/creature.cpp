@@ -70,6 +70,25 @@ eLength Creature::getCurrentReach() const
     return static_cast<eLength>(reach);
 }
 
+eLength Creature::getSecondaryWeaponReach() const
+{
+    // if in staff grip or halfsword, we have alternate secondary
+    // so we should not override the reach
+
+    if (getGrip() == eGrips::Staff || getGrip() == eGrips::HalfSword) {
+        return getCurrentReach();
+    }
+
+    const Weapon* weapon = getSecondaryWeapon();
+    // ugly
+    int reach = static_cast<int>(weapon->getLength()) - gripReachDifference(m_currentGrip);
+    if (m_currentStance == eCreatureStance::Prone) {
+        reach -= 2;
+    }
+    reach = max(0, reach);
+    return static_cast<eLength>(reach);
+}
+
 std::vector<const Armor*> Creature::getArmor() const
 {
     std::vector<const Armor*> ret;
@@ -87,19 +106,15 @@ void Creature::setWeapon(int idx)
 
 void Creature::inflictImpact(int impact)
 {
-    if (isWeaponDisabled()) {
-        reduceCombatPool(impact);
-    } else {
-        m_currentOffense.dice -= impact;
+    m_currentOffense.dice -= impact;
 
-        if (m_currentOffense.dice < 0) {
-            int diff = abs(m_currentOffense.dice);
-            m_currentOffense.dice = 0;
-            m_currentPosition.dice -= diff;
-            if (m_currentPosition.dice < 0) {
-                m_combatPool -= -m_currentPosition.dice;
-                m_currentPosition.dice = 0;
-            }
+    if (m_currentOffense.dice < 0) {
+        int diff = abs(m_currentOffense.dice);
+        m_currentOffense.dice = 0;
+        m_currentPosition.dice -= diff;
+        if (m_currentPosition.dice < 0) {
+            m_combatPool -= -m_currentPosition.dice;
+            m_currentPosition.dice = 0;
         }
     }
 }
@@ -366,6 +381,11 @@ void Creature::resetFatigue()
 
 void Creature::disableWeapon(bool drop)
 {
+    // remove all dice from offense and defense pools when this happens
+    // so impact gets transferred directly to remainig CP
+    m_currentOffense.dice = 0;
+    m_currentDefense.dice = 0;
+
     // do nothing, since we cannot drop fists
     // or natural weapon
     if (m_primaryWeaponId == cFistsId) {

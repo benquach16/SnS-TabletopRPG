@@ -33,6 +33,7 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
 {
     // bug - players combat manager might not be parent, then we are working with an outdated
     // instance
+    assert(manager != nullptr);
     if (manager == nullptr) {
         cout << "this shouldnt happen" << endl;
         return;
@@ -278,6 +279,21 @@ void CombatUI::doStolenOffense(bool hasKeyEvents, sf::Event event, Player* playe
     }
 }
 
+std::string CombatUI::constructStatBoxText(const Creature* creature)
+{
+    string str = creature->getName() + " - " + creature->getPrimaryWeapon()->getName() + " - "
+        + lengthToString(creature->getCurrentReach()) + " - " + gripToString(creature->getGrip())
+        + " grip\n";
+    // left pad, if you turn this into a library you can take down NPM
+    for (unsigned i = 0; i < creature->getName().size(); ++i) {
+        str += " ";
+    }
+    str += " - " + creature->getSecondaryWeapon()->getName() + " - "
+        + lengthToString(creature->getSecondaryWeaponReach());
+
+    return str;
+}
+
 void CombatUI::doDualRedSteal(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();
@@ -337,10 +353,8 @@ void CombatUI::showSide1Stats(const CombatInstance* instance)
     assert(instance != nullptr);
     Creature* creature = instance->getSide1();
     sf::Text side1Info;
-    side1Info.setString(creature->getName() + " \n" + creature->getPrimaryWeapon()->getName()
-        + " - " + lengthToString(creature->getCurrentReach()) + " - "
-        + gripToString(creature->getGrip())
-        + " grip / Off-Hand: " + creature->getSecondaryWeapon()->getName());
+
+    side1Info.setString(constructStatBoxText(creature));
     side1Info.setCharacterSize(cCharSize);
     side1Info.setFont(Game::getDefaultFont());
     side1Info.setPosition(6, windowSize.y - logHeight - rectHeight);
@@ -373,10 +387,7 @@ void CombatUI::showSide2Stats(const CombatInstance* instance)
     assert(instance != nullptr);
     Creature* creature = instance->getSide2();
     sf::Text side1Info;
-    side1Info.setString(creature->getName() + " \n" + creature->getPrimaryWeapon()->getName()
-        + " - " + lengthToString(creature->getCurrentReach()) + " - "
-        + gripToString(creature->getGrip())
-        + " grip / Off-Hand: " + creature->getSecondaryWeapon()->getName());
+    side1Info.setString(constructStatBoxText(creature));
     side1Info.setCharacterSize(cCharSize);
     side1Info.setFont(Game::getDefaultFont());
     side1Info.setPosition(windowSize.x / 2 + 5, windowSize.y - logHeight - rectHeight);

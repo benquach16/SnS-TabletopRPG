@@ -45,6 +45,7 @@ private:
 
     void allowFeint(bool hasKeyEvents, sf::Event event, Player* player);
 
+    std::string constructStatBoxText(const Creature* creature);
     void showSide1Stats(const CombatInstance* instance);
     void showSide2Stats(const CombatInstance* instance);
 

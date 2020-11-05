@@ -72,6 +72,7 @@ public:
     const Weapon* getSecondaryWeapon() const;
     int getSecondaryWeaponId() const { return m_secondaryWeaponId; }
     eLength getCurrentReach() const;
+    eLength getSecondaryWeaponReach() const;
     void setGrip(eGrips grip) { m_currentGrip = grip; }
     eGrips getGrip() const { return m_currentGrip; }
     std::vector<const Armor*> getArmor() const;
