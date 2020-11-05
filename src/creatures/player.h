@@ -15,7 +15,7 @@ public:
     eInitiativeRoll getInitiative() { return m_initiative; }
 
     // players make their offence piecemeal
-    void setOffenseWeapon(const Weapon* weapon) { m_currentOffense.weapon = weapon; }
+    void setOffenseWeapon(bool isPrimary) { m_currentOffense.withPrimaryWeapon = isPrimary; }
     void setOffenseManuever(eOffensiveManuevers manuever) { m_currentOffense.manuever = manuever; }
     void setOffenseDice(int dice) { m_currentOffense.dice = dice; }
     void setOffenseComponent(const Component* component) { m_currentOffense.component = component; }
@@ -26,7 +26,7 @@ public:
     void setOffenseFeint() { m_currentOffense.feint = true; }
     void setOffenseHeavyDice(int dice) { m_currentOffense.heavyblow = dice; }
 
-    void setDefenseWeapon(const Weapon* weapon) { m_currentDefense.weapon = weapon; }
+    void setDefenseWeapon(bool isPrimary) { m_currentDefense.withPrimaryWeapon = isPrimary; }
     void setDefenseManuever(eDefensiveManuevers manuever) { m_currentDefense.manuever = manuever; }
     void setDefenseDice(int dice) { m_currentDefense.dice = dice; }
 

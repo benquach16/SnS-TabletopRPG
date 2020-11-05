@@ -245,16 +245,14 @@ bool CombatInstance::doOffense()
         return false;
     }
     Offense attack = attacker->getQueuedOffense();
-    const Weapon* offenseWeapon = attack.weapon;
+    const Weapon* offenseWeapon = getAttackingWeapon(attacker);
     outputReachCost(reachCost, attacker);
-
-    assert(attack.weapon != nullptr);
     assert(attack.component != nullptr);
 
     attacker->addAndResetBonusDice();
 
     writeMessage(attacker->getName() + " " + offensiveManueverToString(attack.manuever) + "s with "
-        + attack.weapon->getName() + " at " + hitLocationToString(attack.target) + " using "
+        + offenseWeapon->getName() + " at " + hitLocationToString(attack.target) + " using "
         + attack.component->getName() + " with " + to_string(attacker->getQueuedOffense().dice)
         + " action points");
 
@@ -317,11 +315,11 @@ void CombatInstance::doDualOffenseStealInitiative()
 
     Defense defense = defender->getQueuedDefense();
 
-    assert(offense.weapon != nullptr);
+    const Weapon* offenseWeapon = getAttackingWeapon(defender);
 
     writeMessage(defender->getName() + " allocates " + to_string(defense.dice) + " for initiative");
     writeMessage(defender->getName() + " " + offensiveManueverToString(offense.manuever) + "s with "
-        + offense.weapon->getName() + " at " + hitLocationToString(offense.target) + " using "
+        + offenseWeapon->getName() + " at " + hitLocationToString(offense.target) + " using "
         + offense.component->getName() + " with " + to_string(offense.dice) + " action points");
     switchInitiative();
     m_currentState = eCombatState::Resolution;
@@ -408,14 +406,13 @@ void CombatInstance::doAttackFromDefense()
 
     outputReachCost(reachCost, defender);
     Offense attack = defender->getQueuedOffense();
-
-    assert(attack.weapon != nullptr);
+    const Weapon* offenseWeapon = getAttackingWeapon(defender);
     assert(attack.component != nullptr);
 
     defender->addAndResetBonusDice();
 
     writeMessage(defender->getName() + " " + offensiveManueverToString(attack.manuever)
-        + "s from defense with " + attack.weapon->getName() + " at "
+        + "s from defense with " + offenseWeapon->getName() + " at "
         + hitLocationToString(attack.target) + " using " + attack.component->getName() + " with "
         + to_string(defender->getQueuedOffense().dice) + " action points");
 
@@ -450,15 +447,16 @@ void CombatInstance::doDefense()
         m_currentState = eCombatState::AttackFromDefense;
         return;
     }
+    const Weapon* defendingWeapon = getDefendingWeapon(defender);
     if (defend.manuever == eDefensiveManuevers::ParryLinked) {
         writeMessage(defender->getName() + " performs a block and strike with "
-            + defend.weapon->getName() + " using " + to_string(defend.dice) + " action points");
+            + defendingWeapon->getName() + " using " + to_string(defend.dice) + " action points");
         m_currentState = eCombatState::ParryLinked;
         return;
     }
 
     writeMessage(defender->getName() + " attempts " + defensiveManueverToString(defend.manuever)
-        + " with " + defend.weapon->getName() + " using " + to_string(defend.dice)
+        + " with " + defendingWeapon->getName() + " using " + to_string(defend.dice)
         + " action points");
 
     m_currentState = eCombatState::PreResolution;
@@ -548,7 +546,7 @@ void CombatInstance::doStolenOffense()
 
     writeMessage(defender->getName() + " "
         + offensiveManueverToString(defender->getQueuedOffense().manuever) + "s with "
-        + defender->getQueuedOffense().weapon->getName() + " at "
+        + getAttackingWeapon(defender)->getName() + " at "
         + hitLocationToString(defender->getQueuedOffense().target) + " using "
         + defender->getQueuedOffense().component->getName() + " with "
         + to_string(defender->getQueuedOffense().dice) + " action points");
@@ -584,8 +582,6 @@ void CombatInstance::doResolution()
 
     Offense attack = attacker->getQueuedOffense();
     Defense defend = defender->getQueuedDefense();
-
-    assert(attack.weapon != nullptr);
 
     // determine who was originally attacking
     if (defend.manuever == eDefensiveManuevers::StealInitiative
@@ -747,9 +743,7 @@ void CombatInstance::doResolution()
                 // disadvantage on the attack unless done with secondary weapon
 
                 bool linked = false;
-                assert(offense.weapon != nullptr);
-                assert(defend.weapon != nullptr);
-                if (offense.weapon != defend.weapon) {
+                if (offense.withPrimaryWeapon != defend.withPrimaryWeapon) {
                     linked = true;
                 }
                 int BTN = linked == true ? defender->getBTN() : defender->getDisadvantagedBTN();
@@ -1221,4 +1215,16 @@ bool CombatInstance::switchToStaffGrip(Creature* creature)
     Offense offense = creature->getQueuedOffense();
     return (
         creature->getGrip() == eGrips::Overhand && offense.manuever == eOffensiveManuevers::Swing);
+}
+
+const Weapon* CombatInstance::getAttackingWeapon(const Creature* creature)
+{
+    return creature->getQueuedOffense().withPrimaryWeapon == true ? creature->getPrimaryWeapon()
+                                                                  : creature->getSecondaryWeapon();
+}
+
+const Weapon* CombatInstance::getDefendingWeapon(const Creature* creature)
+{
+    return creature->getQueuedDefense().withPrimaryWeapon == true ? creature->getPrimaryWeapon()
+                                                                  : creature->getSecondaryWeapon();
 }

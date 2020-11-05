@@ -95,6 +95,8 @@ private:
     void doEndCombat();
     void setSides(Creature*& attacker, Creature*& defender);
     bool switchToStaffGrip(Creature* creature);
+    const Weapon* getAttackingWeapon(const Creature* creature);
+    const Weapon* getDefendingWeapon(const Creature* creature);
     void outputOffense(Creature* creature);
     void outputDefense(Creature* creature);
 
