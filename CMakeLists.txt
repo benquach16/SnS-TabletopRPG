@@ -10,6 +10,8 @@ project (RPG)
 set(SOURCES
     ./src/main.cpp
     ./src/game.cpp
+    ./src/scene.cpp
+    ./src/overworld.cpp
     ./src/combatinstance.cpp
     ./src/combatmanager.cpp
     ./src/combatmanagerfactory.cpp
