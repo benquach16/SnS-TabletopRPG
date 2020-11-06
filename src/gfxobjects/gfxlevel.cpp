@@ -1,6 +1,7 @@
 #include "gfxlevel.h"
 #include "../game.h"
 #include "../level/level.h"
+#include "../object/relationmanager.h"
 #include "../ui/types.h"
 #include "utils.h"
 
@@ -230,7 +231,18 @@ void GFXLevel::run(const Level* level, vector2d center)
         if (rLevelObjs[i]->getObjectType() == eObjectTypes::Creature) {
             sf::Vector2f textPos(pos);
             sf::Text text;
+            CreatureObject* creatureObject = static_cast<CreatureObject*>(rLevelObjs[i]);
 
+            // don't color player
+            if (creatureObject->isPlayer() == false) {
+                int relationToPlayer = RelationManager::getSingleton()->getRelationship(
+                    creatureObject->getFaction(), eCreatureFaction::Player);
+                if (relationToPlayer <= RelationManager::cHostile) {
+                    text.setFillColor(sf::Color(255, 100, 100));
+                } else if (relationToPlayer >= RelationManager::cFriends) {
+                    text.setFillColor(sf::Color(100, 255, 100));
+                }
+            }
             // hardcoded
             text.setCharacterSize(11);
             text.setFont(Game::getDefaultFont());

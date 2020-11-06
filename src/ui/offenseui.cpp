@@ -186,7 +186,7 @@ void OffenseUI::doHeavyBlow(bool hasKeyEvents, sf::Event event, Player* player)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setString("Heavy blow? (Can spend 0-3 AP)");
+    text.setString("Heavy blow? (Can spend 0-2 AP)");
     Game::getWindow().draw(text);
 
     if (hasKeyEvents && event.type == sf::Event::KeyReleased
@@ -198,7 +198,7 @@ void OffenseUI::doHeavyBlow(bool hasKeyEvents, sf::Event event, Player* player)
         m_currentState = eUiState::ChooseComponent;
     }
 
-    constexpr int cMaxHeavyDice = 3;
+    constexpr int cMaxHeavyDice = 2;
     m_numberInput.setMax(min(player->getCombatPool(), cMaxHeavyDice));
     m_numberInput.run(hasKeyEvents, event);
     m_numberInput.setPosition(sf::Vector2f(0, cCharSize));

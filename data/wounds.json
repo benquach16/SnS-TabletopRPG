@@ -958,15 +958,15 @@
 				"text": ["Nasty cut scrapes on the ribs, but does little damage."]
 			},
 			"3": {
-				"text": ["Deep gash with enough force to fracture ribs and knock the wind out of you."],
+				"text": ["Deep gash that fractures several ribs."],
 				"effects": ["KD1"]
 			},
 			"4": {
-				"text": ["Cut goes deep, breaking and fracturing ribs. Lots of internal bleeding."],
+				"text": ["Cleaves through ribcage. Alive, bug lungs are barely holding together."],
 				"effects": ["BL2", "KO2"]
 			},
 			"5": {
-				"text": ["Weapon lodged in chest. Death is imminent."],
+				"text": ["Weapon makes it halway to the hips. Cardiovascular system torn in half. Dead."],
 				"effects": ["death"]
 			}
 		},
@@ -982,11 +982,11 @@
 				"effects": ["BL1"]
 			},
 			"4": {
-				"text": ["Nasty cut with a lot of blood and some internal damage."],
+				"text": ["Swing claves through important organs. Speed ruptured and intestines are bleeding internally."],
 				"effects": ["BL2", "KD1"]
 			},
 			"5": {
-				"text": ["Total disembowelment with entrails everywhere. Legs buckle and the blood keeps coming. Death is imminent."],
+				"text": ["Blade tears through stomach, entrails and blood come pouring out. Death comes after a few fatal seconds."],
 				"effects": ["death"]
 			}
 		},
@@ -1002,11 +1002,11 @@
 				"effects": ["KD1"]
 			},
 			"4": {
-				"text": ["Fractured pelvis. Possible bone fragments."],
+				"text": ["Blade claves deep. Surface organs annihilated."],
 				"effects": ["BL2", "KD2"]
 			},
 			"5": {
-				"text": ["Weapon stuck in pelvis with massive amount of blood. Death is imminent."],
+				"text": ["Cleaves through the pelvis and reaches the abdomen. Blood pours nonstop. Death is mercifully immediate."],
 				"effects": ["death"]
 			}
 		},

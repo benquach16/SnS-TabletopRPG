@@ -51,11 +51,11 @@ void DefenseUI::doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* playe
         char c = event.text.unicode;
         switch (c) {
         case 'a':
-            player->setDefenseWeapon(primaryWeapon);
+            player->setDefenseWeapon(true);
             m_currentState = eUiState::ChooseManuever;
             break;
         case 'b':
-            player->setDefenseWeapon(secondaryWeapon);
+            player->setDefenseWeapon(false);
             m_currentState = eUiState::ChooseManuever;
             break;
         }
