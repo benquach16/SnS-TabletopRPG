@@ -12,9 +12,12 @@
 
 class Scene {
 public:
+    Scene();
+    ~Scene();
     void run();
 
 private:
+    void doMoveSelector(sf::Event, bool limit);
     enum class eGameState : unsigned {
         Uninitialized,
         Playing,

@@ -93,6 +93,7 @@ private:
     void resolvePosition(Creature* creature);
     void doPostResolution();
     void doEndCombat();
+    void startGrapple(Creature* attacker, Creature* defender);
     void setSides(Creature*& attacker, Creature*& defender);
     bool switchToStaffGrip(Creature* creature);
     const Weapon* getAttackingWeapon(const Creature* creature);
@@ -107,6 +108,7 @@ private:
 
     void switchTempo();
 
+    // returns true if the target was killed
     bool inflictWound(Creature* attacker, int MoS, Offense attack, Creature* target);
     void writeMessage(const std::string& str,
         Log::eMessageTypes type = Log::eMessageTypes::Standard, bool important = false);

@@ -71,6 +71,7 @@ public:
     int getPrimaryWeaponId() const { return m_primaryWeaponId; }
     const Weapon* getSecondaryWeapon() const;
     int getSecondaryWeaponId() const { return m_secondaryWeaponId; }
+    virtual const Weapon* getNaturalWeapon() const = 0;
     eLength getCurrentReach() const;
     eLength getSecondaryWeaponReach() const;
     void setGrip(eGrips grip) { m_currentGrip = grip; }
@@ -119,7 +120,7 @@ public:
     virtual bool isPlayer() { return false; }
     void doPrecombat(const Creature* opponent);
     // paycosts to avoid losing dice from block and strike
-    void doOffense(const Creature* target, int reachCost, bool allin = false,
+    void doOffense(const Creature* target, int reachCost, eLength currentReach, bool allin = false,
         bool dualRedThrow = false, bool payCosts = true);
 
     void doDefense(const Creature* attacker, bool isLastTempo);
@@ -150,7 +151,7 @@ public:
 
     virtual void clearCreatureManuevers(bool skipDisable = false);
 
-    bool setCreatureOffenseManuever(eOffensiveManuevers manuever);
+    bool setCreatureOffenseManuever(eOffensiveManuevers manuever, eLength currentReach);
 
     bool setCreatureDefenseManuever(eDefensiveManuevers manuever);
     bool setCreatureFeint();
@@ -219,6 +220,8 @@ protected:
     std::map<eBodyParts, ArmorSegment> m_armorValues;
     std::vector<Wound*> m_wounds;
     std::vector<int> m_armor;
+    bool m_hasLeftHand;
+    bool m_hasRightHand;
 
     std::string m_name;
 

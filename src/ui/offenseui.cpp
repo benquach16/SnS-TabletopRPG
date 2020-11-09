@@ -8,14 +8,14 @@
 using namespace std;
 
 void OffenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, Creature* target,
-    bool allowStealInitiative, bool linkedParry)
+    const CombatInstance* instance, bool allowStealInitiative, bool linkedParry)
 {
     switch (m_currentState) {
     case eUiState::ChooseWeapon:
         doChooseWeapon(hasKeyEvents, event, player);
         break;
     case eUiState::ChooseManuever:
-        doManuever(hasKeyEvents, event, player, linkedParry);
+        doManuever(hasKeyEvents, event, player, instance, linkedParry);
         break;
     case eUiState::ChooseFeint:
         doFeint(hasKeyEvents, event, player);
@@ -79,7 +79,8 @@ void OffenseUI::doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* playe
     }
 }
 
-void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, bool linkedParry)
+void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player,
+    const CombatInstance* instance, bool linkedParry)
 {
     UiCommon::drawTopPanel();
 
@@ -87,8 +88,8 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
 
-    map<eOffensiveManuevers, int> manuevers
-        = getAvailableOffManuevers(player->getPrimaryWeapon(), player->getGrip());
+    map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(
+        player->getPrimaryWeapon(), player->getGrip(), instance->getCurrentReach());
 
     string str = "Choose attack:\n";
     map<char, std::pair<eOffensiveManuevers, int>> indices;
@@ -136,6 +137,9 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
             case eOffensiveManuevers::Hook:
                 m_currentState = eUiState::ChooseComponent;
                 break;
+            case eOffensiveManuevers::Grab:
+                m_currentState = eUiState::ChooseComponent;
+                break;
             case eOffensiveManuevers::Mordhau: {
                 const Weapon* weapon = player->getPrimaryWeapon();
                 player->setOffenseManuever(eOffensiveManuevers::Mordhau);
@@ -163,7 +167,7 @@ void OffenseUI::doFeint(bool hasKeyEvents, sf::Event event, Player* player)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setString("Feint attack? (1AP)\na - No\nb - Yes");
+    text.setString("Feint attack? (2AP)\na - No\nb - Yes");
     Game::getWindow().draw(text);
 
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
@@ -174,7 +178,7 @@ void OffenseUI::doFeint(bool hasKeyEvents, sf::Event event, Player* player)
         if (c == 'b') {
             // TODO : REPLACE ME WITH CODE IN CREATURE TO REDUCE COMBAT POOL
             player->setOffenseFeint();
-            player->reduceCombatPool(1);
+            player->reduceCombatPool(2);
             m_currentState = eUiState::ChooseComponent;
         }
     }

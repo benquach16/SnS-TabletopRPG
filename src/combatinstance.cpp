@@ -238,7 +238,7 @@ bool CombatInstance::doOffense()
         }
     } else {
         bool allin = m_currentTempo == eTempo::Second;
-        attacker->doOffense(defender, reachCost, allin, m_dualRedThrow);
+        attacker->doOffense(defender, reachCost, m_currentReach, allin, m_dualRedThrow);
     }
     if (attacker->getHasOffense() == false) {
         m_currentState = eCombatState::Offense;
@@ -306,7 +306,7 @@ void CombatInstance::doDualOffenseStealInitiative()
 
     } else {
         // confusing nomenclature
-        defender->doOffense(attacker, reachCost, false, true);
+        defender->doOffense(attacker, reachCost, m_currentReach, false, true);
     }
 
     Offense offense = defender->getQueuedOffense();
@@ -397,7 +397,7 @@ void CombatInstance::doAttackFromDefense()
             return;
         }
     } else {
-        attacker->doOffense(defender, reachCost, true, m_dualRedThrow);
+        attacker->doOffense(defender, reachCost, m_currentReach, true, m_dualRedThrow);
     }
     if (attacker->getHasOffense() == false) {
         m_currentState = eCombatState::AttackFromDefense;
@@ -480,7 +480,8 @@ void CombatInstance::doParryLinked()
 
     } else {
 
-        defender->doOffense(attacker, reachCost, m_currentTempo == eTempo::Second, false, false);
+        defender->doOffense(
+            attacker, reachCost, m_currentReach, m_currentTempo == eTempo::Second, false, false);
     }
     Offense offense = defender->getQueuedOffense();
 
@@ -512,7 +513,7 @@ void CombatInstance::doStealInitiative()
         }
 
     } else {
-        defender->doOffense(attacker, reachCost, true);
+        defender->doOffense(attacker, reachCost, m_currentReach, true);
     }
 
     writeMessage(defender->getName() + " attempts to steal intiative using "
@@ -630,11 +631,19 @@ void CombatInstance::doResolution()
             = DiceRoller::rollGetSuccess(attacker->getBTN(), attacker->getQueuedOffense().dice);
 
         bool wasStanding = defender->getStance() == eCreatureStance::Standing;
+        bool wasGrappled = false;
         if (attackerSuccesses > 0) {
-            if (inflictWound(attacker, attackerSuccesses, attacker->getQueuedOffense(), defender)
-                == true) {
-                m_currentState = eCombatState::FinishedCombat;
-                return;
+            if (attacker->getQueuedOffense().manuever != eOffensiveManuevers::Grab) {
+                if (inflictWound(
+                        attacker, attackerSuccesses, attacker->getQueuedOffense(), defender)
+                    == true) {
+                    m_currentState = eCombatState::FinishedCombat;
+                    return;
+                }
+            } else {
+                // special grab
+                startGrapple(attacker, defender);
+                wasGrappled = true;
             }
         } else {
             writeMessage(attacker->getName() + " had no successes");
@@ -644,15 +653,18 @@ void CombatInstance::doResolution()
 
         if (becameProne == true) {
             // if the attack knocked them prone
-            writeMessage(
-                defender->getName() + " was knocked down by the attack, their attack is dropped.");
+            writeMessage(defender->getName()
+                + " was knocked down by the attack, their attack cannot resolve.");
             m_currentState = eCombatState::Offense;
             m_currentReach = attacker->getCurrentReach();
+        } else if (wasGrappled == true) {
+            writeMessage(defender->getName() + " was grappled, their attack is interrupted!");
+            m_currentReach = eLength::Hand;
         } else if (defender->getQueuedOffense().dice <= 0) {
             // if the attack wiped out their combat pool, do nothing
             writeMessage(defender->getName()
                 + " had their action points eliminated by impact, their attack "
-                  "is dropped.");
+                  "can no longer resolve.");
             m_currentState = eCombatState::Offense;
             m_currentReach = attacker->getCurrentReach();
         } else if (defender->isWeaponDisabled() || defender->droppedWeapon()) {
@@ -666,10 +678,14 @@ void CombatInstance::doResolution()
             int defendSuccesses
                 = DiceRoller::rollGetSuccess(defender->getBTN(), defender->getQueuedOffense().dice);
             if (defendSuccesses > 0) {
-                if (inflictWound(
-                        defender, defendSuccesses, defender->getQueuedOffense(), attacker)) {
-                    m_currentState = eCombatState::FinishedCombat;
-                    return;
+                if (defender->getQueuedOffense().manuever != eOffensiveManuevers::Grab) {
+                    if (inflictWound(
+                            defender, defendSuccesses, defender->getQueuedOffense(), attacker)) {
+                        m_currentState = eCombatState::FinishedCombat;
+                        return;
+                    }
+                } else {
+                    startGrapple(attacker, defender);
                 }
             } else {
                 writeMessage(defender->getName() + " had no successes");
@@ -710,12 +726,17 @@ void CombatInstance::doResolution()
         int MoS = offenseSuccesses - defenseSuccesses;
         cout << MoS << endl;
         if (MoS > 0) {
-            // writeMessage("attack landed with " + to_string(MoS) + " successes");
-            if (inflictWound(attacker, MoS, attack, defender) == true) {
-                m_currentState = eCombatState::FinishedCombat;
-                return;
+            // grab is special because it completely changes the state
+            if (attack.manuever != eOffensiveManuevers::Grab) {
+                // writeMessage("attack landed with " + to_string(MoS) + " successes");
+                if (inflictWound(attacker, MoS, attack, defender) == true) {
+                    m_currentState = eCombatState::FinishedCombat;
+                    return;
+                }
+                m_currentReach = attacker->getCurrentReach();
+            } else {
+                startGrapple(attacker, defender);
             }
-            m_currentReach = attacker->getCurrentReach();
         } else if (MoS == 0) {
             writeMessage("no net successes, " + attacker->getName() + " retains initiative");
         } else {
@@ -900,6 +921,14 @@ void CombatInstance::doEndCombat()
     m_side1 = nullptr;
     m_side2 = nullptr;
     m_currentState = eCombatState::Uninitialized;
+}
+
+void CombatInstance::startGrapple(Creature* attacker, Creature* defender)
+{
+    writeMessage(attacker->getName() + " has started a grapple with " + defender->getName(),
+        Log::eMessageTypes::Announcement);
+    m_inGrapple = true;
+    m_currentReach = eLength::Hand;
 }
 
 bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, Creature* target)

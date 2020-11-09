@@ -1,6 +1,8 @@
 #include "human.h"
 #include "3rdparty/random.hpp"
 
+constexpr int naturalWeaponId = cFistsId;
+
 Human::Human()
     : Creature()
 {
@@ -26,4 +28,9 @@ void Human::randomizeStats()
     m_intuition = effolkronium::random_static::get(2, 9);
     m_perception = effolkronium::random_static::get(2, 9);
     m_willpower = effolkronium::random_static::get(2, 9);
+}
+
+const Weapon* Human::getNaturalWeapon() const
+{
+    return WeaponTable::getSingleton()->get(naturalWeaponId);
 }

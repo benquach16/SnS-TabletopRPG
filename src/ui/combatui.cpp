@@ -70,9 +70,17 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
     sf::Text reachTxt;
     reachTxt.setCharacterSize(cCharSize);
     reachTxt.setFont(Game::getDefaultFont());
-    reachTxt.setString("Current reach is " + lengthToString(instance->getCurrentReach()) + " ("
-        + to_string(reachCost) + "AP to attack)");
     reachTxt.setPosition(5, windowSize.y - logHeight - rectHeight - cCharSize - 6);
+    if (instance->getInGrapple() == false) {
+        reachTxt.setString("Current reach is " + lengthToString(instance->getCurrentReach()) + " ("
+            + to_string(reachCost) + "AP to attack)");
+
+    } else {
+        reachTxt.setString(
+            "Currently in a grapple! Reach is fixed to Hand reach until the grapple is broken.");
+        reachTxt.setColor(sf::Color::Red);
+    }
+
     Game::getWindow().draw(reachBkg);
     Game::getWindow().draw(reachTxt);
 
@@ -110,7 +118,7 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
         return;
     }
     if (instance->getState() == eCombatState::Offense && instance->isAttackerPlayer() == true) {
-        m_offenseUI.run(hasKeyEvents, event, player, target);
+        m_offenseUI.run(hasKeyEvents, event, player, target, instance);
         return;
     }
     if (instance->getState() == eCombatState::Defense && instance->isDefenderPlayer() == true) {
@@ -118,11 +126,11 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
         return;
     }
     if (instance->getState() == eCombatState::AttackFromDefense) {
-        m_offenseUI.run(hasKeyEvents, event, player, target);
+        m_offenseUI.run(hasKeyEvents, event, player, target, instance);
         return;
     }
     if (instance->getState() == eCombatState::ParryLinked) {
-        m_offenseUI.run(hasKeyEvents, event, player, target, false, true);
+        m_offenseUI.run(hasKeyEvents, event, player, target, instance, false, true);
         return;
     }
 
@@ -130,7 +138,7 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
     if (instance->getState() == eCombatState::DualOffense1
         && instance->isAttackerPlayer() == true) {
         if (m_dualRedState == eDualRedStealSubState::Finished) {
-            m_offenseUI.run(hasKeyEvents, event, player, target, false);
+            m_offenseUI.run(hasKeyEvents, event, player, target, instance, false);
         } else {
             doDualRedSteal(hasKeyEvents, event, player);
         }
@@ -139,7 +147,7 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
     if (instance->getState() == eCombatState::DualOffense2
         && instance->isAttackerPlayer() == true) {
         if (m_dualRedState == eDualRedStealSubState::Finished) {
-            m_offenseUI.run(hasKeyEvents, event, player, target, false);
+            m_offenseUI.run(hasKeyEvents, event, player, target, instance, false);
         } else {
             doDualRedSteal(hasKeyEvents, event, player);
         }
@@ -154,7 +162,7 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
         && instance->isDefenderPlayer() == true) {
         // absurdly ugly and probably unnecessary
         if (m_stolenOffenseState == eStolenOffenseSubState::Finished) {
-            m_offenseUI.run(hasKeyEvents, event, player, target);
+            m_offenseUI.run(hasKeyEvents, event, player, target, instance);
         } else {
             doStolenOffense(hasKeyEvents, event, player);
         }
@@ -166,7 +174,7 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
         return;
     }
     if (instance->getState() == eCombatState::StealInitiative) {
-        m_offenseUI.run(hasKeyEvents, event, player, target);
+        m_offenseUI.run(hasKeyEvents, event, player, target, instance);
         return;
     }
     if (instance->getState() == eCombatState::PreResolution
