@@ -57,9 +57,15 @@ void OffenseUI::doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* playe
 
     str += "a - ";
     str += primaryWeapon->getName();
+    if (player->primaryWeaponDisabled()) {
+        str += " [Disabled!]";
+    }
     str += '\n';
     str += "b - ";
     str += secondaryWeapon->getName();
+    if (player->secondaryWeaponDisabled()) {
+        str += " [Disabled!]";
+    }
     str += '\n';
     text.setString(str);
     Game::getWindow().draw(text);
@@ -68,12 +74,21 @@ void OffenseUI::doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* playe
         char c = event.text.unicode;
         switch (c) {
         case 'a':
-            player->setOffenseWeapon(true);
-            m_currentState = eUiState::ChooseManuever;
+            if (player->primaryWeaponDisabled()) {
+                Log::push("You cannot use a disabled weapon this tempo!");
+            } else {
+                player->setOffenseWeapon(true);
+                m_currentState = eUiState::ChooseManuever;
+            }
+
             break;
         case 'b':
-            player->setOffenseWeapon(false);
-            m_currentState = eUiState::ChooseManuever;
+            if (player->secondaryWeaponDisabled()) {
+                Log::push("You cannot use a disabled weapon this tempo!");
+            } else {
+                player->setOffenseWeapon(false);
+                m_currentState = eUiState::ChooseManuever;
+            }
             break;
         }
     }

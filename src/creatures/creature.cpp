@@ -24,6 +24,8 @@ Creature::Creature()
     , m_primaryWeaponId(cFistsId)
     , m_secondaryWeaponId(cFistsId)
     , m_disableWeaponId(cFistsId)
+    , m_primaryWeaponDisabled(false)
+    , m_secondaryWeaponDisabled(false)
     , m_combatPool(0)
     , m_disarm(0)
     , m_currentState(eCreatureState::Idle)
@@ -391,20 +393,13 @@ void Creature::disableWeapon(bool drop)
     if (m_primaryWeaponId == cFistsId) {
         return;
     }
-    m_disarm = drop == false ? cDisableTick : -1;
-    m_disableWeaponId = m_primaryWeaponId;
-    m_primaryWeaponId = cFistsId;
+    m_primaryWeaponDisabled = true;
+    m_disarm = cDisableTick;
 }
 
-void Creature::enableWeapon()
-{
-    // don't do anything if we have an actual weapon
-    if (m_primaryWeaponId != cFistsId) {
-        return;
-    }
+void Creature::dropWeapon() {}
 
-    swap(m_primaryWeaponId, m_disableWeaponId);
-}
+void Creature::enableWeapon() { m_primaryWeaponDisabled = false; }
 
 bool Creature::canPerformManuever(eOffensiveManuevers manuever)
 {
@@ -483,30 +478,40 @@ void Creature::getLowestArmorPart(eBodyParts* pPartOut, eHitLocations* pHitOut) 
     assert(lowestAV != -1);
 }
 
+// TODO: MIGRATE THIS TO SOMETHING ELSE
 // not good to have creature as an AI god class
 void Creature::doOffense(const Creature* target, int reachCost, eLength currentReach, bool allin,
     bool dualRedThrow, bool payCosts)
 {
     cout << "allin : " << allin << endl;
-    const Weapon* weapon = getPrimaryWeapon();
+    const Weapon* weapon = nullptr;
 
     if (target->getCombatPool() <= 0) {
         allin = true;
     }
 
     setCreatureOffenseManuever(eOffensiveManuevers::Thrust, currentReach);
-    m_currentOffense.withPrimaryWeapon = true;
+    if (primaryWeaponDisabled() == false) {
+        m_currentOffense.withPrimaryWeapon = true;
+        weapon = getPrimaryWeapon();
+    } else {
+        m_currentOffense.withPrimaryWeapon = false;
+        weapon = getSecondaryWeapon();
+    }
+
     m_currentOffense.component = weapon->getBestAttack();
     if (m_currentOffense.component->getAttack() == eAttacks::Swing) {
         setCreatureOffenseManuever(eOffensiveManuevers::Swing, currentReach);
     }
-
+    // randomly beat
+    if (target->primaryWeaponDisabled() == false && random_static::get(0, 3) < 1) {
+        setCreatureOffenseManuever(eOffensiveManuevers::Beat, currentReach);
+    }
     // replace me
     m_currentOffense.target = target->getHitLocations()[random_static::get(
         0, static_cast<int>(target->getHitLocations().size()) - 1)];
 
     // get least armored location
-
     if (target->hasEnoughMetalArmor()) {
         // full of metal armor, so lets do some fancy shit
 
@@ -538,7 +543,6 @@ void Creature::doOffense(const Creature* target, int reachCost, eLength currentR
                 // change
                 setCreatureOffenseManuever(eOffensiveManuevers::PinpointThrust, currentReach);
             } else {
-
                 // todo : mordhau
                 m_currentOffense.component = weapon->getPommelStrike();
                 m_currentOffense.manuever = eOffensiveManuevers::Mordhau;
@@ -623,7 +627,11 @@ void Creature::doDefense(const Creature* attacker, bool isLastTempo)
 {
     int diceAllocated = attacker->getQueuedOffense().dice;
     const Weapon* weapon = getPrimaryWeapon();
-    m_currentDefense.withPrimaryWeapon = true;
+    if (primaryWeaponDisabled()) {
+        m_currentDefense.withPrimaryWeapon = false;
+    } else {
+        m_currentDefense.withPrimaryWeapon = true;
+    }
     constexpr int buffer = 3;
     if ((diceAllocated + buffer < m_combatPool && random_static::get(0, 2) == 0)
         || (isLastTempo && diceAllocated + buffer < getCombatPool())) {

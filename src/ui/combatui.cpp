@@ -78,7 +78,7 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
     } else {
         reachTxt.setString(
             "Currently in a grapple! Reach is fixed to Hand reach until the grapple is broken.");
-        reachTxt.setColor(sf::Color::Red);
+        reachTxt.setFillColor(sf::Color::Red);
     }
 
     Game::getWindow().draw(reachBkg);
@@ -289,9 +289,12 @@ void CombatUI::doStolenOffense(bool hasKeyEvents, sf::Event event, Player* playe
 
 std::string CombatUI::constructStatBoxText(const Creature* creature)
 {
-    string str = creature->getName() + " - " + creature->getPrimaryWeapon()->getName() + " - "
-        + lengthToString(creature->getCurrentReach()) + " - " + gripToString(creature->getGrip())
-        + " grip\n";
+    string str = creature->getName() + " - " + creature->getPrimaryWeapon()->getName();
+    if (creature->primaryWeaponDisabled()) {
+        str += "[D]";
+    }
+    str += " - " + lengthToString(creature->getCurrentReach()) + " - "
+        + gripToString(creature->getGrip()) + " grip\n";
     // left pad, if you turn this into a library you can take down NPM
     for (unsigned i = 0; i < creature->getName().size(); ++i) {
         str += " ";

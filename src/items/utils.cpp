@@ -258,7 +258,6 @@ int getOffensiveManueverCost(
     eOffensiveManuevers manuever, eGrips grip, const Weapon* weapon, eLength currentReach)
 {
     switch (manuever) {
-    case eOffensiveManuevers::Beat:
     case eOffensiveManuevers::Disarm:
     case eOffensiveManuevers::Hook:
         return 1;

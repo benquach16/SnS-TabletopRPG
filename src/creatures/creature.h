@@ -159,6 +159,7 @@ public:
     void setProne() { m_currentStance = eCreatureStance::Prone; }
     void setStand() { m_currentStance = eCreatureStance::Standing; }
     void disableWeapon(bool drop = false);
+    void dropWeapon();
     void enableWeapon();
 
     eCreatureStance getStance() const { return m_currentStance; }
@@ -206,6 +207,10 @@ public:
         return m_disableWeaponId != cFistsId && m_primaryWeaponId == cFistsId && m_disarm > 0;
     }
 
+    bool primaryWeaponDisabled() const { return m_primaryWeaponDisabled; }
+
+    bool secondaryWeaponDisabled() const { return m_secondaryWeaponDisabled; }
+
 protected:
     CreatureId m_id;
 
@@ -240,6 +245,8 @@ protected:
     // index
     int m_primaryWeaponId;
     int m_secondaryWeaponId;
+    bool m_primaryWeaponDisabled;
+    bool m_secondaryWeaponDisabled;
     int m_disableWeaponId;
     std::vector<int> m_quickDrawItems;
     eGrips m_currentGrip;
