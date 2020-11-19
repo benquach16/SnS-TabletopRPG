@@ -4,7 +4,7 @@
 constexpr int naturalWeaponId = cFistsId;
 
 Human::Human()
-    : Creature()
+    : Creature(naturalWeaponId)
 {
     m_hitLocations.push_back(eHitLocations::Head);
     m_hitLocations.push_back(eHitLocations::Arm);

@@ -13,17 +13,17 @@ static Creature::CreatureId ids = static_cast<Creature::CreatureId>(0);
 constexpr int cDisableTick = 2;
 constexpr int cFatigueDivisor = 10;
 
-Creature::Creature()
+Creature::Creature(int naturalWeaponId)
     : m_BTN(cBaseBTN)
     , m_strength(1)
     , m_agility(1)
     , m_intuition(1)
     , m_perception(1)
     , m_willpower(1)
-    // todo: not fists
-    , m_primaryWeaponId(cFistsId)
-    , m_secondaryWeaponId(cFistsId)
-    , m_disableWeaponId(cFistsId)
+    , m_naturalWeaponId(naturalWeaponId)
+    , m_primaryWeaponId(naturalWeaponId)
+    , m_secondaryWeaponId(naturalWeaponId)
+    , m_disableWeaponId(naturalWeaponId)
     , m_primaryWeaponDisabled(false)
     , m_secondaryWeaponDisabled(false)
     , m_combatPool(0)
@@ -374,12 +374,7 @@ bool Creature::rollFatigue()
     return false;
 }
 
-void Creature::resetFatigue()
-{
-    for (auto it : m_fatigue) {
-        it.second = 0;
-    }
-}
+void Creature::resetFatigue() { m_fatigue.at(eCreatureFatigue::Stamina) = 0; }
 
 void Creature::disableWeapon(bool drop)
 {
@@ -390,7 +385,7 @@ void Creature::disableWeapon(bool drop)
 
     // do nothing, since we cannot drop fists
     // or natural weapon
-    if (m_primaryWeaponId == cFistsId) {
+    if (m_primaryWeaponId == m_naturalWeaponId) {
         return;
     }
     m_primaryWeaponDisabled = true;

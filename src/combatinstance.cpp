@@ -771,7 +771,7 @@ void CombatInstance::doResolution()
 
                 int reachCost = abs(defender->getCurrentReach() - m_currentReach);
                 MoS = (-MoS) - reachCost;
-                int linkedOffenseMoS = DiceRoller::rollGetSuccess(BTN, MoS);
+                int linkedOffenseMoS = DiceRoller::rollGetSuccess(BTN, MoS + 1);
                 cout << "Linked hits: " << linkedOffenseMoS << endl;
 
                 if (linkedOffenseMoS > 0

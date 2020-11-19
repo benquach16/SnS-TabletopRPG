@@ -41,7 +41,7 @@ class Creature {
 public:
     BOOST_STRONG_TYPEDEF(unsigned, CreatureId);
 
-    Creature();
+    Creature(int naturalWeaponId);
     virtual ~Creature() {}
     virtual eCreatureType getCreatureType() = 0;
 
@@ -247,6 +247,7 @@ protected:
     int m_secondaryWeaponId;
     bool m_primaryWeaponDisabled;
     bool m_secondaryWeaponDisabled;
+    int m_naturalWeaponId;
     int m_disableWeaponId;
     std::vector<int> m_quickDrawItems;
     eGrips m_currentGrip;
