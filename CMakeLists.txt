@@ -18,6 +18,7 @@ set(SOURCES
     ./src/dice.cpp
     ./src/log.cpp
     ./src/components/aicontroller.cpp
+    ./src/components/aicombatcontroller.cpp
     ./src/creatures/creature.cpp
     ./src/creatures/human.cpp
     ./src/creatures/player.cpp
