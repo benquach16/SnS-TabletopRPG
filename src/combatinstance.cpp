@@ -146,13 +146,12 @@ void CombatInstance::doRollInitiative()
         int side1Successes = DiceRoller::rollGetSuccess(m_side1->getBTN(), m_side1->getMobility());
         int side2Successes = DiceRoller::rollGetSuccess(m_side2->getBTN(), m_side2->getMobility());
 
-        m_initiative = side1Successes < side2Successes ? eInitiative::Side1 : eInitiative::Side2;
-
-        if (m_initiative == eInitiative::Side1) {
+        // m_initiative = side1Successes < side2Successes ? eInitiative::Side1 : eInitiative::Side2;
+        m_initiative = eInitiative::Side2 if (m_initiative == eInitiative::Side1)
+        {
             writeMessage(m_side1->getName() + " declares their attack first");
-        } else {
-            writeMessage(m_side2->getName() + " declares their attack first");
         }
+        else { writeMessage(m_side2->getName() + " declares their attack first"); }
         m_dualRedThrow = true;
         m_currentState = eCombatState::PreexchangeActions;
         return;

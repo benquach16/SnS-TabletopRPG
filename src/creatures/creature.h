@@ -103,6 +103,7 @@ public:
     void reduceCombatPool(int num)
     {
         assert(num >= 0);
+        std::cout << "using " << num << "die\n";
         m_combatPool -= num;
     }
     void setBonusDice(int num) { m_bonusDice = num; }

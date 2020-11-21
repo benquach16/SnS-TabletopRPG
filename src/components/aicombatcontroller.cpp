@@ -84,6 +84,16 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
         doOffense(controlledCreature, instance->getAttacker(), reachCost,
             instance->getCurrentReach(), false, true);
     }
+    if (instance->getState() == eCombatState::DualOffense1
+        && instance->getAttacker()->getId() == creatureId) {
+        doOffense(controlledCreature, instance->getDefender(), reachCost,
+            instance->getCurrentReach(), false, true);
+    }
+    if (instance->getState() == eCombatState::DualOffense2
+        && instance->getDefender()->getId() == creatureId) {
+        doOffense(controlledCreature, instance->getAttacker(), reachCost,
+            instance->getCurrentReach(), false, true);
+    }
     if (instance->getState() == eCombatState::DualOffenseSecondInitiative
         && instance->getDefender()->getId() == creatureId) {
         doStolenInitiative(controlledCreature, instance->getAttacker(), true);
