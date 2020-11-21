@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <unordered_map>
 
 #include "../components/aicombatcontroller.h"
 #include "../components/aicontroller.h"
@@ -76,4 +77,6 @@ protected:
     bool m_delete;
 
     std::string m_dialogue;
+
+    std::unordered_map<eSkills, int> m_skills;
 };

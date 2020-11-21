@@ -159,6 +159,8 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
                 eBodyParts part;
                 target->getLowestArmorPart(&part, &location);
                 controlledCreature->setOffenseComponent(weapon->getBestThrust());
+                controlledCreature->setOffensePinpointTarget(part);
+                controlledCreature->setOffenseTarget(location);
             } else {
                 setCreatureOffenseManuever(
                     controlledCreature, eOffensiveManuevers::Hook, currentReach);
@@ -171,6 +173,8 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
                 eBodyParts part;
                 target->getLowestArmorPart(&part, &location);
                 controlledCreature->setOffenseComponent(weapon->getBestThrust());
+                controlledCreature->setOffensePinpointTarget(part);
+                controlledCreature->setOffenseTarget(location);
             } else {
                 // todo : mordhau
                 if (setCreatureOffenseManuever(

@@ -12,6 +12,15 @@ enum class eCreatureFaction : unsigned {
     Count = 8
 };
 
+enum class eSkills : unsigned {
+    Athletics,
+    Stealth,
+    Riding,
+    SleightOfHand,
+    Disguise,
+    FirstAid,
+};
+
 enum class eCreatureRace { Human, Goblin };
 
 enum class eRank : unsigned { Recruit, Soldier, Veteran, Lord };
