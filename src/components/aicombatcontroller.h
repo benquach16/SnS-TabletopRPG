@@ -22,6 +22,14 @@ private:
 
     void doStolenInitiative(Creature* controlledCreature, const Creature* defender, bool allin);
 
+    void doPrecombat(Creature* controlledCreature, const Creature* opponent);
+
+    void doInitiative(Creature* controlledCreature, const Creature* opponent);
+
+    void doPositionRoll(Creature* controlledCreature, const Creature* opponent);
+
+    void doPreresolution(Creature* controlledCreature, const Creature* opponent);
+
     bool setCreatureOffenseManuever(
         Creature* controlledCreature, eOffensiveManuevers manuever, eLength currentReach);
     bool setCreatureDefenseManuever(Creature* controlledCreature, eDefensiveManuevers manuever);

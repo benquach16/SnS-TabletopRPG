@@ -34,6 +34,7 @@ Creature::Creature(int naturalWeaponId)
     , m_hasOffense(false)
     , m_hasDefense(false)
     , m_hasPosition(false)
+    , m_flagInitiative(false)
     , m_bleeding(false)
     , m_hasPrecombat(false)
     , m_currentGrip(eGrips::Standard)
@@ -493,76 +494,6 @@ void Creature::doPositionRoll(const Creature* opponent)
     m_hasPosition = true;
 }
 
-void Creature::doPrecombat(const Creature* opponent)
-{
-    /*
-        if(m_combatPool > 1) {
-        m_favoredLocations.insert(eHitLocations::Head);
-        reduceCombatPool(1);
-    }
-     */
-    const Weapon* weapon = getPrimaryWeapon();
-    if (opponent->hasEnoughMetalArmor()) {
-        if (hasEnoughMetalArmor() == false && weapon->canHook()) {
-            setGrip(eGrips::Standard);
-        } else if (weapon->getType() == eWeaponTypes::Polearms) {
-            setGrip(eGrips::Staff);
-        } else if (weapon->getType() == eWeaponTypes::Longswords) {
-            setGrip(eGrips::HalfSword);
-        }
-    }
-    if (getCombatPool() > 3 && droppedWeapon()) {
-        attemptPickup();
-    }
-
-    if (getCombatPool() > 3 && getStance() == eCreatureStance::Prone) {
-        attemptStand();
-    }
-    m_hasPrecombat = true;
-}
-
-void Creature::doPreresolution(const Creature* opponent)
-{
-    if (getFeintCost() < getCombatPool()) {
-        setCreatureFeint();
-    }
-}
-
-void Creature::doStolenInitiative(const Creature* defender, bool allin)
-{
-    m_currentDefense.manuever = eDefensiveManuevers::StealInitiative;
-    Defense defend = defender->getQueuedDefense();
-    m_currentDefense.dice = min(m_combatPool, defend.dice);
-    if (allin == true) {
-        m_currentDefense.dice = m_combatPool;
-    }
-    assert(m_currentDefense.dice <= m_combatPool || m_currentDefense.dice == 0);
-    reduceCombatPool(m_currentDefense.dice);
-    m_hasDefense = true;
-}
-
-eInitiativeRoll Creature::doInitiative(const Creature* opponent)
-{
-    // do random for now
-    // this should be based on other creatures weapon length and armor and stuff
-
-    int modifiers = 0;
-    int reachDiff
-        = static_cast<int>(opponent->getCurrentReach()) - static_cast<int>(getCurrentReach());
-
-    constexpr int cBase = 8;
-    int base = cBase;
-    base += reachDiff;
-    base += opponent->getMobility() - getMobility();
-    base += opponent->getCombatPool() - getCombatPool();
-
-    int passiveness = random_static::get(2, 4);
-    if (random_static::get(0, base) < (cBase / passiveness)) {
-        return eInitiativeRoll::Attack;
-    }
-    return eInitiativeRoll::Defend;
-}
-
 void Creature::clearCreatureManuevers(bool skipDisable)
 {
     m_currentOffense.reset();
@@ -574,7 +505,7 @@ void Creature::clearCreatureManuevers(bool skipDisable)
     m_hasPosition = false;
     m_hasPrecombat = false;
     m_hasPreResolution = false;
-
+    m_flagInitiative = false;
     m_favoredLocations.clear();
 
     if (skipDisable == false) {
@@ -607,6 +538,12 @@ bool Creature::setCreatureFeint()
         reduceCombatPool(cost);
     }
     return canUse;
+}
+
+void Creature::setInitiative(eInitiativeRoll initiative)
+{
+    m_initiative = initiative;
+    m_flagInitiative = true;
 }
 
 void Creature::clearArmor()

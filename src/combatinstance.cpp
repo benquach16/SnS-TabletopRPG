@@ -87,21 +87,18 @@ void CombatInstance::doInitialization()
 
 void CombatInstance::doRollInitiative()
 {
-    if (m_side1->isPlayer() == true) {
-        Player* player = static_cast<Player*>(m_side1);
-        if (player->pollForInitiative() == false) {
-            m_currentState = eCombatState::RollInitiative;
-            return;
-        }
+    if (m_side1->pollForInitiative() == false) {
+        m_currentState = eCombatState::RollInitiative;
+        return;
+    }
+    if (m_side2->pollForInitiative() == false) {
+        m_currentState = eCombatState::RollInitiative;
+        return;
     }
 
     // get initiative rolls from both sides to determine roles.
-    eInitiativeRoll side1 = m_side1->doInitiative(m_side2);
-    eInitiativeRoll side2 = m_side2->doInitiative(m_side1);
-    if (m_side1->isPlayer() == true) {
-        Player* player = static_cast<Player*>(m_side1);
-        side1 = player->getInitiative();
-    }
+    eInitiativeRoll side1 = m_side1->getInitiative();
+    eInitiativeRoll side2 = m_side2->getInitiative();
 
     if (side1 == eInitiativeRoll::Defend && side2 == eInitiativeRoll::Defend) {
         // repeat
@@ -166,16 +163,11 @@ void CombatInstance::doRollInitiative()
 
 void CombatInstance::doPreexchangeActions()
 {
-    if (m_side1->isPlayer() == true) {
-        if (m_side1->getHasPrecombat() == false) {
-            m_currentState = eCombatState::PreexchangeActions;
-            return;
-        }
-    } else {
-        m_side1->doPrecombat(m_side2);
-    }
 
-    m_side2->doPrecombat(m_side1);
+    if (m_side1->getHasPrecombat() == false || m_side2->getHasPrecombat() == false) {
+        m_currentState = eCombatState::PreexchangeActions;
+        return;
+    }
 
     // check if grip causes combatants to move closer
     eLength length = max(m_side1->getCurrentReach(), m_side2->getCurrentReach());
@@ -343,16 +335,10 @@ void CombatInstance::doDualOffenseSecondInitiative()
 
     // defender is person who went first, they need to respond with dice
     // allocation
-    if (defender->isPlayer() == true) {
-        // wait until player inputs
-        Player* player = static_cast<Player*>(defender);
-        if (player->getHasOffense() == false) {
-            m_currentState = eCombatState::DualOffenseSecondInitiative;
-            return;
-        }
-    } else {
-        // confusing nomenclature
-        defender->doStolenInitiative(attacker, true);
+
+    if (defender->getHasOffense() == false) {
+        m_currentState = eCombatState::DualOffenseSecondInitiative;
+        return;
     }
 
     Defense defense = defender->getQueuedDefense();
@@ -477,15 +463,9 @@ void CombatInstance::doStolenOffense()
     Creature* defender = nullptr;
     setSides(attacker, defender);
 
-    if (attacker->isPlayer() == true) {
-        // wait until player inputs
-        Player* player = static_cast<Player*>(attacker);
-        if (player->getHasDefense() == false) {
-            m_currentState = eCombatState::StolenOffense;
-            return;
-        }
-    } else {
-        attacker->doStolenInitiative(defender);
+    if (attacker->getHasDefense() == false) {
+        m_currentState = eCombatState::StolenOffense;
+        return;
     }
 
     writeMessage(attacker->getName() + " allocates " + to_string(attacker->getQueuedDefense().dice)
@@ -508,16 +488,9 @@ void CombatInstance::doPreResolution()
     Creature* attacker = nullptr;
     Creature* defender = nullptr;
     setSides(attacker, defender);
-
-    if (attacker->isPlayer() == true) {
-        // wait until player inputs
-        Player* player = static_cast<Player*>(attacker);
-        if (player->getHasPreResolution() == false) {
-            m_currentState = eCombatState::PreResolution;
-            return;
-        }
-    } else {
-        attacker->doPreresolution(defender);
+    if (attacker->getHasPreResolution() == false) {
+        m_currentState = eCombatState::PreResolution;
+        return;
     }
 
     m_currentState = eCombatState::Resolution;

@@ -118,15 +118,8 @@ public:
     // AI functions
     // move these to ai combat controller
     virtual bool isPlayer() { return false; }
-    void doPrecombat(const Creature* opponent);
-
-    void doStolenInitiative(const Creature* defender, bool allin = false);
-
-    eInitiativeRoll doInitiative(const Creature* opponent);
 
     void doPositionRoll(const Creature* opponent);
-
-    void doPreresolution(const Creature* opponent);
 
     void doStand();
 
@@ -141,6 +134,14 @@ public:
     bool getHasPosition() const { return m_hasPosition; }
     bool getHasPrecombat() const { return m_hasPrecombat; }
     bool getHasPreResolution() const { return m_hasPreResolution; }
+    bool pollForInitiative()
+    {
+        bool ret = m_flagInitiative;
+        if (ret == true) {
+            // m_flagInitiative = false;
+        }
+        return ret;
+    }
 
     void setOffenseWeapon(bool isPrimary) { m_currentOffense.withPrimaryWeapon = isPrimary; }
     void setOffenseManuever(eOffensiveManuevers manuever) { m_currentOffense.manuever = manuever; }
@@ -163,6 +164,8 @@ public:
     void setOffenseReady() { m_hasOffense = true; }
     void setDefenseReady() { m_hasDefense = true; }
     void setPositionReady() { m_hasPosition = true; }
+    void setInitiative(eInitiativeRoll initiative);
+    eInitiativeRoll getInitiative() { return m_initiative; }
     void addFavored(eHitLocations location) { m_favoredLocations.insert(location); }
     void setPrecombatReady() { m_hasPrecombat = true; }
     void setPreResolutionReady() { m_hasPreResolution = true; }
@@ -251,7 +254,9 @@ protected:
     Offense m_currentOffense;
     Defense m_currentDefense;
     Position m_currentPosition;
+    eInitiativeRoll m_initiative;
 
+    bool m_flagInitiative;
     bool m_hasOffense;
     bool m_hasDefense;
     bool m_hasPosition;

@@ -28,14 +28,32 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
     }
 
     auto creatureId = controlledCreature->getId();
+    Creature* enemy = nullptr;
+    if (instance->getAttacker()->getId() == creatureId) {
+        enemy = instance->getDefender();
+    } else {
+        enemy = instance->getAttacker();
+    }
+    if (instance->getState() == eCombatState::RollInitiative) {
+        doInitiative(controlledCreature, enemy);
+    }
 
+    if (instance->getState() == eCombatState::PreexchangeActions) {
+        doPrecombat(controlledCreature, enemy);
+    }
+    if (instance->getState() == eCombatState::PreResolution) {
+        doPreresolution(controlledCreature, enemy);
+    }
     if (instance->getState() == eCombatState::Offense
         && instance->getAttacker()->getId() == creatureId) {
         doOffense(controlledCreature, instance->getDefender(), reachCost,
             instance->getCurrentReach(), instance->getLastTempo(), instance->getDualRedThrow());
         return;
     }
-
+    if (instance->getState() == eCombatState::StolenOffense
+        && instance->getAttacker()->getId() == creatureId) {
+        doStolenInitiative(controlledCreature, instance->getDefender(), false);
+    }
     if (instance->getState() == eCombatState::Defense
         && instance->getDefender()->getId() == creatureId) {
         doDefense(controlledCreature, instance->getAttacker(), instance->getLastTempo());
@@ -65,6 +83,10 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
         && instance->getDefender()->getId() == creatureId) {
         doOffense(controlledCreature, instance->getAttacker(), reachCost,
             instance->getCurrentReach(), false, true);
+    }
+    if (instance->getState() == eCombatState::DualOffenseSecondInitiative
+        && instance->getDefender()->getId() == creatureId) {
+        doStolenInitiative(controlledCreature, instance->getAttacker(), true);
     }
 }
 
@@ -292,6 +314,95 @@ void AICombatController::doDefense(
     controlledCreature->setDefenseReady();
 }
 
+void AICombatController::doStolenInitiative(
+    Creature* controlledCreature, const Creature* defender, bool allin)
+{
+    controlledCreature->setDefenseManuever(eDefensiveManuevers::StealInitiative);
+    Defense defend = defender->getQueuedDefense();
+    controlledCreature->setDefenseDice(min(controlledCreature->getCombatPool(), defend.dice));
+    assert(defend.dice >= 0);
+    if (allin == true) {
+        controlledCreature->setDefenseDice(controlledCreature->getCombatPool());
+    }
+    controlledCreature->reduceCombatPool(controlledCreature->getQueuedDefense().dice);
+    controlledCreature->setDefenseReady();
+}
+
+void AICombatController::doPositionRoll(Creature* controlledCreature, const Creature* opponent)
+{
+    // can be reused for standing up as well
+    int dice = 0;
+    if (opponent == nullptr) {
+        // outnumbered, so we choose some nubmer that feels good
+        dice = controlledCreature->getCombatPool() / 4;
+    } else {
+        dice = opponent->getQueuedPosition().dice;
+    }
+
+    dice += random_static::get(0, dice / 3) - random_static::get(0, dice / 4);
+    dice = min(controlledCreature->getCombatPool(), dice);
+    dice = max(0, dice);
+
+    assert(dice <= controlledCreature->getCombatPool());
+    controlledCreature->setPositionDice(dice);
+    controlledCreature->reduceCombatPool(dice);
+    controlledCreature->setPositionReady();
+}
+
+void AICombatController::doPrecombat(Creature* controlledCreature, const Creature* opponent)
+{
+    const Weapon* weapon = controlledCreature->getPrimaryWeapon();
+    if (opponent->hasEnoughMetalArmor()) {
+        if (controlledCreature->hasEnoughMetalArmor() == false && weapon->canHook()) {
+            controlledCreature->setGrip(eGrips::Standard);
+        } else if (weapon->getType() == eWeaponTypes::Polearms) {
+            controlledCreature->setGrip(eGrips::Staff);
+        } else if (weapon->getType() == eWeaponTypes::Longswords) {
+            controlledCreature->setGrip(eGrips::HalfSword);
+        }
+    }
+    if (controlledCreature->getCombatPool() > 3 && controlledCreature->droppedWeapon()) {
+        controlledCreature->attemptPickup();
+    }
+
+    if (controlledCreature->getCombatPool() > 3
+        && controlledCreature->getStance() == eCreatureStance::Prone) {
+        controlledCreature->attemptStand();
+    }
+    controlledCreature->setPrecombatReady();
+}
+
+void AICombatController::doPreresolution(Creature* controlledCreature, const Creature* opponent)
+{
+    if (getFeintCost() < controlledCreature->getCombatPool()) {
+        controlledCreature->setCreatureFeint();
+    }
+    controlledCreature->setPreResolutionReady();
+}
+
+void AICombatController::doInitiative(Creature* controlledCreature, const Creature* opponent)
+{
+    // do random for now
+    // this should be based on other creatures weapon length and armor and stuff
+
+    int modifiers = 0;
+    int reachDiff = static_cast<int>(opponent->getCurrentReach())
+        - static_cast<int>(controlledCreature->getCurrentReach());
+
+    constexpr int cBase = 8;
+    int base = cBase;
+    base += reachDiff;
+    base += opponent->getMobility() - controlledCreature->getMobility();
+    base += opponent->getCombatPool() - controlledCreature->getCombatPool();
+
+    int passiveness = random_static::get(2, 4);
+    if (random_static::get(0, base) < (cBase / passiveness)) {
+        controlledCreature->setInitiative(eInitiativeRoll::Attack);
+    } else {
+        controlledCreature->setInitiative(eInitiativeRoll::Defend);
+    }
+}
+
 bool AICombatController::stealInitiative(
     Creature* controlledCreature, const Creature* attacker, int& outDie)
 {
@@ -318,7 +429,6 @@ bool AICombatController::stealInitiative(
         int dice = diff + random_static::get(4, 8);
         if (controlledCreature->getCombatPool() - bufferDie >= dice) {
             outDie = dice;
-            controlledCreature->setDefenseReady();
             return true;
         }
     }
