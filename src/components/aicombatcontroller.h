@@ -20,9 +20,11 @@ private:
         eLength currentReach, bool allin = false, bool dualRedThrow = false, bool payCosts = true);
     void doDefense(Creature* controlledCreature, const Creature* attacker, bool isLastTempo);
 
+    void doStolenInitiative(Creature* controlledCreature, const Creature* defender, bool allin);
+
     bool setCreatureOffenseManuever(
         Creature* controlledCreature, eOffensiveManuevers manuever, eLength currentReach);
     bool setCreatureDefenseManuever(Creature* controlledCreature, eDefensiveManuevers manuever);
 
-    bool stealInitiative(const Creature* attacker, int& outDie);
+    bool stealInitiative(Creature* controlledCreature, const Creature* attacker, int& outDie);
 };

@@ -2,6 +2,7 @@
 
 #include <map>
 
+#include "../components/aicombatcontroller.h"
 #include "../components/aicontroller.h"
 #include "../creatures/creature.h"
 #include "object.h"
@@ -60,6 +61,7 @@ protected:
     eCreatureFaction m_creatureFaction;
     eCreatureRace m_creatureRace;
 
+    AICombatController m_combatController;
     AIController m_controller;
 
     int m_money;

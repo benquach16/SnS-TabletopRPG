@@ -31,13 +31,7 @@ void CombatUI::resetState()
 
 void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* manager)
 {
-    // bug - players combat manager might not be parent, then we are working with an outdated
-    // instance
     assert(manager != nullptr);
-    if (manager == nullptr) {
-        cout << "this shouldnt happen" << endl;
-        return;
-    }
 
     CombatEdge* edge = manager->getCurrentEdge();
     if (edge == nullptr) {

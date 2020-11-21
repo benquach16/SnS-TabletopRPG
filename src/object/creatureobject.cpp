@@ -35,9 +35,15 @@ void CreatureObject::run(const Level* level)
     if (m_creature->getCreatureState() == eCreatureState::Dead && m_manager->isEngaged() == false) {
         m_delete = true;
     }
-    if (m_manager->isParent() == true) {
-        // definitely engaged, no need to run ai controller
-        m_manager->run(CombatManager::cTick + 1);
+    if (m_manager->inCombat()) {
+        if (m_manager->isParent()) {
+            // definitely engaged, no need to run ai controller
+            m_manager->run(CombatManager::cTick + 1);
+        }
+        if (isPlayer() == false) {
+            // ai combat controller should take over
+            m_combatController.run(m_manager, m_creature);
+        }
     } else {
         m_controller.run(level, this);
     }

@@ -57,15 +57,18 @@ public:
     eCombatState getState() const { return m_currentState; }
     Creature* getSide1() const { return m_side1; }
     Creature* getSide2() const { return m_side2; }
+    Creature* getAttacker() const;
+    Creature* getDefender() const;
     eLength getCurrentReach() const { return m_currentReach; }
-    bool isAttackerPlayer();
-    bool isDefenderPlayer();
+    bool isAttackerPlayer() const;
+    bool isDefenderPlayer() const;
     void forceRefresh();
     void forceTempo(eTempo tempo) { m_currentTempo = tempo; }
 
     bool getInGrapple() const { return m_inGrapple; }
     bool getInWind() const { return m_inWind; }
     bool getLastTempo() const { return m_currentTempo == eTempo::Second; }
+    bool getDualRedThrow() const { return m_dualRedThrow; }
 
 private:
     void doInitialization();
@@ -94,7 +97,7 @@ private:
     void doPostResolution();
     void doEndCombat();
     void startGrapple(Creature* attacker, Creature* defender);
-    void setSides(Creature*& attacker, Creature*& defender);
+    void setSides(Creature*& attacker, Creature*& defender) const;
     bool switchToStaffGrip(Creature* creature);
     const Weapon* getAttackingWeapon(const Creature* creature);
     const Weapon* getDefendingWeapon(const Creature* creature);

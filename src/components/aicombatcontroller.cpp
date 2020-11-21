@@ -9,6 +9,9 @@
 using namespace std;
 using namespace effolkronium;
 
+// this function should be very similar to player combat ui code
+// in terms of control flow. if they deviate then logic is really flawed, as
+// it should be easy to plug in and out inputs
 void AICombatController::run(const CombatManager* manager, Creature* controlledCreature)
 {
     assert(manager != nullptr);
@@ -18,20 +21,50 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
         return;
     }
     CombatInstance* instance = edge->getInstance();
-
+    int reachCost
+        = calculateReachCost(instance->getCurrentReach(), controlledCreature->getCurrentReach());
     if (instance->getState() == eCombatState::Uninitialized) {
         return;
     }
 
-    if (instance->getState() == eCombatState::Offense
-        && instance->getAttacker()->getId() == controlledCreature->getId()) {
+    auto creatureId = controlledCreature->getId();
 
+    if (instance->getState() == eCombatState::Offense
+        && instance->getAttacker()->getId() == creatureId) {
+        doOffense(controlledCreature, instance->getDefender(), reachCost,
+            instance->getCurrentReach(), instance->getLastTempo(), instance->getDualRedThrow());
         return;
     }
-    if (instance->getState() == eCombatState::Defense
-        && instance->getDefender()->getId() == controlledCreature->getId()) {
 
+    if (instance->getState() == eCombatState::Defense
+        && instance->getDefender()->getId() == creatureId) {
+        doDefense(controlledCreature, instance->getAttacker(), instance->getLastTempo());
         return;
+    }
+    if (instance->getState() == eCombatState::AttackFromDefense
+        && instance->getDefender()->getId() == creatureId) {
+        doOffense(controlledCreature, instance->getDefender(), reachCost,
+            instance->getCurrentReach(), true, false);
+        return;
+    }
+    if (instance->getState() == eCombatState::StealInitiative
+        && instance->getDefender()->getId() == creatureId) {
+        doOffense(controlledCreature, instance->getAttacker(), reachCost,
+            instance->getCurrentReach(), true, false);
+        return;
+    }
+    if (instance->getState() == eCombatState::ParryLinked
+        && instance->getDefender()->getId() == creatureId) {
+        // do not pay costs
+        doOffense(controlledCreature, instance->getAttacker(), reachCost,
+            instance->getCurrentReach(), false, false, false);
+        return;
+    }
+
+    if (instance->getState() == eCombatState::DualOffenseStealInitiative
+        && instance->getDefender()->getId() == creatureId) {
+        doOffense(controlledCreature, instance->getAttacker(), reachCost,
+            instance->getCurrentReach(), false, true);
     }
 }
 
@@ -210,10 +243,10 @@ void AICombatController::doDefense(
     int diceAllocated = attacker->getQueuedOffense().dice;
     const Weapon* weapon = controlledCreature->getPrimaryWeapon();
     if (controlledCreature->primaryWeaponDisabled() == false) {
-        controlledCreature->setOffenseWeapon(true);
+        controlledCreature->setDefenseWeapon(true);
         weapon = controlledCreature->getPrimaryWeapon();
     } else {
-        controlledCreature->setOffenseWeapon(false);
+        controlledCreature->setDefenseWeapon(false);
         weapon = controlledCreature->getSecondaryWeapon();
     }
     constexpr int buffer = 3;
@@ -235,14 +268,16 @@ void AICombatController::doDefense(
         int defDie = max(controlledCreature->getCombatPool(), 0);
         controlledCreature->setDefenseDice(defDie);
         controlledCreature->reduceCombatPool(defDie);
+        controlledCreature->setDefenseReady();
         return;
     }
     int stealDie = 0;
-    if (stealInitiative(attacker, stealDie) == true) {
+    if (stealInitiative(controlledCreature, attacker, stealDie) == true) {
         controlledCreature->setDefenseManuever(eDefensiveManuevers::StealInitiative);
         controlledCreature->setDefenseDice(stealDie);
         assert(stealDie <= controlledCreature->getCombatPool() || stealDie == 0);
         controlledCreature->reduceCombatPool(stealDie);
+        controlledCreature->setDefenseReady();
         return;
     }
 
@@ -255,4 +290,37 @@ void AICombatController::doDefense(
     assert(dice <= controlledCreature->getCombatPool() || dice == 0);
     controlledCreature->reduceCombatPool(dice);
     controlledCreature->setDefenseReady();
+}
+
+bool AICombatController::stealInitiative(
+    Creature* controlledCreature, const Creature* attacker, int& outDie)
+{
+    int diceAllocated = attacker->getQueuedOffense().dice;
+
+    int combatPool = attacker->getCombatPool() / 2 + getTap(attacker->getMobility());
+    combatPool += attacker->getQueuedOffense().manuever == eOffensiveManuevers::Thrust ? 1 : 0;
+    float maxDiff = cMaxBTN - cBaseBTN;
+    float attackerDisadvantage = (maxDiff - (attacker->getBTN() - cBaseBTN)) / maxDiff;
+    float myDisadvantage = (maxDiff - (controlledCreature->getBTN() - cBaseBTN)) / maxDiff;
+
+    // make sure this is enough for an attack + overcoming advantage
+    int bufferDie = random_static::get(4, 8);
+    int reachCost = max(attacker->getCurrentReach() - controlledCreature->getCurrentReach(), 0);
+    bufferDie += reachCost;
+    if ((combatPool * attackerDisadvantage) + bufferDie
+        < (controlledCreature->getCombatPool() + getTap(controlledCreature->getMobility()))
+            * myDisadvantage) {
+        float mult = 1.0;
+        // favor in my tn difference
+        mult += (controlledCreature->getBTN() - cBaseBTN) / 10.f;
+        cout << mult << endl;
+        int diff = attacker->getCombatPool() * mult;
+        int dice = diff + random_static::get(4, 8);
+        if (controlledCreature->getCombatPool() - bufferDie >= dice) {
+            outDie = dice;
+            controlledCreature->setDefenseReady();
+            return true;
+        }
+    }
+    return false;
 }

@@ -31,7 +31,7 @@ CombatInstance::CombatInstance()
 {
 }
 
-void CombatInstance::setSides(Creature*& attacker, Creature*& defender)
+void CombatInstance::setSides(Creature*& attacker, Creature*& defender) const
 {
     if (m_initiative == eInitiative::Side1) {
         attacker = m_side1;
@@ -229,17 +229,6 @@ bool CombatInstance::doOffense()
 
     int reachCost = calculateReachCost(m_currentReach, attacker->getCurrentReach());
 
-    if (attacker->isPlayer() == true) {
-        // wait until we get input from player
-        Player* player = static_cast<Player*>(attacker);
-        if (player->getHasOffense() == false) {
-            m_currentState = eCombatState::Offense;
-            return false;
-        }
-    } else {
-        bool allin = m_currentTempo == eTempo::Second;
-        attacker->doOffense(defender, reachCost, m_currentReach, allin, m_dualRedThrow);
-    }
     if (attacker->getHasOffense() == false) {
         m_currentState = eCombatState::Offense;
         return false;
@@ -294,19 +283,10 @@ void CombatInstance::doDualOffenseStealInitiative()
 
     int reachCost = calculateReachCost(m_currentReach, defender->getCurrentReach());
 
-    if (defender->isPlayer() == true) {
-        // wait until player inputs
-        Player* player = static_cast<Player*>(defender);
-
-        // causes issues with new implementation
-        if (player->getHasOffense() == false) {
-            m_currentState = eCombatState::DualOffenseStealInitiative;
-            return;
-        }
-
-    } else {
-        // confusing nomenclature
-        defender->doOffense(attacker, reachCost, m_currentReach, false, true);
+    // causes issues with new implementation
+    if (defender->getHasOffense() == false) {
+        m_currentState = eCombatState::DualOffenseStealInitiative;
+        return;
     }
 
     Offense offense = defender->getQueuedOffense();
@@ -389,17 +369,7 @@ void CombatInstance::doAttackFromDefense()
 
     int reachCost = calculateReachCost(m_currentReach, defender->getCurrentReach());
 
-    if (defender->isPlayer() == true) {
-        // wait until we get input from player
-        Player* player = static_cast<Player*>(defender);
-        if (player->getHasOffense() == false) {
-            m_currentState = eCombatState::AttackFromDefense;
-            return;
-        }
-    } else {
-        attacker->doOffense(defender, reachCost, m_currentReach, true, m_dualRedThrow);
-    }
-    if (attacker->getHasOffense() == false) {
+    if (defender->getHasOffense() == false) {
         m_currentState = eCombatState::AttackFromDefense;
         return;
     }
@@ -425,16 +395,9 @@ void CombatInstance::doDefense()
     Creature* defender = nullptr;
     setSides(attacker, defender);
 
-    if (defender->isPlayer() == true) {
-        // wait until player inputs
-        Player* player = static_cast<Player*>(defender);
-        if (player->getHasDefense() == false) {
-            m_currentState = eCombatState::Defense;
-            return;
-        }
-
-    } else {
-        defender->doDefense(attacker, m_currentTempo == eTempo::Second);
+    if (defender->getHasDefense() == false) {
+        m_currentState = eCombatState::Defense;
+        return;
     }
 
     Defense defend = defender->getQueuedDefense();
@@ -470,19 +433,11 @@ void CombatInstance::doParryLinked()
 
     int reachCost = defender->getCurrentReach() - m_currentReach;
     reachCost = abs(reachCost);
-    if (defender->isPlayer() == true) {
-        // wait until player inputs
-        Player* player = static_cast<Player*>(defender);
-        if (player->getHasOffense() == false) {
-            m_currentState = eCombatState::ParryLinked;
-            return;
-        }
-
-    } else {
-
-        defender->doOffense(
-            attacker, reachCost, m_currentReach, m_currentTempo == eTempo::Second, false, false);
+    if (defender->getHasOffense() == false) {
+        m_currentState = eCombatState::ParryLinked;
+        return;
     }
+
     Offense offense = defender->getQueuedOffense();
 
     writeMessage(defender->getName() + " prepares to attack with " + offense.component->getName()
@@ -504,16 +459,10 @@ void CombatInstance::doStealInitiative()
     // do dice to steal initiative first
     // this polls for offense since the initiative steal is stored inside the
     // defense struct
-    if (defender->isPlayer() == true) {
-        // wait until player inputs
-        Player* player = static_cast<Player*>(defender);
-        if (player->getHasOffense() == false) {
-            m_currentState = eCombatState::StealInitiative;
-            return;
-        }
 
-    } else {
-        defender->doOffense(attacker, reachCost, m_currentReach, true);
+    if (defender->getHasOffense() == false) {
+        m_currentState = eCombatState::StealInitiative;
+        return;
     }
 
     writeMessage(defender->getName() + " attempts to steal intiative using "
@@ -1125,7 +1074,23 @@ void CombatInstance::switchTempo()
     }
 }
 
-bool CombatInstance::isAttackerPlayer()
+Creature* CombatInstance::getAttacker() const
+{
+    Creature* attacker = nullptr;
+    Creature* defender = nullptr;
+    setSides(attacker, defender);
+    return attacker;
+}
+
+Creature* CombatInstance::getDefender() const
+{
+    Creature* attacker = nullptr;
+    Creature* defender = nullptr;
+    setSides(attacker, defender);
+    return defender;
+}
+
+bool CombatInstance::isAttackerPlayer() const
 {
     Creature* attacker = nullptr;
     Creature* defender = nullptr;
@@ -1133,7 +1098,7 @@ bool CombatInstance::isAttackerPlayer()
     return attacker->isPlayer();
 }
 
-bool CombatInstance::isDefenderPlayer()
+bool CombatInstance::isDefenderPlayer() const
 {
     Creature* attacker = nullptr;
     Creature* defender = nullptr;
