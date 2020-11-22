@@ -10,15 +10,30 @@
 #include "object/selectorobject.h"
 #include "ui/gameui.h"
 
+class PlayerObject;
+
 class Scene {
 public:
     Scene();
     ~Scene();
-    void run();
+    void setupLevel(PlayerObject* playerObject);
+    void run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
 
 private:
-    void doMoveSelector(sf::Event, bool limit);
-    enum class eGameState : unsigned {
+    static constexpr float cPlayingTick = 0.4;
+
+    void playing(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
+    void selection(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
+    void dialogSelect(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
+    void dialog(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
+    void inventory(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
+    void combat(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
+    void wait(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
+    void pickup(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
+    void attack(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
+
+    void doMoveSelector(sf::Event, PlayerObject* playerObject, bool limit);
+    enum class eSceneState : unsigned {
         Uninitialized,
         Playing,
         Waiting,
@@ -33,14 +48,15 @@ private:
         Dead,
         Exiting
     };
-
+    eSceneState m_currentState;
     SelectorObject m_selector;
     Object* m_pickup;
-    CreatureObject* m_talking;
-    PlayerObject* m_playerObject;
     Level* m_currentLevel;
-
+    // who i am talking to
+    CreatureObject* m_talking;
+    GameUI m_ui;
     sf::Clock clock;
+    float currentWaitTick;
     float tick = 0;
     float aiTick = 0;
     int sleepTick = 0;

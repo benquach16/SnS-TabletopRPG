@@ -9,11 +9,15 @@
 #include "object.h"
 #include "types.h"
 
+#include <boost/serialization/strong_typedef.hpp>
+
 class Level;
 class CombatManager;
 
 class CreatureObject : public Object {
 public:
+    BOOST_STRONG_TYPEDEF(unsigned, CreatureObjectId);
+
     CreatureObject(Creature* creature);
     virtual ~CreatureObject();
     bool hasCollision() const override { return true; }
@@ -58,6 +62,8 @@ public:
     void setLoadout(eCreatureFaction faction, eRank rank);
 
 protected:
+    CreatureObjectId m_id;
+
     Creature* m_creature;
     eCreatureFaction m_creatureFaction;
     eCreatureRace m_creatureRace;

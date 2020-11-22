@@ -5,6 +5,8 @@
 
 using namespace std;
 
+static CreatureObject::CreatureObjectId ids = static_cast<CreatureObject::CreatureObjectId>(0);
+
 CreatureObject::CreatureObject(Creature* creature)
     : m_creature(creature)
     , m_creatureFaction(eCreatureFaction::None)
@@ -15,6 +17,7 @@ CreatureObject::CreatureObject(Creature* creature)
     , m_manager(new CombatManager(this))
     , m_delete(false)
     , m_dialogue("greeting_neutral")
+    , m_id(ids++)
 {
 }
 

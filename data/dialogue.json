@@ -21,7 +21,8 @@
     },
     "ask_healing": {
         "message": "I would like to heal my wounds.",
-        "responses": ["text4"]
+        "responses": ["text4"],
+        "gameplay_effects": [ "heal" ]
     },
     "end": {
         "message": "I must leave now."
