@@ -226,21 +226,21 @@ void Creature::inflictWound(Wound* wound)
     auto drop = effects.find(eEffects::drop);
     if (drop1 != effects.end()) {
         if (DiceRoller::rollGetSuccess(getBTN(), getReflex()) < 1) {
-            disableWeapon(true);
+            dropWeapon();
         }
     }
     if (drop2 != effects.end()) {
         if (DiceRoller::rollGetSuccess(getBTN(), getReflex()) < 2) {
-            disableWeapon(true);
+            dropWeapon();
         }
     }
     if (drop3 != effects.end()) {
         if (DiceRoller::rollGetSuccess(getBTN(), getReflex()) < 3) {
-            disableWeapon(true);
+            dropWeapon();
         }
     }
     if (drop != effects.end()) {
-        disableWeapon(true);
+        dropWeapon();
     }
 
     m_BTN = max(m_BTN, wound->getBTN());
@@ -377,7 +377,7 @@ bool Creature::rollFatigue()
 
 void Creature::resetFatigue() { m_fatigue.at(eCreatureFatigue::Stamina) = 0; }
 
-void Creature::disableWeapon(bool drop)
+void Creature::disableWeapon()
 {
     // remove all dice from offense and defense pools when this happens
     // so impact gets transferred directly to remainig CP
@@ -393,9 +393,25 @@ void Creature::disableWeapon(bool drop)
     m_disarm = cDisableTick;
 }
 
-void Creature::dropWeapon() {}
+void Creature::dropWeapon()
+{
+    if (getPrimaryWeaponId() != m_naturalWeaponId) {
+        // make sure secondary weapons go away
+        setGrip(eGrips::Standard);
+        m_droppedWeapons.push_back(m_primaryWeaponId);
+        setWeapon(m_naturalWeaponId);
+    }
+}
 
 void Creature::enableWeapon() { m_primaryWeaponDisabled = false; }
+
+void Creature::pickupWeapon()
+{
+    assert(m_droppedWeapons.size() > 0);
+    dropWeapon();
+    int weaponId = m_droppedWeapons[m_droppedWeapons.size() - 1];
+    m_droppedWeapons.pop_back();
+}
 
 bool Creature::canPerformManuever(eOffensiveManuevers manuever)
 {

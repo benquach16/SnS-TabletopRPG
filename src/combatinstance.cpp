@@ -875,12 +875,13 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
     if (attack.manuever == eOffensiveManuevers::Disarm) {
         if (MoS >= 2) {
             writeMessage(target->getName() + " has been disarmed!", Log::eMessageTypes::Alert);
+            target->dropWeapon();
         } else {
             writeMessage(target->getName() + "'s weapon has been disabled for 1 tempo.",
                 Log::eMessageTypes::Alert);
+            target->disableWeapon();
         }
 
-        target->disableWeapon(MoS >= 2);
         return false;
     }
 

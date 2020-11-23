@@ -180,9 +180,10 @@ public:
 
     void setProne() { m_currentStance = eCreatureStance::Prone; }
     void setStand() { m_currentStance = eCreatureStance::Standing; }
-    void disableWeapon(bool drop = false);
+    void disableWeapon();
     void dropWeapon();
     void enableWeapon();
+    void pickupWeapon();
 
     eCreatureStance getStance() const { return m_currentStance; }
 
@@ -274,6 +275,7 @@ protected:
     int m_naturalWeaponId;
     int m_disableWeaponId;
     std::vector<int> m_quickDrawItems;
+    std::vector<int> m_droppedWeapons;
     eGrips m_currentGrip;
 
     int m_bloodLoss;

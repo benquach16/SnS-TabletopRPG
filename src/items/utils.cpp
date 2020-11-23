@@ -310,6 +310,8 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(
         = getOffensiveManueverCost(eOffensiveManuevers::PinpointThrust, grip, weapon, currentReach);
     ret[eOffensiveManuevers::Grab]
         = getOffensiveManueverCost(eOffensiveManuevers::Grab, grip, weapon, currentReach);
+    ret[eOffensiveManuevers::Disarm]
+        = getOffensiveManueverCost(eOffensiveManuevers::Disarm, grip, weapon, currentReach);
     eWeaponTypes type = weapon->getType();
     if (type == eWeaponTypes::Swords || type == eWeaponTypes::Longswords) {
         ret[eOffensiveManuevers::Mordhau] = (grip == eGrips::HalfSword) ? 0 : 2;
