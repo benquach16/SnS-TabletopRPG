@@ -814,6 +814,8 @@ void CombatInstance::doPostResolution()
     switchTempo();
 }
 
+void CombatInstance::doBetweenExchange() { m_currentState = eCombatState::Offense; }
+
 void CombatInstance::resolvePosition(Creature* creature)
 {
     Position position = creature->getQueuedPosition();

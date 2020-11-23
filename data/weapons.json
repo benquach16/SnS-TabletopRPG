@@ -1,7 +1,7 @@
 {
 	"1020": {
-		"name": "Polearm Buttspike",
-		"description": "The buttspike of a polearm. Typically found on nicer polearms.",
+		"name": "Polearm Queue w/Buttspike",
+		"description": "The queue end of a polearm, equipped with a spike. Typically found on nicer polearms.",
 		"length" : "medium",
 		"type": "polearm",
 		"hands": 1,
@@ -10,22 +10,24 @@
 		"shield": false,
 		"components": [
 			{
-				"name": "Buttspike, Thrust",
+				"name": "Queue, Thrust",
 				"damage": 1,
 				"type": "piercing",
+				"properties": [ "maillepiercing", "defensive" ],
 				"attack": "thrust"
 			},		
 			{
-				"name": "Buttspike, Swing",
+				"name": "Queue, Swing",
 				"damage": 1,
 				"type": "blunt",
+				"properties": [ "defensive" ],
 				"attack": "swing"
 			}			
 		]
 	},
 	"1021": {
-		"name": "Polearm Buttend",
-		"description": "The butt end of a polearm.",
+		"name": "Polearm Queue",
+		"description": "The queue end of a polearm.",
 		"length" : "medium",
 		"type": "polearm",
 		"hands": 1,
@@ -33,15 +35,17 @@
 		"hook": false,
 		"components": [
 			{
-				"name": "Buttspike, Thrust",
+				"name": "Queue, Thrust",
 				"damage": 1,
 				"type": "piercing",
+				"properties": [ "defensive" ],
 				"attack": "thrust"
 			},		
 			{
-				"name": "Buttspike, Swing",
+				"name": "Queue, Swing",
 				"damage": 1,
 				"type": "blunt",
+				"properties": [ "defensive" ],
 				"attack": "swing"
 			}			
 		]

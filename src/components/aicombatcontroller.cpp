@@ -41,7 +41,8 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
     if (instance->getState() == eCombatState::PreexchangeActions) {
         doPrecombat(controlledCreature, enemy);
     }
-    if (instance->getState() == eCombatState::PreResolution) {
+    if (instance->getState() == eCombatState::PreResolution
+        && instance->getAttacker()->getId() == creatureId) {
         doPreresolution(controlledCreature, enemy);
     }
     if (instance->getState() == eCombatState::Offense

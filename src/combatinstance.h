@@ -90,6 +90,7 @@ private:
     void doPostDefense();
     void doPreResolution();
     void doResolution();
+    void doBetweenExchange();
     // this is a special case because if both sides roll to attack since both of
     // their attacks resolve at the same time
     void doDualOffenseResolve();

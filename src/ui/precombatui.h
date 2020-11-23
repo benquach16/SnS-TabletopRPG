@@ -11,8 +11,7 @@ public:
 private:
     void doFavoring(bool hasKeyEvents, sf::Event event, Player* player);
     void doFavorLocation(bool hasKeyEvents, sf::Event event, Player* player);
-    void doChooseGrip(bool hasKeyEvents, sf::Event event, Player* player);
-    enum class eUiState : unsigned { ChooseFavoring, ChooseFavorLocations, ChooseGrip, Finished };
+    enum class eUiState : unsigned { ChooseFavoring, ChooseFavorLocations, Finished };
 
     eUiState m_currentState;
 };

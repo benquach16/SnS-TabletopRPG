@@ -186,6 +186,8 @@ std::string weaponPropToString(eWeaponProperties prop)
         return "Maille Piercing";
     case eWeaponProperties::PlatePiercing:
         return "Plate Piercing";
+    case eWeaponProperties::Defensive:
+        return "Defensive";
     default:
         return "";
     }

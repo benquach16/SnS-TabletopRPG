@@ -15,9 +15,6 @@ void PrecombatUI::run(bool hasKeyEvents, sf::Event event, Player* player)
     case eUiState::ChooseFavorLocations:
         doFavorLocation(hasKeyEvents, event, player);
         break;
-    case eUiState::ChooseGrip:
-        doChooseGrip(hasKeyEvents, event, player);
-        break;
     case eUiState::Finished:
         break;
     }
@@ -30,11 +27,28 @@ void PrecombatUI::doFavoring(bool hasKeyEvents, sf::Event event, Player* player)
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    string str = "Guard location (1AP)?\na - Skip all pre-exchange actions\nb - Yes\nc - No";
+    string str = "First Tempo Actions:\na - Confirm\n";
 
+    const Weapon* weapon = player->getPrimaryWeapon();
+    if (player->getFavoredLocations().size() == 0) {
+        str += "b - Guard Location (1 AP)\n";
+    }
+    if (weapon->getType() == eWeaponTypes::Polearms) {
+        if (player->getGrip() == eGrips::Standard) {
+            str += "c - Switch to Staff Grip\n";
+        } else {
+            str += "c - Switch to Standard Grip\n";
+        }
+    } else if (weapon->getType() == eWeaponTypes::Longswords) {
+        if (player->getGrip() == eGrips::Standard) {
+            str += "c - Switch to Halfswording\n";
+        } else {
+            str += "c - Switch to Standard Grip\n";
+        }
+    }
     if (player->getHasPosition() == false) {
-        str += "\nd - Attempt to stand (3AP)";
-        str += "\ne - Attempt to pick up weapon (3AP)";
+        str += "d - Attempt to stand (3AP)\n";
+        str += "e - Attempt to pick up weapon (3AP)\n";
     }
     text.setString(str);
 
@@ -48,10 +62,24 @@ void PrecombatUI::doFavoring(bool hasKeyEvents, sf::Event event, Player* player)
             m_currentState = eUiState::Finished;
             break;
         case 'b':
-            m_currentState = eUiState::ChooseFavorLocations;
+            if (player->getFavoredLocations().size() == 0) {
+                m_currentState = eUiState::ChooseFavorLocations;
+            }
             break;
         case 'c':
-            m_currentState = eUiState::ChooseGrip;
+            if (weapon->getType() == eWeaponTypes::Polearms) {
+                if (player->getGrip() == eGrips::Standard) {
+                    player->setGrip(eGrips::Staff);
+                } else {
+                    player->setGrip(eGrips::Standard);
+                }
+            } else if (weapon->getType() == eWeaponTypes::Longswords) {
+                if (player->getGrip() == eGrips::Standard) {
+                    player->setGrip(eGrips::HalfSword);
+                } else {
+                    player->setGrip(eGrips::Standard);
+                }
+            }
             break;
         case 'd':
             if (player->getHasPosition() == false) {
@@ -97,60 +125,10 @@ void PrecombatUI::doFavorLocation(bool hasKeyEvents, sf::Event event, Player* pl
             if (c == idx) {
                 player->reduceCombatPool(1);
                 player->addFavored(locations[i]);
-                m_currentState = eUiState::ChooseGrip;
+                m_currentState = eUiState::ChooseFavoring;
             }
         }
     }
     text.setString(str);
-    Game::getWindow().draw(text);
-}
-
-void PrecombatUI::doChooseGrip(bool hasKeyEvents, sf::Event event, Player* player)
-{
-    UiCommon::drawTopPanel();
-
-    sf::Text text;
-    text.setCharacterSize(cCharSize);
-    text.setFont(Game::getDefaultFont());
-    const Weapon* weapon = player->getPrimaryWeapon();
-    if (weapon->getType() == eWeaponTypes::Polearms) {
-        text.setString("Switch Grip?\na - Standard\nb - Staff Grip\n");
-        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
-            char c = event.text.unicode;
-            switch (c) {
-            case 'a':
-                player->setGrip(eGrips::Standard);
-                player->setPrecombatReady();
-                m_currentState = eUiState::Finished;
-                break;
-            case 'b':
-                player->setGrip(eGrips::Staff);
-                player->setPrecombatReady();
-                m_currentState = eUiState::Finished;
-                break;
-            }
-        }
-    } else if (weapon->getType() == eWeaponTypes::Longswords
-        || weapon->getType() == eWeaponTypes::Swords) {
-        text.setString("Switch Grip?\na - Standard\nb - Half Sword");
-        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
-            char c = event.text.unicode;
-            switch (c) {
-            case 'a':
-                player->setGrip(eGrips::Standard);
-                player->setPrecombatReady();
-                m_currentState = eUiState::Finished;
-                break;
-            case 'b':
-                player->setGrip(eGrips::HalfSword);
-                player->setPrecombatReady();
-                m_currentState = eUiState::Finished;
-                break;
-            }
-        }
-    } else {
-        player->setPrecombatReady();
-        m_currentState = eUiState::Finished;
-    }
     Game::getWindow().draw(text);
 }
