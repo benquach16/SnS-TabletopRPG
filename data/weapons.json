@@ -278,15 +278,13 @@
 				"name": "Staff, Swing",
 				"damage": 1,
 				"type": "blunt",
-				"attack": "swing",
-				"polearmhead": true
+				"attack": "swing"
 			},
 			{
 				"name": "Staff, Thrust",
 				"damage": 1,
 				"type": "blunt",
-				"attack": "thrust",
-				"polearmspike": true
+				"attack": "thrust"
 			}
 		],
 		"secondary": 1021
@@ -305,23 +303,20 @@
 				"damage": 2,
 				"type": "piercing",
 				"attack": "thrust",
-				"properties": [ "maillepiercing" ],
-				"polearmspike": true
+				"properties": [ "maillepiercing" ]
 			},
 			{
 				"name": "Axe head",
 				"damage": 3,
 				"attack": "swing",
-				"type": "cutting",
-				"polearmhead": true
+				"type": "cutting"
 			},
 			{
 				"name": "Beak",
 				"damage": 1,
 				"type": "piercing",
 				"attack": "swing",
-				"properties": [ "platepiercing" ],
-				"polearmhead": true
+				"properties": [ "platepiercing" ]
 			}
 		],
 		"secondary": 1020
@@ -364,30 +359,27 @@
 				"damage": 3,
 				"type": "piercing",
 				"attack": "thrust",
-				"properties": [ "maillepiercing" ],
-				"polearmspike": true
+				"properties": [ "maillepiercing" ]
 			},
 			{
 				"name": "Axe head",
 				"damage": 3,
 				"attack": "swing",
-				"type": "cutting",
-				"polearmhead": true
+				"type": "cutting"
 			},
 			{
 				"name": "Hammer head",
 				"damage": 3,
 				"type": "blunt",
 				"attack": "swing",
-				"properties": [ "crushing" ],
-				"polearmhead": true
+				"properties": [ "crushing" ]
 			}
 		],
 		"secondary": 1020
 	},
 	"1052": {
 		"name": "Dane Axe",
-		"description": "A sort of proto-polearm, it consists of an axe head mounted on a long shaft.",
+		"description": "A sort of proto-polearm, the Dane Axe consists of an axe head mounted on a long shaft.",
 		"length": "long",
 		"type": "polearm",
 		"hands": 2,
@@ -408,5 +400,29 @@
 			}
 		],
 		"secondary": 1021
+	},
+	"1053": {
+		"name": "Rondel Dagger",
+		"description": "A type of dagger that is primarily used for thrusting. Some rondels do not even have edges. They tend to have a square spike design that allows them to penetrate maille.",
+		"length": "hand",
+		"type": "brawling",
+		"hands": 1,
+		"cost": 30,
+		"hook": false,
+		"components": [
+			{
+				"name": "Spike",
+				"damage": 0,
+				"type": "piercing",
+				"attack": "thrust",
+				"properties": [ "maillepiercing" ]
+			},
+			{
+				"name": "Edge",
+				"damage": -2,
+				"attack": "swing",
+				"type": "cutting"
+			}
+		]
 	}
 }

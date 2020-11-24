@@ -76,9 +76,6 @@ std::string lengthToString(eLength length)
     case eLength::Hand:
         return "Hand";
         break;
-    case eLength::Close:
-        return "Close";
-        break;
     case eLength::Short:
         return "Short";
         break;

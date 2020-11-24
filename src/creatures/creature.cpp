@@ -101,7 +101,7 @@ std::vector<const Armor*> Creature::getArmor() const
     return ret;
 }
 
-void Creature::setWeapon(int idx)
+void Creature::setPrimaryWeapon(int idx)
 {
     const Weapon* weapon = WeaponTable::getSingleton()->get(idx);
     m_primaryWeaponId = idx;
@@ -399,7 +399,7 @@ void Creature::dropWeapon()
         // make sure secondary weapons go away
         setGrip(eGrips::Standard);
         m_droppedWeapons.push_back(m_primaryWeaponId);
-        setWeapon(m_naturalWeaponId);
+        setPrimaryWeapon(m_naturalWeaponId);
     }
 }
 

@@ -194,7 +194,7 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
 
     string str;
     const Item* item = ItemTable::getSingleton()->get(m_id);
-    str += "Selected Item (E to equip/use, D to drop)\n\n";
+    str += "Selected Item (E to equip/use, W to equip in left hand, D to drop)\n\n";
     str += item->getName() + '\n';
     str += item->getDescription() + "\n\n";
     str += "Type: " + itemTypeToString(item->getItemType()) + '\n';
@@ -248,7 +248,7 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
         if (hasKeyEvents && event.type == sf::Event::TextEntered && event.text.unicode == 'e') {
             if (m_equipped == false) {
                 player->addItem(player->getCreatureComponent()->getPrimaryWeaponId());
-                player->getCreatureComponent()->setWeapon(m_id);
+                player->getCreatureComponent()->setPrimaryWeapon(m_id);
                 player->removeItem(m_id);
                 m_uiState = eUiState::Equipped;
                 Log::push("You equip the " + item->getName());

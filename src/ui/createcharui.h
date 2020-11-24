@@ -20,6 +20,7 @@ private:
         std::string description;
         std::vector<int> armor;
         std::vector<int> inventory;
+        std::vector<int> quickdraw;
         int weapon;
     };
 

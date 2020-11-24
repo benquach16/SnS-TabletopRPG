@@ -209,8 +209,6 @@ eLength WeaponTable::convertLengthFromStr(const std::string& str)
         return eLength::Medium;
     } else if (str == "short") {
         return eLength::Short;
-    } else if (str == "close") {
-        return eLength::Close;
     }
     return eLength::Hand;
 }

@@ -77,14 +77,13 @@ enum class eLength : unsigned {
     Nonexistent = 0,
     Half = 1,
     Hand = 2,
-    Close = 3,
-    Short = 4,
-    Medium = 5,
-    Long = 6,
-    VeryLong = 7,
-    Extended = 8,
-    Extreme = 9,
-    Ludicrous = 10
+    Short = 3,
+    Medium = 4,
+    Long = 5,
+    VeryLong = 6,
+    Extended = 7,
+    Extreme = 8,
+    Ludicrous = 9
 };
 
 enum class eInitiativeRoll : unsigned {

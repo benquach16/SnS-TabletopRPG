@@ -32,12 +32,13 @@ CreateCharUI::CreateCharUI()
         string description = values["description"];
         vector<int> armor = values["armor"];
         int weapon = values["weapon"];
-
+        vector<int> quickdraw = values["quickdraw"];
         StartingLoadouts loadout;
         loadout.name = values["name"];
         loadout.description = description;
         loadout.armor = armor;
         loadout.weapon = weapon;
+        loadout.quickdraw = quickdraw;
 
         m_loadouts.push_back(loadout);
     }
@@ -135,9 +136,12 @@ void CreateCharUI::doDescription(bool hasKeyEvents, sf::Event event, PlayerObjec
     str += "\n\nEnter - Choose class ESC - Go back";
     text.setString(str);
     if (hasKeyEvents && sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) == true) {
-        player->getCreatureComponent()->setWeapon(m_loadouts[m_loadoutIdx].weapon);
+        player->getCreatureComponent()->setPrimaryWeapon(m_loadouts[m_loadoutIdx].weapon);
         for (auto i : m_loadouts[m_loadoutIdx].armor) {
             player->getCreatureComponent()->equipArmor(i);
+        }
+        for (auto i : m_loadouts[m_loadoutIdx].quickdraw) {
+            player->getCreatureComponent()->addQuickdrawItem(i);
         }
         m_currentState = eUiState::Attributes;
     }
