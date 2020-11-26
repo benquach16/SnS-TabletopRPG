@@ -14,10 +14,14 @@ public:
     void doWounds(bool hasKeyEvents, sf::Event event, PlayerObject* player);
     void doProfile(bool hasKeyEvents, sf::Event event, PlayerObject* player);
     void displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject* player);
+    void doPaperdoll(bool hasKeyEvents, sf::Event event, PlayerObject* player);
 
 private:
-    enum eUiState { Backpack, Equipped, Detailed, Wounds, Profile };
+    enum eUiState { Backpack, Detailed, Wounds, Profile, Paperdoll };
+    enum eWeaponDetail { Primary, Secondary, Quickdraw };
+    // for equipping and unequipping
     bool m_equipped;
+    eWeaponDetail m_weaponType;
     eUiState m_uiState;
     int m_id;
 

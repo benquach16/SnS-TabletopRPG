@@ -9,7 +9,5 @@ public:
     eCreatureType getCreatureType() override { return eCreatureType::Human; }
     void randomizeStats();
 
-    const Weapon* getNaturalWeapon() const override;
-
 private:
 };

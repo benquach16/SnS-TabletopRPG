@@ -29,8 +29,3 @@ void Human::randomizeStats()
     m_perception = effolkronium::random_static::get(2, 9);
     m_willpower = effolkronium::random_static::get(2, 9);
 }
-
-const Weapon* Human::getNaturalWeapon() const
-{
-    return WeaponTable::getSingleton()->get(naturalWeaponId);
-}

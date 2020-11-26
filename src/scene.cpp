@@ -156,7 +156,7 @@ void Scene::selection(bool hasKeyEvents, sf::Event event, PlayerObject* playerOb
             }
         }
 
-        if (event.key.code == sf::Keyboard::D) {
+        if (event.key.code == sf::Keyboard::Escape) {
             m_currentState = eSceneState::Playing;
         }
     }
@@ -267,7 +267,7 @@ void Scene::dialogSelect(bool hasKeyEvents, sf::Event event, PlayerObject* playe
                 }
             }
         }
-        if (event.key.code == sf::Keyboard::K) {
+        if (event.key.code == sf::Keyboard::Escape) {
             m_currentState = eSceneState::Playing;
         }
     }
@@ -276,7 +276,8 @@ void Scene::dialogSelect(bool hasKeyEvents, sf::Event event, PlayerObject* playe
 void Scene::inventory(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
 {
     m_ui.runInventory(hasKeyEvents, event, playerObject);
-    if (hasKeyEvents && event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::I) {
+    if (hasKeyEvents && event.type == sf::Event::KeyReleased
+        && event.key.code == sf::Keyboard::Escape) {
         m_currentState = eSceneState::Playing;
     }
 }
@@ -314,7 +315,8 @@ void Scene::pickup(bool hasKeyEvents, sf::Event event, PlayerObject* playerObjec
     assert(m_pickup != nullptr);
     m_ui.runTrade(
         hasKeyEvents, event, playerObject->getInventoryMutable(), m_pickup->getInventoryMutable());
-    if (hasKeyEvents && event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::P) {
+    if (hasKeyEvents && event.type == sf::Event::KeyReleased
+        && event.key.code == sf::Keyboard::Escape) {
         m_currentState = eSceneState::Playing;
     }
 }
@@ -358,7 +360,7 @@ void Scene::attack(bool hasKeyEvents, sf::Event event, PlayerObject* playerObjec
                 }
             }
         }
-        if (event.key.code == sf::Keyboard::A) {
+        if (event.key.code == sf::Keyboard::Escape) {
             m_currentState = eSceneState::Playing;
         }
     }

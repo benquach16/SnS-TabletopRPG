@@ -230,10 +230,9 @@ void OffenseUI::doInspect(bool hasKeyEvents, sf::Event event, Creature* target)
 
     std::vector<const Armor*> armor = target->getArmor();
     string str;
-    str += target->getName() + " is wearing ";
-    for (int i = 0; i < armor.size(); ++i) {
-        str += armor[i]->getName() + ", ";
-    }
+    str += target->getName() + " is has armor coverage on \n";
+
+    str += UiCommon::drawPaperdoll(target);
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());

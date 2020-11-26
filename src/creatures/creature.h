@@ -71,8 +71,9 @@ public:
     int getPrimaryWeaponId() const { return m_primaryWeaponId; }
     const Weapon* getSecondaryWeapon() const;
     int getSecondaryWeaponId() const { return m_secondaryWeaponId; }
-    virtual const Weapon* getNaturalWeapon() const = 0;
+    const Weapon* getNaturalWeapon() const;
     std::vector<int> getQuickdrawItems() const { return m_quickDrawItems; }
+    bool findInQuickdraw(int id);
     void addQuickdrawItem(int id) { m_quickDrawItems.push_back(id); }
     void removeQuickdrawItem(int id);
     eLength getCurrentReach() const;
@@ -83,8 +84,11 @@ public:
     const std::vector<int>& getArmorId() const { return m_armor; }
     void setPrimaryWeapon(int id);
     void setSecondaryWeapon(int id);
+    void removePrimaryWeapon() { m_primaryWeaponId = m_naturalWeaponId; }
+    void removeSecondaryWeapon() { m_secondaryWeaponId = m_naturalWeaponId; }
     std::vector<int> getDroppedWeapons() const { return m_droppedWeapons; }
     void clearDroppedWeapons();
+    int getNumEquipped(int id);
 
     void setName(const std::string& name) { m_name = name; }
     std::string getName() const { return m_name; }

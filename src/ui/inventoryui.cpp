@@ -8,6 +8,7 @@
 #include "../log.h"
 #include "../object/creatureobject.h"
 #include "../object/playerobject.h"
+#include "common.h"
 #include "types.h"
 #include "utils.h"
 
@@ -17,6 +18,7 @@ InventoryUI::InventoryUI()
     : m_uiState(eUiState::Backpack)
     , m_id(-1)
     , m_equipped(false)
+    , m_weaponType(eWeaponDetail::Primary)
 {
 }
 constexpr int cDisplayLines = 28;
@@ -27,9 +29,6 @@ void InventoryUI::run(bool hasKeyEvents, sf::Event event, PlayerObject* player)
     case eUiState::Backpack:
         doBackpack(hasKeyEvents, event, player);
         break;
-    case eUiState::Equipped:
-        doEquipped(hasKeyEvents, event, player);
-        break;
     case eUiState::Detailed:
         displayDetail(hasKeyEvents, event, player);
         break;
@@ -38,6 +37,9 @@ void InventoryUI::run(bool hasKeyEvents, sf::Event event, PlayerObject* player)
         break;
     case eUiState::Profile:
         doProfile(hasKeyEvents, event, player);
+        break;
+    case eUiState::Paperdoll:
+        doPaperdoll(hasKeyEvents, event, player);
         break;
     }
 }
@@ -55,10 +57,11 @@ void InventoryUI::doBackpack(bool hasKeyEvents, sf::Event event, PlayerObject* p
     sf::Text txt;
     txt.setFont(Game::getDefaultFont());
     txt.setCharacterSize(cCharSize);
-
-    string str = "Inventory (1 - Backpack, 2 - Equipment, 3 - Wounds, 4 - Profile):\n";
-
     std::map<int, int> inventory = player->getInventory();
+    string str = "Inventory (1 - Backpack, 2 - Wounds, 3 - Profile, 4 - Armor Coverage):\n\n";
+    str += to_string(inventory.size()) + " items, ";
+    str += "Equipped Armor - ";
+    str += to_string(player->getCreatureComponent()->getAP()) + "AP\n";
 
     int count = 0;
     for (auto it = inventory.begin(); it != inventory.end();) {
@@ -68,7 +71,24 @@ void InventoryUI::doBackpack(bool hasKeyEvents, sf::Event event, PlayerObject* p
             char idx = ('a' + count);
             const Item* item = ItemTable::getSingleton()->get(it->first);
             str += idx;
-            str += " - " + item->getName() + " x" + to_string(it->second) + '\n';
+            bool equipped = playerComponent->getNumEquipped(it->first) > 0;
+
+            // str += " - [" + itemTypeToString(item->getItemType()) + "] ";
+            str += " - " + item->getName() + " x" + to_string(it->second);
+            if (equipped) {
+                str += " - Equipped";
+                if (playerComponent->getPrimaryWeaponId() == it->first) {
+                    str += " in Right Hand";
+                }
+                if (playerComponent->getSecondaryWeaponId() == it->first) {
+                    str += " in Left Hand";
+                }
+                if (playerComponent->findInQuickdraw(it->first)) {
+                    str += " on belt";
+                }
+            }
+            str += '\n';
+
             count++;
 
             if (event.type == sf::Event::TextEntered) {
@@ -90,91 +110,14 @@ void InventoryUI::doBackpack(bool hasKeyEvents, sf::Event event, PlayerObject* p
         case '1':
             break;
         case '2':
-            m_uiState = eUiState::Equipped;
-            break;
-        case '3':
             m_uiState = eUiState::Wounds;
             break;
-        case '4':
-            m_uiState = eUiState::Profile;
-            break;
-        }
-    }
-}
-
-void InventoryUI::doEquipped(bool hasKeyEvents, sf::Event event, PlayerObject* player)
-{
-    auto windowSize = Game::getWindow().getSize();
-
-    sf::RectangleShape bkg(sf::Vector2f(windowSize.x / 2, cCharSize * cDisplayLines));
-    bkg.setFillColor(sf::Color(12, 12, 23));
-    bkg.setOutlineThickness(1);
-    bkg.setOutlineColor(sf::Color(22, 22, 33));
-    Game::getWindow().draw(bkg);
-    sf::RectangleShape bkg2(sf::Vector2f(windowSize.x / 2, cCharSize * cDisplayLines));
-    bkg2.setPosition(sf::Vector2f(windowSize.x / 2, 0));
-    bkg2.setFillColor(sf::Color(12, 12, 23));
-    bkg2.setOutlineThickness(1);
-    bkg2.setOutlineColor(sf::Color(22, 22, 33));
-    Game::getWindow().draw(bkg2);
-
-    sf::Text txt;
-    txt.setFont(Game::getDefaultFont());
-    txt.setCharacterSize(cCharSize);
-    string str = "Inventory (1 - Backpack, 2 - Equipment, 3 - Wounds, 4 - Profile):\n\n";
-    str += "Equipped Armor - ";
-    str += to_string(player->getCreatureComponent()->getAP()) + "AP\n";
-    std::vector<int> armorId = player->getCreatureComponent()->getArmorId();
-    unsigned i = 0;
-    for (i = 0; i < armorId.size(); ++i) {
-        const Armor* armor = ArmorTable::getSingleton()->get(armorId[i]);
-        char idx = ('a' + i);
-        str += idx;
-        str += " - " + armor->getName() + '\n';
-
-        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
-            char c = event.text.unicode;
-            if (c == idx) {
-                m_id = armorId[i];
-                m_equipped = true;
-                m_uiState = eUiState::Detailed;
-            }
-        }
-    }
-    txt.setString(str);
-    Game::getWindow().draw(txt);
-
-    sf::Text txt2;
-    txt2.setPosition(sf::Vector2f(windowSize.x / 2, 0));
-    txt2.setFont(Game::getDefaultFont());
-    txt2.setCharacterSize(cCharSize);
-
-    string weapontxt = "\nEquipped Weapons\n";
-    const Weapon* weapon = player->getCreatureComponent()->getPrimaryWeapon();
-    const char idx = ('a' + i);
-    weapontxt += idx;
-    weapontxt += " - " + weapon->getName();
-    txt2.setString(weapontxt);
-    Game::getWindow().draw(txt2);
-
-    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
-        char c = event.text.unicode;
-        switch (c) {
-        case '1':
-            m_uiState = eUiState::Backpack;
-            break;
-        case '2':
-            break;
         case '3':
-            m_uiState = eUiState::Wounds;
-            break;
-        case '4':
             m_uiState = eUiState::Profile;
             break;
-        }
-        if (c == idx) {
-            m_id = player->getCreatureComponent()->getPrimaryWeaponId();
-            m_uiState = eUiState::Detailed;
+        case '4':
+            m_uiState = eUiState::Paperdoll;
+            break;
         }
     }
 }
@@ -194,38 +137,47 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
 
     string str;
     const Item* item = ItemTable::getSingleton()->get(m_id);
-    str += "Selected Item (E to equip/use, W to equip in left hand, D to drop)\n\n";
+    str += "Selected Item (E to equip/use, W to equip in left hand, Q to add as quickdraw item, U "
+           "to unequip, D "
+           "to drop)\n\n";
     str += item->getName() + '\n';
     str += item->getDescription() + "\n\n";
     str += "Type: " + itemTypeToString(item->getItemType()) + '\n';
-
+    Player* playerComponent = static_cast<Player*>(player->getCreatureComponent());
+    bool equipped = playerComponent->getNumEquipped(m_id) > 0;
     if (item->getItemType() == eItemType::Armor) {
         const Armor* armor = static_cast<const Armor*>(item);
         str += "AV: " + to_string(armor->getAV()) + '\n';
         str += "AP: " + to_string(armor->getAP()) + '\n';
         str += "Covers :";
         for (auto i : armor->getCoverage()) {
-
             str += bodyPartToString(i) + ',';
         }
         str += '\n';
 
-        if (hasKeyEvents && event.type == sf::Event::TextEntered && event.text.unicode == 'e') {
-            if (m_equipped == false) {
-                if (player->getCreatureComponent()->canEquipArmor(m_id)) {
-                    player->getCreatureComponent()->equipArmor(m_id);
-                    player->removeItem(m_id);
-                    m_uiState = eUiState::Equipped;
-                    Log::push("You equip the " + item->getName());
-                } else {
-                    Log::push("You cannot equip this armor, there is another piece of armor that "
-                              "occupies the same spot");
+        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
+            switch (event.text.unicode) {
+            case 'e': {
+                if (equipped == false) {
+                    if (playerComponent->canEquipArmor(m_id)) {
+                        playerComponent->equipArmor(m_id);
+                        Log::push("You equip the " + item->getName());
+                    } else {
+                        Log::push(
+                            "You cannot equip this armor, there is another piece of armor that "
+                            "occupies the same spot");
+                    }
                 }
-            } else {
-                player->getCreatureComponent()->removeArmor(m_id);
-                player->addItem(m_id);
-                m_uiState = eUiState::Equipped;
-                Log::push("You unequip the " + item->getName());
+                break;
+            }
+            case 'u': {
+                if (equipped == true) {
+                    playerComponent->removeArmor(m_id);
+                    Log::push("You unequip the " + item->getName());
+                } else {
+                    Log::push("This armor is not equipped!");
+                }
+            } break;
             }
         }
     } else if (item->getItemType() == eItemType::Weapon) {
@@ -244,14 +196,47 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
             str += "]\n";
         }
 
-        // don't allow fists since they dont exist yet
-        if (hasKeyEvents && event.type == sf::Event::TextEntered && event.text.unicode == 'e') {
-            if (m_equipped == false) {
-                player->addItem(player->getCreatureComponent()->getPrimaryWeaponId());
-                player->getCreatureComponent()->setPrimaryWeapon(m_id);
-                player->removeItem(m_id);
-                m_uiState = eUiState::Equipped;
-                Log::push("You equip the " + item->getName());
+        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
+            switch (event.text.unicode) {
+                // allow dupes, but dont allow equipping of more weapons than actually exists
+                // which is the complicated part
+                // also don't allow quickdraw of certain weapons
+            case 'e': {
+                if (playerComponent->getNumEquipped(m_id) < player->getInventory().at(m_id)) {
+                    playerComponent->setPrimaryWeapon(m_id);
+                    Log::push("You equip the " + item->getName());
+                } else {
+                    Log::push("This weapon is already equipped!");
+                }
+            } break;
+            case 'q': {
+                if (playerComponent->getNumEquipped(m_id) < player->getInventory().at(m_id)) {
+                    if (weapon->getLength() > eLength::Long) {
+                        Log::push("This weapon is too long to fit on your belt");
+                    } else if (weapon->getType() == eWeaponTypes::Polearms) {
+                        Log::push("Polearms are too big to put on your belt");
+                    } else {
+                        playerComponent->addQuickdrawItem(m_id);
+                        Log::push("You attach the " + item->getName() + " to your belt");
+                    }
+                } else {
+                    Log::push("This weapon is already equipped!");
+                }
+            } break;
+            case 'u': {
+                if (equipped == true) {
+                    Log::push("You unequip the " + item->getName());
+                    if (playerComponent->getPrimaryWeaponId() == m_id) {
+                        playerComponent->removePrimaryWeapon();
+                    } else if (playerComponent->getSecondaryWeaponId() == m_id) {
+                        playerComponent->removeSecondaryWeapon();
+                    } else {
+                        playerComponent->removeQuickdrawItem(m_id);
+                    }
+                } else {
+                    Log::push("You cannot unequip a weapon you do not have equipped");
+                }
+            } break;
             }
         }
     } else if (item->getItemType() == eItemType::Food) {
@@ -289,7 +274,8 @@ void InventoryUI::doWounds(bool hasKeyEvents, sf::Event event, PlayerObject* pla
     sf::Text ap;
     ap.setCharacterSize(cCharSize);
     ap.setFont(Game::getDefaultFont());
-    string str = "Success rate: " + to_string(creature->getSuccessRate()) + "%" + '\n'
+    string str = "Inventory (1 - Backpack, 2 - Wounds, 3 - Profile, 4 - Armor Coverage):\n\n";
+    str += "Success rate: " + to_string(creature->getSuccessRate()) + "%" + '\n'
         + "Blood loss: " + to_string(creature->getBloodLoss()) + '\n';
 
     str += "Thirst: " + to_string(player->getThirst()) + '\n';
@@ -321,9 +307,9 @@ void InventoryUI::doWounds(bool hasKeyEvents, sf::Event event, PlayerObject* pla
             m_uiState = eUiState::Backpack;
             break;
         case '2':
-            m_uiState = eUiState::Equipped;
+            m_uiState = eUiState::Wounds;
             break;
-        case '4':
+        case '3':
             m_uiState = eUiState::Profile;
             break;
         }
@@ -346,7 +332,7 @@ void InventoryUI::doProfile(bool hasKeyEvents, sf::Event event, PlayerObject* pl
     stats.setCharacterSize(cCharSize);
     stats.setFont(Game::getDefaultFont());
 
-    string statStr = "Inventory (1 - Backpack, 2 - Equipment, 3 - Wounds, 4 - Profile):\n\n";
+    string statStr = "Inventory (1 - Backpack, 2 - Wounds, 3 - Profile, 4 - Armor Coverage):\n\n";
     statStr += "Primary Attributes\nStrength: " + to_string(creature->getStrength()) + '\n'
         + "Agility: " + to_string(creature->getAgility()) + '\n'
         + "Intuition: " + to_string(creature->getIntuition()) + '\n'
@@ -373,10 +359,49 @@ void InventoryUI::doProfile(bool hasKeyEvents, sf::Event event, PlayerObject* pl
             m_uiState = eUiState::Backpack;
             break;
         case '2':
-            m_uiState = eUiState::Equipped;
+            m_uiState = eUiState::Wounds;
             break;
         case '3':
+            m_uiState = eUiState::Profile;
+            break;
+        case '4':
+            m_uiState = eUiState::Paperdoll;
+            break;
+        }
+    }
+}
+
+void InventoryUI::doPaperdoll(bool hasKeyEvents, sf::Event event, PlayerObject* player)
+{
+    auto windowSize = Game::getWindow().getSize();
+    sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize * cDisplayLines));
+    bkg.setFillColor(sf::Color(12, 12, 23));
+    bkg.setOutlineThickness(1);
+    bkg.setOutlineColor(sf::Color(22, 22, 33));
+    Game::getWindow().draw(bkg);
+
+    std::string str = "Inventory (1 - Backpack, 2 - Wounds, 3 - Profile, 4 - Armor Coverage):\n\n";
+    str += UiCommon::drawPaperdoll(player->getCreatureComponent());
+    sf::Text txt;
+    txt.setFont(Game::getDefaultFont());
+    txt.setCharacterSize(cCharSize);
+    txt.setString(str);
+
+    Game::getWindow().draw(txt);
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
+        char c = event.text.unicode;
+        switch (c) {
+        case '1':
+            m_uiState = eUiState::Backpack;
+            break;
+        case '2':
             m_uiState = eUiState::Wounds;
+            break;
+        case '3':
+            m_uiState = eUiState::Profile;
+            break;
+        case '4':
+            m_uiState = eUiState::Paperdoll;
             break;
         }
     }

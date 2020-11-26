@@ -44,6 +44,7 @@ bool PlayerObject::runCombat(float tick)
     if (isInCombat() == true && m_manager->isParent() == false) {
         return true;
     }
+    // m_creature->clearCreatureManuevers();
     bool ret = m_manager->run(tick);
     if (ret == false) {
         setOutofCombat();

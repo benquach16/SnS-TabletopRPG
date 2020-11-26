@@ -61,6 +61,11 @@ const Weapon* Creature::getSecondaryWeapon() const
     return WeaponTable::getSingleton()->get(m_secondaryWeaponId);
 }
 
+const Weapon* Creature::getNaturalWeapon() const
+{
+    return WeaponTable::getSingleton()->get(m_naturalWeaponId);
+}
+
 eLength Creature::getCurrentReach() const
 {
     const Weapon* weapon = getPrimaryWeapon();
@@ -71,6 +76,50 @@ eLength Creature::getCurrentReach() const
     }
     reach = max(0, reach);
     return static_cast<eLength>(reach);
+}
+
+void Creature::removeQuickdrawItem(int id)
+{
+    for (unsigned i = 0; i < m_quickDrawItems.size(); ++i) {
+        if (m_quickDrawItems[i] == id) {
+            m_quickDrawItems.erase(m_quickDrawItems.begin() + i);
+            return;
+        }
+    }
+}
+
+bool Creature::findInQuickdraw(int id)
+{
+    for (unsigned i = 0; i < m_quickDrawItems.size(); ++i) {
+        if (m_quickDrawItems[i] == id) {
+            return true;
+        }
+    }
+    return false;
+}
+
+int Creature::getNumEquipped(int id)
+{
+    int count = 0;
+    if (m_primaryWeaponId == id) {
+        count++;
+    }
+    if (m_secondaryWeaponId == id) {
+        count++;
+    }
+
+    for (auto i : m_quickDrawItems) {
+        if (i == id) {
+            count++;
+        }
+    }
+
+    for (auto i : m_armor) {
+        if (i == id) {
+            count++;
+        }
+    }
+    return count;
 }
 
 eLength Creature::getSecondaryWeaponReach() const

@@ -137,11 +137,14 @@ void CreateCharUI::doDescription(bool hasKeyEvents, sf::Event event, PlayerObjec
     text.setString(str);
     if (hasKeyEvents && sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) == true) {
         player->getCreatureComponent()->setPrimaryWeapon(m_loadouts[m_loadoutIdx].weapon);
+        player->addItem(m_loadouts[m_loadoutIdx].weapon);
         for (auto i : m_loadouts[m_loadoutIdx].armor) {
             player->getCreatureComponent()->equipArmor(i);
+            player->addItem(i);
         }
         for (auto i : m_loadouts[m_loadoutIdx].quickdraw) {
             player->getCreatureComponent()->addQuickdrawItem(i);
+            player->addItem(i);
         }
         m_currentState = eUiState::Attributes;
     }
