@@ -192,6 +192,7 @@ public:
     void setStand() { m_currentStance = eCreatureStance::Standing; }
     void disableWeapon();
     void dropWeapon();
+    void dropSecondaryWeapon();
     void enableWeapon();
     void pickupWeapon();
 

@@ -34,6 +34,7 @@ Creature::Creature(int naturalWeaponId)
     , m_hasOffense(false)
     , m_hasDefense(false)
     , m_hasPosition(false)
+    , m_hasPreResolution(false)
     , m_flagInitiative(false)
     , m_bleeding(false)
     , m_hasPrecombat(false)
@@ -150,11 +151,9 @@ std::vector<const Armor*> Creature::getArmor() const
     return ret;
 }
 
-void Creature::setPrimaryWeapon(int idx)
-{
-    const Weapon* weapon = WeaponTable::getSingleton()->get(idx);
-    m_primaryWeaponId = idx;
-}
+void Creature::setPrimaryWeapon(int idx) { m_primaryWeaponId = idx; }
+
+void Creature::setSecondaryWeapon(int idx) { m_secondaryWeaponId = idx; }
 
 void Creature::inflictImpact(int impact)
 {
@@ -447,8 +446,18 @@ void Creature::dropWeapon()
     if (getPrimaryWeaponId() != m_naturalWeaponId) {
         // make sure secondary weapons go away
         setGrip(eGrips::Standard);
-        m_droppedWeapons.push_back(m_primaryWeaponId);
+        m_droppedWeapons.push_back(getPrimaryWeaponId());
         setPrimaryWeapon(m_naturalWeaponId);
+    }
+}
+
+void Creature::dropSecondaryWeapon()
+{
+    if (getSecondaryWeaponId() != m_naturalWeaponId) {
+        // make sure secondary weapons go away
+        setGrip(eGrips::Standard);
+        m_droppedWeapons.push_back(getSecondaryWeaponId());
+        setSecondaryWeapon(m_naturalWeaponId);
     }
 }
 

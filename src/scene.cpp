@@ -115,6 +115,9 @@ void Scene::run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
     case eSceneState::InCombat:
         combat(hasKeyEvents, event, playerObject);
         break;
+    case eSceneState::Waiting:
+        wait(hasKeyEvents, event, playerObject);
+        break;
     default:
         break;
     }

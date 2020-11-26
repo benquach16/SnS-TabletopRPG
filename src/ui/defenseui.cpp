@@ -6,14 +6,14 @@
 
 using namespace std;
 
-void DefenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, bool lastTempo)
+void DefenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, CombatInstance* instance)
 {
     switch (m_currentState) {
     case eUiState::ChooseWeapon:
         doChooseWeapon(hasKeyEvents, event, player);
         break;
     case eUiState::ChooseManuever:
-        doManuever(hasKeyEvents, event, player, lastTempo);
+        doManuever(hasKeyEvents, event, player, instance);
         break;
     case eUiState::ChooseDice:
         doChooseDice(hasKeyEvents, event, player);
@@ -78,7 +78,8 @@ void DefenseUI::doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* playe
     }
 }
 
-void DefenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, bool lastTempo)
+void DefenseUI::doManuever(
+    bool hasKeyEvents, sf::Event event, Player* player, CombatInstance* instance)
 {
     UiCommon::drawTopPanel();
 
@@ -88,8 +89,8 @@ void DefenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player, b
 
     string str = "Choose defense:\n";
 
-    map<eDefensiveManuevers, int> manuevers
-        = getAvailableDefManuevers(player->getPrimaryWeapon(), player->getGrip(), lastTempo);
+    map<eDefensiveManuevers, int> manuevers = getAvailableDefManuevers(player->getPrimaryWeapon(),
+        player->getGrip(), instance->getLastTempo(), instance->getInGrapple());
     map<char, std::pair<eDefensiveManuevers, int>> indices;
     char idx = 'a';
     for (auto manuever : manuevers) {

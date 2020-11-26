@@ -184,7 +184,7 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
         const Weapon* weapon = static_cast<const Weapon*>(item);
         str += "Length: " + lengthToString(weapon->getLength()) + '\n';
         str += "Proficiency: " + weaponTypeToString(weapon->getType()) + '\n';
-        str += "Weapon Parts: \n";
+        str += "\nWeapon Parts: \n";
         std::vector<Component*> components = weapon->getComponents();
         for (unsigned i = 0; i < components.size(); ++i) {
             str += components[i]->getName() + " - ";
@@ -194,6 +194,23 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
                 str += weaponPropToString(it) + ' ';
             }
             str += "]\n";
+        }
+
+        const Weapon* secondary = weapon->getSecondaryWeapon();
+        if (secondary != nullptr) {
+            str += "\n\nSecondary Weapon Part for Alternate Grip: ";
+            str += secondary->getName();
+            str += "\n";
+            std::vector<Component*> components = secondary->getComponents();
+            for (unsigned i = 0; i < components.size(); ++i) {
+                str += components[i]->getName() + " - ";
+                str += "Damage: " + to_string(components[i]->getDamage()) + ' '
+                    + damageTypeToString(components[i]->getType()) + " [ ";
+                for (auto it : components[i]->getProperties()) {
+                    str += weaponPropToString(it) + ' ';
+                }
+                str += "]\n";
+            }
         }
 
         if (hasKeyEvents && event.type == sf::Event::TextEntered) {

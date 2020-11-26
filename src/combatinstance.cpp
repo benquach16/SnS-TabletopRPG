@@ -853,6 +853,12 @@ void CombatInstance::startGrapple(Creature* attacker, Creature* defender)
         Log::eMessageTypes::Announcement);
     m_inGrapple = true;
     m_currentReach = eLength::Hand;
+    if (attacker->getPrimaryWeapon()->getLength() > eLength::Hand) {
+        attacker->dropWeapon();
+    }
+    if (defender->getPrimaryWeapon()->getLength() > eLength::Hand) {
+        defender->dropWeapon();
+    }
 }
 
 bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, Creature* target)

@@ -43,8 +43,8 @@ int getDefensiveManueverCost(eDefensiveManuevers manuever, eGrips grip);
 
 //<maneuver, cost>
 std::map<eOffensiveManuevers, int> getAvailableOffManuevers(
-    const Weapon* weapon, eGrips grip, eLength currentReach);
+    const Weapon* weapon, eGrips grip, eLength currentReach, bool inGrapple);
 
 //<maneuver, cost>
 std::map<eDefensiveManuevers, int> getAvailableDefManuevers(
-    const Weapon* weapon, eGrips grip, bool isLastTempo);
+    const Weapon* weapon, eGrips grip, bool isLastTempo, bool inGrapple);

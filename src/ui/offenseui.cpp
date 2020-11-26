@@ -103,8 +103,8 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player,
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
 
-    map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(
-        player->getPrimaryWeapon(), player->getGrip(), instance->getCurrentReach());
+    map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(player->getPrimaryWeapon(),
+        player->getGrip(), instance->getCurrentReach(), instance->getInGrapple());
 
     string str = "Choose attack:\n";
     map<char, std::pair<eOffensiveManuevers, int>> indices;
