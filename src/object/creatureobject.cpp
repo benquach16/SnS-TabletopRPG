@@ -10,6 +10,7 @@ static CreatureObject::CreatureObjectId ids = static_cast<CreatureObject::Creatu
 CreatureObject::CreatureObject(Creature* creature)
     : m_creature(creature)
     , m_creatureFaction(eCreatureFaction::None)
+    , m_experience(0)
     , m_thirst(0)
     , m_hunger(0)
     , m_exhaustion(0)

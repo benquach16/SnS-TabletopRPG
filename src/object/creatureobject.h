@@ -71,6 +71,8 @@ protected:
     AICombatController m_combatController;
     AIController m_controller;
 
+    int m_experience;
+
     int m_money;
 
     int m_thirst;

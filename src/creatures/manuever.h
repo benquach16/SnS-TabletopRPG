@@ -30,11 +30,11 @@ struct Offense : public Manuever {
     {
         Manuever::reset();
         manuever = eOffensiveManuevers::Invalid;
-        bool linked = false;
-        bool feint = false;
-        bool pinpoint = false;
-        bool stomp = false;
-        int heavyblow = 0;
+        linked = false;
+        feint = false;
+        pinpoint = false;
+        stomp = false;
+        heavyblow = 0;
         // weapon = nullptr;
         withPrimaryWeapon = true;
         component = nullptr;

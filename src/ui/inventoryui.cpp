@@ -423,3 +423,39 @@ void InventoryUI::doPaperdoll(bool hasKeyEvents, sf::Event event, PlayerObject* 
         }
     }
 }
+
+void InventoryUI::doLevelup(bool hasKeyEvents, sf::Event event, PlayerObject* player)
+{
+    auto windowSize = Game::getWindow().getSize();
+    sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize * cDisplayLines));
+    bkg.setFillColor(sf::Color(12, 12, 23));
+    bkg.setOutlineThickness(1);
+    bkg.setOutlineColor(sf::Color(22, 22, 33));
+    Game::getWindow().draw(bkg);
+
+    std::string str = "Inventory (1 - Backpack, 2 - Wounds, 3 - Profile, 4 - Armor Coverage, 5 - Allocate Experience):\n\n";
+    str += "";
+    sf::Text txt;
+    txt.setFont(Game::getDefaultFont());
+    txt.setCharacterSize(cCharSize);
+    txt.setString(str);
+
+    Game::getWindow().draw(txt);
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
+        char c = event.text.unicode;
+        switch (c) {
+        case '1':
+            m_uiState = eUiState::Backpack;
+            break;
+        case '2':
+            m_uiState = eUiState::Wounds;
+            break;
+        case '3':
+            m_uiState = eUiState::Profile;
+            break;
+        case '4':
+            m_uiState = eUiState::Paperdoll;
+            break;
+        }
+    }
+}
