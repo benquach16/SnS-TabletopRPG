@@ -16,6 +16,8 @@ public:
 
 private:
     sf::Texture m_texture;
+    sf::Texture m_grass;
+    sf::Texture m_stone;
     std::queue<sf::Text> m_texts;
     std::queue<sf::RectangleShape> m_ground;
     std::queue<sf::RectangleShape> m_top;

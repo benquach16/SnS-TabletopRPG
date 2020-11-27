@@ -18,10 +18,10 @@ Human::Human()
 
 void Human::randomizeStats()
 {
-    m_proficiencies[eWeaponTypes::Polearms] = effolkronium::random_static::get(8, 14);
-    m_proficiencies[eWeaponTypes::Swords] = effolkronium::random_static::get(8, 14);
-    m_proficiencies[eWeaponTypes::Longswords] = effolkronium::random_static::get(8, 14);
-    m_proficiencies[eWeaponTypes::Brawling] = effolkronium::random_static::get(8, 14);
+    m_proficiencies[eWeaponTypes::Polearms] = effolkronium::random_static::get(5, 12);
+    m_proficiencies[eWeaponTypes::Swords] = effolkronium::random_static::get(5, 12);
+    m_proficiencies[eWeaponTypes::Longswords] = effolkronium::random_static::get(5, 12);
+    m_proficiencies[eWeaponTypes::Brawling] = effolkronium::random_static::get(5, 12);
 
     m_strength = effolkronium::random_static::get(2, 9);
     m_agility = effolkronium::random_static::get(2, 9);

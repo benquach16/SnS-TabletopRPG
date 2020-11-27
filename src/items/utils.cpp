@@ -274,7 +274,13 @@ int getOffensiveManueverCost(
         return 1;
     case eOffensiveManuevers::PinpointThrust: {
         int cost = 2;
-        if (weapon->getLength() > eLength::Medium) {
+        if (weapon->getLength() > eLength::Medium && grip == eGrips::Standard) {
+            cost++;
+        }
+        if (weapon->getLength() > eLength::VeryLong && grip == eGrips::Staff) {
+            cost++;
+        }
+        if (weapon->getLength() > eLength::Long && grip == eGrips::HalfSword) {
             cost++;
         }
         if (currentReach == eLength::Hand) {

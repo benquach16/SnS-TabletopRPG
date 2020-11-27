@@ -201,7 +201,11 @@ bool CombatInstance::doOffense()
     Creature* defender = nullptr;
     setSides(attacker, defender);
 
+    int reachCost = calculateReachCost(m_currentReach, attacker->getCurrentReach());
+
     if (attacker->getHasOffense() == false) {
+        // bug - this condition will not get hit since the ai might update faster than this function
+        // gets called
         if (attacker->getCombatPool() <= 0 && defender->getCombatPool() > 0) {
             writeMessage(
                 attacker->getName() + " has no more action points! Initiative swaps to defender");
@@ -217,11 +221,6 @@ bool CombatInstance::doOffense()
             attacker->clearCreatureManuevers(true);
             defender->clearCreatureManuevers(true);
         }
-    }
-
-    int reachCost = calculateReachCost(m_currentReach, attacker->getCurrentReach());
-
-    if (attacker->getHasOffense() == false) {
         m_currentState = eCombatState::Offense;
         return false;
     }
@@ -565,6 +564,7 @@ void CombatInstance::doResolution()
             } else {
                 // special grab
                 startGrapple(attacker, defender);
+                attacker->setBonusDice(attackerSuccesses + 2);
                 wasGrappled = true;
             }
         } else {
@@ -608,6 +608,7 @@ void CombatInstance::doResolution()
                     }
                 } else {
                     startGrapple(attacker, defender);
+                    defender->setBonusDice(defendSuccesses + 2);
                 }
             } else {
                 writeMessage(defender->getName() + " had no successes");
@@ -658,6 +659,7 @@ void CombatInstance::doResolution()
                 m_currentReach = attacker->getCurrentReach();
             } else {
                 startGrapple(attacker, defender);
+                attacker->setBonusDice(MoS + 2);
             }
         } else if (MoS == 0) {
             writeMessage("no net successes, " + attacker->getName() + " retains initiative");
@@ -922,8 +924,10 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
         bodyPart = WoundTable::getSingleton()->getThrust(attack.target);
     } else if (attack.manuever == eOffensiveManuevers::PinpointThrust) {
         bodyPart = attack.pinpointTarget;
-    } else if (attack.manuever == eOffensiveManuevers::PinpointThrust) {
+    } else if (attack.manuever == eOffensiveManuevers::VisorThrust) {
         bodyPart = eBodyParts::Face;
+    } else if (attack.manuever == eOffensiveManuevers::Snap) {
+        bodyPart = eBodyParts::Elbow;
     } else if (attack.manuever == eOffensiveManuevers::Swing) {
         // swings in these grips do less damage, unless its a linked component
         eGrips grip = attacker->getGrip();
@@ -949,7 +953,8 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
     const ArmorSegment armorAtLocation = target->getArmorAtPart(bodyPart);
     // if visor thrust calc here, before armor reduction but after damage
     bool ignoreArmor = false;
-    if (attack.manuever == eOffensiveManuevers::VisorThrust) {
+    if (attack.manuever == eOffensiveManuevers::VisorThrust
+        || attack.manuever == eOffensiveManuevers::Snap) {
         ignoreArmor = true;
     }
     if (armorAtLocation.AV > 0) {

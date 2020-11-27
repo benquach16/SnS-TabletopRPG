@@ -3,6 +3,7 @@
 #include "../object/corpseobject.h"
 #include "../object/creatureobject.h"
 #include "../object/humanobject.h"
+#include "../scene.h"
 
 using namespace effolkronium;
 using namespace std;
@@ -22,7 +23,7 @@ Level::~Level()
 
 void Level::load() {}
 
-void Level::run()
+void Level::run(Scene* scene)
 {
     for (unsigned i = 0; i < m_objects.size(); ++i) {
         if (m_objects[i]->deleteMe() == true) {
@@ -35,10 +36,18 @@ void Level::run()
                 corpse->setInventory(creatureObject->getInventory());
                 m_objects.push_back(corpse);
             }
-            m_toDelete.push_back(m_objects[i]);
+            m_toDelete.push_back(object);
             m_objects.erase(m_objects.begin() + i);
         }
         m_objects[i]->run(this);
+        vector2d pos = m_objects[i]->getPosition();
+        Tile tile = (*this)(pos.x, pos.y);
+        if (tile.m_levelChangeIdx != -1) {
+            // change level
+            // idx is coupled to scene, as scene manages all levels
+            // so this is unavoidable
+            scene->changeToLevel(tile.m_levelChangeIdx, m_objects[i], 1, 1);
+        }
     }
 }
 
@@ -328,6 +337,17 @@ const Object* Level::getObject(vector2d position)
     for (unsigned i = 0; i < m_objects.size(); ++i) {
         vector2d objectPosition = m_objects[i]->getPosition();
         if (position.x == objectPosition.x && position.y == objectPosition.y) {
+            return m_objects[i];
+        }
+    }
+    return nullptr;
+}
+
+Object* Level::removeObject(Object::ObjectId id)
+{
+    for (unsigned i = 0; i < m_objects.size(); ++i) {
+        if (m_objects[i]->getId() == id) {
+            m_objects.erase(m_objects.begin() + i);
             return m_objects[i];
         }
     }

@@ -20,30 +20,33 @@ Scene::Scene()
     : m_currentState(eSceneState::Uninitialized)
     , m_pickup(nullptr)
     , m_talking(nullptr)
-    , m_currentLevel(nullptr)
+    , m_currentIdx(-1)
 {
 }
 
 Scene::~Scene()
 {
-    if (m_currentLevel != nullptr) {
-        delete m_currentLevel;
-        m_currentLevel = nullptr;
+    for (auto i : m_levels) {
+        delete i;
     }
+    m_levels.clear();
 }
 
 void Scene::setupLevel(PlayerObject* playerObject)
 {
-    m_currentLevel = new Level(60, 60);
-    m_currentLevel->generate();
+    m_currentIdx = 0;
+    Level* level = new Level(60, 60);
+    Level* level2 = new Level(30, 30);
+
+    level->generate();
     for (unsigned i = 0; i < 60; i++) {
-        (*m_currentLevel)(i, 0).m_type = eTileType::Wall;
+        (*level)(i, 0).m_type = eTileType::Wall;
     }
 
     for (unsigned i = 2; i < 60; i++) {
-        (*m_currentLevel)(0, i).m_type = eTileType::Wall;
+        (*level)(0, i).m_type = eTileType::Wall;
     }
-
+    (*level)(0, 1).m_levelChangeIdx = 1;
     HumanObject* human1 = new HumanObject;
     human1->setFaction(eCreatureFaction::Confederacy);
     human1->setLoadout(eCreatureFaction::Confederacy, eRank::Soldier);
@@ -57,12 +60,28 @@ void Scene::setupLevel(PlayerObject* playerObject)
     m_talking = human1;
     m_ui.initDialog(human1);
     m_currentState = eSceneState::DialogueMode;
-    m_currentLevel->addObject(human1);
+    level->addObject(human1);
 
     playerObject->setPosition(1, 1);
     // has some management of player here but cannot delete
     // violates RAII
-    m_currentLevel->addObject(playerObject);
+    level->addObject(playerObject);
+
+    m_levels.push_back(level);
+    m_levels.push_back(level2);
+}
+
+void Scene::changeToLevel(int idx, Object* object, int x, int y)
+{
+    m_levels[m_currentIdx]->removeObject(object->getId());
+    object->setPosition(x, y);
+    m_levels[idx]->addObject(object);
+    if (object->getObjectType() == eObjectTypes::Creature) {
+        CreatureObject* creature = static_cast<CreatureObject*>(object);
+        if (creature->isPlayer()) {
+            m_currentIdx = idx;
+        }
+    }
 }
 
 void Scene::run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
@@ -75,7 +94,7 @@ void Scene::run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
     v.setCenter(center.x, center.y + 200);
     v.zoom(zoom);
     Game::getWindow().setView(v);
-    m_gfxlevel.run(m_currentLevel, playerObject->getPosition());
+    m_gfxlevel.run(m_levels[m_currentIdx], playerObject->getPosition());
     // temporary until we get graphics queue up and running
     if (m_currentState == eSceneState::AttackMode || m_currentState == eSceneState::SelectionMode
         || m_currentState == eSceneState::DialogueSelect) {
@@ -92,7 +111,6 @@ void Scene::run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Hyphen) {
         zoom = min(cMinZoom, zoom + 0.1f);
     }
-
     switch (m_currentState) {
     case eSceneState::Playing:
         playing(hasKeyEvents, event, playerObject);
@@ -137,7 +155,7 @@ void Scene::selection(bool hasKeyEvents, sf::Event event, PlayerObject* playerOb
     if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
         doMoveSelector(event, playerObject, false);
         if (event.key.code == sf::Keyboard::Enter) {
-            const Object* object = m_currentLevel->getObject(m_selector.getPosition());
+            const Object* object = m_levels[m_currentIdx]->getObject(m_selector.getPosition());
             if (object != nullptr) {
                 Log::push("You see " + object->getDescription());
                 if (object->getObjectType() == eObjectTypes::Creature) {
@@ -170,22 +188,22 @@ void Scene::playing(bool hasKeyEvents, sf::Event event, PlayerObject* playerObje
     vector2d pos = playerObject->getPosition();
     if (hasKeyEvents && event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Down) {
-            if (m_currentLevel->isFreeSpace(pos.x, pos.y + 1) == true) {
+            if (m_levels[m_currentIdx]->isFreeSpace(pos.x, pos.y + 1) == true) {
                 playerObject->moveDown();
             }
         }
         if (event.key.code == sf::Keyboard::Up) {
-            if (m_currentLevel->isFreeSpace(pos.x, pos.y - 1) == true) {
+            if (m_levels[m_currentIdx]->isFreeSpace(pos.x, pos.y - 1) == true) {
                 playerObject->moveUp();
             }
         }
         if (event.key.code == sf::Keyboard::Left) {
-            if (m_currentLevel->isFreeSpace(pos.x - 1, pos.y) == true) {
+            if (m_levels[m_currentIdx]->isFreeSpace(pos.x - 1, pos.y) == true) {
                 playerObject->moveLeft();
             }
         }
         if (event.key.code == sf::Keyboard::Right) {
-            if (m_currentLevel->isFreeSpace(pos.x + 1, pos.y) == true) {
+            if (m_levels[m_currentIdx]->isFreeSpace(pos.x + 1, pos.y) == true) {
                 playerObject->moveRight();
             }
         }
@@ -202,8 +220,8 @@ void Scene::playing(bool hasKeyEvents, sf::Event event, PlayerObject* playerObje
             m_currentState = eSceneState::SelectionMode;
         }
         if (event.key.code == sf::Keyboard::P) {
-            Object* object
-                = m_currentLevel->getObjectMutable(playerObject->getPosition(), playerObject);
+            Object* object = m_levels[m_currentIdx]->getObjectMutable(
+                playerObject->getPosition(), playerObject);
             if (object != nullptr) {
                 switch (object->getObjectType()) {
                 case eObjectTypes::Corpse:
@@ -244,9 +262,9 @@ void Scene::playing(bool hasKeyEvents, sf::Event event, PlayerObject* playerObje
     }
 
     if (aiTick > cPlayingTick) {
-        m_currentLevel->run();
+        m_levels[m_currentIdx]->run(this);
         aiTick = 0;
-        m_currentLevel->cleanup();
+        m_levels[m_currentIdx]->cleanup();
     }
 }
 
@@ -256,7 +274,7 @@ void Scene::dialogSelect(bool hasKeyEvents, sf::Event event, PlayerObject* playe
         doMoveSelector(event, playerObject, true);
         if (event.key.code == sf::Keyboard::Enter) {
             Object* object
-                = m_currentLevel->getObjectMutable(m_selector.getPosition(), playerObject);
+                = m_levels[m_currentIdx]->getObjectMutable(m_selector.getPosition(), playerObject);
             if (object != nullptr) {
                 if (object->getObjectType() == eObjectTypes::Creature) {
                     CreatureObject* creatureObject = static_cast<CreatureObject*>(object);
@@ -300,7 +318,7 @@ void Scene::combat(bool hasKeyEvents, sf::Event event, PlayerObject* playerObjec
     if (tick > CombatManager::cTick) {
         // issue here is if player is engaged and is not the parent. the ai updates so
         // slowly that its hard for the player to understand whats going on
-        m_currentLevel->run();
+        m_levels[m_currentIdx]->run(this);
         tick = 0;
     }
 }
@@ -329,10 +347,10 @@ void Scene::wait(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
     if (sleepTick < cRestTicks) {
         // cout << aiTick << endl;
         if (aiTick > 0.2) {
-            m_currentLevel->run();
+            m_levels[m_currentIdx]->run(this);
             aiTick = 0;
             sleepTick++;
-            m_currentLevel->cleanup();
+            m_levels[m_currentIdx]->cleanup();
             cout << "sleeping" << endl;
         }
     } else {
@@ -348,7 +366,7 @@ void Scene::attack(bool hasKeyEvents, sf::Event event, PlayerObject* playerObjec
     if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
         doMoveSelector(event, playerObject, true);
         if (event.key.code == sf::Keyboard::Enter) {
-            const Object* object = m_currentLevel->getObject(m_selector.getPosition());
+            const Object* object = m_levels[m_currentIdx]->getObject(m_selector.getPosition());
             if (object != nullptr) {
                 if (object->getObjectType() == eObjectTypes::Creature) {
                     const CreatureObject* creatureObject

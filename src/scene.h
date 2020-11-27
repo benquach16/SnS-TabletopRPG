@@ -18,10 +18,10 @@ public:
     ~Scene();
     void setupLevel(PlayerObject* playerObject);
     void run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
+    void changeToLevel(int idx, Object* object, int x, int y);
 
 private:
     static constexpr float cPlayingTick = 0.4;
-
     void playing(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
     void selection(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
     void dialogSelect(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
@@ -53,7 +53,7 @@ private:
     Object* m_pickup;
 
     std::vector<Level*> m_levels;
-    Level* m_currentLevel;
+    int m_currentIdx;
     // who i am talking to
     CreatureObject* m_talking;
     GameUI m_ui;

@@ -12,6 +12,7 @@ enum eTileType { Ground, Wall };
 struct Tile {
     eTileType m_type = eTileType::Ground;
     eTileMaterial m_material = eTileMaterial::Stone;
+    int m_levelChangeIdx = -1;
 };
 
 enum eLighting { Sunny, Dark, Cave };
@@ -21,12 +22,13 @@ struct Room {
     int y;
 };
 
+class Scene;
 class Level {
 public:
     Level(int width, int height);
     ~Level();
     void load();
-    void run();
+    void run(Scene* scene);
     void generate();
     void makeRoom();
     void cleanup();
@@ -57,6 +59,8 @@ public:
     int getHeight() const { return m_height; }
     bool isFreeSpace(int x, int y) const;
     void addObject(Object* object) { m_objects.push_back(object); }
+    // does not clear object - whoever is calling this responsible for ensuring it gets deleted
+    Object* removeObject(Object::ObjectId id);
     const std::vector<Object*>& getObjects() const { return m_objects; }
     std::vector<Object*> getObjectsAtLocation(vector2d position);
 

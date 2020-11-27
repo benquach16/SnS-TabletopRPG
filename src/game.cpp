@@ -88,11 +88,11 @@ void Game::run()
             break;
         }
         m_window.display();
+        float currentTime = clock.restart().asSeconds();
+        float fps = 1.f / currentTime;
+        // cout << "FPS"  << fps << endl;
+        m_window.setTitle(std::to_string(fps));
     }
-    float currentTime = clock.restart().asSeconds();
-    float fps = 1.f / currentTime;
-    // cout << "FPS"  << fps << endl;
-    m_window.setTitle(std::to_string(fps));
 }
 
 void Game::charCreation(bool hasKeyEvents, sf::Event event)
