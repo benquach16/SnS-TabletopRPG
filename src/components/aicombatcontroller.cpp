@@ -113,7 +113,7 @@ bool AICombatController::setCreatureDefenseManuever(
     Creature* controlledCreature, eDefensiveManuevers manuever)
 {
     int cost = getDefensiveManueverCost(manuever, controlledCreature->getGrip());
-    bool canUse = (cost <= controlledCreature->getCombatPool());
+    bool canUse = (cost <= controlledCreature->getCombatPool() || cost == 0);
     if (canUse) {
         controlledCreature->setDefenseManuever(manuever);
         controlledCreature->reduceCombatPool(cost);
@@ -135,6 +135,14 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
         = getAvailableOffManuevers(controlledCreature->getPrimaryWeapon(),
             controlledCreature->getGrip(), instance->getCurrentReach(), instance->getInGrapple());
 
+    for (auto it : manuevers) {
+        switch (it.first) {
+        case eOffensiveManuevers::Swing:
+            break;
+        case eOffensiveManuevers::Thrust:
+            break;
+        }
+    }
     controlledCreature->setCreatureOffenseManuever(
         eOffensiveManuevers::Thrust, instance->getCurrentReach());
     if (controlledCreature->primaryWeaponDisabled() == false) {
@@ -307,6 +315,17 @@ void AICombatController::doDefense(
         // parry or dodge
         setCreatureDefenseManuever(controlledCreature, eDefensiveManuevers::Parry);
     }
+
+    int stealDie = 0;
+
+    if (isLastTempo == false && stealInitiative(controlledCreature, attacker, stealDie) == true) {
+        controlledCreature->setDefenseManuever(eDefensiveManuevers::StealInitiative);
+        controlledCreature->setDefenseDice(stealDie);
+        assert(stealDie <= controlledCreature->getCombatPool() || stealDie == 0);
+        controlledCreature->reduceCombatPool(stealDie);
+        controlledCreature->setDefenseReady();
+        return;
+    }
     if (isLastTempo == true) {
         // use all dice because we're going to refresh anyway
         int defDie = max(controlledCreature->getCombatPool(), 0);
@@ -315,16 +334,6 @@ void AICombatController::doDefense(
         controlledCreature->setDefenseReady();
         return;
     }
-    int stealDie = 0;
-    if (stealInitiative(controlledCreature, attacker, stealDie) == true) {
-        controlledCreature->setDefenseManuever(eDefensiveManuevers::StealInitiative);
-        controlledCreature->setDefenseDice(stealDie);
-        assert(stealDie <= controlledCreature->getCombatPool() || stealDie == 0);
-        controlledCreature->reduceCombatPool(stealDie);
-        controlledCreature->setDefenseReady();
-        return;
-    }
-
     int dice = std::min(diceAllocated + random_static::get(0, diceAllocated / 3)
             - random_static::get(0, diceAllocated / 4),
         controlledCreature->getCombatPool());

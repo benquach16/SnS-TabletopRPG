@@ -174,6 +174,7 @@ void PrecombatUI::doQuickdraw(bool hasKeyEvents, sf::Event event, Player* player
                         player->reduceCombatPool(cost);
                         player->dropWeapon();
                         player->setPrimaryWeapon(quickDrawIds[i]);
+                        player->removeQuickdrawItem(quickDrawIds[i]);
                         m_currentState = eUiState::ChooseFavoring;
                     }
                 } else {
