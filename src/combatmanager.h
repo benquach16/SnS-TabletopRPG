@@ -74,6 +74,7 @@ public:
     void peel();
     unsigned getEngagementCount() const { return m_edges.size(); }
     bool isInDuel() const;
+    bool isInGrapple() const;
     bool hasPosition(Creature* creature, Creature* target);
 
     // This exists seperately from the state because

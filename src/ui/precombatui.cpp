@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void PrecombatUI::run(bool hasKeyEvents, sf::Event event, Player* player)
+void PrecombatUI::run(bool hasKeyEvents, sf::Event event, Player* player, bool inGrapple)
 {
     switch (m_currentState) {
     case eUiState::ChooseFavoring:
@@ -17,7 +17,7 @@ void PrecombatUI::run(bool hasKeyEvents, sf::Event event, Player* player)
         doFavorLocation(hasKeyEvents, event, player);
         break;
     case eUiState::ChooseQuickdraw:
-        doQuickdraw(hasKeyEvents, event, player);
+        doQuickdraw(hasKeyEvents, event, player, inGrapple);
         break;
     case eUiState::Finished:
         break;
@@ -142,7 +142,7 @@ void PrecombatUI::doFavorLocation(bool hasKeyEvents, sf::Event event, Player* pl
     Game::getWindow().draw(text);
 }
 
-void PrecombatUI::doQuickdraw(bool hasKeyEvents, sf::Event event, Player* player)
+void PrecombatUI::doQuickdraw(bool hasKeyEvents, sf::Event event, Player* player, bool inGrapple)
 {
     UiCommon::drawTopPanel();
 
@@ -167,10 +167,15 @@ void PrecombatUI::doQuickdraw(bool hasKeyEvents, sf::Event event, Player* player
             char c = event.text.unicode;
             if (c == idx) {
                 if (player->getCombatPool() > cost) {
-                    player->reduceCombatPool(cost);
-                    player->dropWeapon();
-                    player->setPrimaryWeapon(quickDrawIds[i]);
-                    m_currentState = eUiState::ChooseFavoring;
+                    if (weapon->getLength() > eLength::Hand && inGrapple) {
+                        Log::push("Weapon is too long to use in a grapple! You must use a dagger "
+                                  "or other Hand length weapon");
+                    } else {
+                        player->reduceCombatPool(cost);
+                        player->dropWeapon();
+                        player->setPrimaryWeapon(quickDrawIds[i]);
+                        m_currentState = eUiState::ChooseFavoring;
+                    }
                 } else {
                     Log::push("You do not have enough AP for that!");
                 }

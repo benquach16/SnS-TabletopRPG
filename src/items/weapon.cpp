@@ -188,6 +188,9 @@ WeaponTable::~WeaponTable()
 
 const Weapon* WeaponTable::get(int id) const
 {
+    if (id == -1) {
+        return nullptr;
+    }
     auto it = m_weaponsList.find(id);
     assert(it != m_weaponsList.end());
     return it->second;

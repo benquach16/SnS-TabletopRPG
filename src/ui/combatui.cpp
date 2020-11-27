@@ -104,7 +104,7 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
         return;
     }
     if (instance->getState() == eCombatState::PreexchangeActions) {
-        m_precombatUI.run(hasKeyEvents, event, player);
+        m_precombatUI.run(hasKeyEvents, event, player, instance->getInGrapple());
         return;
     }
     if (instance->getState() == eCombatState::ResetState) {

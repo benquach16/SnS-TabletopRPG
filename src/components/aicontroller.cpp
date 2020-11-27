@@ -47,7 +47,10 @@ void AIController::run(const Level* level, CreatureObject* controlledCreature)
         if (minDist > 2) {
             moveToward(target->getPosition(), level, controlledCreature);
         } else {
-            controlledCreature->startCombatWith(target);
+            // don't jump in if there's a grapple going on
+            if (target->getCombatManager()->isInGrapple() == false) {
+                controlledCreature->startCombatWith(target);
+            }
         }
     } else {
         switch (m_role) {

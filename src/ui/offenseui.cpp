@@ -151,6 +151,9 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player,
             case eOffensiveManuevers::Beat:
             case eOffensiveManuevers::Hook:
             case eOffensiveManuevers::Disarm:
+            case eOffensiveManuevers::VisorThrust:
+            case eOffensiveManuevers::Throw:
+            case eOffensiveManuevers::Snap:
                 m_currentState = eUiState::ChooseComponent;
                 break;
             case eOffensiveManuevers::Grab:

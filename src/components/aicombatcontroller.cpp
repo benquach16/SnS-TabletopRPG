@@ -47,8 +47,8 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
     }
     if (instance->getState() == eCombatState::Offense
         && instance->getAttacker()->getId() == creatureId) {
-        doOffense(controlledCreature, instance->getDefender(), reachCost,
-            instance->getCurrentReach(), instance->getLastTempo(), instance->getDualRedThrow());
+        doOffense(controlledCreature, instance->getDefender(), reachCost, instance,
+            instance->getLastTempo(), instance->getDualRedThrow());
         return;
     }
     if (instance->getState() == eCombatState::StolenOffense
@@ -62,38 +62,33 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
     }
     if (instance->getState() == eCombatState::AttackFromDefense
         && instance->getDefender()->getId() == creatureId) {
-        doOffense(controlledCreature, instance->getDefender(), reachCost,
-            instance->getCurrentReach(), true, false);
+        doOffense(controlledCreature, instance->getDefender(), reachCost, instance, true, false);
         return;
     }
     if (instance->getState() == eCombatState::StealInitiative
         && instance->getDefender()->getId() == creatureId) {
-        doOffense(controlledCreature, instance->getAttacker(), reachCost,
-            instance->getCurrentReach(), true, false);
+        doOffense(controlledCreature, instance->getAttacker(), reachCost, instance, true, false);
         return;
     }
     if (instance->getState() == eCombatState::ParryLinked
         && instance->getDefender()->getId() == creatureId) {
         // do not pay costs
-        doOffense(controlledCreature, instance->getAttacker(), reachCost,
-            instance->getCurrentReach(), false, false, false);
+        doOffense(
+            controlledCreature, instance->getAttacker(), reachCost, instance, false, false, false);
         return;
     }
 
     if (instance->getState() == eCombatState::DualOffenseStealInitiative
         && instance->getDefender()->getId() == creatureId) {
-        doOffense(controlledCreature, instance->getAttacker(), reachCost,
-            instance->getCurrentReach(), false, true);
+        doOffense(controlledCreature, instance->getAttacker(), reachCost, instance, false, true);
     }
     if (instance->getState() == eCombatState::DualOffense1
         && instance->getAttacker()->getId() == creatureId) {
-        doOffense(controlledCreature, instance->getDefender(), reachCost,
-            instance->getCurrentReach(), false, true);
+        doOffense(controlledCreature, instance->getDefender(), reachCost, instance, false, true);
     }
     if (instance->getState() == eCombatState::DualOffense2
         && instance->getDefender()->getId() == creatureId) {
-        doOffense(controlledCreature, instance->getAttacker(), reachCost,
-            instance->getCurrentReach(), false, true);
+        doOffense(controlledCreature, instance->getAttacker(), reachCost, instance, false, true);
     }
     if (instance->getState() == eCombatState::DualOffenseSecondInitiative
         && instance->getDefender()->getId() == creatureId) {
@@ -127,7 +122,7 @@ bool AICombatController::setCreatureDefenseManuever(
 }
 
 void AICombatController::doOffense(Creature* controlledCreature, const Creature* target,
-    int reachCost, eLength currentReach, bool allin, bool dualRedThrow, bool payCosts)
+    int reachCost, const CombatInstance* instance, bool allin, bool dualRedThrow, bool payCosts)
 {
     cout << "allin : " << allin << endl;
     const Weapon* weapon = nullptr;
@@ -136,7 +131,12 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
         allin = true;
     }
 
-    controlledCreature->setCreatureOffenseManuever(eOffensiveManuevers::Thrust, currentReach);
+    map<eOffensiveManuevers, int> manuevers
+        = getAvailableOffManuevers(controlledCreature->getPrimaryWeapon(),
+            controlledCreature->getGrip(), instance->getCurrentReach(), instance->getInGrapple());
+
+    controlledCreature->setCreatureOffenseManuever(
+        eOffensiveManuevers::Thrust, instance->getCurrentReach());
     if (controlledCreature->primaryWeaponDisabled() == false) {
         controlledCreature->setOffenseWeapon(true);
         weapon = controlledCreature->getPrimaryWeapon();
@@ -146,11 +146,15 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
     }
     controlledCreature->setOffenseComponent(weapon->getBestAttack());
     if (controlledCreature->getQueuedOffense().component->getAttack() == eAttacks::Swing) {
-        controlledCreature->setCreatureOffenseManuever(eOffensiveManuevers::Swing, currentReach);
+        controlledCreature->setCreatureOffenseManuever(
+            eOffensiveManuevers::Swing, instance->getCurrentReach());
     }
     // randomly beat
     if (target->primaryWeaponDisabled() == false && random_static::get(0, 3) < 1) {
-        controlledCreature->setCreatureOffenseManuever(eOffensiveManuevers::Beat, currentReach);
+        if (manuevers.find(eOffensiveManuevers::Beat) != manuevers.end()) {
+            controlledCreature->setCreatureOffenseManuever(
+                eOffensiveManuevers::Beat, instance->getCurrentReach());
+        }
     }
     // replace me
     controlledCreature->setOffenseTarget(target->getHitLocations()[random_static::get(
@@ -161,11 +165,14 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
         // full of metal armor, so lets do some fancy shit
         if (weapon->canHook() == true && target->getStance() != eCreatureStance::Prone) {
             // try to trip
-            setCreatureOffenseManuever(controlledCreature, eOffensiveManuevers::Hook, currentReach);
+            if (manuevers.find(eOffensiveManuevers::Hook) != manuevers.end()) {
+                setCreatureOffenseManuever(
+                    controlledCreature, eOffensiveManuevers::Hook, instance->getCurrentReach());
+            }
         } else if (weapon->getType() == eWeaponTypes::Polearms) {
             // temporary
-            if (setCreatureOffenseManuever(
-                    controlledCreature, eOffensiveManuevers::PinpointThrust, currentReach)) {
+            if (setCreatureOffenseManuever(controlledCreature, eOffensiveManuevers::PinpointThrust,
+                    instance->getCurrentReach())) {
                 eHitLocations location;
                 eBodyParts part;
                 target->getLowestArmorPart(&part, &location);
@@ -174,12 +181,12 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
                 controlledCreature->setOffenseTarget(location);
             } else {
                 setCreatureOffenseManuever(
-                    controlledCreature, eOffensiveManuevers::Hook, currentReach);
+                    controlledCreature, eOffensiveManuevers::Hook, instance->getCurrentReach());
             }
         } else if (weapon->getType() == eWeaponTypes::Longswords) {
             // temporary
-            if (setCreatureOffenseManuever(
-                    controlledCreature, eOffensiveManuevers::PinpointThrust, currentReach)) {
+            if (setCreatureOffenseManuever(controlledCreature, eOffensiveManuevers::PinpointThrust,
+                    instance->getCurrentReach())) {
                 eHitLocations location;
                 eBodyParts part;
                 target->getLowestArmorPart(&part, &location);
@@ -188,8 +195,8 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
                 controlledCreature->setOffenseTarget(location);
             } else {
                 // todo : mordhau
-                if (setCreatureOffenseManuever(
-                        controlledCreature, eOffensiveManuevers::Mordhau, currentReach)) {
+                if (setCreatureOffenseManuever(controlledCreature, eOffensiveManuevers::Mordhau,
+                        instance->getCurrentReach())) {
                     controlledCreature->setOffenseComponent(weapon->getPommelStrike());
                 }
             }

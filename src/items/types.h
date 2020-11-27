@@ -34,7 +34,9 @@ enum class eOffensiveManuevers : unsigned {
     // grapple moves
     Snap,
     Throw,
-    Pin
+    Pin,
+    VisorThrust,
+    Bite
 };
 
 enum class ePositionManuevers : unsigned { Invalid = 0, Stand, Pickup };

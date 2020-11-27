@@ -10,6 +10,7 @@ enum eAICombatProfiles {
 
 class CombatManager;
 class Creature;
+class CombatInstance;
 
 class AICombatController {
 public:
@@ -17,7 +18,8 @@ public:
 
 private:
     void doOffense(Creature* controlledCreature, const Creature* target, int reachCost,
-        eLength currentReach, bool allin = false, bool dualRedThrow = false, bool payCosts = true);
+        const CombatInstance* instance, bool allin = false, bool dualRedThrow = false,
+        bool payCosts = true);
     void doDefense(Creature* controlledCreature, const Creature* attacker, bool isLastTempo);
 
     void doStolenInitiative(Creature* controlledCreature, const Creature* defender, bool allin);

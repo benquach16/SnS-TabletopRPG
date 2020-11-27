@@ -51,6 +51,8 @@ private:
     eSceneState m_currentState;
     SelectorObject m_selector;
     Object* m_pickup;
+
+    std::vector<Level*> m_levels;
     Level* m_currentLevel;
     // who i am talking to
     CreatureObject* m_talking;

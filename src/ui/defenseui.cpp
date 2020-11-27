@@ -128,6 +128,9 @@ void DefenseUI::doManuever(
             case eDefensiveManuevers::Expulsion:
             case eDefensiveManuevers::DodgeLinked:
             case eDefensiveManuevers::Counter:
+            case eDefensiveManuevers::Reverse:
+            case eDefensiveManuevers::Resist:
+            case eDefensiveManuevers::Break:
                 m_currentState = eUiState::ChooseDice;
                 break;
             case eDefensiveManuevers::AttackFromDef:

@@ -218,6 +218,14 @@ bool CombatManager::hasPosition(Creature* creature, Creature* target)
     return true;
 }
 
+bool CombatManager::isInGrapple() const
+{
+    if (isInDuel()) {
+        return m_edges[0]->getInstance()->getInGrapple();
+    }
+    return false;
+}
+
 void CombatManager::doPositionRoll()
 {
     assert(m_edges.size() > 1);
