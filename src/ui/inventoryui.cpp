@@ -433,7 +433,8 @@ void InventoryUI::doLevelup(bool hasKeyEvents, sf::Event event, PlayerObject* pl
     bkg.setOutlineColor(sf::Color(22, 22, 33));
     Game::getWindow().draw(bkg);
 
-    std::string str = "Inventory (1 - Backpack, 2 - Wounds, 3 - Profile, 4 - Armor Coverage, 5 - Allocate Experience):\n\n";
+    std::string str = "Inventory (1 - Backpack, 2 - Wounds, 3 - Profile, 4 - Armor Coverage, 5 - "
+                      "Allocate Experience):\n\n";
     str += "";
     sf::Text txt;
     txt.setFont(Game::getDefaultFont());

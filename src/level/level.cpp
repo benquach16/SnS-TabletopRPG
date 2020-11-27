@@ -111,6 +111,34 @@ void Level::generate()
     m_objects.push_back(object);
 }
 
+void Level::generateTown()
+{
+    for (int x = 1; x < m_width; ++x) {
+        for (int y = 1; y < m_height; ++y) {
+            (*this)(x, y).m_material = eTileMaterial::Grass;
+        }
+    }
+    createBuilding();
+}
+
+void Level::createBuilding()
+{
+    constexpr int max = 10;
+    int xlen = random_static::get(4, max);
+    int ylen = random_static::get(4, max);
+    int xStart = random_static::get(2, m_width - max - 1);
+    int yStart = random_static::get(2, m_height - max - 1);
+
+    for (int x = xStart; x < xStart + xlen; ++x) {
+        (*this)(x, yStart).m_type = eTileType::Wall;
+        (*this)(x, yStart).m_material = eTileMaterial::Stone;
+    }
+    for (int y = yStart; y < yStart + ylen; ++y) {
+        (*this)(xStart, y).m_type = eTileType::Wall;
+        (*this)(xStart, y).m_material = eTileMaterial::Stone;
+    }
+}
+
 Room Level::carveRoom()
 {
     constexpr int max = 10;

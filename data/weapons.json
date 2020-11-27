@@ -332,13 +332,13 @@
 		"components": [
 			{
 				"name": "Blade Point",
-				"damage": 2,
+				"damage": 1,
 				"type": "piercing",
 				"attack": "thrust"
 			},
 			{
 				"name": "Blade Edge",
-				"damage": 1,
+				"damage": 2,
 				"attack": "swing",
 				"type": "cutting"
 			}

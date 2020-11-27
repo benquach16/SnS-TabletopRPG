@@ -30,6 +30,7 @@ public:
     void load();
     void run(Scene* scene);
     void generate();
+    void generateTown();
     void makeRoom();
     void cleanup();
     void clearObjects();
@@ -65,6 +66,7 @@ public:
     std::vector<Object*> getObjectsAtLocation(vector2d position);
 
 private:
+    void createBuilding();
     Room carveRoom();
     Room carveRoom(int xStart, int yStart, int minSizeX, int minSizeY, int maxSizeX, int maxSizeY);
     Room carveSeperateRoom();

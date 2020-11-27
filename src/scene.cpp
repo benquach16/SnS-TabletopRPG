@@ -118,6 +118,9 @@ void Scene::run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
     case eSceneState::SelectionMode:
         selection(hasKeyEvents, event, playerObject);
         break;
+    case eSceneState::DialogueSelect:
+        dialogSelect(hasKeyEvents, event, playerObject);
+        break;
     case eSceneState::DialogueMode:
         dialog(hasKeyEvents, event, playerObject);
         break;
