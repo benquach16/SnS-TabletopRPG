@@ -15,10 +15,12 @@ public:
     std::string getMessage() const { return m_message; }
 
 private:
+    enum eDialogueEffects { Shop };
     DialogueNode();
     std::string m_message;
     // key into dialogue tree
     std::vector<std::string> m_responses;
+    std::vector<std::string> m_chain;
 };
 
 class DialogueUI {

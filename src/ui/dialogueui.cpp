@@ -104,8 +104,12 @@ void DialogueUI::doTalkingPlayer(
         m_currentState = eUiState::Finished;
         return;
     }
-
-    string str = "Dialogue with " + creature->getName() + '\n';
+    string str;
+    if (creature->isPlayer() == false) {
+        str += "Dialogue with " + creature->getName() + '\n';
+    } else {
+        str += "Internal Monologue\n";
+    }
     for (unsigned i = 0; i < responses.size(); ++i) {
         char idx = 'a' + i;
         str += idx;

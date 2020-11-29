@@ -1,4 +1,16 @@
 {
+    "wakeup" : {
+        "message": "Ugh...my head hurts. What happened?",
+        "responses": ["wakeup_cont"]
+    },
+    "wakeup_cont": {
+        "message": "Continue",
+        "responses": ["wakeup2"]
+    },
+    "wakeup2" : {
+        "message": "That's right... our caravan was ambushed by bandits. They knew we were coming somehow. I ran into this cave and fell down here... At least I still have my stuff. I should look for the others, and find a way out of here. And then have a chat with the guy who hired me.",
+        "responses": ["end"]
+    },
     "greeting_neutral" : {
         "message": "Hello.",
         "responses": ["end", "ask_trade", "ask_healing"]

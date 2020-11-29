@@ -43,24 +43,15 @@ void Scene::setupLevel(PlayerObject* playerObject)
         (*level)(i, 0).m_type = eTileType::Wall;
     }
 
-    for (unsigned i = 2; i < 60; i++) {
+    for (unsigned i = 0; i < 60; i++) {
         (*level)(0, i).m_type = eTileType::Wall;
     }
     (*level)(0, 1).m_levelChangeIdx = 1;
-    HumanObject* human1 = new HumanObject;
-    human1->setFaction(eCreatureFaction::Confederacy);
-    human1->setLoadout(eCreatureFaction::Confederacy, eRank::Soldier);
-    human1->setPosition(2, 2);
-    human1->setAIRole(eAIRoles::Standing);
-    human1->setStartingDialogueLabel("greeting_intro");
-    human1->getCreatureComponent()->setAgility(9);
-    human1->getCreatureComponent()->setIntuition(9);
-    human1->getCreatureComponent()->setPerception(9);
-    human1->setName("Sir Wilhelm");
-    m_talking = human1;
-    m_ui.initDialog(human1);
+    playerObject->setStartingDialogueLabel("wakeup");
+
+    m_talking = playerObject;
+    m_ui.initDialog(playerObject);
     m_currentState = eSceneState::DialogueMode;
-    level->addObject(human1);
 
     playerObject->setPosition(1, 1);
     // has some management of player here but cannot delete
@@ -177,6 +168,23 @@ void Scene::selection(bool hasKeyEvents, sf::Event event, PlayerObject* playerOb
                         }
                     }
                 }
+            } else {
+                Tile tile = m_levels[m_currentIdx]->get(m_selector.getPosition());
+                string str = "Just a ";
+                switch (tile.m_material) {
+                case eTileMaterial::Stone:
+                    str += "stone ";
+                    break;
+                }
+                switch (tile.m_type) {
+                case eTileType::Ground:
+                    str += "floor.";
+                    break;
+                case eTileType::Wall:
+                    str += "wall. ";
+                    break;
+                }
+                Log::push(str);
             }
         }
 

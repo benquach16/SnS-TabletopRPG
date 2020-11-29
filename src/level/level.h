@@ -53,6 +53,8 @@ public:
         return m_data[x * m_height + y];
     }
 
+    Tile get(vector2d pos) const { return (*this)(pos.x, pos.y); }
+
     const Object* getObject(vector2d position);
     Object* getObjectMutable(vector2d position, const Object* exclude);
 
