@@ -7,6 +7,8 @@
 
 using namespace std;
 
+BOOST_CLASS_EXPORT(HumanObject)
+
 HumanObject::HumanObject()
     : CreatureObject(new Human)
 {

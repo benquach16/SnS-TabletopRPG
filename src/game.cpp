@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 
 #include "creatures/wound.h"
@@ -10,6 +11,18 @@
 #include "object/playerobject.h"
 #include "object/relationmanager.h"
 #include "object/selectorobject.h"
+
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+
+#include <boost/serialization/binary_object.hpp>
+#include <boost/serialization/serialization.hpp>
+#include <iostream>
+#include <sstream>
+
+using boost::serialization::make_binary_object;
 
 using namespace std;
 
@@ -54,8 +67,10 @@ void Game::initialize()
 
 void Game::run()
 {
+
     Scene scene;
     scene.setupLevel(m_playerObject);
+
     while (m_window.isOpen()) {
         sf::Event event;
         bool hasKeyEvents = false;
@@ -74,7 +89,13 @@ void Game::run()
                 break;
             }
         }
-
+        if (event.text.unicode == 'm' && hasKeyEvents) {
+            std::ofstream f("save.dat", std::ofstream::binary);
+            boost::archive::text_oarchive oa(f);
+            oa << scene;
+        }
+        if (event.text.unicode == 'n' && hasKeyEvents) {
+        }
         m_window.clear();
         switch (m_appState) {
         case eApplicationState::CharCreation:

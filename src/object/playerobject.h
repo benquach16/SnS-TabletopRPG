@@ -7,6 +7,8 @@
 
 class PlayerObject : public CreatureObject {
 public:
+    friend class boost::serialization::access;
+
     PlayerObject();
     ~PlayerObject();
     bool runCombat(float tick);
@@ -22,4 +24,8 @@ public:
     bool preserveBetweenLevels() const override { return true; }
 
 private:
+    template <class Archive> void serialize(Archive& ar, const unsigned int version)
+    {
+        ar& boost::serialization::base_object<CreatureObject>(*this);
+    }
 };

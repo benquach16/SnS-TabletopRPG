@@ -87,7 +87,7 @@ if(WIN32)
 endif()
 
 find_package(SFML REQUIRED COMPONENTS graphics window system)
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED system serialization)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
     target_link_libraries(RPG ${Boost_LIBRARIES})

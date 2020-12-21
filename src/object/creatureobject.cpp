@@ -7,6 +7,8 @@ using namespace std;
 
 static CreatureObject::CreatureObjectId ids = static_cast<CreatureObject::CreatureObjectId>(0);
 
+BOOST_CLASS_EXPORT(CreatureObject)
+
 CreatureObject::CreatureObject(Creature* creature)
     : m_creature(creature)
     , m_creatureFaction(eCreatureFaction::None)

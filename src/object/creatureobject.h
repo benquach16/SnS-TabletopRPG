@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <map>
 #include <unordered_map>
 
@@ -16,9 +17,12 @@ class CombatManager;
 
 class CreatureObject : public Object {
 public:
+    friend class boost::serialization::access;
+
     BOOST_STRONG_TYPEDEF(unsigned, CreatureObjectId);
 
     CreatureObject(Creature* creature);
+
     virtual ~CreatureObject();
     bool hasCollision() const override { return true; }
     bool deleteMe() const override { return m_delete; }
@@ -87,4 +91,16 @@ protected:
     std::string m_dialogue;
 
     std::unordered_map<eSkills, int> m_skills;
+
+private:
+    template <class Archive> void serialize(Archive& ar, const unsigned int version)
+    {
+        std::cout << "saving creatureobject " << getName() << std::endl;
+        ar& boost::serialization::base_object<Object>(*this);
+        ar& m_creature;
+        ar& m_experience;
+        ar& m_money;
+        ar& m_thirst;
+        ar& m_hunger;
+    }
 };

@@ -3,6 +3,12 @@
 #include <assert.h>
 #include <vector>
 
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/serialization/binary_object.hpp>
+#include <boost/serialization/serialization.hpp>
+#include <boost/serialization/vector.hpp>
+
 #include "../object/object.h"
 #include "trigger.h"
 
@@ -13,6 +19,13 @@ struct Tile {
     eTileType m_type = eTileType::Ground;
     eTileMaterial m_material = eTileMaterial::Stone;
     int m_levelChangeIdx = -1;
+
+    template <class Archive> void serialize(Archive& ar, const unsigned int version)
+    {
+        ar& m_type;
+        ar& m_material;
+        ar& m_levelChangeIdx;
+    }
 };
 
 enum eLighting { Sunny, Dark, Cave };
@@ -25,8 +38,11 @@ struct Room {
 class Scene;
 class Level {
 public:
+    friend class boost::serialization::access;
+
     Level(int width, int height);
     ~Level();
+    void save();
     void load();
     void run(Scene* scene);
     void generate();
@@ -74,6 +90,15 @@ private:
     Room carveSeperateRoom();
     void removeIslands();
     void createCorridor(Room room1, Room room2);
+
+    template <class Archive> void serialize(Archive& ar, const unsigned int version)
+    {
+        ar& m_data;
+        ar& m_objects;
+        ar& m_toDelete;
+        ar& m_width;
+        ar& m_height;
+    }
 
     std::vector<Trigger> m_triggers;
     std::vector<Object*> m_objects;

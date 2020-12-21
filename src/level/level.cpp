@@ -21,6 +21,8 @@ Level::~Level()
     clearObjects();
 }
 
+void Level::save() {}
+
 void Level::load() {}
 
 void Level::run(Scene* scene)

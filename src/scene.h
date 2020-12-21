@@ -2,6 +2,12 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/serialization/binary_object.hpp>
+#include <boost/serialization/serialization.hpp>
+#include <boost/serialization/vector.hpp>
+
 #include "combatinstance.h"
 #include "combatmanager.h"
 #include "gfxobjects/gfxlevel.h"
@@ -14,11 +20,16 @@ class PlayerObject;
 
 class Scene {
 public:
+    friend class boost::serialization::access;
+
     Scene();
     ~Scene();
     void setupLevel(PlayerObject* playerObject);
     void run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
     void changeToLevel(int idx, Object* object, int x, int y);
+
+    void save();
+    void load();
 
 private:
     static constexpr float cPlayingTick = 0.4;
@@ -67,4 +78,10 @@ private:
     GFXSelector m_gfxSelector;
 
     float zoom = 1.0f;
+
+    template <class Archive> void serialize(Archive& ar, const unsigned int version)
+    {
+        ar& m_levels;
+        ar& m_pickup;
+    }
 };

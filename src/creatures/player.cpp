@@ -2,6 +2,8 @@
 
 #include "player.h"
 
+BOOST_CLASS_EXPORT(Player)
+
 Player::Player()
     : Human()
 {

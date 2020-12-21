@@ -10,6 +10,8 @@ using namespace effolkronium;
 
 static Creature::CreatureId ids = static_cast<Creature::CreatureId>(0);
 
+BOOST_CLASS_EXPORT(Creature)
+
 constexpr int cDisableTick = 2;
 constexpr int cFatigueDivisor = 10;
 

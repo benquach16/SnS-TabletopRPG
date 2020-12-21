@@ -6,7 +6,19 @@
 #include <string>
 #include <vector>
 
+#include <boost/archive/tmpdir.hpp>
 #include <boost/serialization/strong_typedef.hpp>
+
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/assume_abstract.hpp>
+#include <boost/serialization/base_object.hpp>
+#include <boost/serialization/export.hpp>
+#include <boost/serialization/list.hpp>
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/utility.hpp>
 
 struct vector2d {
     int x = 0;
@@ -16,6 +28,12 @@ struct vector2d {
         , y(y)
     {
     }
+
+    template <class Archive> void serialize(Archive& ar, const unsigned int version)
+    {
+        ar& x;
+        ar& y;
+    }
 };
 
 enum class eObjectTypes { Misc, Item, Creature, Corpse, Chest };
@@ -24,10 +42,12 @@ class Level;
 
 class Object {
 public:
+    friend class boost::serialization::access;
     // replace with boost::uuid
     BOOST_STRONG_TYPEDEF(unsigned, ObjectId);
 
     Object();
+
     virtual ~Object() {};
     vector2d getPosition() const { return m_position; }
     virtual bool hasCollision() const { return false; }
@@ -60,4 +80,11 @@ protected:
     std::map<int, int> m_inventory;
     // should be assigned a unique id on creation
     ObjectId m_id;
+
+private:
+    template <class Archive> void serialize(Archive& ar, const unsigned int version)
+    {
+        ar& m_position;
+        ar& m_inventory;
+    }
 };

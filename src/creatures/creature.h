@@ -14,7 +14,21 @@
 #include <unordered_map>
 #include <vector>
 
+#include <boost/archive/tmpdir.hpp>
 #include <boost/serialization/strong_typedef.hpp>
+
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/assume_abstract.hpp>
+#include <boost/serialization/base_object.hpp>
+#include <boost/serialization/export.hpp>
+#include <boost/serialization/list.hpp>
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/unordered_map.hpp>
+#include <boost/serialization/utility.hpp>
+#include <boost/serialization/vector.hpp>
 
 static constexpr int cBaseBTN = 7;
 static constexpr int cMinBTN = 5;
@@ -39,9 +53,12 @@ static int getTap(int attribute)
 
 class Creature {
 public:
+    friend class boost::serialization::access;
+
     BOOST_STRONG_TYPEDEF(unsigned, CreatureId);
 
     Creature(int naturalWeaponId);
+
     virtual ~Creature() {}
     virtual eCreatureType getCreatureType() = 0;
 
@@ -312,4 +329,26 @@ protected:
     int m_disarm;
 
     std::unordered_map<eWeaponTypes, int> m_proficiencies;
+
+private:
+    template <class Archive> void serialize(Archive& ar, const unsigned int version)
+    {
+        ar& m_strength;
+        ar& m_agility;
+        ar& m_intuition;
+        ar& m_perception;
+        ar& m_willpower;
+
+        ar& m_proficiencies;
+        ar& m_primaryWeaponId;
+        ar& m_secondaryWeaponId;
+        ar& m_primaryWeaponDisabled;
+        ar& m_secondaryWeaponDisabled;
+        ar& m_naturalWeaponId;
+        ar& m_disableWeaponId;
+        ar& m_quickDrawItems;
+
+        ar& m_currentGrip;
+        ar& m_name;
+    }
 };

@@ -10,6 +10,13 @@
 #include "object/relationmanager.h"
 #include "object/selectorobject.h"
 
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/serialization/binary_object.hpp>
+#include <boost/serialization/serialization.hpp>
+#include <iostream>
+#include <sstream>
+
 using namespace std;
 
 constexpr float cMaxZoom = 0.6f;
@@ -31,6 +38,10 @@ Scene::~Scene()
     }
     m_levels.clear();
 }
+
+void Scene::save() {}
+
+void Scene::load() {}
 
 void Scene::setupLevel(PlayerObject* playerObject)
 {

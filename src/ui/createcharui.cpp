@@ -11,10 +11,10 @@ using namespace std;
 
 const string filepath = "data/starting.json";
 
-constexpr unsigned cAttributes = 23;
-constexpr unsigned cProficiencies = 23;
-constexpr unsigned cMax = 9;
-constexpr unsigned cMaxProficiency = 12;
+constexpr unsigned cAttributes = 20;
+constexpr unsigned cProficiencies = 20;
+constexpr unsigned cMax = 7;
+constexpr unsigned cMaxProficiency = 10;
 
 CreateCharUI::CreateCharUI()
     : m_loadoutIdx(-1)

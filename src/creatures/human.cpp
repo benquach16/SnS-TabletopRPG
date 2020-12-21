@@ -3,6 +3,8 @@
 
 constexpr int naturalWeaponId = cFistsId;
 
+BOOST_CLASS_EXPORT(Human)
+
 Human::Human()
     : Creature(naturalWeaponId)
 {

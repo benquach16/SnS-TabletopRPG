@@ -2,6 +2,8 @@
 
 #include "playerobject.h"
 
+BOOST_CLASS_EXPORT(PlayerObject)
+
 PlayerObject::PlayerObject()
     : CreatureObject(new Player)
 {
