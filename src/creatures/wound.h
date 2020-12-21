@@ -86,8 +86,10 @@ private:
 
     // 4d associative array for wound table
     // damage type to body part to wound level
-    std::map<eDamageTypes, std::map<eBodyParts, std::map<int, Wound*>>> m_woundTable;
+    std::unordered_map<eDamageTypes,
+        std::unordered_map<eBodyParts, std::unordered_map<int, Wound*>>>
+        m_woundTable;
 
-    std::map<eDamageTypes, std::vector<int>> m_btnTable;
-    std::map<eDamageTypes, std::vector<int>> m_impactTable;
+    std::unordered_map<eDamageTypes, std::vector<int>> m_btnTable;
+    std::unordered_map<eDamageTypes, std::vector<int>> m_impactTable;
 };

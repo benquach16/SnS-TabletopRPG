@@ -84,6 +84,8 @@ public:
     std::vector<Object*> getObjectsAtLocation(vector2d position);
 
 private:
+    // for boost only
+    Level() {}
     void createBuilding();
     Room carveRoom();
     Room carveRoom(int xStart, int yStart, int minSizeX, int minSizeY, int maxSizeX, int maxSizeY);

@@ -114,7 +114,7 @@ public:
 
     void inflictImpact(int impact);
     void inflictWound(Wound* wound);
-    const std::vector<Wound*>& getWounds() const { return m_wounds; }
+    const std::unordered_map<eBodyParts, int>& getWounds() const { return m_wounds; }
     int getSuccessRate() const;
 
     void equipArmor(int id);
@@ -274,7 +274,8 @@ protected:
     std::vector<eHitLocations> m_hitLocations;
     std::set<eHitLocations> m_favoredLocations;
     std::map<eBodyParts, ArmorSegment> m_armorValues;
-    std::vector<Wound*> m_wounds;
+    // int == wound level
+    std::unordered_map<eBodyParts, int> m_wounds;
     std::vector<int> m_armor;
     bool m_hasLeftHand;
     bool m_hasRightHand;
@@ -313,8 +314,6 @@ protected:
 
     std::unordered_map<eCreatureFatigue, int> m_fatigue;
 
-    bool m_isPlayer;
-
     // stats
     int m_strength;
     int m_agility;
@@ -350,5 +349,13 @@ private:
 
         ar& m_currentGrip;
         ar& m_name;
+        ar& m_currentState;
+        ar& m_currentStance;
+
+        ar& m_bleeding;
+
+        ar& m_hitLocations;
+        ar& m_armor;
+        ar& m_wounds;
     }
 };

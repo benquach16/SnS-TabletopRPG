@@ -198,7 +198,8 @@ void Creature::inflictWound(Wound* wound)
 
     m_combatPool -= impact;
 
-    m_wounds.push_back(wound);
+    // m_wounds.push_back(wound);
+    m_wounds[wound->getLocation()] = wound->getLevel();
 
     if (wound->causesDeath() == true) {
         m_currentState = eCreatureState::Dead;

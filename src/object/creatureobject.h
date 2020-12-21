@@ -70,14 +70,11 @@ protected:
 
     Creature* m_creature;
     eCreatureFaction m_creatureFaction;
-    eCreatureRace m_creatureRace;
 
     AICombatController m_combatController;
     AIController m_controller;
 
     int m_experience;
-
-    int m_money;
 
     int m_thirst;
     int m_hunger;
@@ -95,12 +92,15 @@ protected:
 private:
     template <class Archive> void serialize(Archive& ar, const unsigned int version)
     {
-        std::cout << "saving creatureobject " << getName() << std::endl;
+        std::cout << "creatureobject: " << getName() << std::endl;
         ar& boost::serialization::base_object<Object>(*this);
         ar& m_creature;
+        ar& m_creatureFaction;
+
         ar& m_experience;
-        ar& m_money;
         ar& m_thirst;
         ar& m_hunger;
+        ar& m_dialogue;
+        ar& m_skills;
     }
 };

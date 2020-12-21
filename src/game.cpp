@@ -95,6 +95,9 @@ void Game::run()
             oa << scene;
         }
         if (event.text.unicode == 'n' && hasKeyEvents) {
+            std::ifstream f("save.dat", std::ifstream::binary);
+            boost::archive::text_iarchive oa(f);
+            oa >> scene;
         }
         m_window.clear();
         switch (m_appState) {
