@@ -5,6 +5,7 @@
 #include "items/weapon.h"
 #include "level/level.h"
 #include "log.h"
+#include "object/campfireobject.h"
 #include "object/humanobject.h"
 #include "object/playerobject.h"
 #include "object/relationmanager.h"
@@ -59,7 +60,9 @@ void Scene::setupLevel(PlayerObject* playerObject)
     m_talking = playerObject;
     m_ui.initDialog(playerObject);
     m_currentState = eSceneState::DialogueMode;
-
+    CampfireObject* temp = new CampfireObject;
+    temp->setPosition(1, 1);
+    level->addObject(temp);
     playerObject->setPosition(1, 1);
     // has some management of player here but cannot delete
     // violates RAII
@@ -95,7 +98,8 @@ void Scene::run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
     m_gfxlevel.run(m_levels[m_currentIdx], playerObject->getPosition());
     // temporary until we get graphics queue up and running
     if (m_currentState == eSceneState::AttackMode || m_currentState == eSceneState::SelectionMode
-        || m_currentState == eSceneState::DialogueSelect) {
+        || m_currentState == eSceneState::DialogueSelect
+        || m_currentState == eSceneState::UseMode) {
         m_gfxSelector.run(&m_selector);
     }
     m_gfxlevel.renderText();
@@ -124,6 +128,9 @@ void Scene::run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
         break;
     case eSceneState::AttackMode:
         attack(hasKeyEvents, event, playerObject);
+        break;
+    case eSceneState::UseMode:
+        use(hasKeyEvents, event, playerObject);
         break;
     case eSceneState::Inventory:
         inventory(hasKeyEvents, event, playerObject);
@@ -233,6 +240,10 @@ void Scene::playing(bool hasKeyEvents, sf::Event event, PlayerObject* playerObje
         if (event.key.code == sf::Keyboard::I) {
             m_currentState = eSceneState::Inventory;
         }
+        if (event.key.code == sf::Keyboard::U) {
+            m_selector.setPosition(playerObject->getPosition());
+            m_currentState = eSceneState::UseMode;
+        }
         if (event.key.code == sf::Keyboard::D) {
             m_selector.setPosition(playerObject->getPosition());
             m_currentState = eSceneState::SelectionMode;
@@ -318,6 +329,22 @@ void Scene::inventory(bool hasKeyEvents, sf::Event event, PlayerObject* playerOb
     if (hasKeyEvents && event.type == sf::Event::KeyReleased
         && event.key.code == sf::Keyboard::Escape) {
         m_currentState = eSceneState::Playing;
+    }
+}
+
+void Scene::use(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
+{
+    if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
+        doMoveSelector(event, playerObject, true);
+        if (event.key.code == sf::Keyboard::Enter) {
+            Object* object
+                = m_levels[m_currentIdx]->getObjectMutable(m_selector.getPosition(), playerObject);
+            if (object != nullptr) {
+            }
+        }
+        if (event.key.code == sf::Keyboard::Escape) {
+            m_currentState = eSceneState::Playing;
+        }
     }
 }
 

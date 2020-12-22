@@ -1,5 +1,6 @@
 #include "level.h"
 #include "../3rdparty/random.hpp"
+#include "../object/campfireobject.h"
 #include "../object/corpseobject.h"
 #include "../object/creatureobject.h"
 #include "../object/humanobject.h"

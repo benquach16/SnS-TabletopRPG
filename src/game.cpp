@@ -36,8 +36,6 @@ constexpr int cRestTicks = 20;
 Game::Game()
     : m_playerObject(nullptr)
 {
-    // force initialization
-    WeaponTable::getSingleton();
 }
 
 Game::~Game()

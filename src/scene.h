@@ -39,6 +39,7 @@ private:
     void inventory(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
     void combat(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
     void wait(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
+    void use(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
     void pickup(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
     void attack(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
 
@@ -51,6 +52,7 @@ private:
         DialogueSelect,
         DialogueMode,
         AttackMode,
+        UseMode,
         Inventory,
         Pickup,
         InCombat,

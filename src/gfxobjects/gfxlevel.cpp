@@ -6,13 +6,15 @@
 #include "utils.h"
 
 using namespace std;
-
+sf::Texture fire;
 // rounding
 constexpr int cWallWidthOffset = static_cast<int>(cWidth * cCos45 + 1);
 constexpr int cWallHeightOffset = static_cast<int>(cHeight * cCos45);
 
 GFXLevel::GFXLevel()
 {
+    fire.loadFromFile("data/textures/fire.png");
+    fire.setSmooth(true);
     m_texture.loadFromFile("data/textures/test.png");
     m_texture.setSmooth(true);
     m_stone.loadFromFile("data/textures/rough.png");
@@ -153,6 +155,8 @@ void GFXLevel::run(const Level* level, vector2d center)
         rect.setRotation(45.f);
         pos.y -= 60;
         pos.x -= 15;
+        // please refactor me!
+        // this code is not extensible and eosnt make sense
         if (rLevelObjs[i]->getObjectType() == eObjectTypes::Creature) {
             sf::Vector2f textPos(pos);
             sf::Text text;
@@ -177,6 +181,8 @@ void GFXLevel::run(const Level* level, vector2d center)
 
             text.setScale(1, 2);
             m_texts.push(text);
+        } else if (rLevelObjs[i]->getObjectType() == eObjectTypes::Usable) {
+            sprite->setTexture(&fire);
         }
 
         sprite->setPosition(pos);
