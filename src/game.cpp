@@ -55,12 +55,14 @@ Game::~Game()
 void Game::load(const std::string& filepath)
 {
     std::ifstream f(filepath, std::ifstream::binary);
+
     boost::archive::text_iarchive oa(f);
     oa >> m_scene;
     if (m_playerObject != nullptr) {
         delete m_playerObject;
     }
     m_playerObject = m_scene.getPlayer();
+    setState(Game::eApplicationState::Gameplay);
 }
 
 void Game::save(const std::string& filepath)

@@ -332,6 +332,9 @@ protected:
 private:
     template <class Archive> void serialize(Archive& ar, const unsigned int version)
     {
+        // apply armor before and after to ensure everything is updated
+        applyArmor();
+
         ar& m_strength;
         ar& m_agility;
         ar& m_intuition;
@@ -357,5 +360,7 @@ private:
         ar& m_hitLocations;
         ar& m_armor;
         ar& m_wounds;
+
+        applyArmor();
     }
 };

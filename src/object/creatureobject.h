@@ -92,7 +92,7 @@ protected:
 private:
     template <class Archive> void serialize(Archive& ar, const unsigned int version)
     {
-        std::cout << "creatureobject: " << getName() << std::endl;
+
         ar& boost::serialization::base_object<Object>(*this);
         ar& m_creature;
         ar& m_creatureFaction;
@@ -102,5 +102,7 @@ private:
         ar& m_hunger;
         ar& m_dialogue;
         ar& m_skills;
+
+        std::cout << "creatureobject: " << getName() << std::endl;
     }
 };

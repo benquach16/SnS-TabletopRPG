@@ -1,7 +1,13 @@
-#include "mainmenuui.h"
+#include <filesystem>
+
 #include "../game.h"
 #include "common.h"
+#include "mainmenuui.h"
 #include "types.h"
+
+using namespace std;
+
+const string cSaveString = "save.dat";
 
 MainMenuUI::MainMenuUI() {}
 
@@ -10,7 +16,16 @@ void MainMenuUI::run(bool hasKeyEvents, sf::Event event, Game* game)
     UiCommon::drawTopPanel();
     sf::Text text;
     UiCommon::initializeText(text);
-    text.setString("<Insert Game Title Here>\n\n\na - New Game\nb - Load Game\nc - Exit");
+    string str = "<Insert Game Title Here>\n\n\na - New Game\n";
+    // this is awful as it is a file system access every frame
+    bool existingSave = std::filesystem::exists(cSaveString);
+    if (existingSave) {
+        str += "b - Load Game\n";
+    } else {
+        str += "b - No savegame to load!\n";
+    }
+    str += "c - Exit\n";
+    text.setString(str);
     Game::getWindow().draw(text);
 
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
@@ -21,8 +36,10 @@ void MainMenuUI::run(bool hasKeyEvents, sf::Event event, Game* game)
             game->setState(Game::eApplicationState::CharCreation);
             break;
         case 'b':
-            game->load("save.dat");
-            game->setState(Game::eApplicationState::Gameplay);
+            if (existingSave) {
+                game->load(cSaveString);
+            }
+
             break;
 
         case 'c':
