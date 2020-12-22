@@ -28,8 +28,7 @@ public:
     void run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
     void changeToLevel(int idx, Object* object, int x, int y);
 
-    void save();
-    void load();
+    PlayerObject* getPlayer();
 
 private:
     static constexpr float cPlayingTick = 0.4;
@@ -83,5 +82,7 @@ private:
     {
         ar& m_levels;
         ar& m_pickup;
+        ar& m_currentIdx;
+        ar& m_currentState;
     }
 };

@@ -52,24 +52,44 @@ Game::~Game()
     // temporary, move level management to levelmanager
 }
 
+void Game::load(const std::string& filepath)
+{
+    std::ifstream f(filepath, std::ifstream::binary);
+    boost::archive::text_iarchive oa(f);
+    oa >> m_scene;
+    if (m_playerObject != nullptr) {
+        delete m_playerObject;
+    }
+    m_playerObject = m_scene.getPlayer();
+}
+
+void Game::save(const std::string& filepath)
+{
+    std::ofstream f(filepath, std::ofstream::binary);
+    boost::archive::text_oarchive oa(f);
+    oa << m_scene;
+}
+
 void Game::initialize()
 {
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
     m_window.create(sf::VideoMode(1600, 900), "window", sf::Style::Default, settings);
-    m_window.setFramerateLimit(165);
+    // sm_window.setFramerateLimit(165);
     m_defaultFont.loadFromFile("data/fonts/MorePerfectDOSVGA.ttf");
     // quite possibly the worst way of doing this, but cannot disable AA on sfml text without this.
     const_cast<sf::Texture&>(m_defaultFont.getTexture(11)).setSmooth(false);
-    m_appState = eApplicationState::CharCreation;
-    setupLevel();
+    m_appState = eApplicationState::MainMenu;
+}
+
+void Game::setupNewgame()
+{
+    m_playerObject = new PlayerObject;
+    m_scene.setupLevel(m_playerObject);
 }
 
 void Game::run()
 {
-
-    Scene scene;
-    scene.setupLevel(m_playerObject);
 
     while (m_window.isOpen()) {
         sf::Event event;
@@ -89,15 +109,9 @@ void Game::run()
                 break;
             }
         }
-        if (event.text.unicode == 'm' && hasKeyEvents) {
-            std::ofstream f("save.dat", std::ofstream::binary);
-            boost::archive::text_oarchive oa(f);
-            oa << scene;
-        }
-        if (event.text.unicode == 'n' && hasKeyEvents) {
-            std::ifstream f("save.dat", std::ifstream::binary);
-            boost::archive::text_iarchive oa(f);
-            oa >> scene;
+        if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
+            if (event.key.code == sf::Keyboard::N)
+                save("save.dat");
         }
         m_window.clear();
         switch (m_appState) {
@@ -105,9 +119,10 @@ void Game::run()
             charCreation(hasKeyEvents, event);
             break;
         case eApplicationState::MainMenu:
+            m_mainmenu.run(hasKeyEvents, event, this);
             break;
         case eApplicationState::Gameplay:
-            scene.run(hasKeyEvents, event, m_playerObject);
+            m_scene.run(hasKeyEvents, event, m_playerObject);
             // gameloop(hasKeyEvents, event);
             break;
         }
@@ -126,5 +141,3 @@ void Game::charCreation(bool hasKeyEvents, sf::Event event)
         m_appState = eApplicationState::Gameplay;
     }
 }
-
-void Game::setupLevel() { m_playerObject = new PlayerObject; }

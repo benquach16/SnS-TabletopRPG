@@ -39,10 +39,6 @@ Scene::~Scene()
     m_levels.clear();
 }
 
-void Scene::save() {}
-
-void Scene::load() {}
-
 void Scene::setupLevel(PlayerObject* playerObject)
 {
     m_currentIdx = 0;
@@ -381,6 +377,21 @@ void Scene::wait(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
         sleepTick = 0;
         m_currentState = eSceneState::Playing;
     }
+}
+
+PlayerObject* Scene::getPlayer()
+{
+    // todo : group objs by type
+    auto objects = m_levels[m_currentIdx]->getObjects();
+    for (auto it : objects) {
+        if (it->getObjectType() == eObjectTypes::Creature) {
+            CreatureObject* creature = static_cast<CreatureObject*>(it);
+            if (creature->isPlayer()) {
+                return static_cast<PlayerObject*>(creature);
+            }
+        }
+    }
+    return nullptr;
 }
 
 void Scene::attack(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)

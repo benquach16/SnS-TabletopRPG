@@ -75,8 +75,7 @@ void CreateCharUI::doName(bool hasKeyEvents, sf::Event event, PlayerObject* play
 {
     UiCommon::drawTopPanel();
     sf::Text text;
-    text.setCharacterSize(cCharSize);
-    text.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(text);
     text.setString("Enter your name (Cannot be blank):");
     Game::getWindow().draw(text);
 
