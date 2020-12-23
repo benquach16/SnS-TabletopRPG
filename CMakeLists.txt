@@ -86,6 +86,7 @@ if(WIN32)
     set(BOOST_INCLUDEDIR "C:/boost_1_70_0")
     set(BOOST_LIBRARYDIR "C:/boost_1_70_0/lib64-msvc-14.1")
     set(BOOST_ROOT "C:/boost_1_70_0/boost")
+    set(Boost_USE_STATIC_LIBS   ON)
 endif()
 
 find_package(SFML REQUIRED COMPONENTS graphics window system)

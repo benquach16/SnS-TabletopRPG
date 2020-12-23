@@ -1,5 +1,5 @@
 #include <assert.h>
-
+#include <algorithm>
 #include "utils.h"
 
 std::string offensiveManueverToString(eOffensiveManuevers manuever)
