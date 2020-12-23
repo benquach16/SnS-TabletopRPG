@@ -36,7 +36,7 @@ struct vector2d {
     }
 };
 
-enum class eObjectTypes { Misc, Item, Creature, Corpse, Chest, Usable };
+enum class eObjectTypes { Misc, Item, Creature, Corpse, Chest, Usable, Campfire };
 
 class Level;
 // might be too late to switch this to an entity component system

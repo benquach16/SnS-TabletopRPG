@@ -45,7 +45,6 @@ public:
             singleton = nullptr;
         }
     }
-    static ItemTable* singleton;
 
     const Item* get(int id) const;
 
@@ -58,5 +57,6 @@ private:
     void addWeapon(int id, Weapon* weapon);
     void addArmor(int id, Armor* armor);
     ItemTable();
+    static ItemTable* singleton;
     std::unordered_map<int, Item*> m_itemList;
 };

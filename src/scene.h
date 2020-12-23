@@ -85,6 +85,7 @@ private:
         ar& m_levels;
         ar& m_pickup;
         ar& m_currentIdx;
-        ar& m_currentState;
+        // make sure we are out of any weird states when saving/loading
+        m_currentState = eSceneState::Playing;
     }
 };

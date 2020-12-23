@@ -2,6 +2,8 @@
 
 using namespace std;
 
+BOOST_CLASS_EXPORT(CampfireObject)
+
 CampfireObject::CampfireObject() {}
 
 CampfireObject::~CampfireObject() {}

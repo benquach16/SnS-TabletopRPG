@@ -26,6 +26,8 @@ using boost::serialization::make_binary_object;
 
 using namespace std;
 
+const string Game::cSaveString = "save.dat";
+Game* Game::singleton = nullptr;
 sf::RenderWindow Game::m_window;
 sf::Font Game::m_defaultFont;
 
@@ -108,10 +110,6 @@ void Game::run()
                 hasKeyEvents = false;
                 break;
             }
-        }
-        if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
-            if (event.key.code == sf::Keyboard::N)
-                save("save.dat");
         }
         m_window.clear();
         switch (m_appState) {

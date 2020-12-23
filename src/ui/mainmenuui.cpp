@@ -7,8 +7,6 @@
 
 using namespace std;
 
-const string cSaveString = "save.dat";
-
 MainMenuUI::MainMenuUI() {}
 
 void MainMenuUI::run(bool hasKeyEvents, sf::Event event, Game* game)
@@ -18,7 +16,7 @@ void MainMenuUI::run(bool hasKeyEvents, sf::Event event, Game* game)
     UiCommon::initializeText(text);
     string str = "<Insert Game Title Here>\n\n\na - New Game\n";
     // this is awful as it is a file system access every frame
-    bool existingSave = std::filesystem::exists(cSaveString);
+    bool existingSave = std::filesystem::exists(Game::cSaveString);
     if (existingSave) {
         str += "b - Load Game\n";
     } else {
@@ -37,7 +35,7 @@ void MainMenuUI::run(bool hasKeyEvents, sf::Event event, Game* game)
             break;
         case 'b':
             if (existingSave) {
-                game->load(cSaveString);
+                game->load(Game::cSaveString);
             }
 
             break;

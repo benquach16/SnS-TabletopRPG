@@ -340,6 +340,10 @@ void Scene::use(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
             Object* object
                 = m_levels[m_currentIdx]->getObjectMutable(m_selector.getPosition(), playerObject);
             if (object != nullptr) {
+                if (object->getObjectType() == eObjectTypes::Campfire) {
+                    Game::getSingleton()->save(Game::cSaveString);
+                    Log::push("Game saved!");
+                }
             }
         }
         if (event.key.code == sf::Keyboard::Escape) {

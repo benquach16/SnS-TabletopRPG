@@ -181,7 +181,7 @@ void GFXLevel::run(const Level* level, vector2d center)
 
             text.setScale(1, 2);
             m_texts.push(text);
-        } else if (rLevelObjs[i]->getObjectType() == eObjectTypes::Usable) {
+        } else if (rLevelObjs[i]->getObjectType() == eObjectTypes::Campfire) {
             sprite->setTexture(&fire);
         }
 

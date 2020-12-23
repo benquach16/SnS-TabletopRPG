@@ -16,9 +16,7 @@
 class Game {
 public:
     enum class eApplicationState : unsigned { CharCreation, MainMenu, Gameplay };
-
-    Game();
-    ~Game();
+    const static std::string cSaveString;
     void load(const std::string& filepath);
     void save(const std::string& filepath);
     void initialize();
@@ -30,7 +28,18 @@ public:
     static sf::Font& getDefaultFont() { return m_defaultFont; }
     static sf::RenderWindow& getWindow() { return m_window; }
 
+    static Game* getSingleton()
+    {
+        if (singleton == nullptr) {
+            singleton = new Game;
+        }
+        return singleton;
+    }
+
 private:
+    Game();
+    ~Game();
+
     void charCreation(bool hasKeyEvents, sf::Event event);
 
     PlayerObject* m_playerObject;
@@ -42,6 +51,9 @@ private:
     Scene m_scene;
     Overworld m_overworld;
     eApplicationState m_appState;
+
+    static Game* singleton;
+
     static sf::RenderWindow m_window;
     static sf::Font m_defaultFont;
 };
