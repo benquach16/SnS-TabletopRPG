@@ -18,12 +18,19 @@ public:
     std::string getDescription() const override { return "yourself."; }
     bool isPlayer() const override { return true; }
     void run(const Level* level) override;
+    void move();
 
     // never delete player, otherwise there will be a segfault
     bool deleteMe() const override { return false; }
     bool preserveBetweenLevels() const override { return true; }
 
+    void moveDown() override;
+    void moveUp() override;
+    void moveLeft() override;
+    void moveRight() override;
+
 private:
+    vector2d m_toMove;
     template <class Archive> void serialize(Archive& ar, const unsigned int version)
     {
         ar& boost::serialization::base_object<CreatureObject>(*this);

@@ -22,6 +22,7 @@ using namespace std;
 
 constexpr float cMaxZoom = 0.6f;
 constexpr float cMinZoom = 1.4f;
+constexpr float cWaitTick = 0.2;
 constexpr int cRestTicks = 20;
 
 Scene::Scene()
@@ -61,7 +62,7 @@ void Scene::setupLevel(PlayerObject* playerObject)
     m_ui.initDialog(playerObject);
     m_currentState = eSceneState::DialogueMode;
     CampfireObject* temp = new CampfireObject;
-    temp->setPosition(1, 1);
+    temp->setPosition(2, 1);
     level->addObject(temp);
     playerObject->setPosition(1, 1);
     // has some management of player here but cannot delete
@@ -213,21 +214,29 @@ void Scene::playing(bool hasKeyEvents, sf::Event event, PlayerObject* playerObje
     vector2d pos = playerObject->getPosition();
     if (hasKeyEvents && event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Down) {
+            tick = cPlayingTick + 1;
+            aiTick = cPlayingTick + 1;
             if (m_levels[m_currentIdx]->isFreeSpace(pos.x, pos.y + 1) == true) {
                 playerObject->moveDown();
             }
         }
         if (event.key.code == sf::Keyboard::Up) {
+            tick = cPlayingTick + 1;
+            aiTick = cPlayingTick + 1;
             if (m_levels[m_currentIdx]->isFreeSpace(pos.x, pos.y - 1) == true) {
                 playerObject->moveUp();
             }
         }
         if (event.key.code == sf::Keyboard::Left) {
+            tick = cPlayingTick + 1;
+            aiTick = cPlayingTick + 1;
             if (m_levels[m_currentIdx]->isFreeSpace(pos.x - 1, pos.y) == true) {
                 playerObject->moveLeft();
             }
         }
         if (event.key.code == sf::Keyboard::Right) {
+            tick = cPlayingTick + 1;
+            aiTick = cPlayingTick + 1;
             if (m_levels[m_currentIdx]->isFreeSpace(pos.x + 1, pos.y) == true) {
                 playerObject->moveRight();
             }
@@ -393,9 +402,10 @@ void Scene::pickup(bool hasKeyEvents, sf::Event event, PlayerObject* playerObjec
 
 void Scene::wait(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
 {
+
     if (sleepTick < cRestTicks) {
         // cout << aiTick << endl;
-        if (aiTick > 0.2) {
+        if (aiTick > cWaitTick) {
             m_levels[m_currentIdx]->run(this);
             aiTick = 0;
             sleepTick++;

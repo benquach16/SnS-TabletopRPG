@@ -31,7 +31,7 @@ public:
     PlayerObject* getPlayer();
 
 private:
-    static constexpr float cPlayingTick = 0.4;
+    static constexpr float cPlayingTick = 0.3;
     void playing(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
     void selection(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
     void dialogSelect(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);

@@ -64,10 +64,10 @@ public:
 
     void setPosition(vector2d position) { m_position = position; }
 
-    void moveDown() { m_position.y++; }
-    void moveUp() { m_position.y--; }
-    void moveLeft() { m_position.x--; }
-    void moveRight() { m_position.x++; }
+    virtual void moveDown() { m_position.y++; }
+    virtual void moveUp() { m_position.y--; }
+    virtual void moveLeft() { m_position.x--; }
+    virtual void moveRight() { m_position.x++; }
 
     const std::map<int, int>& getInventory() const { return m_inventory; }
     std::map<int, int>& getInventoryMutable() { return m_inventory; }

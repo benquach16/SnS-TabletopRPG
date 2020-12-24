@@ -1,11 +1,15 @@
+#include <algorithm>
 #include <iostream>
 
 #include "playerobject.h"
+
+using namespace std;
 
 BOOST_CLASS_EXPORT(PlayerObject)
 
 PlayerObject::PlayerObject()
     : CreatureObject(new Player)
+    , m_toMove(0.f, 0.f)
 {
     /*
     m_creature->setWeapon(1040);
@@ -38,6 +42,9 @@ void PlayerObject::run(const Level* level)
         m_manager->run(0.9);
     }
     */
+
+    m_toMove.x = 0;
+    m_toMove.y = 0;
 }
 
 bool PlayerObject::runCombat(float tick)
@@ -55,3 +62,10 @@ bool PlayerObject::runCombat(float tick)
     }
     return ret;
 }
+
+void PlayerObject::moveDown() { m_position.y++; }
+
+void PlayerObject::moveUp() { m_position.y--; }
+
+void PlayerObject::moveLeft() { m_position.x--; }
+void PlayerObject::moveRight() { m_position.x++; }
