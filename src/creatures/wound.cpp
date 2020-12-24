@@ -321,12 +321,13 @@ eBodyParts WoundTable::getSwing(eHitLocations location)
     // dice returns an actual dice roll 1-10, so we have to offset by 1
     int roll = DiceRoller::rollSides(cPartsPerLocation) - 1;
     eBodyParts part = m_hitTable[location].m_swing[roll];
-    if (part == eBodyParts::SecondLocationHead) {
+    while (part == eBodyParts::SecondLocationHead) {
         roll = DiceRoller::rollSides(cPartsPerLocation) - 1;
-        return m_hitTable[eHitLocations::Head].m_swing[roll];
-    } else if (part == eBodyParts::SecondLocationArm) {
+        part = m_hitTable[eHitLocations::Head].m_swing[roll];
+    }
+    while (part == eBodyParts::SecondLocationArm) {
         roll = DiceRoller::rollSides(cPartsPerLocation) - 1;
-        return m_hitTable[eHitLocations::Arm].m_swing[roll];
+        part = m_hitTable[eHitLocations::Arm].m_swing[roll];
     }
     return part;
 }
@@ -335,7 +336,16 @@ eBodyParts WoundTable::getThrust(eHitLocations location)
 {
     // dice returns an actual dice roll 1-10, so we have to offset by 1
     int roll = DiceRoller::rollSides(cPartsPerLocation) - 1;
-    return m_hitTable[location].m_thrust[roll];
+    eBodyParts part = m_hitTable[location].m_thrust[roll];
+    while (part == eBodyParts::SecondLocationHead) {
+        roll = DiceRoller::rollSides(cPartsPerLocation) - 1;
+        part = m_hitTable[eHitLocations::Head].m_thrust[roll];
+    }
+    while (part == eBodyParts::SecondLocationArm) {
+        roll = DiceRoller::rollSides(cPartsPerLocation) - 1;
+        part = m_hitTable[eHitLocations::Arm].m_thrust[roll];
+    }
+    return part;
 }
 
 std::vector<eBodyParts> WoundTable::getPinpointThrustTargets(

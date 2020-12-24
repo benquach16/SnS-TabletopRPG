@@ -124,6 +124,10 @@ bool AICombatController::setCreatureDefenseManuever(
 void AICombatController::doOffense(Creature* controlledCreature, const Creature* target,
     int reachCost, const CombatInstance* instance, bool allin, bool dualRedThrow, bool payCosts)
 {
+    if (controlledCreature->getHasOffense()) {
+        cout << "already has offense";
+        return;
+    }
     cout << "allin : " << allin << endl;
     const Weapon* weapon = nullptr;
 
