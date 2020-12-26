@@ -389,7 +389,7 @@ int Creature::getMaxCombatPool()
     combatPool -= getPain();
     combatPool -= m_fatigue[eCreatureFatigue::Stamina] / cFatigueDivisor;
 
-    return combatPool;
+    return max(combatPool, 0);
 }
 
 void Creature::addAndResetBonusDice()
