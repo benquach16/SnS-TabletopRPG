@@ -14,12 +14,13 @@ WoundTable* WoundTable::singleton = nullptr;
 
 constexpr int woundLevels = 5;
 
-Wound::Wound(eBodyParts location, std::vector<std::string> text, int level, int btn, int impact,
-    std::set<eEffects> effects)
+Wound::Wound(eBodyParts location, std::vector<std::string> text, int level, int btn, int pain,
+    int impact, std::set<eEffects> effects)
     : m_location(location)
     , m_text(text)
     , m_level(level)
     , m_btn(btn)
+    , m_pain(pain)
     , m_impact(impact)
     , m_effects(effects)
 {
@@ -51,16 +52,22 @@ WoundTable::WoundTable()
 
     vector<int> bluntBtn = bluntJson["BTN"];
     vector<int> bluntImpact = bluntJson["impact"];
+    vector<int> bluntPain = bluntJson["pain"];
     m_btnTable[eDamageTypes::Blunt] = bluntBtn;
     m_impactTable[eDamageTypes::Blunt] = bluntImpact;
+    m_painTable[eDamageTypes::Blunt] = bluntPain;
     vector<int> piercingBtn = piercingJson["BTN"];
     vector<int> piercingImpact = piercingJson["impact"];
+    vector<int> piercingPain = piercingJson["pain"];
     m_btnTable[eDamageTypes::Piercing] = piercingBtn;
     m_impactTable[eDamageTypes::Piercing] = piercingImpact;
+    m_painTable[eDamageTypes::Piercing] = piercingPain;
     vector<int> cuttingBtn = cuttingJson["BTN"];
     vector<int> cuttingImpact = cuttingJson["impact"];
+    vector<int> cuttingPain = cuttingJson["pain"];
     m_btnTable[eDamageTypes::Cutting] = cuttingBtn;
     m_impactTable[eDamageTypes::Cutting] = cuttingImpact;
+    m_painTable[eDamageTypes::Cutting] = cuttingPain;
     initWoundTable(eDamageTypes::Blunt, bluntJson);
     initWoundTable(eDamageTypes::Piercing, piercingJson);
     initWoundTable(eDamageTypes::Cutting, cuttingJson);
@@ -84,7 +91,7 @@ void WoundTable::initWoundTable(eDamageTypes type, nlohmann::json woundJson)
         string key = iter.key();
 
         // ignore BTN and impact tables
-        if (key == "BTN" || key == "impact") {
+        if (key == "BTN" || key == "impact" || key == "pain") {
             continue;
         }
         eBodyParts bodyPart = stringToBodyPart(key);
@@ -101,7 +108,7 @@ void WoundTable::initWoundTable(eDamageTypes type, nlohmann::json woundJson)
                 }
             }
             Wound* wound = new Wound(bodyPart, woundJson["text"], i, m_btnTable[type][i - 1],
-                m_impactTable[type][i - 1], effects);
+                m_painTable[type][i - 1], m_impactTable[type][i - 1], effects);
 
             m_woundTable[type][bodyPart][i] = wound;
         }

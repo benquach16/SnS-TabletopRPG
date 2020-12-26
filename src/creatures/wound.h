@@ -13,11 +13,12 @@
 
 class Wound {
 public:
-    Wound(eBodyParts location, std::vector<std::string> text, int level, int btn, int impact,
-        std::set<eEffects> effects);
+    Wound(eBodyParts location, std::vector<std::string> text, int level, int btn, int pain,
+        int impact, std::set<eEffects> effects);
 
     std::string getText() const { return m_text[0]; }
     int getBTN() const { return m_btn; }
+    int getPain() const { return m_pain; }
     int getImpact() const { return m_impact; }
     int getLevel() const { return m_level; }
     eBodyParts getLocation() const { return m_location; }
@@ -31,6 +32,7 @@ private:
     int m_level;
     int m_impact;
     int m_btn;
+    int m_pain;
     std::set<eEffects> m_effects;
 };
 
@@ -92,4 +94,5 @@ private:
 
     std::unordered_map<eDamageTypes, std::vector<int>> m_btnTable;
     std::unordered_map<eDamageTypes, std::vector<int>> m_impactTable;
+    std::unordered_map<eDamageTypes, std::vector<int>> m_painTable;
 };

@@ -589,7 +589,7 @@ void CombatInstance::doResolution()
                   "can no longer resolve.");
             m_currentState = eCombatState::Offense;
             m_currentReach = attacker->getCurrentReach();
-        } else if (defender->isWeaponDisabled() || defender->droppedWeapon()) {
+        } else if (defender->primaryWeaponDisabled() || defender->droppedWeapon()) {
             // if the attack disabled or caused their weapon to drop
             // if the attack wiped out their combat pool, do nothing
             writeMessage(defender->getName()

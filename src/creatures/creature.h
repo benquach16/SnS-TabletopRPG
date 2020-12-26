@@ -226,6 +226,8 @@ public:
 
     int getFatigue() const;
 
+    int getPain() const { return std::max(m_pain - getGrit(), 0); }
+
     bool getBleeding() const { return m_bleeding; }
 
     bool rollFatigue();
@@ -251,11 +253,6 @@ public:
     bool droppedWeapon() const
     {
         return m_disableWeaponId != cFistsId && m_primaryWeaponId == cFistsId && m_disarm < 0;
-    }
-
-    bool isWeaponDisabled() const
-    {
-        return m_disableWeaponId != cFistsId && m_primaryWeaponId == cFistsId && m_disarm > 0;
     }
 
     bool primaryWeaponDisabled() const { return m_primaryWeaponDisabled; }
@@ -307,12 +304,13 @@ protected:
     std::vector<int> m_droppedWeapons;
     eGrips m_currentGrip;
 
-    int m_bloodLoss;
+    unsigned m_bloodLoss;
     bool m_bleeding;
     int m_BTN;
+    int m_pain;
     float m_AP;
 
-    std::unordered_map<eCreatureFatigue, int> m_fatigue;
+    std::unordered_map<eCreatureFatigue, unsigned> m_fatigue;
 
     // stats
     int m_strength;
@@ -356,6 +354,8 @@ private:
         ar& m_currentStance;
 
         ar& m_bleeding;
+        ar& m_BTN;
+        ar& m_pain;
 
         ar& m_hitLocations;
         ar& m_armor;

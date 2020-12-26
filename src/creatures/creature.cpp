@@ -17,6 +17,7 @@ constexpr int cFatigueDivisor = 10;
 
 Creature::Creature(int naturalWeaponId)
     : m_BTN(cBaseBTN)
+    , m_pain(0)
     , m_strength(1)
     , m_agility(1)
     , m_intuition(1)
@@ -294,7 +295,8 @@ void Creature::inflictWound(Wound* wound)
         dropWeapon();
     }
 
-    m_BTN = max(m_BTN, wound->getBTN());
+    // m_BTN = max(m_BTN, wound->getBTN());
+    m_pain += wound->getPain();
 }
 
 int Creature::getSuccessRate() const
@@ -353,14 +355,12 @@ void Creature::removeArmor(int id)
 void Creature::resetCombatPool()
 {
     // carryover impact damage across tempos
-    const Weapon* weapon = isWeaponDisabled() == false
-        ? getPrimaryWeapon()
-        : WeaponTable::getSingleton()->get(m_disableWeaponId);
+    const Weapon* weapon = getPrimaryWeapon();
     int carry = m_combatPool;
     carry = min(0, carry);
     m_combatPool = getProficiency(weapon->getType()) + getReflex() + carry;
     m_combatPool -= static_cast<int>(m_AP);
-
+    m_combatPool -= getPain();
     // apply fatigue
     /*
     for (auto it : m_fatigue) {
@@ -383,12 +383,10 @@ void Creature::resetCombatPool()
 int Creature::getMaxCombatPool()
 {
     // carryover impact damage across tempos
-    const Weapon* weapon = isWeaponDisabled() == false
-        ? getPrimaryWeapon()
-        : WeaponTable::getSingleton()->get(m_disableWeaponId);
+    const Weapon* weapon = getPrimaryWeapon();
     int combatPool = getProficiency(weapon->getType()) + getReflex();
     combatPool -= static_cast<int>(m_AP);
-
+    combatPool -= getPain();
     combatPool -= m_fatigue[eCreatureFatigue::Stamina] / cFatigueDivisor;
 
     return combatPool;
