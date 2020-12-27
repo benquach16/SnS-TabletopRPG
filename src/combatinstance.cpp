@@ -103,6 +103,8 @@ void CombatInstance::doRollInitiative()
     if (side1 == eInitiativeRoll::Defend && side2 == eInitiativeRoll::Defend) {
         // repeat
         writeMessage("Both sides chose to defend, deciding initiative again");
+        m_side1->resetInitiative();
+        m_side2->resetInitiative();
         if (m_dualWhiteTimes > 1) {
             writeMessage("Defense chosen too many times, initiative going to "
                          "willpower contest");
@@ -689,7 +691,11 @@ void CombatInstance::doResolution()
 
                 bool linked = false;
                 if (offense.withPrimaryWeapon != defend.withPrimaryWeapon) {
-                    linked = true;
+                    if (defend.withPrimaryWeapon == true) {
+                        linked = true;
+                    } else if (defender->getSecondaryWeapon()->isShield()) {
+                        linked = true;
+                    }
                 }
                 int BTN = linked == true ? defender->getBTN() : defender->getDisadvantagedBTN();
 

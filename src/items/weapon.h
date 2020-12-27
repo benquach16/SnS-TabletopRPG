@@ -32,6 +32,8 @@ public:
 
     bool canHook() const { return m_hook; }
 
+    bool isShield() const { return false; }
+
     bool getNaturalWeapon() const { return m_naturalWeapon; }
 
     const Weapon* getSecondaryWeapon() const;

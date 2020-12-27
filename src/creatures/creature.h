@@ -170,7 +170,7 @@ public:
         }
         return ret;
     }
-
+    void resetInitiative() { m_flagInitiative = false; }
     void setOffenseWeapon(bool isPrimary) { m_currentOffense.withPrimaryWeapon = isPrimary; }
     void setOffenseManuever(eOffensiveManuevers manuever) { m_currentOffense.manuever = manuever; }
     void setOffenseDice(int dice) { m_currentOffense.dice = dice; }
