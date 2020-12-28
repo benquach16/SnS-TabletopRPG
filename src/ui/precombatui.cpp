@@ -165,7 +165,9 @@ void PrecombatUI::doQuickdraw(bool hasKeyEvents, sf::Event event, Player* player
 
         if (hasKeyEvents && event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;
-            if (c == idx) {
+            if (c == 'a') {
+                m_currentState = eUiState::ChooseFavoring;
+            } else if (c == idx) {
                 if (player->getCombatPool() > cost) {
                     if (weapon->getLength() > eLength::Hand && inGrapple) {
                         Log::push("Weapon is too long to use in a grapple! You must use a dagger "

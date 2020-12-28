@@ -71,6 +71,7 @@ public:
     bool getDualRedThrow() const { return m_dualRedThrow; }
 
 private:
+    int calcReachCost(Creature* creature, bool attacker);
     void doInitialization();
     void doRollInitiative();
     void doPreexchangeActions();
@@ -116,7 +117,7 @@ private:
     bool inflictWound(Creature* attacker, int MoS, Offense attack, Creature* target);
     void writeMessage(const std::string& str,
         Log::eMessageTypes type = Log::eMessageTypes::Standard, bool important = false);
-    void outputReachCost(int cost, Creature* attacker);
+    void outputReachCost(int cost, Creature* creature, bool attacker);
 
     eInitiative m_initiative;
     Creature* m_side1;

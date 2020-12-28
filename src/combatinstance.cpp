@@ -203,8 +203,6 @@ bool CombatInstance::doOffense()
     Creature* defender = nullptr;
     setSides(attacker, defender);
 
-    int reachCost = calculateReachCost(m_currentReach, attacker->getCurrentReach());
-
     if (attacker->getHasOffense() == false) {
         // bug - this condition will not get hit since the ai might update faster than this function
         // gets called
@@ -226,9 +224,10 @@ bool CombatInstance::doOffense()
         m_currentState = eCombatState::Offense;
         return false;
     }
+    int reachCost = calcReachCost(attacker, true);
     Offense attack = attacker->getQueuedOffense();
     const Weapon* offenseWeapon = getAttackingWeapon(attacker);
-    outputReachCost(reachCost, attacker);
+    outputReachCost(reachCost, attacker, true);
     assert(attack.component != nullptr);
 
     attacker->addAndResetBonusDice();
@@ -274,17 +273,15 @@ void CombatInstance::doDualOffenseStealInitiative()
     Creature* defender = nullptr;
     setSides(attacker, defender);
 
-    int reachCost = calculateReachCost(m_currentReach, defender->getCurrentReach());
-
     // causes issues with new implementation
     if (defender->getHasOffense() == false) {
         m_currentState = eCombatState::DualOffenseStealInitiative;
         return;
     }
-
+    int reachCost = calcReachCost(defender, true);
     Offense offense = defender->getQueuedOffense();
 
-    outputReachCost(reachCost, defender);
+    outputReachCost(reachCost, defender, true);
 
     Defense defense = defender->getQueuedDefense();
 
@@ -354,14 +351,12 @@ void CombatInstance::doAttackFromDefense()
     Creature* defender = nullptr;
     setSides(attacker, defender);
 
-    int reachCost = calculateReachCost(m_currentReach, defender->getCurrentReach());
-
     if (defender->getHasOffense() == false) {
         m_currentState = eCombatState::AttackFromDefense;
         return;
     }
-
-    outputReachCost(reachCost, defender);
+    int reachCost = calcReachCost(defender, true);
+    outputReachCost(reachCost, defender, true);
     Offense attack = defender->getQueuedOffense();
     const Weapon* offenseWeapon = getAttackingWeapon(defender);
     assert(attack.component != nullptr);
@@ -386,7 +381,8 @@ void CombatInstance::doDefense()
         m_currentState = eCombatState::Defense;
         return;
     }
-
+    int reachCost = calcReachCost(defender, false);
+    outputReachCost(reachCost, defender, false);
     Defense defend = defender->getQueuedDefense();
     if (defend.manuever == eDefensiveManuevers::StealInitiative) {
         // need both sides to attempt to allocate dice
@@ -398,6 +394,7 @@ void CombatInstance::doDefense()
         return;
     }
     const Weapon* defendingWeapon = getDefendingWeapon(defender);
+
     if (defend.manuever == eDefensiveManuevers::ParryLinked) {
         writeMessage(defender->getName() + " performs a block and strike with "
             + defendingWeapon->getName() + " using " + to_string(defend.dice) + " action points");
@@ -471,9 +468,9 @@ void CombatInstance::doStolenOffense()
 
     writeMessage(attacker->getName() + " allocates " + to_string(attacker->getQueuedDefense().dice)
         + " action points to contest initiative steal");
-    int reachCost = calculateReachCost(defender->getCurrentReach(), m_currentReach);
+    int reachCost = calcReachCost(defender, true);
     reachCost = abs(reachCost);
-    outputReachCost(reachCost, defender);
+    outputReachCost(reachCost, defender, true);
 
     writeMessage(defender->getName() + " "
         + offensiveManueverToString(defender->getQueuedOffense().manuever) + "s with "
@@ -1193,6 +1190,36 @@ void CombatInstance::run()
     }
 }
 
+int CombatInstance::calcReachCost(Creature* creature, bool attacker)
+{
+    if (attacker) {
+        assert(creature->getHasOffense());
+        Offense offense = creature->getQueuedOffense();
+        eLength length = offense.withPrimaryWeapon ? creature->getCurrentReach()
+                                                   : creature->getSecondaryWeaponReach();
+
+        int cost = calculateReachCost(getCurrentReach(), length);
+        if (offense.manuever == eOffensiveManuevers::Beat) {
+            return max(cost, 1);
+        }
+        return cost;
+    } else {
+        assert(creature->getHasDefense());
+        Defense defense = creature->getQueuedDefense();
+        if (defense.manuever == eDefensiveManuevers::Dodge) {
+            return 0;
+        }
+        eLength length = defense.withPrimaryWeapon ? creature->getCurrentReach()
+                                                   : creature->getSecondaryWeaponReach();
+        // pay reach if weapon is too long
+        if (getCurrentReach() < length) {
+            return calculateReachCost(getCurrentReach(), length);
+        } else {
+            return 0;
+        }
+    }
+}
+
 void CombatInstance::writeMessage(const std::string& str, Log::eMessageTypes type, bool important)
 {
     // combat manager is not a singleton, so we can have multiple.
@@ -1204,16 +1231,24 @@ void CombatInstance::writeMessage(const std::string& str, Log::eMessageTypes typ
     }
 }
 
-void CombatInstance::outputReachCost(int cost, Creature* attacker)
+void CombatInstance::outputReachCost(int cost, Creature* creature, bool attacker)
 {
     // reach costs shouldn't be so extreme
     int reachCost = abs(cost);
+
     if (reachCost != 0) {
-        writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost)
-                + " action points",
-            Log::eMessageTypes::Announcement);
-        attacker->reduceOffenseDie(reachCost);
-        // attacker->reduceCombatPool(min(reachCost, attacker->getCombatPool()));
+        if (attacker) {
+            writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost)
+                    + " action points",
+                Log::eMessageTypes::Announcement);
+            creature->reduceOffenseDie(reachCost);
+            // attacker->reduceCombatPool(min(reachCost, attacker->getCombatPool()));
+        } else {
+            writeMessage("Weapon is too long for defense, causes reach cost of "
+                    + to_string(reachCost) + " action points",
+                Log::eMessageTypes::Announcement);
+            creature->reduceDefenseDie(reachCost);
+        }
     }
 }
 

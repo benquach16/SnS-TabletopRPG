@@ -34,6 +34,10 @@ inline int operator-(eLength length1, eLength length2)
 {
     return static_cast<int>(length1) - static_cast<int>(length2);
 }
+inline int operator<(eLength length1, eLength length2)
+{
+    return static_cast<int>(length1) < static_cast<int>(length2);
+}
 
 int calculateReachCost(eLength length1, eLength length2);
 int getFeintCost();

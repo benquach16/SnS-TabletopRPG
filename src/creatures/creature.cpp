@@ -132,7 +132,7 @@ eLength Creature::getSecondaryWeaponReach() const
     // so we should not override the reach
 
     if (getGrip() == eGrips::Staff || getGrip() == eGrips::HalfSword) {
-        return getCurrentReach();
+        return static_cast<eLength>(max(getCurrentReach() - static_cast<eLength>(1), 0));
     }
 
     const Weapon* weapon = getSecondaryWeapon();

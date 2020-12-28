@@ -2,7 +2,7 @@
 	"1020": {
 		"name": "Polearm Queue w/Buttspike",
 		"description": "The queue end of a polearm, equipped with a spike. Typically found on nicer polearms.",
-		"length" : "medium",
+		"length" : "short",
 		"type": "polearm",
 		"hands": 1,
 		"cost": 0,
@@ -28,7 +28,7 @@
 	"1021": {
 		"name": "Polearm Queue",
 		"description": "The queue end of a polearm.",
-		"length" : "medium",
+		"length" : "short",
 		"type": "polearm",
 		"hands": 1,
 		"cost": 0,
@@ -53,7 +53,7 @@
 	"1022": {
 		"name": "Sword Pommel",
 		"description": "The pommel of a sword",
-		"length" : "medium",
+		"length" : "short",
 		"type": "sword",
 		"hands": 1,
 		"cost": 0,

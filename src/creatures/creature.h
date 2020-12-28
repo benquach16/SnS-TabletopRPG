@@ -140,6 +140,11 @@ public:
         m_currentOffense.dice -= num;
         m_currentOffense.dice = std::max(0, m_currentOffense.dice);
     }
+    void reduceDefenseDie(int num)
+    {
+        m_currentDefense.dice -= num;
+        m_currentDefense.dice = std::max(0, m_currentDefense.dice);
+    }
     const std::vector<eHitLocations> getHitLocations() const;
     const std::set<eHitLocations>& getFavoredLocations() const { return m_favoredLocations; }
 
