@@ -31,6 +31,8 @@ std::string offensiveManueverToString(eOffensiveManuevers manuever)
         return "Visor Thrust";
     case eOffensiveManuevers::Bite:
         return "Bite";
+	case eOffensiveManuevers::Draw:
+		return "Draw Cut";
     default:
         assert(false);
         return "";

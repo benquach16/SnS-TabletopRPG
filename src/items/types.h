@@ -31,6 +31,7 @@ enum class eOffensiveManuevers : unsigned {
     Slam,
     Grab,
     Disarm,
+	Draw,
     // grapple moves
     Snap,
     Throw,
@@ -64,10 +65,11 @@ enum class eDefensiveManuevers : unsigned {
     StealInitiative,
     AttackFromDef,
     ParryLinked,
-    DodgeLinked,
+    Overrun,
     Counter,
     Parry,
     Dodge,
+	DodgeTakeInitiative,
     Expulsion,
     // grapple manuevers
     Break,

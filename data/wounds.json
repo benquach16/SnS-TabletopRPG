@@ -2,7 +2,7 @@
 	"blunt": {
 		"BTN": [7, 7, 8, 9, 10],
 		"impact": [2, 4, 6, 8, 10],
-		"pain": [4, 5, 8, 10, 15],
+		"pain": [2, 5, 8, 10, 15],
 		"crown": {
 			"1": {
 				"text": ["Mild blow to the forehead."],
@@ -385,7 +385,7 @@
 	"piercing": {
 		"BTN": [7, 8, 9, 10, 10],
 		"impact": [1, 2, 3, 4, 5],
-		"pain": [4, 7, 10, 14, 18],
+		"pain": [2, 6, 9, 12, 15],
 		"crown": {
 			"1": {
 				"text":["Some torn skin, a little blood."]
@@ -760,7 +760,7 @@
 	"cutting": {
 		"BTN": [7, 8, 9, 10, 10],
 		"impact": [2, 4, 6, 8, 10],
-		"pain": [5, 8, 11, 15, 20],
+		"pain": [3, 6, 9, 13, 17],
 		"crown": {
 			"1": {
 				"text":["A graze, but nothing serious. Some blood in the hair."]

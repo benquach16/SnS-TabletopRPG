@@ -59,15 +59,25 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
     reachBkg.setPosition(2, windowSize.y - logHeight - rectHeight - cCharSize - 2);
     reachBkg.setOutlineThickness(2);
     reachBkg.setOutlineColor(sf::Color(22, 22, 33));
-    int reachCost = calculateReachCost(instance->getCurrentReach(), player->getCurrentReach());
-
+    int reachCostPrimary = calculateReachCost(instance->getCurrentReach(), player->getCurrentReach());
+	int reachCostSecondary = calculateReachCost(instance->getCurrentReach(), player->getSecondaryWeaponReach());
     sf::Text reachTxt;
     reachTxt.setCharacterSize(cCharSize);
     reachTxt.setFont(Game::getDefaultFont());
     reachTxt.setPosition(5, windowSize.y - logHeight - rectHeight - cCharSize - 6);
     if (instance->getInGrapple() == false) {
-        reachTxt.setString("Current reach is " + lengthToString(instance->getCurrentReach()) + " ("
-            + to_string(reachCost) + "AP to attack)");
+		string str = "Current reach is " + lengthToString(instance->getCurrentReach()) + " (Primary: "
+			+ to_string(reachCostPrimary) + "AP to attack";
+		// might break branch prediction
+		if (player->getCurrentReach() > instance->getCurrentReach()) {
+			str += " and defend";
+		}
+		str += " / Secondary: " + to_string(reachCostSecondary) + "AP to attack";
+		if (player->getSecondaryWeaponReach() > instance->getCurrentReach()) {
+			str += " and defend";
+		}
+		str += ")";
+        reachTxt.setString(str);
 
     } else {
         reachTxt.setString(
