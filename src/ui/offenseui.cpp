@@ -102,9 +102,9 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player,
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-
-    map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(player->getPrimaryWeapon(),
-        player->getGrip(), instance->getCurrentReach(), instance->getInGrapple());
+	bool withPrimaryWeapon = player->getQueuedOffense().withPrimaryWeapon;
+    map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(player,
+		withPrimaryWeapon, instance->getCurrentReach(), instance->getInGrapple());
 
     string str = "Choose attack:\n";
     map<char, std::pair<eOffensiveManuevers, int>> indices;
@@ -135,7 +135,7 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player,
 
         if (iter != indices.end()) {
             auto cost = iter->second;
-            if (player->getCombatPool() < cost.second) {
+            if (player->getCombatPool() < cost.second && cost.second > 0) {
                 Log::push(to_string(cost.second) + " AP needed.");
                 return;
             }
@@ -172,6 +172,11 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player,
                 }
                 break;
             }
+			case eOffensiveManuevers::NoOffense:
+				player->setOffenseDice(0);
+				player->setOffenseReady();
+				m_currentState = eUiState::ChooseManuever;
+				break;
             default:
                 m_currentState = eUiState::ChooseManuever;
                 break;

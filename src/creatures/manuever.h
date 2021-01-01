@@ -29,7 +29,7 @@ struct Offense : public Manuever {
     void reset() override
     {
         Manuever::reset();
-        manuever = eOffensiveManuevers::Invalid;
+        manuever = eOffensiveManuevers::NoOffense;
         linked = false;
         feint = false;
         pinpoint = false;

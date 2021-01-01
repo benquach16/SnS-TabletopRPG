@@ -89,8 +89,9 @@ void DefenseUI::doManuever(
 
     string str = "Choose defense:\n";
 
-    map<eDefensiveManuevers, int> manuevers = getAvailableDefManuevers(player->getPrimaryWeapon(),
-        player->getGrip(), instance->getLastTempo(), instance->getInGrapple());
+    map<eDefensiveManuevers, int> manuevers
+        = getAvailableDefManuevers(player, player->getQueuedOffense().withPrimaryWeapon,
+            instance->getLastTempo(), instance->getCurrentReach(), instance->getInGrapple());
     map<char, std::pair<eDefensiveManuevers, int>> indices;
     char idx = 'a';
     for (auto manuever : manuevers) {
@@ -113,7 +114,7 @@ void DefenseUI::doManuever(
 
         if (iter != indices.end()) {
             auto cost = iter->second;
-            if (player->getCombatPool() < cost.second) {
+            if (player->getCombatPool() < cost.second && cost.second > 0) {
                 Log::push(to_string(cost.second) + " AP needed.");
                 return;
             }
@@ -126,7 +127,7 @@ void DefenseUI::doManuever(
             case eDefensiveManuevers::Dodge:
             case eDefensiveManuevers::ParryLinked:
             case eDefensiveManuevers::Expulsion:
-            case eDefensiveManuevers::DodgeLinked:
+            case eDefensiveManuevers::DodgeTakeInitiative:
             case eDefensiveManuevers::Counter:
             case eDefensiveManuevers::Reverse:
             case eDefensiveManuevers::Resist:

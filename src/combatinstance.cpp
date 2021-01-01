@@ -225,17 +225,8 @@ bool CombatInstance::doOffense()
         return false;
     }
     int reachCost = calcReachCost(attacker, true);
-    Offense attack = attacker->getQueuedOffense();
-    const Weapon* offenseWeapon = getAttackingWeapon(attacker);
     outputReachCost(reachCost, attacker, true);
-    assert(attack.component != nullptr);
-
-    attacker->addAndResetBonusDice();
-
-    writeMessage(attacker->getName() + " " + offensiveManueverToString(attack.manuever) + "s with "
-        + offenseWeapon->getName() + " at " + hitLocationToString(attack.target) + " using "
-        + attack.component->getName() + " with " + to_string(attacker->getQueuedOffense().dice)
-        + " action points");
+    outputOffense(attacker);
 
     m_currentState = eCombatState::Defense;
     return true;
@@ -279,18 +270,12 @@ void CombatInstance::doDualOffenseStealInitiative()
         return;
     }
     int reachCost = calcReachCost(defender, true);
-    Offense offense = defender->getQueuedOffense();
-
     outputReachCost(reachCost, defender, true);
 
     Defense defense = defender->getQueuedDefense();
 
-    const Weapon* offenseWeapon = getAttackingWeapon(defender);
-
     writeMessage(defender->getName() + " allocates " + to_string(defense.dice) + " for initiative");
-    writeMessage(defender->getName() + " " + offensiveManueverToString(offense.manuever) + "s with "
-        + offenseWeapon->getName() + " at " + hitLocationToString(offense.target) + " using "
-        + offense.component->getName() + " with " + to_string(offense.dice) + " action points");
+    outputOffense(defender);
     switchInitiative();
     m_currentState = eCombatState::Resolution;
 }
@@ -357,16 +342,8 @@ void CombatInstance::doAttackFromDefense()
     }
     int reachCost = calcReachCost(defender, true);
     outputReachCost(reachCost, defender, true);
-    Offense attack = defender->getQueuedOffense();
-    const Weapon* offenseWeapon = getAttackingWeapon(defender);
-    assert(attack.component != nullptr);
-
     defender->addAndResetBonusDice();
-
-    writeMessage(defender->getName() + " " + offensiveManueverToString(attack.manuever)
-        + "s from defense with " + offenseWeapon->getName() + " at "
-        + hitLocationToString(attack.target) + " using " + attack.component->getName() + " with "
-        + to_string(defender->getQueuedOffense().dice) + " action points");
+    outputOffense(defender);
 
     m_currentState = eCombatState::Resolution;
 }
@@ -1220,6 +1197,24 @@ int CombatInstance::calcReachCost(Creature* creature, bool attacker)
     }
 }
 
+void CombatInstance::outputOffense(Creature* creature)
+{
+    Offense attack = creature->getQueuedOffense();
+    const Weapon* offenseWeapon = getAttackingWeapon(creature);
+    if (attack.manuever != eOffensiveManuevers::NoOffense) {
+        assert(attack.component != nullptr);
+        assert(offenseWeapon);
+        writeMessage(creature->getName() + " " + offensiveManueverToString(attack.manuever)
+            + "s from defense with " + offenseWeapon->getName() + " at "
+            + hitLocationToString(attack.target) + " using " + attack.component->getName()
+            + " with " + to_string(creature->getQueuedOffense().dice) + " action points");
+    } else {
+        writeMessage(creature->getName() + " does nothing!");
+    }
+}
+
+void CombatInstance::outputDefense(Creature* creature) {}
+
 void CombatInstance::writeMessage(const std::string& str, Log::eMessageTypes type, bool important)
 {
     // combat manager is not a singleton, so we can have multiple.
@@ -1241,13 +1236,13 @@ void CombatInstance::outputReachCost(int cost, Creature* creature, bool attacker
             writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost)
                     + " action points",
                 Log::eMessageTypes::Announcement);
-            creature->reduceOffenseDie(reachCost);
+            // creature->reduceOffenseDie(reachCost);
             // attacker->reduceCombatPool(min(reachCost, attacker->getCombatPool()));
         } else {
             writeMessage("Weapon is too long for defense, causes reach cost of "
                     + to_string(reachCost) + " action points",
                 Log::eMessageTypes::Announcement);
-            creature->reduceDefenseDie(reachCost);
+            // creature->reduceDefenseDie(reachCost);
         }
     }
 }

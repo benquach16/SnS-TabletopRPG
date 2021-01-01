@@ -1,4 +1,5 @@
 #include <iostream>
+#include <queue>
 
 #include "../3rdparty/random.hpp"
 #include "../items/utils.h"
@@ -57,7 +58,7 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
     }
     if (instance->getState() == eCombatState::Defense
         && instance->getDefender()->getId() == creatureId) {
-        doDefense(controlledCreature, instance->getAttacker(), instance->getLastTempo());
+        doDefense(controlledCreature, instance->getAttacker(), instance, instance->getLastTempo());
         return;
     }
     if (instance->getState() == eCombatState::AttackFromDefense
@@ -99,8 +100,11 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
 bool AICombatController::setCreatureOffenseManuever(
     Creature* controlledCreature, eOffensiveManuevers manuever, eLength currentReach)
 {
-    int cost = getOffensiveManueverCost(manuever, controlledCreature->getGrip(),
-        controlledCreature->getPrimaryWeapon(), currentReach);
+    bool usePrimary = controlledCreature->getQueuedOffense().withPrimaryWeapon;
+    eLength effectiveReach = usePrimary ? controlledCreature->getCurrentReach()
+                                        : controlledCreature->getSecondaryWeaponReach();
+    int cost = getOffensiveManueverCost(
+        manuever, controlledCreature->getGrip(), effectiveReach, currentReach);
     bool canUse = (cost <= controlledCreature->getCombatPool());
     if (canUse) {
         controlledCreature->setOffenseManuever(manuever);
@@ -110,9 +114,13 @@ bool AICombatController::setCreatureOffenseManuever(
 }
 
 bool AICombatController::setCreatureDefenseManuever(
-    Creature* controlledCreature, eDefensiveManuevers manuever)
+    Creature* controlledCreature, eDefensiveManuevers manuever, eLength currentReach)
 {
-    int cost = getDefensiveManueverCost(manuever, controlledCreature->getGrip());
+    bool usePrimary = controlledCreature->getQueuedOffense().withPrimaryWeapon;
+    eLength effectiveReach = usePrimary ? controlledCreature->getCurrentReach()
+                                        : controlledCreature->getSecondaryWeaponReach();
+    int cost = getDefensiveManueverCost(
+        manuever, controlledCreature->getGrip(), effectiveReach, currentReach);
     bool canUse = (cost <= controlledCreature->getCombatPool() || cost == 0);
     if (canUse) {
         controlledCreature->setDefenseManuever(manuever);
@@ -134,11 +142,21 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
     if (target->getCombatPool() <= 0) {
         allin = true;
     }
+    if (controlledCreature->primaryWeaponDisabled() == false) {
+        controlledCreature->setOffenseWeapon(true);
+        weapon = controlledCreature->getPrimaryWeapon();
+    } else {
+        controlledCreature->setOffenseWeapon(false);
+        weapon = controlledCreature->getSecondaryWeapon();
+    }
+    map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(controlledCreature,
+        controlledCreature->getQueuedOffense().withPrimaryWeapon, instance->getCurrentReach(),
+        instance->getInGrapple());
 
-    map<eOffensiveManuevers, int> manuevers
-        = getAvailableOffManuevers(controlledCreature->getPrimaryWeapon(),
-            controlledCreature->getGrip(), instance->getCurrentReach(), instance->getInGrapple());
-
+    // algorithm - for each manuever, assign some priority and add to priority queue
+    // then iterate through queue and select the best item if we can afford the cost
+    // do nothing is at the bottom and always free
+    priority_queue<eOffensiveManuevers, vector<eOffensiveManuevers>> manueverPriorities;
     for (auto it : manuevers) {
         switch (it.first) {
         case eOffensiveManuevers::Swing:
@@ -149,13 +167,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
     }
     controlledCreature->setCreatureOffenseManuever(
         eOffensiveManuevers::Thrust, instance->getCurrentReach());
-    if (controlledCreature->primaryWeaponDisabled() == false) {
-        controlledCreature->setOffenseWeapon(true);
-        weapon = controlledCreature->getPrimaryWeapon();
-    } else {
-        controlledCreature->setOffenseWeapon(false);
-        weapon = controlledCreature->getSecondaryWeapon();
-    }
+
     controlledCreature->setOffenseComponent(weapon->getBestAttack());
     if (controlledCreature->getQueuedOffense().component->getAttack() == eAttacks::Swing) {
         controlledCreature->setCreatureOffenseManuever(
@@ -293,8 +305,8 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
     controlledCreature->setOffenseReady();
 }
 
-void AICombatController::doDefense(
-    Creature* controlledCreature, const Creature* attacker, bool isLastTempo)
+void AICombatController::doDefense(Creature* controlledCreature, const Creature* attacker,
+    const CombatInstance* instance, bool isLastTempo)
 {
     int diceAllocated = attacker->getQueuedOffense().dice;
     const Weapon* weapon = controlledCreature->getPrimaryWeapon();
@@ -310,14 +322,17 @@ void AICombatController::doDefense(
             && random_static::get(0, 2) == 0)
         || (isLastTempo && diceAllocated + buffer < controlledCreature->getCombatPool())) {
         if (random_static::get(0, 3) == 0) {
-            setCreatureDefenseManuever(controlledCreature, eDefensiveManuevers::ParryLinked);
+            setCreatureDefenseManuever(
+                controlledCreature, eDefensiveManuevers::ParryLinked, instance->getCurrentReach());
         } else {
-            setCreatureDefenseManuever(controlledCreature, eDefensiveManuevers::Expulsion);
+            setCreatureDefenseManuever(
+                controlledCreature, eDefensiveManuevers::Expulsion, instance->getCurrentReach());
         }
 
     } else {
         // parry or dodge
-        setCreatureDefenseManuever(controlledCreature, eDefensiveManuevers::Parry);
+        setCreatureDefenseManuever(
+            controlledCreature, eDefensiveManuevers::Parry, instance->getCurrentReach());
     }
 
     int stealDie = 0;

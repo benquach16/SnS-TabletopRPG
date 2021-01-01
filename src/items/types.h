@@ -21,7 +21,6 @@ enum class eAttacks {
 };
 
 enum class eOffensiveManuevers : unsigned {
-    Invalid = 0,
     Swing,
     Thrust,
     PinpointThrust,
@@ -37,7 +36,8 @@ enum class eOffensiveManuevers : unsigned {
     Throw,
     Pin,
     VisorThrust,
-    Bite
+    Bite,
+	NoOffense
 };
 
 enum class ePositionManuevers : unsigned { Invalid = 0, Stand, Pickup };

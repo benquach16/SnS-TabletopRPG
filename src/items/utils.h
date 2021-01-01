@@ -6,6 +6,8 @@
 #include "types.h"
 #include "weapon.h"
 
+class Creature;
+
 std::string offensiveManueverToString(eOffensiveManuevers manuever);
 
 std::string defensiveManueverToString(eDefensiveManuevers manuever);
@@ -42,13 +44,13 @@ inline int operator<(eLength length1, eLength length2)
 int calculateReachCost(eLength length1, eLength length2);
 int getFeintCost();
 int getOffensiveManueverCost(
-    eOffensiveManuevers manuever, eGrips grip, const Weapon* weapon, eLength currentReach);
-int getDefensiveManueverCost(eDefensiveManuevers manuever, eGrips grip);
+    eOffensiveManuevers manuever, eGrips grip, eLength effectiveReach, eLength currentReach);
+int getDefensiveManueverCost(eDefensiveManuevers manuever, eGrips grip, eLength effectiveReach, eLength currentReach);
 
 //<maneuver, cost>
 std::map<eOffensiveManuevers, int> getAvailableOffManuevers(
-    const Weapon* weapon, eGrips grip, eLength currentReach, bool inGrapple);
+    const Creature* creature, bool primaryWeapon, eLength currentReach, bool inGrapple);
 
 //<maneuver, cost>
 std::map<eDefensiveManuevers, int> getAvailableDefManuevers(
-    const Weapon* weapon, eGrips grip, bool isLastTempo, bool inGrapple);
+	const Creature* creature, bool primaryWeapon, bool isLastTempo, eLength currentReach, bool inGrapple);
