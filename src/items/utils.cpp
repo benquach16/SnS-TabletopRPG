@@ -306,6 +306,14 @@ int getOffensiveManueverCost(
         return 2;
     case eOffensiveManuevers::Snap:
         return 1;
+	case eOffensiveManuevers::Draw: {
+		// draw removes any reach disadvantage if target is too close
+		if (effectiveReach < currentReach) {
+			return 0;
+		}
+		return reachCost;
+	}
+		
     }
 
     return reachCost;
@@ -352,6 +360,11 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(
         = getOffensiveManueverCost(eOffensiveManuevers::Thrust, grip, effectiveReach, currentReach);
     ret[eOffensiveManuevers::PinpointThrust] = getOffensiveManueverCost(
         eOffensiveManuevers::PinpointThrust, grip, effectiveReach, currentReach);
+
+	if (weapon->getType() == eWeaponTypes::Longswords || weapon->getType() == eWeaponTypes::Swords) {
+		ret[eOffensiveManuevers::Draw] = getOffensiveManueverCost(
+			eOffensiveManuevers::Draw, grip, effectiveReach, currentReach);
+	}
 
     if (inGrapple == false) {
         ret[eOffensiveManuevers::Beat] = getOffensiveManueverCost(

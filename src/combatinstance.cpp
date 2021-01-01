@@ -846,6 +846,7 @@ void CombatInstance::startGrapple(Creature* attacker, Creature* defender)
 
 bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, Creature* target)
 {
+	assert(attack.manuever != eOffensiveManuevers::NoOffense);
     writeMessage(
         attacker->getName() + "'s attack landed with " + to_string(MoS) + " net successes!",
         Log::eMessageTypes::Announcement);
@@ -1205,7 +1206,7 @@ void CombatInstance::outputOffense(Creature* creature)
         assert(attack.component != nullptr);
         assert(offenseWeapon);
         writeMessage(creature->getName() + " " + offensiveManueverToString(attack.manuever)
-            + "s from defense with " + offenseWeapon->getName() + " at "
+            + "s with " + offenseWeapon->getName() + " at "
             + hitLocationToString(attack.target) + " using " + attack.component->getName()
             + " with " + to_string(creature->getQueuedOffense().dice) + " action points");
     } else {
