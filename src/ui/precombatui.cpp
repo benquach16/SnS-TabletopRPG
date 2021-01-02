@@ -160,7 +160,7 @@ void PrecombatUI::doQuickdraw(bool hasKeyEvents, sf::Event event, Player* player
         str += idx;
         int cost = 1;
         const Weapon* weapon = WeaponTable::getSingleton()->get(quickDrawIds[i]);
-        cost += calculateReachCost(weapon->getLength(), eLength::Hand);
+        cost += calculateReachCost(weapon->getLength(), eLength::Hand) / 2;
         str += " - " + weapon->getName() + " (" + to_string(cost) + " AP)\n";
 
         if (hasKeyEvents && event.type == sf::Event::TextEntered) {

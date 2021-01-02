@@ -846,7 +846,7 @@ void CombatInstance::startGrapple(Creature* attacker, Creature* defender)
 
 bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, Creature* target)
 {
-	assert(attack.manuever != eOffensiveManuevers::NoOffense);
+    assert(attack.manuever != eOffensiveManuevers::NoOffense);
     writeMessage(
         attacker->getName() + "'s attack landed with " + to_string(MoS) + " net successes!",
         Log::eMessageTypes::Announcement);
@@ -1202,15 +1202,26 @@ void CombatInstance::outputOffense(Creature* creature)
 {
     Offense attack = creature->getQueuedOffense();
     const Weapon* offenseWeapon = getAttackingWeapon(creature);
-    if (attack.manuever != eOffensiveManuevers::NoOffense) {
+    switch (attack.manuever) {
+    case eOffensiveManuevers::NoOffense:
+        writeMessage(creature->getName() + " does nothing!");
+        break;
+    case eOffensiveManuevers::Beat:
+        writeMessage(creature->getName() + " attempts a Beat with " + offenseWeapon->getName()
+            + " using " + to_string(creature->getQueuedOffense().dice) + " action points");
+        break;
+	case eOffensiveManuevers::Hook:
+		writeMessage(creature->getName() + " attempts to Hook with " + offenseWeapon->getName()
+			+ " using " + to_string(creature->getQueuedOffense().dice) + " action points");
+		break;
+    default:
         assert(attack.component != nullptr);
         assert(offenseWeapon);
         writeMessage(creature->getName() + " " + offensiveManueverToString(attack.manuever)
-            + "s with " + offenseWeapon->getName() + " at "
-            + hitLocationToString(attack.target) + " using " + attack.component->getName()
-            + " with " + to_string(creature->getQueuedOffense().dice) + " action points");
-    } else {
-        writeMessage(creature->getName() + " does nothing!");
+            + "s with " + offenseWeapon->getName() + " at " + hitLocationToString(attack.target)
+            + " using " + attack.component->getName() + " with "
+            + to_string(creature->getQueuedOffense().dice) + " action points");
+        break;
     }
 }
 

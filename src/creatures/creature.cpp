@@ -318,6 +318,51 @@ ArmorSegment Creature::getArmorAtPart(eBodyParts part) const
     return ArmorSegment();
 }
 
+vector<ArmorSegment> Creature::getArmorAtLocation(eHitLocations location) const
+{
+    vector<ArmorSegment> armors;
+    auto parts = WoundTable::getSingleton()->getUniqueParts(location);
+    for (auto it : parts) {
+        if (it != eBodyParts::SecondLocationArm && it != eBodyParts::SecondLocationHead) {
+            armors.push_back(getArmorAtPart(it));
+        }
+    }
+    return armors;
+}
+
+ArmorSegment Creature::getMedianArmor(eHitLocations location) const
+{
+    // sorting slower than worth
+    // median of medians slower than worth
+    // since O(N) < 10, always
+    ArmorSegment segment;
+    unordered_map<int, int> hash;
+    int metalCount = 0;
+    auto parts = WoundTable::getSingleton()->getUniqueParts(location);
+    for (auto it : parts) {
+        if (it != eBodyParts::SecondLocationArm && it != eBodyParts::SecondLocationHead) {
+            ArmorSegment seg = getArmorAtPart(it);
+            hash[seg.AV]++;
+            if (seg.isMetal) {
+                metalCount++;
+            }
+        }
+    }
+    int key = hash.begin()->first;
+    int median = hash.begin()->second;
+    for (auto it : hash) {
+        if (it.second > median) {
+            median = it.second;
+            key = it.first;
+        }
+    }
+    segment.AV = key;
+	if (metalCount > (parts.size() / 2)) {
+		segment.isMetal = true;
+	}
+    return segment;
+}
+
 void Creature::equipArmor(int id)
 {
     const Armor* armor = ArmorTable::getSingleton()->get(id);
@@ -513,9 +558,10 @@ int Creature::getFatigue() const
 bool Creature::hasEnoughMetalArmor() const
 {
     // if there are more than half hit locations with metal armor on them, return true
-    int metalArmorCount = 0;
+    int total = 0;
     for (auto location : m_hitLocations) {
         vector<eBodyParts> parts = WoundTable::getSingleton()->getUniqueParts(location);
+        int metalArmorCount = 0;
         for (auto part : parts) {
             // ignore the secondpart arm/head
             if (part != eBodyParts::SecondLocationArm && part != eBodyParts::SecondLocationHead) {
@@ -525,8 +571,11 @@ bool Creature::hasEnoughMetalArmor() const
                 }
             }
         }
+        if (metalArmorCount > parts.size() / 2) {
+            total++;
+        }
     }
-    return metalArmorCount > m_hitLocations.size() / 2;
+    return total == m_hitLocations.size();
 }
 
 void Creature::getLowestArmorPart(eBodyParts* pPartOut, eHitLocations* pHitOut) const
@@ -595,8 +644,8 @@ void Creature::clearCreatureManuevers(bool skipDisable)
 
 bool Creature::setCreatureOffenseManuever(eOffensiveManuevers manuever, eLength currentReach)
 {
-	bool usePrimary = getQueuedOffense().withPrimaryWeapon;
-	eLength effectiveReach = usePrimary ? getCurrentReach() : getSecondaryWeaponReach();
+    bool usePrimary = getQueuedOffense().withPrimaryWeapon;
+    eLength effectiveReach = usePrimary ? getCurrentReach() : getSecondaryWeaponReach();
     int cost = getOffensiveManueverCost(manuever, getGrip(), effectiveReach, currentReach);
     bool canUse = (cost <= getCombatPool());
     if (canUse) {

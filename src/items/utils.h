@@ -54,3 +54,5 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(
 //<maneuver, cost>
 std::map<eDefensiveManuevers, int> getAvailableDefManuevers(
 	const Creature* creature, bool primaryWeapon, bool isLastTempo, eLength currentReach, bool inGrapple);
+
+int getQuickdrawCost(const Weapon* weapon, bool inGrapple);

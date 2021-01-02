@@ -277,6 +277,8 @@ int getOffensiveManueverCost(
 {
     int reachCost = calculateReachCost(effectiveReach, currentReach);
     switch (manuever) {
+	case eOffensiveManuevers::HeavyBlow:
+		return 2 + reachCost;
     case eOffensiveManuevers::Disarm:
     case eOffensiveManuevers::Hook:
         return 1 + reachCost;
@@ -323,6 +325,7 @@ int getDefensiveManueverCost(
     eDefensiveManuevers manuever, eGrips grip, eLength effectiveReach, eLength currentReach)
 {
     int reachCost = 0;
+	// defense costs only apply if your weapon is too long, not the other way around
     if (effectiveReach > currentReach) {
         reachCost = calculateReachCost(effectiveReach, currentReach);
     }
@@ -379,7 +382,10 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(
             ret[eOffensiveManuevers::Mordhau] = getOffensiveManueverCost(
                 eOffensiveManuevers::Mordhau, grip, effectiveReach, currentReach);
         }
-
+		if (type == eWeaponTypes::Mass || type == eWeaponTypes::Polearms) {
+			ret[eOffensiveManuevers::HeavyBlow] = getOffensiveManueverCost(
+				eOffensiveManuevers::HeavyBlow, grip, effectiveReach, currentReach);
+		}
         if (weapon->canHook()) {
             ret[eOffensiveManuevers::Hook] = getOffensiveManueverCost(
                 eOffensiveManuevers::Hook, grip, effectiveReach, currentReach);
@@ -434,4 +440,11 @@ std::map<eDefensiveManuevers, int> getAvailableDefManuevers(const Creature* crea
         eDefensiveManuevers::AttackFromDef, grip, effectiveReach, currentReach);
 
     return ret;
+}
+
+int getQuickdrawCost(const Weapon* weapon, bool inGrapple)
+{
+	int cost = 1;
+	cost += calculateReachCost(weapon->getLength(), eLength::Hand) / 2;
+	return cost;
 }

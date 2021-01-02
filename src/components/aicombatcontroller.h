@@ -1,6 +1,8 @@
 #pragma once
 
+#include <unordered_map>
 #include "../items/types.h"
+#include "../creatures/types.h"
 
 enum eAICombatProfiles {
     Aggressive,
@@ -11,9 +13,12 @@ enum eAICombatProfiles {
 class CombatManager;
 class Creature;
 class CombatInstance;
+class Component;
 
 class AICombatController {
 public:
+	AICombatController();
+
     void run(const CombatManager* manager, Creature* controlledCreature);
 
 private:
@@ -37,4 +42,9 @@ private:
     bool setCreatureDefenseManuever(Creature* controlledCreature, eDefensiveManuevers manuever, eLength currentReach);
 
     bool stealInitiative(Creature* controlledCreature, const Creature* attacker, int& outDie);
+
+	eHitLocations getBestHitLocation(const Creature* target, const Component* component, int& outDamage);
+
+	// <hit location, priority>
+	std::unordered_map<eHitLocations, int> m_hitPriorities;
 };

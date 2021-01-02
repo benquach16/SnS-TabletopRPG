@@ -102,9 +102,9 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player,
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-	bool withPrimaryWeapon = player->getQueuedOffense().withPrimaryWeapon;
-    map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(player,
-		withPrimaryWeapon, instance->getCurrentReach(), instance->getInGrapple());
+    bool withPrimaryWeapon = player->getQueuedOffense().withPrimaryWeapon;
+    map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(
+        player, withPrimaryWeapon, instance->getCurrentReach(), instance->getInGrapple());
 
     string str = "Choose attack:\n";
     map<char, std::pair<eOffensiveManuevers, int>> indices;
@@ -151,6 +151,7 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player,
             case eOffensiveManuevers::Beat:
             case eOffensiveManuevers::Hook:
             case eOffensiveManuevers::Disarm:
+            case eOffensiveManuevers::Draw:
             case eOffensiveManuevers::VisorThrust:
             case eOffensiveManuevers::Throw:
             case eOffensiveManuevers::Snap:
@@ -172,11 +173,11 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player,
                 }
                 break;
             }
-			case eOffensiveManuevers::NoOffense:
-				player->setOffenseDice(0);
-				player->setOffenseReady();
-				m_currentState = eUiState::ChooseManuever;
-				break;
+            case eOffensiveManuevers::NoOffense:
+                player->setOffenseDice(0);
+                player->setOffenseReady();
+                m_currentState = eUiState::ChooseManuever;
+                break;
             default:
                 m_currentState = eUiState::ChooseManuever;
                 break;

@@ -24,6 +24,7 @@ enum class eOffensiveManuevers : unsigned {
     Swing,
     Thrust,
     PinpointThrust,
+	HeavyBlow,
     Beat,
     Mordhau,
     Hook,
