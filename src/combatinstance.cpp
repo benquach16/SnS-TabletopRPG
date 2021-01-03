@@ -1251,11 +1251,17 @@ void CombatInstance::outputReachCost(int cost, Creature* creature, bool attacker
 
     if (reachCost != 0) {
         if (attacker) {
-            writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost)
-                    + " action points",
-                Log::eMessageTypes::Announcement);
-            // creature->reduceOffenseDie(reachCost);
-            // attacker->reduceCombatPool(min(reachCost, attacker->getCombatPool()));
+			if (creature->getQueuedOffense().manuever != eOffensiveManuevers::Beat) {
+				writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost)
+					+ " action points",
+					Log::eMessageTypes::Announcement);
+				// creature->reduceOffenseDie(reachCost);
+				// attacker->reduceCombatPool(min(reachCost, attacker->getCombatPool()));
+			}
+			else {
+				writeMessage("Beat has a reduced reach cost", Log::eMessageTypes::Announcement);
+			}
+
         } else {
             writeMessage("Weapon is too long for defense, causes reach cost of "
                     + to_string(reachCost) + " action points",

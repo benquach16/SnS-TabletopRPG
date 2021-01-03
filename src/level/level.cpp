@@ -14,6 +14,7 @@ Level::Level(int width, int height)
     , m_height(height)
     , m_data(width * height)
     , m_lighting(eLighting::Cave)
+    , m_logic(eLevelLogic::None)
 {
 }
 
@@ -29,6 +30,27 @@ void Level::load() {}
 
 void Level::run(Scene* scene)
 {
+    switch (m_logic) {
+    case eLevelLogic::Arena: {
+        // temporary, should really be scripted somewhere or something
+        // but then it would become a real engine and thats a big problem
+        int count = 0;
+        for (unsigned i = 0; i < m_objects.size(); ++i) {
+            Object* object = m_objects[i];
+            if (object->getObjectType() == eObjectTypes::Creature) {
+                count++;
+            }
+        }
+        if (count < 2) {
+            generateEnemy();
+        }
+
+    } break;
+
+    default:
+        break;
+    }
+    // OOP should be replaced with ECS if possible
     for (unsigned i = 0; i < m_objects.size(); ++i) {
         if (m_objects[i]->deleteMe() == true) {
             Object* object = m_objects[i];
@@ -53,6 +75,19 @@ void Level::run(Scene* scene)
             scene->changeToLevel(tile.m_levelChangeIdx, m_objects[i], 1, 1);
         }
     }
+}
+
+void Level::generateEnemy()
+{
+    HumanObject* object = new HumanObject;
+    object->setPosition(5, 5);
+    object->setFaction(eCreatureFaction::ArenaFighter);
+    // temporary
+    object->setLoadout(eCreatureFaction::Confederacy,
+        static_cast<eRank>(random_static::get((int)eRank::Recruit, (int)eRank::Count - 1)));
+    object->getCreatureComponent()->setAgility(random_static::get(5, 9));
+    object->getCreatureComponent()->setIntuition(random_static::get(5, 9));
+    addObject(object);
 }
 
 void Level::generate()
@@ -117,7 +152,7 @@ void Level::generate()
 
 void Level::generateTown()
 {
-	m_lighting = eLighting::Sunny;
+    m_lighting = eLighting::Sunny;
     for (int x = 0; x < m_width; ++x) {
         for (int y = 0; y < m_height; ++y) {
             (*this)(x, y).m_material = eTileMaterial::Grass;

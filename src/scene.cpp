@@ -84,13 +84,7 @@ void Scene::setupArena(PlayerObject* playerObject)
 	// violates RAII
 	level->addObject(playerObject);
 
-	HumanObject* object = new HumanObject;
-	object->setPosition(5,5);
-	object->setFaction(eCreatureFaction::ArenaFighter);
-	object->setLoadout(eCreatureFaction::Confederacy, eRank::Veteran);
-	object->getCreatureComponent()->setAgility(9);
-	object->getCreatureComponent()->setIntuition(9);
-	level->addObject(object);
+	level->assignLogic(Level::eLevelLogic::Arena);
 	m_currentState = eSceneState::Playing;
 	m_levels.push_back(level);
 }

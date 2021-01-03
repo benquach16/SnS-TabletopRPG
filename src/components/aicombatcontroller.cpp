@@ -303,17 +303,19 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
     }
     // bound
     dice += reachCost;
+	dice = min(dice, controlledCreature->getCombatPool());
     dice = max(0, dice);
-    dice = min(dice, controlledCreature->getCombatPool());
+    
     // never issue 0 dice for attack
     if (controlledCreature->getCombatPool() > 0 && dice == 0) {
         dice = 1;
     }
     if (allin == true) {
-        controlledCreature->setOffenseDice(controlledCreature->getCombatPool());
-    } else {
-        controlledCreature->setOffenseDice(dice);
+		dice = max(0, controlledCreature->getCombatPool());
     }
+
+    controlledCreature->setOffenseDice(dice);
+
 
     if (dualRedThrow == true && controlledCreature->getCombatPool() > 0) {
         controlledCreature->setDefenseWeapon(true);

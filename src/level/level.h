@@ -35,6 +35,12 @@ class Level {
 public:
     friend class boost::serialization::access;
 
+    // level wide triggers
+    enum eLevelLogic {
+        None,
+        Arena,
+    };
+
     Level(int width, int height);
     ~Level();
     void save();
@@ -68,7 +74,7 @@ public:
 
     const Object* getObject(vector2d position);
     Object* getObjectMutable(vector2d position, const Object* exclude);
-
+	void assignLogic(eLevelLogic logic) { m_logic = logic; }
     int getWidth() const { return m_width; }
     int getHeight() const { return m_height; }
     bool isFreeSpace(int x, int y) const;
@@ -103,7 +109,8 @@ private:
     Room carveSeperateRoom();
     void removeIslands();
     void createCorridor(Room room1, Room room2);
-
+    void generateEnemy();
+    
     template <class Archive> void serialize(Archive& ar, const unsigned int version)
     {
         ar& m_data;
@@ -112,6 +119,7 @@ private:
         ar& m_width;
         ar& m_height;
         ar& m_lighting;
+        ar& m_logic;
     }
 
     std::vector<Trigger> m_triggers;
@@ -120,5 +128,6 @@ private:
     int m_width;
     int m_height;
     eLighting m_lighting;
+    eLevelLogic m_logic;
     std::vector<Tile> m_data;
 };

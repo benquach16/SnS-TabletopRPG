@@ -24,4 +24,4 @@ enum class eSkills : unsigned {
 
 enum class eCreatureRace { Human, Goblin };
 
-enum class eRank : unsigned { Recruit, Soldier, Veteran, Lord };
+enum class eRank : unsigned { Recruit, Soldier, Veteran, Lord, Count };
