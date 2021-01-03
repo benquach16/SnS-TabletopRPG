@@ -24,6 +24,8 @@ bool operator<(const ManueverContainer& lhs, const ManueverContainer& rhs)
 {
     return lhs.priority < rhs.priority;
 }
+constexpr int cFuzz = 2;
+constexpr int cLowestPriority = -10;
 
 AICombatController::AICombatController()
 {
@@ -184,12 +186,10 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
     // do nothing is at the bottom and always free
     // priority should be determined by weapon damage and enemy armor
     priority_queue<ManueverContainer, vector<ManueverContainer>> manueverPriorities;
-    constexpr int cFuzz = 2;
-    constexpr int cLowestPriority = -10;
     for (auto it : manuevers) {
         // default high enough to avoid weapons wiht negative damage values,
         // as priority is modified by the damage of the weapon
-        int priority = 5;
+        int priority = controlledCreature->getCombatPool() - it.second;
         ManueverContainer toPush;
         toPush.offManuever = it.first;
         toPush.cost = it.second;
@@ -213,7 +213,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
                     toPush.hitLocation = bestTarget;
                 }
             }
-            priority += bestDamage;
+            priority += random_static::get(bestDamage, bestDamage + cFuzz);
             assert(component != nullptr);
         } break;
         case eOffensiveManuevers::Thrust: {
@@ -239,7 +239,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
         case eOffensiveManuevers::Beat: {
             // big random
             if (target->primaryWeaponDisabled() == false) {
-                priority += random_static::get(-cFuzz, cFuzz);
+                priority += random_static::get(0, cFuzz + reachCost);
             } else {
                 priority = cLowestPriority;
             }
@@ -260,14 +260,24 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             } else {
             }
             break;
+        case eOffensiveManuevers::Throw: {
+            if (target->getStance() == eCreatureStance::Prone) {
+                priority = cLowestPriority;
+            } else {
+                // really important to do this in a grapple if possible
+                priority += 20;
+            }
+        } break;
         }
+
         toPush.priority = priority;
         toPush.component = component;
         manueverPriorities.push(toPush);
     }
+    assert(manueverPriorities.empty() == false);
     while (manueverPriorities.empty() == false) {
         auto current = manueverPriorities.top();
-        if (current.cost < controlledCreature->getCombatPool()) {
+        if (current.cost < controlledCreature->getCombatPool() || current.cost == 0) {
             // choose
             setCreatureOffenseManuever(
                 controlledCreature, current.offManuever, instance->getCurrentReach());
@@ -337,22 +347,81 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
         controlledCreature->setDefenseWeapon(false);
         weapon = controlledCreature->getSecondaryWeapon();
     }
-    constexpr int buffer = 3;
-    if ((diceAllocated + buffer < controlledCreature->getCombatPool()
-            && random_static::get(0, 2) == 0)
-        || (isLastTempo && diceAllocated + buffer < controlledCreature->getCombatPool())) {
-        if (random_static::get(0, 3) == 0) {
-            setCreatureDefenseManuever(
-                controlledCreature, eDefensiveManuevers::ParryLinked, instance->getCurrentReach());
-        } else {
-            setCreatureDefenseManuever(
-                controlledCreature, eDefensiveManuevers::Expulsion, instance->getCurrentReach());
+    map<eDefensiveManuevers, int> manuevers = getAvailableDefManuevers(controlledCreature,
+        controlledCreature->getQueuedOffense().withPrimaryWeapon, isLastTempo,
+        instance->getCurrentReach(), instance->getInGrapple());
+
+    priority_queue<ManueverContainer, vector<ManueverContainer>> manueverPriorities;
+
+    for (auto it : manuevers) {
+        int priority = controlledCreature->getCombatPool() - it.second;
+        ManueverContainer toPush;
+        toPush.defManuever = it.first;
+        toPush.cost = it.second;
+        switch (it.first) {
+        case eDefensiveManuevers::Parry:
+			if (weapon->getNaturalWeapon()) {
+				priority -= random_static::get(0, 3);
+			}
+            break;
+        case eDefensiveManuevers::ParryLinked: {
+            constexpr int buffer = 3;
+            if (diceAllocated + buffer < controlledCreature->getCombatPool()) {
+                if (isLastTempo) {
+                    priority += 10;
+                }
+            }
         }
 
-    } else {
-        // parry or dodge
-        setCreatureDefenseManuever(
-            controlledCreature, eDefensiveManuevers::Parry, instance->getCurrentReach());
+        break;
+        case eDefensiveManuevers::Dodge:
+            if (controlledCreature->primaryWeaponDisabled()) {
+                priority++;
+            } else {
+                priority--;
+            }
+
+            break;
+        case eDefensiveManuevers::Expulsion: {
+            constexpr int buffer = 3;
+            if (diceAllocated + buffer < controlledCreature->getCombatPool()) {
+                if (isLastTempo) {
+                    priority += 10;
+                }
+            }
+        } break;
+        case eDefensiveManuevers::Counter:
+
+            break;
+        case eDefensiveManuevers::AttackFromDef: {
+			priority -= 20;
+        }
+
+        break;
+        case eDefensiveManuevers::StealInitiative: {
+            int stealDie = 0;
+            if (stealInitiative(controlledCreature, attacker, stealDie)) {
+                priority += 20;
+            } else {
+                priority -= 20;
+            }
+        }
+        break;
+        }
+
+        toPush.priority = priority;
+        manueverPriorities.push(toPush);
+    }
+    assert(manueverPriorities.empty() == false);
+    while (manueverPriorities.empty() == false) {
+        auto current = manueverPriorities.top();
+        if (current.cost < controlledCreature->getCombatPool() || current.cost == 0) {
+            // choose
+            setCreatureDefenseManuever(
+                controlledCreature, current.defManuever, instance->getCurrentReach());
+            break;
+        }
+        manueverPriorities.pop();
     }
 
     int stealDie = 0;
@@ -376,6 +445,7 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
     int dice = std::min(diceAllocated + random_static::get(0, diceAllocated / 3)
             - random_static::get(0, diceAllocated / 4),
         controlledCreature->getCombatPool());
+    dice = max(dice, 3);
     dice = min(controlledCreature->getCombatPool(), dice);
     dice = max(dice, 0);
     controlledCreature->setDefenseDice(dice);

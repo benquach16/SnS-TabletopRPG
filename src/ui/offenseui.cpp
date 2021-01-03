@@ -263,8 +263,12 @@ void OffenseUI::doComponent(bool hasKeyEvents, sf::Event event, Player* player)
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
     std::string str("Choose weapon component:\n");
-    if (player->getQueuedOffense().manuever == eOffensiveManuevers::Swing
-        || player->getQueuedOffense().manuever == eOffensiveManuevers::Hook) {
+    switch (player->getQueuedOffense().manuever) {
+    case eOffensiveManuevers::Swing:
+	case eOffensiveManuevers::Draw:
+	case eOffensiveManuevers::HeavyBlow:
+	case eOffensiveManuevers::Beat:
+    case eOffensiveManuevers::Hook: {
         for (int i = 0; i < weapon->getSwingComponents().size(); ++i) {
             char idx = ('a' + i);
 
@@ -279,7 +283,9 @@ void OffenseUI::doComponent(bool hasKeyEvents, sf::Event event, Player* player)
                 }
             }
         }
-    } else {
+    } break;
+
+    default: {
         for (int i = 0; i < weapon->getThrustComponents().size(); ++i) {
             char idx = ('a' + i);
 
@@ -294,6 +300,7 @@ void OffenseUI::doComponent(bool hasKeyEvents, sf::Event event, Player* player)
                 }
             }
         }
+    } break;
     }
 
     text.setString(str);

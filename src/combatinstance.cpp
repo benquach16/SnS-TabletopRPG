@@ -548,13 +548,14 @@ void CombatInstance::doResolution()
         }
 
         bool becameProne = wasStanding == true && defender->getStance() == eCreatureStance::Prone;
-
+		if (attack.manuever != eOffensiveManuevers::Beat) {
+			m_currentReach = attacker->getCurrentReach();
+		}
         if (becameProne == true) {
             // if the attack knocked them prone
             writeMessage(defender->getName()
                 + " was knocked down by the attack, their attack cannot resolve.");
             m_currentState = eCombatState::Offense;
-            m_currentReach = attacker->getCurrentReach();
         } else if (wasGrappled == true) {
             writeMessage(defender->getName() + " was grappled, their attack is interrupted!");
             m_currentReach = eLength::Hand;
@@ -564,14 +565,12 @@ void CombatInstance::doResolution()
                 + " had their action points eliminated by impact, their attack "
                   "can no longer resolve.");
             m_currentState = eCombatState::Offense;
-            m_currentReach = attacker->getCurrentReach();
         } else if (defender->primaryWeaponDisabled() || defender->droppedWeapon()) {
             // if the attack disabled or caused their weapon to drop
             // if the attack wiped out their combat pool, do nothing
             writeMessage(defender->getName()
                 + " had their weapon disabled! Their attack can no longer resolve.");
             m_currentState = eCombatState::Offense;
-            m_currentReach = attacker->getCurrentReach();
         } else {
             int defendSuccesses
                 = DiceRoller::rollGetSuccess(defender->getBTN(), defender->getQueuedOffense().dice);
@@ -591,7 +590,9 @@ void CombatInstance::doResolution()
             }
             m_currentReach = attacker->getCurrentReach();
             if (defendSuccesses > attackerSuccesses) {
-                m_currentReach = defender->getCurrentReach();
+				if (defender->getQueuedOffense().manuever != eOffensiveManuevers::Beat) {
+					m_currentReach = defender->getCurrentReach();
+				}
                 writeMessage(defender->getName() + " had more successes, taking initiative");
                 switchInitiative();
             }
@@ -632,7 +633,10 @@ void CombatInstance::doResolution()
                     m_currentState = eCombatState::FinishedCombat;
                     return;
                 }
-                m_currentReach = attacker->getCurrentReach();
+				if (attack.manuever != eOffensiveManuevers::Beat) {
+					m_currentReach = attacker->getCurrentReach();
+				}
+                
             } else {
                 startGrapple(attacker, defender);
                 attacker->setBonusDice(MoS + 2);

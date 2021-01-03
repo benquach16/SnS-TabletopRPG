@@ -36,6 +36,8 @@ std::string offensiveManueverToString(eOffensiveManuevers manuever)
         return "Bite";
     case eOffensiveManuevers::Draw:
         return "Draw Cut";
+	case eOffensiveManuevers::HeavyBlow:
+		return "Heavy Blow";
     default:
         assert(false);
         return "";
@@ -302,7 +304,7 @@ int getOffensiveManueverCost(
     case eOffensiveManuevers::Beat:
         return std::min(reachCost, 1);
     case eOffensiveManuevers::Grab:
-        return std::max(static_cast<int>(currentReach - eLength::Hand), 0);
+		return reachCost;
     case eOffensiveManuevers::VisorThrust:
     case eOffensiveManuevers::Throw:
         return 2;
@@ -310,7 +312,7 @@ int getOffensiveManueverCost(
         return 1;
 	case eOffensiveManuevers::Draw: {
 		// draw removes any reach disadvantage if target is too close
-		if (effectiveReach < currentReach) {
+		if (effectiveReach > currentReach) {
 			return 0;
 		}
 		return reachCost;
@@ -373,8 +375,11 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(
         ret[eOffensiveManuevers::Beat] = getOffensiveManueverCost(
             eOffensiveManuevers::Beat, grip, effectiveReach, currentReach);
 
-        ret[eOffensiveManuevers::Grab] = getOffensiveManueverCost(
-            eOffensiveManuevers::Grab, grip, effectiveReach, currentReach);
+		if (weapon->getNaturalWeapon()) {
+			ret[eOffensiveManuevers::Grab] = getOffensiveManueverCost(
+				eOffensiveManuevers::Grab, grip, effectiveReach, currentReach);
+		}
+
         ret[eOffensiveManuevers::Disarm] = getOffensiveManueverCost(
             eOffensiveManuevers::Disarm, grip, effectiveReach, currentReach);
         eWeaponTypes type = weapon->getType();
