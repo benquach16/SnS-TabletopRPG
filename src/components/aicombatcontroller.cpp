@@ -213,6 +213,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
                     toPush.hitLocation = bestTarget;
                 }
             }
+            bestDamage = bestDamage * bestDamage;
             priority += random_static::get(bestDamage, bestDamage + cFuzz);
             assert(component != nullptr);
         } break;
@@ -223,6 +224,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             int damage = 0;
             toPush.hitLocation = getBestHitLocation(target, component, damage);
             if (weapon->getBestAttack()->getAttack() == eAttacks::Thrust) {
+                damage = damage * damage;
                 priority += random_static::get(damage, damage + cFuzz);
             }
         } break;
@@ -232,7 +234,14 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             eBodyParts part;
             target->getLowestArmorPart(&part, &location);
             component = weapon->getBestThrust();
-            priority += component->getDamage() - target->getArmorAtPart(part).AV;
+            int AV = target->getArmorAtPart(part).AV;
+            if (target->getArmorAtPart(part).isMetal
+                && component->getProperties().find(eWeaponProperties::MaillePiercing)
+                    == component->getProperties().end()) {
+                AV *= 2;
+            }
+            int damage = component->getDamage() - AV;
+            priority += damage * damage;
             toPush.hitLocation = location;
             toPush.pinpointLocation = part;
         } break;
