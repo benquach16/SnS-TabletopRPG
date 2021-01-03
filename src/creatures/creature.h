@@ -122,7 +122,7 @@ public:
     bool canEquipArmor(int id);
     ArmorSegment getArmorAtPart(eBodyParts part) const;
 	std::vector<ArmorSegment> getArmorAtLocation(eHitLocations location) const;
-	ArmorSegment getMedianArmor(eHitLocations location) const;
+	ArmorSegment getMedianArmor(eHitLocations location, bool swing) const;
     void removeArmor(int id);
     float getAP() const { return m_AP; }
 

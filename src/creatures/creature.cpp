@@ -330,7 +330,7 @@ vector<ArmorSegment> Creature::getArmorAtLocation(eHitLocations location) const
     return armors;
 }
 
-ArmorSegment Creature::getMedianArmor(eHitLocations location) const
+ArmorSegment Creature::getMedianArmor(eHitLocations location, bool swing) const
 {
     // sorting slower than worth
     // median of medians slower than worth
@@ -338,8 +338,14 @@ ArmorSegment Creature::getMedianArmor(eHitLocations location) const
     ArmorSegment segment;
     unordered_map<int, int> hash;
     int metalCount = 0;
-    auto parts = WoundTable::getSingleton()->getUniqueParts(location);
-    for (auto it : parts) {
+
+    auto parts = WoundTable::getSingleton()->getAllLocations(location).m_swing;
+    if (swing == false) {
+        // slow
+        parts = WoundTable::getSingleton()->getAllLocations(location).m_thrust;
+    }
+    for (unsigned i = 0; i < WoundTable::cPartsPerLocation; ++i) {
+        auto it = parts[i];
         if (it != eBodyParts::SecondLocationArm && it != eBodyParts::SecondLocationHead) {
             ArmorSegment seg = getArmorAtPart(it);
             hash[seg.AV]++;
@@ -357,9 +363,9 @@ ArmorSegment Creature::getMedianArmor(eHitLocations location) const
         }
     }
     segment.AV = key;
-	if (metalCount > (parts.size() / 2)) {
-		segment.isMetal = true;
-	}
+    if (metalCount > (WoundTable::cPartsPerLocation / 2)) {
+        segment.isMetal = true;
+    }
     return segment;
 }
 

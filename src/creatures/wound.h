@@ -39,6 +39,14 @@ private:
 class WoundTable {
 public:
     ~WoundTable();
+	static constexpr unsigned cPartsPerLocation = 10;
+	struct woundParts {
+		eBodyParts m_swing[cPartsPerLocation];
+		eBodyParts m_thrust[cPartsPerLocation];
+	};
+
+	woundParts getAllLocations(eHitLocations location) const { return m_hitTable.at(location); }
+
     eBodyParts getSwing(eHitLocations location);
     eBodyParts getThrust(eHitLocations location);
 
@@ -50,13 +58,6 @@ public:
     std::vector<eBodyParts> getPinpointThrustTargets(eHitLocations location, bool canHitX) const;
 
     Wound* getWound(eDamageTypes type, eBodyParts part, int level);
-
-    static constexpr unsigned cPartsPerLocation = 10;
-
-    struct woundParts {
-        eBodyParts m_swing[cPartsPerLocation];
-        eBodyParts m_thrust[cPartsPerLocation];
-    };
 
     static WoundTable* getSingleton()
     {
