@@ -21,6 +21,32 @@ GFXLevel::GFXLevel()
     m_stone.setRepeated(true);
     m_grass.loadFromFile("data/textures/grass.png");
     m_grass.setRepeated(true);
+
+    auto windowSize = Game::getWindow().getSize();
+    sf::RectangleShape rect(sf::Vector2f(windowSize.x, windowSize.y));
+    m_bkg = rect;
+    resize();
+}
+
+void GFXLevel::resize()
+{
+    auto windowSize = Game::getWindow().getSize();
+    m_bkg.setSize(sf::Vector2f(windowSize.x, windowSize.y));
+}
+
+void GFXLevel::renderBkg(const Level* level)
+{
+    resize();
+    switch (level->getLighting()) {
+    case eLighting::Cave:
+        m_bkg.setFillColor(sf::Color::Black);
+        break;
+    case eLighting::Dark:
+    case eLighting::Sunny:
+        m_bkg.setFillColor(sf::Color(140, 226, 255));
+        break;
+    }
+    Game::getWindow().draw(m_bkg);
 }
 
 void GFXLevel::run(const Level* level, vector2d center)
@@ -45,11 +71,22 @@ void GFXLevel::run(const Level* level, vector2d center)
     rect.setPosition(pos);
     m_ground.push(rect);
 
-    constexpr unsigned cRange = 12;
-    int minX = center.x - cRange;
-    int minY = center.y - cRange;
-    int maxX = center.x + cRange;
-    int maxY = center.y + cRange;
+    unsigned range = 12;
+    switch (level->getLighting()) {
+    case eLighting::Cave:
+        range = 12;
+        break;
+    case eLighting::Dark:
+    case eLighting::Sunny:
+        range = 20;
+        break;
+    }
+
+    int minX = center.x - range;
+    int minY = center.y - range;
+    int maxX = center.x + range;
+    int maxY = center.y + range;
+
     minX = max(0, minX);
     minY = max(0, minY);
     maxX = min(width, maxX);
@@ -58,7 +95,7 @@ void GFXLevel::run(const Level* level, vector2d center)
         for (int y = minY; y < maxY; ++y) {
             Tile tile = (*level)(x, y);
             int dist = (x - center.x) * (x - center.x) + (y - center.y) * (y - center.y);
-            if (dist > cRange * cRange) {
+            if (dist > range * range) {
                 continue;
             }
             sf::Texture* texture = &m_stone;
@@ -76,7 +113,7 @@ void GFXLevel::run(const Level* level, vector2d center)
                 // this code is really slow and unncessary
 
                 sf::RectangleShape rect(sf::Vector2f(cWidth, cHeight));
-                rect.setFillColor(sf::Color(55, 55, 55));
+                rect.setFillColor(sf::Color(77, 77, 77));
                 sf::Vector2f pos(x, y);
 
                 rect.setTexture(texture);
@@ -87,7 +124,7 @@ void GFXLevel::run(const Level* level, vector2d center)
 
             } else if (tile.m_type == eTileType::Wall) {
                 sf::RectangleShape rect(sf::Vector2f(cWidth, cWidth));
-                rect.setFillColor(sf::Color(22, 22, 22));
+                rect.setFillColor(sf::Color(33, 33, 33));
                 sf::Vector2f pos(x, y);
                 rect.setTexture(texture);
                 rect.setRotation(45.f);
@@ -97,7 +134,7 @@ void GFXLevel::run(const Level* level, vector2d center)
                 m_top.push(rect);
 
                 sf::ConvexShape* bottom = new sf::ConvexShape(4);
-                bottom->setFillColor(sf::Color(33, 33, 33));
+                bottom->setFillColor(sf::Color(44, 44, 44));
                 bottom->setTexture(texture);
                 sf::Vector2f bottomPos(pos);
                 bottomPos.x -= cWallWidthOffset;

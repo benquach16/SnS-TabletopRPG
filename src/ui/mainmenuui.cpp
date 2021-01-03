@@ -9,7 +9,7 @@ using namespace std;
 
 MainMenuUI::MainMenuUI() {}
 
-void MainMenuUI::run(bool hasKeyEvents, sf::Event event, Game* game)
+void MainMenuUI::run(bool hasKeyEvents, sf::Event event)
 {
     UiCommon::drawTopPanel();
     sf::Text text;
@@ -22,7 +22,8 @@ void MainMenuUI::run(bool hasKeyEvents, sf::Event event, Game* game)
     } else {
         str += "b - No savegame to load!\n";
     }
-    str += "c - Exit\n";
+
+    str += "c - Arena\nd - Exit\n";
     text.setString(str);
     Game::getWindow().draw(text);
 
@@ -30,18 +31,21 @@ void MainMenuUI::run(bool hasKeyEvents, sf::Event event, Game* game)
         char c = event.text.unicode;
         switch (c) {
         case 'a':
-            game->setupNewgame();
-            game->setState(Game::eApplicationState::CharCreation);
+            Game::getSingleton()->setupNewgame();
+			Game::getSingleton()->setState(Game::eApplicationState::CharCreation);
             break;
         case 'b':
             if (existingSave) {
-                game->load(Game::cSaveString);
+				Game::getSingleton()->load(Game::cSaveString);
             }
 
             break;
 
         case 'c':
-
+			Game::getSingleton()->setupArena();
+			Game::getSingleton()->setState(Game::eApplicationState::CharCreation);
+            break;
+        case 'd':
             break;
         }
     }

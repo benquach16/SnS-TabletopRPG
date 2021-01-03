@@ -15,6 +15,9 @@ std::string factionToString(eCreatureFaction faction)
     case eCreatureFaction::Confederacy:
         return "Confederacy of the Three";
         break;
+	case eCreatureFaction::ArenaFighter:
+		return "Arena Fighter";
+		break;
     default:
         return "";
         break;

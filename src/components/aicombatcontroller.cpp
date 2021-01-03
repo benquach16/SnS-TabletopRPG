@@ -125,13 +125,13 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
 }
 
 bool AICombatController::setCreatureOffenseManuever(
-    Creature* controlledCreature, eOffensiveManuevers manuever, eLength currentReach)
+    Creature* controlledCreature, eOffensiveManuevers manuever, eLength currentReach, bool payReach)
 {
     bool usePrimary = controlledCreature->getQueuedOffense().withPrimaryWeapon;
     eLength effectiveReach = usePrimary ? controlledCreature->getCurrentReach()
                                         : controlledCreature->getSecondaryWeaponReach();
     int cost = getOffensiveManueverCost(
-        manuever, controlledCreature->getGrip(), effectiveReach, currentReach);
+        manuever, controlledCreature->getGrip(), effectiveReach, currentReach, payReach);
     bool canUse = (cost <= controlledCreature->getCombatPool());
     if (canUse) {
         controlledCreature->setOffenseManuever(manuever);
@@ -178,7 +178,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
     }
     map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(controlledCreature,
         controlledCreature->getQueuedOffense().withPrimaryWeapon, instance->getCurrentReach(),
-        instance->getInGrapple());
+        instance->getInGrapple(), payCosts);
 
     bool targetHasEnoughArmor = target->hasEnoughMetalArmor();
     // algorithm - for each manuever, assign some priority and add to priority queue
@@ -280,7 +280,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
         if (current.cost < controlledCreature->getCombatPool() || current.cost == 0) {
             // choose
             setCreatureOffenseManuever(
-                controlledCreature, current.offManuever, instance->getCurrentReach());
+                controlledCreature, current.offManuever, instance->getCurrentReach(), payCosts);
             controlledCreature->setOffenseTarget(current.hitLocation);
             controlledCreature->setOffenseComponent(current.component);
             controlledCreature->setOffensePinpointTarget(current.pinpointLocation);
@@ -347,6 +347,10 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
         controlledCreature->setDefenseWeapon(false);
         weapon = controlledCreature->getSecondaryWeapon();
     }
+    eLength effectiveReach = controlledCreature->getQueuedDefense().withPrimaryWeapon
+        ? controlledCreature->getCurrentReach()
+        : controlledCreature->getSecondaryWeaponReach();
+    int reachCost = calculateReachCost(effectiveReach, instance->getCurrentReach());
     map<eDefensiveManuevers, int> manuevers = getAvailableDefManuevers(controlledCreature,
         controlledCreature->getQueuedOffense().withPrimaryWeapon, isLastTempo,
         instance->getCurrentReach(), instance->getInGrapple());
@@ -360,15 +364,16 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
         toPush.cost = it.second;
         switch (it.first) {
         case eDefensiveManuevers::Parry:
-			if (weapon->getNaturalWeapon()) {
-				priority -= random_static::get(0, 3);
-			}
+            if (weapon->getNaturalWeapon()) {
+                priority -= random_static::get(0, 3);
+            }
             break;
         case eDefensiveManuevers::ParryLinked: {
             constexpr int buffer = 3;
+            // for now don't do this until we figure out reach costs for compound defenses
             if (diceAllocated + buffer < controlledCreature->getCombatPool()) {
                 if (isLastTempo) {
-                    priority += 10;
+                    // priority += 10;
                 }
             }
         }
@@ -394,7 +399,7 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
 
             break;
         case eDefensiveManuevers::AttackFromDef: {
-			priority -= 20;
+            priority -= 20;
         }
 
         break;
@@ -405,8 +410,7 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
             } else {
                 priority -= 20;
             }
-        }
-        break;
+        } break;
         }
 
         toPush.priority = priority;

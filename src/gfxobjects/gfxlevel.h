@@ -11,9 +11,10 @@ class Level;
 class GFXLevel {
 public:
     GFXLevel();
+	void renderBkg(const Level* level);
     void run(const Level* level, vector2d center);
     void renderText();
-
+	void resize();
 private:
     sf::Texture m_texture;
     sf::Texture m_grass;
@@ -23,4 +24,6 @@ private:
     std::queue<sf::RectangleShape> m_top;
 
     GFXQueue m_queue;
+
+	sf::RectangleShape m_bkg;
 };

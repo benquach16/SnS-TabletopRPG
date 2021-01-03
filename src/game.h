@@ -21,6 +21,7 @@ public:
     void save(const std::string& filepath);
     void initialize();
     void setupNewgame();
+	void setupArena();
     void run();
     void destroy();
     void setState(eApplicationState state) { m_appState = state; }

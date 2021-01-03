@@ -208,9 +208,6 @@ public:
 
     virtual void clearCreatureManuevers(bool skipDisable = false);
 
-    bool setCreatureOffenseManuever(eOffensiveManuevers manuever, eLength currentReach);
-
-    bool setCreatureDefenseManuever(eDefensiveManuevers manuever);
     bool setCreatureFeint();
 
     void setProne() { m_currentStance = eCreatureStance::Prone; }

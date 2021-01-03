@@ -80,15 +80,14 @@ enum class eDefensiveManuevers : unsigned {
 
 enum class eLength : unsigned {
     Nonexistent = 0,
-    Half = 1,
-    Hand = 2,
-    Short = 3,
-    Medium = 4,
-    Long = 5,
-    VeryLong = 6,
-    Extended = 7,
-    Extreme = 8,
-    Ludicrous = 9
+    Hand = 1,
+    Short = 2,
+    Medium = 3,
+    Long = 4,
+    VeryLong = 5,
+    Extended = 6,
+    Extreme = 7,
+    Ludicrous = 8
 };
 
 enum class eInitiativeRoll : unsigned {

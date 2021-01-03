@@ -642,19 +642,6 @@ void Creature::clearCreatureManuevers(bool skipDisable)
     }
 }
 
-bool Creature::setCreatureOffenseManuever(eOffensiveManuevers manuever, eLength currentReach)
-{
-    bool usePrimary = getQueuedOffense().withPrimaryWeapon;
-    eLength effectiveReach = usePrimary ? getCurrentReach() : getSecondaryWeaponReach();
-    int cost = getOffensiveManueverCost(manuever, getGrip(), effectiveReach, currentReach);
-    bool canUse = (cost <= getCombatPool());
-    if (canUse) {
-        m_currentOffense.manuever = manuever;
-        reduceCombatPool(cost);
-    }
-    return canUse;
-}
-
 bool Creature::setCreatureFeint()
 {
     int cost = getFeintCost();

@@ -9,7 +9,8 @@ enum class eCreatureFaction : unsigned {
     StoneEmpire = 5,
     JewelCities = 6,
     Goblin = 7,
-    Count = 8
+	ArenaFighter = 8,
+    Count = 9
 };
 
 enum class eSkills : unsigned {

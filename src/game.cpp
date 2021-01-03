@@ -90,6 +90,12 @@ void Game::setupNewgame()
     m_scene.setupLevel(m_playerObject);
 }
 
+void Game::setupArena()
+{
+    m_playerObject = new PlayerObject;
+    m_scene.setupArena(m_playerObject);
+}
+
 void Game::run()
 {
 
@@ -117,7 +123,7 @@ void Game::run()
             charCreation(hasKeyEvents, event);
             break;
         case eApplicationState::MainMenu:
-            m_mainmenu.run(hasKeyEvents, event, this);
+            m_mainmenu.run(hasKeyEvents, event);
             break;
         case eApplicationState::Gameplay:
             m_scene.run(hasKeyEvents, event, m_playerObject);

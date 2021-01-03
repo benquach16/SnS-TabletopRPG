@@ -38,7 +38,7 @@ private:
     void doPreresolution(Creature* controlledCreature, const Creature* opponent);
 
     bool setCreatureOffenseManuever(
-        Creature* controlledCreature, eOffensiveManuevers manuever, eLength currentReach);
+        Creature* controlledCreature, eOffensiveManuevers manuever, eLength currentReach, bool payReach);
     bool setCreatureDefenseManuever(Creature* controlledCreature, eDefensiveManuevers manuever, eLength currentReach);
 
     bool stealInitiative(Creature* controlledCreature, const Creature* attacker, int& outDie);

@@ -30,11 +30,6 @@ struct Tile {
 
 enum eLighting { Sunny, Dark, Cave };
 
-struct Room {
-    int x;
-    int y;
-};
-
 class Scene;
 class Level {
 public:
@@ -83,10 +78,26 @@ public:
     const std::vector<Object*>& getObjects() const { return m_objects; }
     std::vector<Object*> getObjectsAtLocation(vector2d position);
 
+    eLighting getLighting() const { return m_lighting; }
+
 private:
+    struct Room {
+        int x;
+        int y;
+    };
+
+    struct Building {
+        int x;
+        int y;
+        int width;
+        int height;
+        int xDoor;
+        int yDoor;
+    };
+
     // for boost only
     Level() {}
-    void createBuilding();
+    Building createBuilding();
     Room carveRoom();
     Room carveRoom(int xStart, int yStart, int minSizeX, int minSizeY, int maxSizeX, int maxSizeY);
     Room carveSeperateRoom();
@@ -100,6 +111,7 @@ private:
         ar& m_toDelete;
         ar& m_width;
         ar& m_height;
+        ar& m_lighting;
     }
 
     std::vector<Trigger> m_triggers;
@@ -107,5 +119,6 @@ private:
     std::vector<Object*> m_toDelete;
     int m_width;
     int m_height;
+    eLighting m_lighting;
     std::vector<Tile> m_data;
 };

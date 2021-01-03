@@ -44,12 +44,12 @@ inline int operator<(eLength length1, eLength length2)
 int calculateReachCost(eLength length1, eLength length2);
 int getFeintCost();
 int getOffensiveManueverCost(
-    eOffensiveManuevers manuever, eGrips grip, eLength effectiveReach, eLength currentReach);
+    eOffensiveManuevers manuever, eGrips grip, eLength effectiveReach, eLength currentReach, bool payReach);
 int getDefensiveManueverCost(eDefensiveManuevers manuever, eGrips grip, eLength effectiveReach, eLength currentReach);
 
 //<maneuver, cost>
 std::map<eOffensiveManuevers, int> getAvailableOffManuevers(
-    const Creature* creature, bool primaryWeapon, eLength currentReach, bool inGrapple);
+    const Creature* creature, bool primaryWeapon, eLength currentReach, bool inGrapple, bool payReach);
 
 //<maneuver, cost>
 std::map<eDefensiveManuevers, int> getAvailableDefManuevers(

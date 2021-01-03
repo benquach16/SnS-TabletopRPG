@@ -13,6 +13,7 @@ Level::Level(int width, int height)
     : m_width(width)
     , m_height(height)
     , m_data(width * height)
+    , m_lighting(eLighting::Cave)
 {
 }
 
@@ -116,6 +117,7 @@ void Level::generate()
 
 void Level::generateTown()
 {
+	m_lighting = eLighting::Sunny;
     for (int x = 0; x < m_width; ++x) {
         for (int y = 0; y < m_height; ++y) {
             (*this)(x, y).m_material = eTileMaterial::Grass;
@@ -123,18 +125,27 @@ void Level::generateTown()
         }
     }
 
-    for (unsigned i = 0; i < 10; ++i) {
+    // generate town square
+    constexpr int cSquareSize = 4;
+    for (int x = m_width / 2 - cSquareSize; x < m_width / 2 + cSquareSize; ++x) {
+        for (int y = m_height / 2 - cSquareSize; y < m_height / 2 + cSquareSize; ++y) {
+            (*this)(x, y).m_material = eTileMaterial::Stone;
+            (*this)(x, y).m_type = eTileType::Ground;
+        }
+    }
+
+    for (unsigned i = 0; i < 12; ++i) {
         createBuilding();
     }
 }
 
-void Level::createBuilding()
+Level::Building Level::createBuilding()
 {
     constexpr int cMax = 12;
-    constexpr int cMin = 6;
+    constexpr int cMin = 8;
     bool canBuild = false;
     int xlen, ylen, xStart, yStart;
-
+    Building building;
     // make sure there is no buildings that already exist first
     while (canBuild == false) {
         xlen = random_static::get(cMin, cMax);
@@ -144,7 +155,7 @@ void Level::createBuilding()
         bool foundWall = false;
         for (int x = xStart - 1; x <= xStart + xlen; ++x) {
             for (int y = yStart - 1; y <= yStart + ylen; ++y) {
-                if ((*this)(x, y).m_type == eTileType::Wall) {
+                if ((*this)(x, y).m_material == eTileMaterial::Stone) {
                     foundWall = true;
                 }
             }
@@ -165,9 +176,25 @@ void Level::createBuilding()
             (*this)(x, y).m_material = eTileMaterial::Stone;
         }
     }
+    building.width = xlen;
+    building.height = ylen;
+    building.x = xStart;
+    building.y = yStart;
+    if (random_static::get(1, 2) == 1) {
+        int xDoor = random_static::get(xStart + 1, xStart + xlen - 2);
+        (*this)(xDoor, yStart + ylen - 1).m_type = eTileType::Ground;
+        building.xDoor = xDoor;
+        building.yDoor = yStart + ylen - 1;
+    } else {
+        int yDoor = random_static::get(yStart + 1, yStart + ylen - 2);
+        (*this)(xStart, yDoor).m_type = eTileType::Ground;
+        building.xDoor = xStart;
+        building.yDoor = yDoor;
+    }
+    return building;
 }
 
-Room Level::carveRoom()
+Level::Room Level::carveRoom()
 {
     constexpr int max = 10;
     int xlen = random_static::get(4, max);
@@ -185,7 +212,7 @@ Room Level::carveRoom()
         random_static::get(yStart + 1, ylen + yStart - 1) };
 }
 
-Room Level::carveRoom(
+Level::Room Level::carveRoom(
     int xStart, int yStart, int minSizeX, int minSizeY, int maxSizeX, int maxSizeY)
 {
     int xlen = random_static::get(minSizeX, maxSizeX);
@@ -201,7 +228,7 @@ Room Level::carveRoom(
         random_static::get(yStart + 1, ylen + yStart - 1) };
 }
 
-Room Level::carveSeperateRoom()
+Level::Room Level::carveSeperateRoom()
 {
     constexpr int cMax = 10;
     int size = cMax;

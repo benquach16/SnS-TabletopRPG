@@ -556,12 +556,17 @@ void CombatInstance::doResolution()
                 + " had their action points eliminated by impact, their attack "
                   "can no longer resolve.");
             m_currentState = eCombatState::Offense;
-        } else if (defender->primaryWeaponDisabled() || defender->droppedWeapon()) {
+        } else if ((defender->primaryWeaponDisabled()
+                       && defender->getQueuedOffense().withPrimaryWeapon)
+            || defender->droppedWeapon()) {
+            // need to check if secondary weapon part vs secondary weapon for dropped
+
             // if the attack disabled or caused their weapon to drop
-            // if the attack wiped out their combat pool, do nothing
+            // sans secondary attacks
             writeMessage(defender->getName()
                 + " had their weapon disabled! Their attack can no longer resolve.");
             m_currentState = eCombatState::Offense;
+
         } else {
             int defendSuccesses
                 = DiceRoller::rollGetSuccess(defender->getBTN(), defender->getQueuedOffense().dice);
@@ -576,14 +581,22 @@ void CombatInstance::doResolution()
                     startGrapple(attacker, defender);
                     defender->setBonusDice(defendSuccesses + 2);
                 }
+
             } else {
                 writeMessage(defender->getName() + " had no successes");
             }
             changeReachTo(attacker);
-            if (defendSuccesses > attackerSuccesses) {
+            if (defend.manuever == eDefensiveManuevers::StealInitiative) {
+                if (defendSuccesses > attackerSuccesses) {
+                    changeReachTo(defender);
+                    writeMessage(defender->getName() + " had more successes, taking initiative");
+                    switchInitiative();
+                }
+            }
+            if (defend.manuever == eDefensiveManuevers::AttackFromDef && defendSuccesses > 0) {
                 changeReachTo(defender);
-                writeMessage(defender->getName() + " had more successes, taking initiative");
-                switchInitiative();
+                writeMessage(
+                    defender->getName() + "'s attack landed after, but does not take initiative");
             }
         }
     } else {
@@ -929,54 +942,52 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
         || attack.manuever == eOffensiveManuevers::Snap) {
         ignoreArmor = true;
     }
-    if (armorAtLocation.AV > 0) {
-        writeMessage(
-            target->getName() + "'s armor reduced wound level by " + to_string(armorAtLocation.AV));
+
+    int AV = armorAtLocation.AV;
+    if (armorAtLocation.isMetal == true && damageType != eDamageTypes::Blunt && finalDamage > 0) {
+        if ((attack.component->hasProperty(eWeaponProperties::MaillePiercing) == false
+                && attack.component->hasProperty(eWeaponProperties::PlatePiercing) == false)
+            && armorAtLocation.type == eArmorTypes::Maille) {
+            writeMessage("Maille armor heavily increases armor rating against this damage type.");
+            // piercing attacks round up, otherwise round down
+            if (attack.component->getType() == eDamageTypes::Piercing) {
+                AV = AV * 2 - 1;
+            } else {
+                AV = AV * 2;
+                // only slashing attacks get converted to blunt against maille
+                doBlunt = true;
+            }
+            finalDamage = max(finalDamage, 1);
+
+        } else if (attack.component->hasProperty(eWeaponProperties::PlatePiercing) == false
+            && armorAtLocation.type == eArmorTypes::Plate) {
+            writeMessage("Plate armor heavily increases armor rating against this damage type.");
+            AV = AV * 2;
+            doBlunt = true;
+            finalDamage = max(finalDamage, 1);
+            doBlunt = true;
+        } else if (armorAtLocation.type != eArmorTypes::Plate
+            && armorAtLocation.type != eArmorTypes::Maille) {
+            // weird case where we have metal armor but not maille or plate (?)
+            writeMessage("Metal armor heavily increases armor rating against this damage type.");
+            // piercing attacks round up, otherwise round down
+            if (attack.component->getType() == eDamageTypes::Piercing) {
+                AV = AV * 2 - 1;
+            } else {
+                AV = AV * 2;
+                // only slashing attacks get converted to blunt against maille
+                doBlunt = true;
+            }
+            finalDamage = max(finalDamage, 1);
+            doBlunt = true;
+        }
     }
 
     if (ignoreArmor == false) {
-        // complicated armor calcs go here
-        finalDamage -= armorAtLocation.AV;
+        finalDamage -= AV;
 
-        if (armorAtLocation.isMetal == true && damageType != eDamageTypes::Blunt
-            && finalDamage > 0) {
-            if (attack.component->hasProperty(eWeaponProperties::MaillePiercing) == false
-                && armorAtLocation.type == eArmorTypes::Maille) {
-                writeMessage("Maille armor reduces wound level by half");
-                // piercing attacks round up, otherwise round down
-                if (attack.component->getType() == eDamageTypes::Piercing) {
-                    finalDamage = (finalDamage + 1) / 2;
-                } else {
-                    finalDamage = finalDamage / 2;
-                    // only slashing attacks get converted to blunt against maille
-                    doBlunt = true;
-                }
-                finalDamage = max(finalDamage, 1);
-
-            } else if (attack.component->hasProperty(eWeaponProperties::PlatePiercing) == false
-                && armorAtLocation.type == eArmorTypes::Plate) {
-                writeMessage("Plate armor reduces wound level by half");
-                // piercing attacks round up, otherwise round down
-                if (attack.component->getType() == eDamageTypes::Piercing) {
-                    finalDamage = (finalDamage + 1) / 2;
-                } else {
-                    finalDamage = finalDamage / 2;
-                }
-                finalDamage = max(finalDamage, 1);
-                doBlunt = true;
-            } else if (armorAtLocation.type != eArmorTypes::Plate
-                && armorAtLocation.type != eArmorTypes::Maille) {
-                // weird case where we have metal armor but not maille or plate (?)
-                writeMessage("Metal armor reduces wound level by half");
-                // piercing attacks round up, otherwise round down
-                if (attack.component->getType() == eDamageTypes::Piercing) {
-                    finalDamage = (finalDamage + 1) / 2;
-                } else {
-                    finalDamage = finalDamage / 2;
-                }
-                finalDamage = max(finalDamage, 1);
-                doBlunt = true;
-            }
+        if (AV > 0) {
+            writeMessage(target->getName() + "'s armor reduced wound level by " + to_string(AV));
         }
     }
     constexpr int cCrushingImpact = 2;

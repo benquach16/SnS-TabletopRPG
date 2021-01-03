@@ -275,9 +275,12 @@ int calculateReachCost(eLength length1, eLength length2)
 int getFeintCost() { return 2; }
 
 int getOffensiveManueverCost(
-    eOffensiveManuevers manuever, eGrips grip, eLength effectiveReach, eLength currentReach)
+    eOffensiveManuevers manuever, eGrips grip, eLength effectiveReach, eLength currentReach, bool payReach)
 {
     int reachCost = calculateReachCost(effectiveReach, currentReach);
+	if (payReach == false) {
+		reachCost = 0;
+	}
     switch (manuever) {
 	case eOffensiveManuevers::HeavyBlow:
 		return 2 + reachCost;
@@ -351,7 +354,7 @@ int getDefensiveManueverCost(
 }
 
 std::map<eOffensiveManuevers, int> getAvailableOffManuevers(
-    const Creature* creature, bool primaryWeapon, eLength currentReach, bool inGrapple)
+    const Creature* creature, bool primaryWeapon, eLength currentReach, bool inGrapple, bool payReach)
 {
     const Weapon* weapon
         = primaryWeapon ? creature->getPrimaryWeapon() : creature->getSecondaryWeapon();
@@ -362,48 +365,48 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(
     std::map<eOffensiveManuevers, int> ret;
 
     ret[eOffensiveManuevers::Swing]
-        = getOffensiveManueverCost(eOffensiveManuevers::Swing, grip, effectiveReach, currentReach);
+        = getOffensiveManueverCost(eOffensiveManuevers::Swing, grip, effectiveReach, currentReach, payReach);
     ret[eOffensiveManuevers::Thrust]
-        = getOffensiveManueverCost(eOffensiveManuevers::Thrust, grip, effectiveReach, currentReach);
+        = getOffensiveManueverCost(eOffensiveManuevers::Thrust, grip, effectiveReach, currentReach, payReach);
     ret[eOffensiveManuevers::PinpointThrust] = getOffensiveManueverCost(
-        eOffensiveManuevers::PinpointThrust, grip, effectiveReach, currentReach);
+        eOffensiveManuevers::PinpointThrust, grip, effectiveReach, currentReach, payReach);
 
 	if (weapon->getType() == eWeaponTypes::Longswords || weapon->getType() == eWeaponTypes::Swords) {
 		ret[eOffensiveManuevers::Draw] = getOffensiveManueverCost(
-			eOffensiveManuevers::Draw, grip, effectiveReach, currentReach);
+			eOffensiveManuevers::Draw, grip, effectiveReach, currentReach, payReach);
 	}
 
     if (inGrapple == false) {
         ret[eOffensiveManuevers::Beat] = getOffensiveManueverCost(
-            eOffensiveManuevers::Beat, grip, effectiveReach, currentReach);
+            eOffensiveManuevers::Beat, grip, effectiveReach, currentReach, payReach);
 
 		if (weapon->getNaturalWeapon()) {
 			ret[eOffensiveManuevers::Grab] = getOffensiveManueverCost(
-				eOffensiveManuevers::Grab, grip, effectiveReach, currentReach);
+				eOffensiveManuevers::Grab, grip, effectiveReach, currentReach, payReach);
 		}
 
         ret[eOffensiveManuevers::Disarm] = getOffensiveManueverCost(
-            eOffensiveManuevers::Disarm, grip, effectiveReach, currentReach);
+            eOffensiveManuevers::Disarm, grip, effectiveReach, currentReach, payReach);
         eWeaponTypes type = weapon->getType();
         if (type == eWeaponTypes::Swords || type == eWeaponTypes::Longswords) {
             ret[eOffensiveManuevers::Mordhau] = getOffensiveManueverCost(
-                eOffensiveManuevers::Mordhau, grip, effectiveReach, currentReach);
+                eOffensiveManuevers::Mordhau, grip, effectiveReach, currentReach, payReach);
         }
 		if (type == eWeaponTypes::Mass || type == eWeaponTypes::Polearms) {
 			ret[eOffensiveManuevers::HeavyBlow] = getOffensiveManueverCost(
-				eOffensiveManuevers::HeavyBlow, grip, effectiveReach, currentReach);
+				eOffensiveManuevers::HeavyBlow, grip, effectiveReach, currentReach, payReach);
 		}
         if (weapon->canHook()) {
             ret[eOffensiveManuevers::Hook] = getOffensiveManueverCost(
-                eOffensiveManuevers::Hook, grip, effectiveReach, currentReach);
+                eOffensiveManuevers::Hook, grip, effectiveReach, currentReach, payReach);
         }
     } else {
         ret[eOffensiveManuevers::Throw] = getOffensiveManueverCost(
-            eOffensiveManuevers::Throw, grip, effectiveReach, currentReach);
+            eOffensiveManuevers::Throw, grip, effectiveReach, currentReach, payReach);
         ret[eOffensiveManuevers::Snap] = getOffensiveManueverCost(
-            eOffensiveManuevers::Snap, grip, effectiveReach, currentReach);
+            eOffensiveManuevers::Snap, grip, effectiveReach, currentReach, payReach);
         ret[eOffensiveManuevers::VisorThrust] = getOffensiveManueverCost(
-            eOffensiveManuevers::VisorThrust, grip, effectiveReach, currentReach);
+            eOffensiveManuevers::VisorThrust, grip, effectiveReach, currentReach, payReach);
     }
     ret[eOffensiveManuevers::NoOffense] = 0;
     return ret;

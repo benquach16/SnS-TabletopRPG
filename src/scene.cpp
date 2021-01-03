@@ -56,7 +56,7 @@ void Scene::setupLevel(PlayerObject* playerObject)
         (*level)(0, i).m_type = eTileType::Wall;
     }
     (*level)(0, 1).m_levelChangeIdx = 1;
-	//level->generateTown();
+    // level->generateTown();
     playerObject->setStartingDialogueLabel("wakeup");
 
     m_talking = playerObject;
@@ -74,6 +74,27 @@ void Scene::setupLevel(PlayerObject* playerObject)
     m_levels.push_back(level2);
 }
 
+void Scene::setupArena(PlayerObject* playerObject)
+{
+	m_currentIdx = 0;
+	Level* level = new Level(10, 10);
+
+	playerObject->setPosition(1, 1);
+	// has some management of player here but cannot delete
+	// violates RAII
+	level->addObject(playerObject);
+
+	HumanObject* object = new HumanObject;
+	object->setPosition(5,5);
+	object->setFaction(eCreatureFaction::ArenaFighter);
+	object->setLoadout(eCreatureFaction::Confederacy, eRank::Veteran);
+	object->getCreatureComponent()->setAgility(9);
+	object->getCreatureComponent()->setIntuition(9);
+	level->addObject(object);
+	m_currentState = eSceneState::Playing;
+	m_levels.push_back(level);
+}
+
 void Scene::changeToLevel(int idx, Object* object, int x, int y)
 {
     m_levels[m_currentIdx]->removeObject(object->getId());
@@ -89,6 +110,9 @@ void Scene::changeToLevel(int idx, Object* object, int x, int y)
 
 void Scene::run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
 {
+    m_gfxlevel.renderBkg(m_levels[m_currentIdx]);
+    // todo: remove all this sfml specific stuff and move to a gfx specific class
+    //------------------
     sf::View v = Game::getWindow().getDefaultView();
     v.setSize(v.getSize().x, v.getSize().y * 2);
     // v.setCenter(v.getSize() *.5f);
@@ -97,6 +121,7 @@ void Scene::run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
     v.setCenter(center.x, center.y + 200);
     v.zoom(zoom);
     Game::getWindow().setView(v);
+    //------------------
     m_gfxlevel.run(m_levels[m_currentIdx], playerObject->getPosition());
     // temporary until we get graphics queue up and running
     if (m_currentState == eSceneState::AttackMode || m_currentState == eSceneState::SelectionMode
