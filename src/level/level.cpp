@@ -116,29 +116,54 @@ void Level::generate()
 
 void Level::generateTown()
 {
-    for (int x = 1; x < m_width; ++x) {
-        for (int y = 1; y < m_height; ++y) {
+    for (int x = 0; x < m_width; ++x) {
+        for (int y = 0; y < m_height; ++y) {
             (*this)(x, y).m_material = eTileMaterial::Grass;
+            (*this)(x, y).m_type = eTileType::Ground;
         }
     }
-    createBuilding();
+
+    for (unsigned i = 0; i < 10; ++i) {
+        createBuilding();
+    }
 }
 
 void Level::createBuilding()
 {
-    constexpr int max = 10;
-    int xlen = random_static::get(4, max);
-    int ylen = random_static::get(4, max);
-    int xStart = random_static::get(2, m_width - max - 1);
-    int yStart = random_static::get(2, m_height - max - 1);
+    constexpr int cMax = 12;
+    constexpr int cMin = 6;
+    bool canBuild = false;
+    int xlen, ylen, xStart, yStart;
+
+    // make sure there is no buildings that already exist first
+    while (canBuild == false) {
+        xlen = random_static::get(cMin, cMax);
+        ylen = random_static::get(cMin, cMax);
+        xStart = random_static::get(2, m_width - xlen - 1);
+        yStart = random_static::get(2, m_height - ylen - 1);
+        bool foundWall = false;
+        for (int x = xStart - 1; x <= xStart + xlen; ++x) {
+            for (int y = yStart - 1; y <= yStart + ylen; ++y) {
+                if ((*this)(x, y).m_type == eTileType::Wall) {
+                    foundWall = true;
+                }
+            }
+        }
+        if (foundWall == false) {
+            canBuild = true;
+        }
+    }
 
     for (int x = xStart; x < xStart + xlen; ++x) {
-        (*this)(x, yStart).m_type = eTileType::Wall;
-        (*this)(x, yStart).m_material = eTileMaterial::Stone;
-    }
-    for (int y = yStart; y < yStart + ylen; ++y) {
-        (*this)(xStart, y).m_type = eTileType::Wall;
-        (*this)(xStart, y).m_material = eTileMaterial::Stone;
+        for (int y = yStart; y < yStart + ylen; ++y) {
+            if (x == xStart || x == xStart + xlen - 1 || y == yStart || y == yStart + ylen - 1) {
+                (*this)(x, y).m_type = eTileType::Wall;
+            } else {
+                (*this)(x, y).m_type = eTileType::Ground;
+            }
+
+            (*this)(x, y).m_material = eTileMaterial::Stone;
+        }
     }
 }
 

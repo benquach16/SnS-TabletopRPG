@@ -89,6 +89,7 @@ public:
     const Weapon* getSecondaryWeapon() const;
     int getSecondaryWeaponId() const { return m_secondaryWeaponId; }
     const Weapon* getNaturalWeapon() const;
+	int getNaturalWeaponId() const { return m_naturalWeaponId; }
     std::vector<int> getQuickdrawItems() const { return m_quickDrawItems; }
     bool findInQuickdraw(int id);
     void addQuickdrawItem(int id) { m_quickDrawItems.push_back(id); }

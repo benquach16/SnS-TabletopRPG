@@ -56,6 +56,7 @@ void Scene::setupLevel(PlayerObject* playerObject)
         (*level)(0, i).m_type = eTileType::Wall;
     }
     (*level)(0, 1).m_levelChangeIdx = 1;
+	//level->generateTown();
     playerObject->setStartingDialogueLabel("wakeup");
 
     m_talking = playerObject;

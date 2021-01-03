@@ -448,13 +448,7 @@ void CombatInstance::doStolenOffense()
     int reachCost = calcReachCost(defender, true);
     reachCost = abs(reachCost);
     outputReachCost(reachCost, defender, true);
-
-    writeMessage(defender->getName() + " "
-        + offensiveManueverToString(defender->getQueuedOffense().manuever) + "s with "
-        + getAttackingWeapon(defender)->getName() + " at "
-        + hitLocationToString(defender->getQueuedOffense().target) + " using "
-        + defender->getQueuedOffense().component->getName() + " with "
-        + to_string(defender->getQueuedOffense().dice) + " action points");
+    outputOffense(defender);
     m_currentState = eCombatState::Resolution;
 }
 
@@ -548,9 +542,7 @@ void CombatInstance::doResolution()
         }
 
         bool becameProne = wasStanding == true && defender->getStance() == eCreatureStance::Prone;
-		if (attack.manuever != eOffensiveManuevers::Beat) {
-			m_currentReach = attacker->getCurrentReach();
-		}
+        changeReachTo(attacker);
         if (becameProne == true) {
             // if the attack knocked them prone
             writeMessage(defender->getName()
@@ -558,7 +550,6 @@ void CombatInstance::doResolution()
             m_currentState = eCombatState::Offense;
         } else if (wasGrappled == true) {
             writeMessage(defender->getName() + " was grappled, their attack is interrupted!");
-            m_currentReach = eLength::Hand;
         } else if (defender->getQueuedOffense().dice <= 0) {
             // if the attack wiped out their combat pool, do nothing
             writeMessage(defender->getName()
@@ -588,11 +579,9 @@ void CombatInstance::doResolution()
             } else {
                 writeMessage(defender->getName() + " had no successes");
             }
-            m_currentReach = attacker->getCurrentReach();
+            changeReachTo(attacker);
             if (defendSuccesses > attackerSuccesses) {
-				if (defender->getQueuedOffense().manuever != eOffensiveManuevers::Beat) {
-					m_currentReach = defender->getCurrentReach();
-				}
+                changeReachTo(defender);
                 writeMessage(defender->getName() + " had more successes, taking initiative");
                 switchInitiative();
             }
@@ -633,10 +622,8 @@ void CombatInstance::doResolution()
                     m_currentState = eCombatState::FinishedCombat;
                     return;
                 }
-				if (attack.manuever != eOffensiveManuevers::Beat) {
-					m_currentReach = attacker->getCurrentReach();
-				}
-                
+                changeReachTo(attacker);
+
             } else {
                 startGrapple(attacker, defender);
                 attacker->setBonusDice(MoS + 2);
@@ -741,10 +728,10 @@ void CombatInstance::doDualOffenseResolve()
     // intiative goes to whoever got more hits
     m_currentState = eCombatState::PostResolution;
     if (MoS > MoS2) {
-        m_currentReach = m_side1->getCurrentReach();
+        changeReachTo(m_side1);
         m_initiative = eInitiative::Side1;
     } else if (MoS < MoS2) {
-        m_currentReach = m_side2->getCurrentReach();
+        changeReachTo(m_side2);
         m_initiative = eInitiative::Side2;
     } else {
         // random
@@ -828,7 +815,7 @@ void CombatInstance::doEndCombat()
     writeMessage("Combat has ended", Log::eMessageTypes::Announcement);
     m_side1->clearCreatureManuevers();
     m_side2->clearCreatureManuevers();
-
+    m_side1->enableWeapon();
     m_side1 = nullptr;
     m_side2 = nullptr;
     m_currentState = eCombatState::Uninitialized;
@@ -1020,9 +1007,9 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
         writeMessage(target->getName() + " begins to struggle from the pain",
             Log::eMessageTypes::Alert, true);
     }
-    bool hasWeapon = target->getPrimaryWeaponId() != cFistsId;
+    bool hasWeapon = target->getPrimaryWeaponId() != target->getNaturalWeaponId();
     target->inflictWound(wound);
-    if (target->getPrimaryWeaponId() == cFistsId && hasWeapon == true) {
+    if (target->getPrimaryWeaponId() == target->getNaturalWeaponId() && hasWeapon == true) {
         writeMessage(target->getName() + " has been disarmed!", Log::eMessageTypes::Alert);
     }
 
@@ -1202,7 +1189,7 @@ int CombatInstance::calcReachCost(Creature* creature, bool attacker)
     }
 }
 
-void CombatInstance::outputOffense(Creature* creature)
+void CombatInstance::outputOffense(const Creature* creature)
 {
     Offense attack = creature->getQueuedOffense();
     const Weapon* offenseWeapon = getAttackingWeapon(creature);
@@ -1214,10 +1201,14 @@ void CombatInstance::outputOffense(Creature* creature)
         writeMessage(creature->getName() + " attempts a Beat with " + offenseWeapon->getName()
             + " using " + to_string(creature->getQueuedOffense().dice) + " action points");
         break;
-	case eOffensiveManuevers::Hook:
-		writeMessage(creature->getName() + " attempts to Hook with " + offenseWeapon->getName()
-			+ " using " + to_string(creature->getQueuedOffense().dice) + " action points");
-		break;
+    case eOffensiveManuevers::Hook:
+        writeMessage(creature->getName() + " attempts to Hook with " + offenseWeapon->getName()
+            + " using " + to_string(creature->getQueuedOffense().dice) + " action points");
+        break;
+    case eOffensiveManuevers::Grab:
+        writeMessage(creature->getName() + " attempts to start a grapple using "
+            + to_string(creature->getQueuedOffense().dice) + " action points");
+        break;
     default:
         assert(attack.component != nullptr);
         assert(offenseWeapon);
@@ -1229,7 +1220,7 @@ void CombatInstance::outputOffense(Creature* creature)
     }
 }
 
-void CombatInstance::outputDefense(Creature* creature) {}
+void CombatInstance::outputDefense(const Creature* creature) {}
 
 void CombatInstance::writeMessage(const std::string& str, Log::eMessageTypes type, bool important)
 {
@@ -1280,4 +1271,19 @@ const Weapon* CombatInstance::getDefendingWeapon(const Creature* creature)
 {
     return creature->getQueuedDefense().withPrimaryWeapon == true ? creature->getPrimaryWeapon()
                                                                   : creature->getSecondaryWeapon();
+}
+
+void CombatInstance::changeReachTo(const Creature* creature)
+{
+    Offense attack = creature->getQueuedOffense();
+    eLength effectiveReach = attack.withPrimaryWeapon ? creature->getCurrentReach()
+                                                      : creature->getSecondaryWeaponReach();
+    switch (attack.manuever) {
+    case eOffensiveManuevers::Beat:
+        return;
+    case eOffensiveManuevers::Grab:
+        m_currentReach = eLength::Hand;
+    default:
+        m_currentReach = creature->getCurrentReach();
+    }
 }

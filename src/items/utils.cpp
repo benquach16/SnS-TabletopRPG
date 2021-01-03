@@ -332,6 +332,8 @@ int getDefensiveManueverCost(
         reachCost = calculateReachCost(effectiveReach, currentReach);
     }
     switch (manuever) {
+	case eDefensiveManuevers::StealInitiative:
+	case eDefensiveManuevers::AttackFromDef:
     case eDefensiveManuevers::Dodge:
         return 0;
     case eDefensiveManuevers::DodgeTakeInitiative:
