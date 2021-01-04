@@ -18,6 +18,7 @@ struct ManueverContainer {
     Component* component;
     eHitLocations hitLocation;
     eBodyParts pinpointLocation;
+    int dice; // only for defense
 };
 
 bool operator<(const ManueverContainer& lhs, const ManueverContainer& rhs)
@@ -67,7 +68,7 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
     }
 
     if (instance->getState() == eCombatState::PreexchangeActions) {
-        doPrecombat(controlledCreature, enemy);
+        doPrecombat(controlledCreature, enemy, instance);
     }
     if (instance->getState() == eCombatState::PreResolution
         && instance->getAttacker()->getId() == creatureId) {
@@ -224,10 +225,10 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             int damage = 0;
             toPush.hitLocation = getBestHitLocation(target, component, damage);
             if (weapon->getBestAttack()->getAttack() == eAttacks::Thrust) {
-				damage += 1;
+                damage += 1;
             }
-			damage = damage * damage;
-			priority += random_static::get(damage, damage + cFuzz);
+            damage = damage * damage;
+            priority += random_static::get(damage, damage + cFuzz);
         } break;
         case eOffensiveManuevers::PinpointThrust: {
             // only used for bypassing armor
@@ -241,8 +242,11 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
                     == component->getProperties().end()) {
                 AV *= 2;
             }
+            // the more dice advantage we have, the more we want to do this as it guarantees a
+            // killshot
             int damage = component->getDamage() - AV;
             priority += damage * damage;
+            priority += (controlledCreature->getCombatPool() - target->getCombatPool()) / 2;
             toPush.hitLocation = location;
             toPush.pinpointLocation = part;
         } break;
@@ -350,6 +354,7 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
     const CombatInstance* instance, bool isLastTempo)
 {
     int diceAllocated = attacker->getQueuedOffense().dice;
+    eOffensiveManuevers attack = attacker->getQueuedOffense().manuever;
     const Weapon* weapon = controlledCreature->getPrimaryWeapon();
     if (controlledCreature->primaryWeaponDisabled() == false) {
         controlledCreature->setDefenseWeapon(true);
@@ -373,12 +378,24 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
         ManueverContainer toPush;
         toPush.defManuever = it.first;
         toPush.cost = it.second;
+        toPush.dice = 0;
         switch (it.first) {
-        case eDefensiveManuevers::Parry:
+        case eDefensiveManuevers::Parry: {
             if (weapon->getNaturalWeapon()) {
                 priority -= random_static::get(0, 3);
             }
-            break;
+            if (isLastTempo) {
+                toPush.dice = controlledCreature->getCombatPool();
+            } else {
+                int dice = std::min(diceAllocated + random_static::get(0, diceAllocated / 3)
+                        - random_static::get(0, diceAllocated / 4),
+                    controlledCreature->getCombatPool());
+                if (attack == eOffensiveManuevers::Hook) {
+                    dice = dice / 2;
+                }
+                toPush.dice = dice;
+            }
+        } break;
         case eDefensiveManuevers::ParryLinked: {
             constexpr int buffer = 3;
             // for now don't do this until we figure out reach costs for compound defenses
@@ -390,19 +407,33 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
         }
 
         break;
-        case eDefensiveManuevers::Dodge:
+        case eDefensiveManuevers::Dodge: {
             if (controlledCreature->primaryWeaponDisabled()) {
                 priority++;
             } else {
                 priority--;
             }
-
-            break;
+            int dice = std::min(diceAllocated + random_static::get(0, diceAllocated / 3)
+                    - random_static::get(0, diceAllocated / 4),
+                controlledCreature->getCombatPool());
+            toPush.dice = dice;
+        } break;
         case eDefensiveManuevers::Expulsion: {
             constexpr int buffer = 3;
             if (diceAllocated + buffer < controlledCreature->getCombatPool()) {
                 if (isLastTempo) {
                     priority += 10;
+                    toPush.dice = controlledCreature->getCombatPool();
+                } else {
+                    int dice = std::min(diceAllocated + random_static::get(0, diceAllocated / 3)
+                            - random_static::get(0, diceAllocated / 4),
+                        controlledCreature->getCombatPool());
+                    // if its not too much dice, favor doing this
+                    if (dice + random_static::get(cFuzz, cFuzz * 2)
+                        < controlledCreature->getCombatPool()) {
+                        priority += 10;
+                    }
+                    toPush.dice = dice;
                 }
             }
         } break;
@@ -410,7 +441,15 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
 
             break;
         case eDefensiveManuevers::AttackFromDef: {
-            priority -= 20;
+            priority = cLowestPriority;
+            if (isLastTempo == false) {
+                priority = cLowestPriority;
+            } else if (controlledCreature->getCombatPool() > reachCost) {
+                // if incoming attack we can take, then just attack
+                if (attack == eOffensiveManuevers::Hook && diceAllocated < 10) {
+                    priority += 20;
+                }
+            }
         }
 
         break;
@@ -439,38 +478,15 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
             // choose
             setCreatureDefenseManuever(
                 controlledCreature, current.defManuever, instance->getCurrentReach());
+            current.dice = min(current.dice, controlledCreature->getCombatPool());
+            current.dice = max(0, current.dice);
+            controlledCreature->setDefenseDice(current.dice);
+            controlledCreature->reduceCombatPool(current.dice);
             break;
         }
         manueverPriorities.pop();
     }
 
-    int stealDie = 0;
-
-    if (isLastTempo == false && stealInitiative(controlledCreature, attacker, stealDie) == true) {
-        controlledCreature->setDefenseManuever(eDefensiveManuevers::StealInitiative);
-        controlledCreature->setDefenseDice(stealDie);
-        assert(stealDie <= controlledCreature->getCombatPool() || stealDie == 0);
-        controlledCreature->reduceCombatPool(stealDie);
-        controlledCreature->setDefenseReady();
-        return;
-    }
-    if (isLastTempo == true) {
-        // use all dice because we're going to refresh anyway
-        int defDie = max(controlledCreature->getCombatPool(), 0);
-        controlledCreature->setDefenseDice(defDie);
-        controlledCreature->reduceCombatPool(defDie);
-        controlledCreature->setDefenseReady();
-        return;
-    }
-    int dice = std::min(diceAllocated + random_static::get(0, diceAllocated / 3)
-            - random_static::get(0, diceAllocated / 4),
-        controlledCreature->getCombatPool());
-    dice = max(dice, 3);
-    dice = min(controlledCreature->getCombatPool(), dice);
-    dice = max(dice, 0);
-    controlledCreature->setDefenseDice(dice);
-    assert(dice <= controlledCreature->getCombatPool() || dice == 0);
-    controlledCreature->reduceCombatPool(dice);
     controlledCreature->setDefenseReady();
 }
 
@@ -509,13 +525,20 @@ void AICombatController::doPositionRoll(Creature* controlledCreature, const Crea
     controlledCreature->setPositionReady();
 }
 
-void AICombatController::doPrecombat(Creature* controlledCreature, const Creature* opponent)
+void AICombatController::doPrecombat(
+    Creature* controlledCreature, const Creature* opponent, const CombatInstance* instance)
 {
     const Weapon* weapon = controlledCreature->getPrimaryWeapon();
     if (opponent->hasEnoughMetalArmor()) {
-        if (controlledCreature->hasEnoughMetalArmor() == false && weapon->canHook()) {
-            controlledCreature->setGrip(eGrips::Standard);
-        } else if (weapon->getType() == eWeaponTypes::Polearms) {
+        if (weapon->getType() == eWeaponTypes::Polearms) {
+            controlledCreature->setGrip(eGrips::Staff);
+        } else if (weapon->getType() == eWeaponTypes::Longswords) {
+            controlledCreature->setGrip(eGrips::HalfSword);
+        }
+    }
+    if (instance->getCurrentReach() < controlledCreature->getCurrentReach()
+        && controlledCreature->getGrip() == eGrips::Standard) {
+        if (weapon->getType() == eWeaponTypes::Polearms) {
             controlledCreature->setGrip(eGrips::Staff);
         } else if (weapon->getType() == eWeaponTypes::Longswords) {
             controlledCreature->setGrip(eGrips::HalfSword);

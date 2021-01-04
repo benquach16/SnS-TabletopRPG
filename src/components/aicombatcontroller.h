@@ -29,7 +29,7 @@ private:
 
     void doStolenInitiative(Creature* controlledCreature, const Creature* defender, bool allin);
 
-    void doPrecombat(Creature* controlledCreature, const Creature* opponent);
+    void doPrecombat(Creature* controlledCreature, const Creature* opponent, const CombatInstance* instance);
 
     void doInitiative(Creature* controlledCreature, const Creature* opponent);
 

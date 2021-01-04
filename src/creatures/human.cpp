@@ -20,14 +20,15 @@ Human::Human()
 
 void Human::randomizeStats()
 {
-    m_proficiencies[eWeaponTypes::Polearms] = effolkronium::random_static::get(5, 12);
-    m_proficiencies[eWeaponTypes::Swords] = effolkronium::random_static::get(5, 12);
-    m_proficiencies[eWeaponTypes::Longswords] = effolkronium::random_static::get(5, 12);
-    m_proficiencies[eWeaponTypes::Brawling] = effolkronium::random_static::get(5, 12);
+    m_proficiencies[eWeaponTypes::Polearms] = effolkronium::random_static::get(6, 10);
+    m_proficiencies[eWeaponTypes::Swords] = effolkronium::random_static::get(6, 10);
+    m_proficiencies[eWeaponTypes::Longswords] = effolkronium::random_static::get(6, 10);
+    m_proficiencies[eWeaponTypes::Brawling] = effolkronium::random_static::get(6, 10);
+	m_proficiencies[eWeaponTypes::Mass] = effolkronium::random_static::get(6, 10);
 
-    m_strength = effolkronium::random_static::get(2, 9);
-    m_agility = effolkronium::random_static::get(2, 9);
-    m_intuition = effolkronium::random_static::get(2, 9);
-    m_perception = effolkronium::random_static::get(2, 9);
-    m_willpower = effolkronium::random_static::get(2, 9);
+    m_strength = effolkronium::random_static::get(3, 9);
+    m_agility = effolkronium::random_static::get(3, 9);
+    m_intuition = effolkronium::random_static::get(3, 9);
+    m_perception = effolkronium::random_static::get(3, 9);
+    m_willpower = effolkronium::random_static::get(3, 9);
 }

@@ -87,6 +87,11 @@ void Level::generateEnemy()
         static_cast<eRank>(random_static::get((int)eRank::Recruit, (int)eRank::Count - 1)));
     object->getCreatureComponent()->setAgility(random_static::get(5, 9));
     object->getCreatureComponent()->setIntuition(random_static::get(5, 9));
+	object->getCreatureComponent()->setProficiency(eWeaponTypes::Polearms, random_static::get(8, 10));
+	object->getCreatureComponent()->setProficiency(eWeaponTypes::Brawling, random_static::get(8, 10));
+	object->getCreatureComponent()->setProficiency(eWeaponTypes::Longswords, random_static::get(8, 10));
+	object->getCreatureComponent()->setProficiency(eWeaponTypes::Swords, random_static::get(8, 10));
+	object->getCreatureComponent()->setProficiency(eWeaponTypes::Mass, random_static::get(8, 10));
     addObject(object);
 }
 
