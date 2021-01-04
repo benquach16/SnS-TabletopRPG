@@ -906,7 +906,7 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
         bodyPart = eBodyParts::Face;
     } else if (attack.manuever == eOffensiveManuevers::Snap) {
         bodyPart = eBodyParts::Elbow;
-    } else if (attack.manuever == eOffensiveManuevers::Swing) {
+    } else if (attack.manuever == eOffensiveManuevers::Swing || attack.manuever == eOffensiveManuevers::HeavyBlow) {
         // swings in these grips do less damage, unless its a linked component
         eGrips grip = attacker->getGrip();
         if ((grip == eGrips::HalfSword || grip == eGrips::Staff || grip == eGrips::Overhand)) {
@@ -916,6 +916,9 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
             }
             MoS -= 1;
         }
+		if (attack.manuever == eOffensiveManuevers::HeavyBlow) {
+			MoS += 2;
+		}
         MoS += attack.heavyblow;
     } else if (attack.manuever == eOffensiveManuevers::Mordhau) {
         damageType = eDamageTypes::Blunt;

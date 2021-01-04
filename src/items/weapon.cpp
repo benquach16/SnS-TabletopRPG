@@ -44,7 +44,6 @@ Weapon::~Weapon()
 
 Component* Weapon::getBestAttack() const
 {
-    // should make sure that we can even use in a particular grip
     assert(m_components.size() > 0);
 
     Component* ret = m_components[0];
@@ -59,7 +58,6 @@ Component* Weapon::getBestAttack() const
 
 Component* Weapon::getBestThrust() const
 {
-    // should make sure that we can even use in a particular grip
     assert(m_components.size() > 0);
     Component* ret = m_thrustComponents[0];
     for (unsigned i = 1; i < m_thrustComponents.size(); ++i) {
@@ -69,6 +67,24 @@ Component* Weapon::getBestThrust() const
     }
     return ret;
 }
+
+Component* Weapon::getBestBlunt() const
+{
+	assert(m_components.size() > 0);
+
+	Component* ret = nullptr;
+	for (unsigned i = 0; i < m_components.size(); ++i) {
+		if (m_components[i]->getType() == eDamageTypes::Blunt) {
+			if (ret == nullptr || m_components[i]->getDamage() > ret->getDamage()) {
+				ret = m_components[i];
+			}
+		}
+
+	}
+
+	return ret;
+}
+
 
 Component* Weapon::getPommelStrike() const
 {

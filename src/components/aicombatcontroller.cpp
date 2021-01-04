@@ -18,7 +18,7 @@ struct ManueverContainer {
     Component* component;
     eHitLocations hitLocation;
     eBodyParts pinpointLocation;
-    int dice; // only for defense
+    int dice; // only for defense for now
 };
 
 bool operator<(const ManueverContainer& lhs, const ManueverContainer& rhs)
@@ -199,6 +199,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
         case eOffensiveManuevers::NoOffense:
             priority = 0;
             break;
+        case eOffensiveManuevers::HeavyBlow:
         case eOffensiveManuevers::Swing: {
             auto swings = weapon->getSwingComponents();
             // what kind of component we use depends on the armor of the opponent
@@ -214,7 +215,18 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
                     toPush.hitLocation = bestTarget;
                 }
             }
-            bestDamage = bestDamage * bestDamage;
+            if (controlledCreature->getGrip() == eGrips::Staff
+                || controlledCreature->getGrip() == eGrips::HalfSword) {
+                bestDamage--;
+            }
+            // damage may be negative
+            bestDamage = bestDamage + cFuzz;
+            if (it.first == eOffensiveManuevers::HeavyBlow) {
+                // do this if we have a dice advantage
+                priority += (controlledCreature->getCombatPool() - target->getCombatPool()) / 2;
+
+                bestDamage += 2;
+            }
             priority += random_static::get(bestDamage, bestDamage + cFuzz);
             assert(component != nullptr);
         } break;
@@ -227,7 +239,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             if (weapon->getBestAttack()->getAttack() == eAttacks::Thrust) {
                 damage += 1;
             }
-            damage = damage * damage;
+            damage = damage + cFuzz;
             priority += random_static::get(damage, damage + cFuzz);
         } break;
         case eOffensiveManuevers::PinpointThrust: {
@@ -245,7 +257,8 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             // the more dice advantage we have, the more we want to do this as it guarantees a
             // killshot
             int damage = component->getDamage() - AV;
-            priority += damage * damage;
+            damage = damage + cFuzz;
+            priority += random_static::get(damage, damage + cFuzz);
             priority += (controlledCreature->getCombatPool() - target->getCombatPool()) / 2;
             toPush.hitLocation = location;
             toPush.pinpointLocation = part;
@@ -393,6 +406,7 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
                 if (attack == eOffensiveManuevers::Hook) {
                     dice = dice / 2;
                 }
+                dice = max(dice, 3);
                 toPush.dice = dice;
             }
         } break;
@@ -433,6 +447,7 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
                         < controlledCreature->getCombatPool()) {
                         priority += 10;
                     }
+                    dice = max(dice, 3);
                     toPush.dice = dice;
                 }
             }
@@ -441,7 +456,7 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
 
             break;
         case eDefensiveManuevers::AttackFromDef: {
-            priority = cLowestPriority;
+
             if (isLastTempo == false) {
                 priority = cLowestPriority;
             } else if (controlledCreature->getCombatPool() > reachCost) {
@@ -449,6 +464,11 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
                 if (attack == eOffensiveManuevers::Hook && diceAllocated < 10) {
                     priority += 20;
                 }
+            }
+            if (attack == eOffensiveManuevers::NoOffense) {
+                priority = 25;
+            } else {
+                priority = cLowestPriority;
             }
         }
 
@@ -531,7 +551,17 @@ void AICombatController::doPrecombat(
     const Weapon* weapon = controlledCreature->getPrimaryWeapon();
     if (opponent->hasEnoughMetalArmor()) {
         if (weapon->getType() == eWeaponTypes::Polearms) {
+            // with swingy blunt polearms like the pollaxe, we don't need to always switch to staff
+            // grip cause the hammer hurts
+            auto component = weapon->getBestBlunt();
+
             controlledCreature->setGrip(eGrips::Staff);
+            if (component != nullptr) {
+                if (component->getProperties().find(eWeaponProperties::Crushing)
+                    != component->getProperties().end()) {
+					controlledCreature->setGrip(eGrips::Standard);
+                }
+            }
         } else if (weapon->getType() == eWeaponTypes::Longswords) {
             controlledCreature->setGrip(eGrips::HalfSword);
         }
@@ -629,7 +659,16 @@ eHitLocations AICombatController::getBestHitLocation(
         ArmorSegment segment
             = target->getMedianArmor(location, component->getAttack() == eAttacks::Swing);
         if (component->getType() != eDamageTypes::Blunt && segment.isMetal) {
-            segment.AV *= 2;
+            if ((component->getProperties().find(eWeaponProperties::PlatePiercing)
+                    == component->getProperties().end())
+                || (segment.type == eArmorTypes::Maille
+                    && component->getProperties().find(eWeaponProperties::MaillePiercing)
+                        == component->getProperties().end())) {
+                segment.AV *= 2;
+                if (component->getType() == eDamageTypes::Piercing) {
+                    segment.AV -= 2;
+                }
+            }
         }
         int damage = component->getDamage() - segment.AV;
         if (damage > highestDamage) {

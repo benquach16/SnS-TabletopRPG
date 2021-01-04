@@ -10,6 +10,9 @@ using namespace std;
 void OffenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, Creature* target,
     const CombatInstance* instance, bool allowStealInitiative, bool linkedParry)
 {
+	if (player->getHasOffense()) {
+		return;
+	}
     switch (m_currentState) {
     case eUiState::ChooseWeapon:
         doChooseWeapon(hasKeyEvents, event, player);
@@ -144,12 +147,11 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player,
 
             switch (cost.first) {
             case eOffensiveManuevers::Swing:
-                m_currentState = eUiState::ChooseHeavyBlow;
-                break;
             case eOffensiveManuevers::PinpointThrust:
             case eOffensiveManuevers::Thrust:
             case eOffensiveManuevers::Beat:
             case eOffensiveManuevers::Hook:
+			case eOffensiveManuevers::HeavyBlow:
             case eOffensiveManuevers::Disarm:
             case eOffensiveManuevers::Draw:
             case eOffensiveManuevers::VisorThrust:
