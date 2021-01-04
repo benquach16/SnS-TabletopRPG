@@ -559,7 +559,7 @@ void AICombatController::doPrecombat(
             if (component != nullptr) {
                 if (component->getProperties().find(eWeaponProperties::Crushing)
                     != component->getProperties().end()) {
-					controlledCreature->setGrip(eGrips::Standard);
+                    controlledCreature->setGrip(eGrips::Standard);
                 }
             }
         } else if (weapon->getType() == eWeaponTypes::Longswords) {

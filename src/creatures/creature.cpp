@@ -344,6 +344,7 @@ ArmorSegment Creature::getMedianArmor(eHitLocations location, bool swing) const
         // slow
         parts = WoundTable::getSingleton()->getAllLocations(location).m_thrust;
     }
+	int total = 0;
     for (unsigned i = 0; i < WoundTable::cPartsPerLocation; ++i) {
         auto it = parts[i];
         if (it != eBodyParts::SecondLocationArm && it != eBodyParts::SecondLocationHead) {
@@ -352,6 +353,7 @@ ArmorSegment Creature::getMedianArmor(eHitLocations location, bool swing) const
             if (seg.isMetal) {
                 metalCount++;
             }
+			total++;
         }
     }
     int key = hash.begin()->first;
@@ -363,7 +365,7 @@ ArmorSegment Creature::getMedianArmor(eHitLocations location, bool swing) const
         }
     }
     segment.AV = key;
-    if (metalCount > (WoundTable::cPartsPerLocation / 2)) {
+    if (metalCount > (total / 2)) {
         segment.isMetal = true;
     }
     return segment;
