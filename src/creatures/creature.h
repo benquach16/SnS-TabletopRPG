@@ -30,7 +30,8 @@
 #include <boost/serialization/utility.hpp>
 #include <boost/serialization/vector.hpp>
 
-static constexpr int cBaseBTN = 7;
+// testing this
+static constexpr int cBaseBTN = 6;
 static constexpr int cMinBTN = 5;
 static constexpr int cMaxBTN = 10;
 // different based on race

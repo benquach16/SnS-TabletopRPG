@@ -224,9 +224,10 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             int damage = 0;
             toPush.hitLocation = getBestHitLocation(target, component, damage);
             if (weapon->getBestAttack()->getAttack() == eAttacks::Thrust) {
-                damage = damage * damage;
-                priority += random_static::get(damage, damage + cFuzz);
+				damage += 1;
             }
+			damage = damage * damage;
+			priority += random_static::get(damage, damage + cFuzz);
         } break;
         case eOffensiveManuevers::PinpointThrust: {
             // only used for bypassing armor
@@ -416,9 +417,14 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
         case eDefensiveManuevers::StealInitiative: {
             int stealDie = 0;
             if (stealInitiative(controlledCreature, attacker, stealDie)) {
-                priority += 20;
+                if (stealDie + reachCost < controlledCreature->getCombatPool()) {
+                    priority += 20;
+                } else {
+                    priority = cLowestPriority;
+                }
+
             } else {
-                priority -= 20;
+                priority = cLowestPriority;
             }
         } break;
         }

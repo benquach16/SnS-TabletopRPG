@@ -392,13 +392,10 @@ void CombatInstance::doParryLinked()
     Creature* defender = nullptr;
     setSides(attacker, defender);
 
-    int reachCost = defender->getCurrentReach() - m_currentReach;
-    reachCost = abs(reachCost);
     if (defender->getHasOffense() == false) {
         m_currentState = eCombatState::ParryLinked;
         return;
     }
-
     Offense offense = defender->getQueuedOffense();
 
     writeMessage(defender->getName() + " prepares to attack with " + offense.component->getName()
@@ -415,8 +412,6 @@ void CombatInstance::doStealInitiative()
 
     // then input manuever
     Defense defend = defender->getQueuedDefense();
-    int reachCost = defender->getCurrentReach() - m_currentReach;
-    reachCost = abs(reachCost);
     // do dice to steal initiative first
     // this polls for offense since the initiative steal is stored inside the
     // defense struct
@@ -496,11 +491,12 @@ void CombatInstance::doResolution()
         int side2Dice = (m_side2->getQueuedOffense().manuever == eOffensiveManuevers::Thrust)
             ? (m_side2->getQueuedDefense().dice + 1) / 2 + cThrustDie
             : (m_side2->getQueuedDefense().dice + 1) / 2;
-
-        int side1InitiativeSuccesses
-            = DiceRoller::rollGetSuccess(side1BTN, side1Dice + getTap(m_side1->getMobility()));
-        int side2InitiativeSuccesses
-            = DiceRoller::rollGetSuccess(side2BTN, side2Dice + getTap(m_side2->getMobility()));
+        int side1reach = 0;
+        int side2reach = 0;
+        int side1InitiativeSuccesses = DiceRoller::rollGetSuccess(
+            side1BTN, side1Dice + getTap(m_side1->getMobility()) + side1reach);
+        int side2InitiativeSuccesses = DiceRoller::rollGetSuccess(
+            side2BTN, side2Dice + getTap(m_side2->getMobility()) + side2reach);
 
         if (defend.manuever == eDefensiveManuevers::StealInitiative) {
             // only steal initiative can change initiative
@@ -677,8 +673,7 @@ void CombatInstance::doResolution()
                 }
                 int BTN = linked == true ? defender->getBTN() : defender->getDisadvantagedBTN();
 
-                int reachCost = abs(defender->getCurrentReach() - m_currentReach);
-                MoS = (-MoS) - reachCost;
+                MoS = (-MoS);
                 int linkedOffenseMoS = DiceRoller::rollGetSuccess(BTN, MoS + 1);
                 cout << "Linked hits: " << linkedOffenseMoS << endl;
 
@@ -858,7 +853,7 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
         writeMessage(target->getName() + " loses " + to_string(MoS) + " action points from impact",
             Log::eMessageTypes::Alert);
         target->inflictImpact(MoS);
-        if (MoS >= 3) {
+        if (MoS >= 4) {
             writeMessage(target->getName() + " has been hooked and thrown prone!",
                 Log::eMessageTypes::Alert, true);
             target->setProne();
@@ -877,13 +872,11 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
         return false;
     }
     if (attack.manuever == eOffensiveManuevers::Disarm) {
-        if (MoS >= 2) {
+        if (MoS >= 3) {
             writeMessage(target->getName() + " has been disarmed!", Log::eMessageTypes::Alert);
             target->dropWeapon();
         } else {
-            writeMessage(target->getName() + "'s weapon has been disabled for 1 tempo.",
-                Log::eMessageTypes::Alert);
-            target->disableWeapon();
+            writeMessage("Disarm was not effective", Log::eMessageTypes::Alert);
         }
 
         return false;
@@ -1251,16 +1244,15 @@ void CombatInstance::outputReachCost(int cost, Creature* creature, bool attacker
 
     if (reachCost != 0) {
         if (attacker) {
-			if (creature->getQueuedOffense().manuever != eOffensiveManuevers::Beat) {
-				writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost)
-					+ " action points",
-					Log::eMessageTypes::Announcement);
-				// creature->reduceOffenseDie(reachCost);
-				// attacker->reduceCombatPool(min(reachCost, attacker->getCombatPool()));
-			}
-			else {
-				writeMessage("Beat has a reduced reach cost", Log::eMessageTypes::Announcement);
-			}
+            if (creature->getQueuedOffense().manuever != eOffensiveManuevers::Beat) {
+                writeMessage("Weapon length difference causes reach cost of " + to_string(reachCost)
+                        + " action points",
+                    Log::eMessageTypes::Announcement);
+                // creature->reduceOffenseDie(reachCost);
+                // attacker->reduceCombatPool(min(reachCost, attacker->getCombatPool()));
+            } else {
+                writeMessage("Beat does not change reach", Log::eMessageTypes::Announcement);
+            }
 
         } else {
             writeMessage("Weapon is too long for defense, causes reach cost of "
@@ -1290,17 +1282,23 @@ const Weapon* CombatInstance::getDefendingWeapon(const Creature* creature)
                                                                   : creature->getSecondaryWeapon();
 }
 
+eLength CombatInstance::getEffectiveReach(const Creature* creature)
+{
+    return creature->getQueuedOffense().withPrimaryWeapon == true
+        ? creature->getCurrentReach()
+        : creature->getSecondaryWeaponReach();
+}
+
 void CombatInstance::changeReachTo(const Creature* creature)
 {
     Offense attack = creature->getQueuedOffense();
-    eLength effectiveReach = attack.withPrimaryWeapon ? creature->getCurrentReach()
-                                                      : creature->getSecondaryWeaponReach();
+    eLength effectiveReach = getEffectiveReach(creature);
     switch (attack.manuever) {
     case eOffensiveManuevers::Beat:
         return;
     case eOffensiveManuevers::Grab:
         m_currentReach = eLength::Hand;
     default:
-        m_currentReach = creature->getCurrentReach();
+        m_currentReach = effectiveReach;
     }
 }

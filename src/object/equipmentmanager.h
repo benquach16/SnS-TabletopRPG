@@ -28,11 +28,14 @@ private:
         std::vector<int> baseChests;
         std::vector<int> baseLegs;
         std::vector<int> helmets;
+		std::vector<int> neck;
         std::vector<int> chests;
         std::vector<int> plateChests;
         std::vector<int> skirts;
         std::vector<int> leggings;
         std::vector<int> plateLeggings;
+		std::vector<int> plateShoulders;
+		std::vector<int> plateArms;
         std::vector<int> gloves;
         std::vector<int> plateGloves;
         std::vector<int> shoes;

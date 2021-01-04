@@ -279,7 +279,7 @@
         "type": "plate"
     },
     "2061": {
-        "name": "Plate Cuirass",
+        "name": "Plate Cuirass (Simple)",
         "description": "A breastplate and plackart made of hardened steel. Amazing plate armor protection at a high price.",
         "cost": 1400,
         "AV": 4,
@@ -365,14 +365,16 @@
         "type": "plate"
     },
     "2067": {
-        "name": "Plate Faulds",
-        "description": "Protection that attaches to a plackart, intended to provide protection for the hips",
+        "name": "Plate Cuirass (Complex)",
+        "description": "A plate cuirass with additional protection in the form of faulds",
         "cost": 800,
         "AV": 4,
         "AP": 0.25,
         "rigid": true,
         "metal": true,
         "coverage": [
+            "abs",
+            "ribs",
             "hip"
         ],
         "layer": "plate",
