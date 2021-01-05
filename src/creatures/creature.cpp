@@ -344,7 +344,7 @@ ArmorSegment Creature::getMedianArmor(eHitLocations location, bool swing) const
         // slow
         parts = WoundTable::getSingleton()->getAllLocations(location).m_thrust;
     }
-	int total = 0;
+    int total = 0;
     for (unsigned i = 0; i < WoundTable::cPartsPerLocation; ++i) {
         auto it = parts[i];
         if (it != eBodyParts::SecondLocationArm && it != eBodyParts::SecondLocationHead) {
@@ -353,18 +353,26 @@ ArmorSegment Creature::getMedianArmor(eHitLocations location, bool swing) const
             if (seg.isMetal) {
                 metalCount++;
             }
-			total++;
+            total++;
         }
     }
     int key = hash.begin()->first;
     int median = hash.begin()->second;
+    int avg = 0;
     for (auto it : hash) {
+        avg += it.first;
         if (it.second > median) {
             median = it.second;
             key = it.first;
         }
     }
+	avg = avg / hash.size();
     segment.AV = key;
+	// if the median isn't more than half, then its just a mess of armors and we should use the
+// average instead
+	if (key < total / 2) {
+		segment.AV = avg;
+	}
     if (metalCount > (total / 2)) {
         segment.isMetal = true;
     }
@@ -569,18 +577,18 @@ bool Creature::hasEnoughMetalArmor() const
     int total = 0;
 
     for (auto location : m_hitLocations) {
-		auto parts = WoundTable::getSingleton()->getAllLocations(location).m_thrust;
+        auto parts = WoundTable::getSingleton()->getAllLocations(location).m_thrust;
         int metalArmorCount = 0;
-		int count = 0;
-		for (int i = 0; i < WoundTable::cPartsPerLocation; ++i) {
-			auto part = parts[i];
+        int count = 0;
+        for (int i = 0; i < WoundTable::cPartsPerLocation; ++i) {
+            auto part = parts[i];
             // ignore the secondpart arm/head
             if (part != eBodyParts::SecondLocationArm && part != eBodyParts::SecondLocationHead) {
                 ArmorSegment segment = getArmorAtPart(part);
                 if (segment.isMetal) {
                     metalArmorCount++;
                 }
-				count++;
+                count++;
             }
         }
         if (metalArmorCount > count / 2) {

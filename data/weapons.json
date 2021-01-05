@@ -1,428 +1,479 @@
 {
-	"1020": {
-		"name": "Polearm Queue w/Buttspike",
-		"description": "The queue end of a polearm, equipped with a spike. Typically found on nicer polearms.",
-		"length" : "short",
-		"type": "polearm",
-		"hands": 1,
-		"cost": 0,
-		"hook": false,
-		"shield": false,
-		"components": [
-			{
-				"name": "Queue, Thrust",
-				"damage": 1,
-				"type": "piercing",
-				"properties": [ "maillepiercing", "defensive" ],
-				"attack": "thrust"
-			},		
-			{
-				"name": "Queue, Swing",
-				"damage": 1,
-				"type": "blunt",
-				"properties": [ "defensive" ],
-				"attack": "swing"
-			}			
-		]
-	},
-	"1021": {
-		"name": "Polearm Queue",
-		"description": "The queue end of a polearm.",
-		"length" : "short",
-		"type": "polearm",
-		"hands": 1,
-		"cost": 0,
-		"hook": false,
-		"components": [
-			{
-				"name": "Queue, Thrust",
-				"damage": 1,
-				"type": "piercing",
-				"properties": [ "defensive" ],
-				"attack": "thrust"
-			},		
-			{
-				"name": "Queue, Swing",
-				"damage": 1,
-				"type": "blunt",
-				"properties": [ "defensive" ],
-				"attack": "swing"
-			}			
-		]
-	},
-	"1022": {
-		"name": "Sword Pommel",
-		"description": "The pommel of a sword",
-		"length" : "short",
-		"type": "sword",
-		"hands": 1,
-		"cost": 0,
-		"hook": false,
-		"components": [
-			{
-				"name": "Pommel",
-				"damage": 1,
-				"type": "piercing",
-				"attack": "thrust"
-			},		
-			{
-				"name": "Crossguard",
-				"damage": 1,
-				"type": "blunt",
-				"attack": "swing"
-			}			
-		]
-	},
-	"1040": {
-		"name": "Pollaxe",
-		"description":"A knightly polearm that consists of a top spike, an axe blade, and a hammer. Particularly effective against plate armor.",
-		"length": "verylong",
-		"type": "polearm",
-		"hands": 2,
-		"cost": 500,
-		"hook": true,
-		"components": [
-			{
-				"name": "Spike",
-				"damage": 2,
-				"type": "piercing",
-				"attack": "thrust",
-				"properties": [ "maillepiercing" ],
-				"polearmspike": true			
-			},
-			{
-				"name": "Axe head",
-				"damage": 3,
-				"attack": "swing",
-				"type": "cutting",
-				"polearmhead": true
-			},
-			{
-				"name": "Hammer head",
-				"damage": 2,
-				"type": "blunt",
-				"attack": "swing",
-				"properties": [ "crushing" ],
-				"polearmhead": true
-			}
-		],
-		"secondary" : 1020
-	},
-	"1041": {
-		"name": "Arming Sword",
-		"description": "A type of 1 handed sword, commonly used by knights as a sidearm or with a shield.",
-		"length": "medium",
-		"type": "sword",
-		"hands": 1,
-		"cost": 150,
-		"hook": false,
-		"components": [
-			{
-				"name": "Blade Edge",
-				"damage": 1,
-				"type": "cutting",
-				"attack": "swing"
-			},
-			{
-				"name": "Blade Point",
-				"damage": 1,
-				"type": "piercing",
-				"attack": "thrust"
-			}
-		],
-		"secondary": 1022
-	},
-	"1042": {
-		"name": "Spear",
-		"description": "The most popular weapon in history. A blade attached to an 8 foot pole.",
-		"length": "extended",
-		"type": "polearm",
-		"hands": 2,
-		"cost": 100,
-		"hook": false,
-		"components": [
-			{
-				"name": "Spear blade",
-				"damage": 1,
-				"type": "cutting",
-				"attack": "swing",
-				"polearmhead": true
-			},
-			{
-				"name": "Spear point",
-				"damage": 3,
-				"type": "piercing",
-				"attack": "thrust",
-				"polearmspike": true
-			}
-		],
-		"secondary": 1021
-	},
-	"1043": {
-		"name": "Rondel Dagger",
-		"description": "A type of thrusting dagger.",
-		"length": "close",
-		"type": "brawling",
-		"hands": 1,
-		"cost": 75,
-		"hook": false,
-		"components": [
-			{
-				"name": "Blade Edge",
-				"damage": -2,
-				"type": "cutting",
-				"attack": "swing"
-			},
-			{
-				"name": "Blade Point",
-				"damage": 0,
-				"type": "piercing",
-				"attack": "thrust",
-				"properties": [ "maillepiercing" ]
-			}
-		]
-	},
-	"1044": {
-		"name": "Elegant Pollaxe",
-		"description":"A lighter and better balanced version of the knightly pollaxe. One of the best weapons money can buy.",
-		"length": "verylong",
-		"type": "polearm",
-		"hands": 2,
-		"cost": 1500,
-		"hook": true,
-		"components": [
-			{
-				"name": "Spike",
-				"damage": 3,
-				"type": "piercing",
-				"attack": "thrust",
-				"properties": [ "maillepiercing" ],
-				"polearmspike": true			
-			},
-			{
-				"name": "Axe head",
-				"damage": 3,
-				"attack": "swing",
-				"type": "cutting",
-				"polearmhead": true
-			},
-			{
-				"name": "Hammer head",
-				"damage": 2,
-				"type": "blunt",
-				"attack": "swing",
-				"properties": [ "crushing" ],
-				"polearmhead": true
-			}
-		],
-		"secondary": 1020
-	},
-	"1045": {
-		"name": "Short Sword",
-		"description": "A short 1 handed sword.",
-		"length": "short",
-		"type": "sword",
-		"hands": 1,
-		"cost": 125,
-		"hook": false,
-		"components": [
-			{
-				"name": "Blade Edge",
-				"damage": 1,
-				"type": "cutting",
-				"attack": "swing"
-			},
-			{
-				"name": "Blade Thrust",
-				"damage": 1,
-				"type": "piercing",
-				"attack": "thrust"
-			}
-		],
-		"secondary": 1022
-	},
-	"1046": {
-		"name": "Iron Short Sword",
-		"description": "A short sword made of soft iron. Very poor penetrative ability.",
-		"length": "short",
-		"type": "sword",
-		"hands": 1,
-		"cost": 75,
-		"hook": false,
-		"components": [
-			{
-				"name": "Blade Edge",
-				"damage": 0,
-				"type": "cutting",
-				"attack": "swing"
-			},
-			{
-				"name": "Blade Thrust",
-				"damage": 0,
-				"type": "piercing",
-				"attack": "thrust"
-			}
-		],
-		"secondary": 1022
-	},
-	"1047": {
-		"name": "Quarterstaff",
-		"description": "The basis of all polearms. Surprisingly effective against armored foes.",
-		"length": "extended",
-		"type": "polearm",
-		"hands": 2,
-		"cost": 25,
-		"hook": false,
-		"components": [
-			{
-				"name": "Staff, Swing",
-				"damage": 1,
-				"type": "blunt",
-				"attack": "swing"
-			},
-			{
-				"name": "Staff, Thrust",
-				"damage": 1,
-				"type": "blunt",
-				"attack": "thrust"
-			}
-		],
-		"secondary": 1021
-	},
-	"1048": {
-		"name": "Halberd",
-		"description":"The quintessential infantry weapon. Has a top spike, axe, and an armor piercing beak.",
-		"length": "extended",
-		"type": "polearm",
-		"hands": 2,
-		"cost": 300,
-		"hook": true,
-		"components": [
-			{
-				"name": "Spike",
-				"damage": 2,
-				"type": "piercing",
-				"attack": "thrust",
-				"properties": [ "maillepiercing" ]
-			},
-			{
-				"name": "Axe head",
-				"damage": 3,
-				"attack": "swing",
-				"type": "cutting"
-			},
-			{
-				"name": "Beak",
-				"damage": 1,
-				"type": "piercing",
-				"attack": "swing",
-				"properties": [ "platepiercing" ]
-			}
-		],
-		"secondary": 1020
-	},
-	"1050": {
-		"name": "Longsword",
-		"description":"The longsword is a popular 2 handed sword, commonly used as a sidearm by knights.",
-		"length": "long",
-		"type": "longsword",
-		"hands": 2,
-		"cost": 300,
-		"hook": false,
-		"components": [
-			{
-				"name": "Blade Point",
-				"damage": 1,
-				"type": "piercing",
-				"attack": "thrust"
-			},
-			{
-				"name": "Blade Edge",
-				"damage": 2,
-				"attack": "swing",
-				"type": "cutting"
-			}
-		],
-		"secondary": 1022
-	},
-	"1051": {
-		"name": "Seraphim Steel Pollaxe",
-		"description":"A pollaxe made from the rarest metal on the planet, seraphim steel. You can feel the power radiating from this weapon.",
-		"length": "verylong",
-		"type": "polearm",
-		"hands": 2,
-		"cost": 10000,
-		"hook": true,
-		"components": [
-			{
-				"name": "Spike",
-				"damage": 3,
-				"type": "piercing",
-				"attack": "thrust",
-				"properties": [ "maillepiercing" ]
-			},
-			{
-				"name": "Axe head",
-				"damage": 3,
-				"attack": "swing",
-				"type": "cutting"
-			},
-			{
-				"name": "Hammer head",
-				"damage": 3,
-				"type": "blunt",
-				"attack": "swing",
-				"properties": [ "crushing" ]
-			}
-		],
-		"secondary": 1020
-	},
-	"1052": {
-		"name": "Dane Axe",
-		"description": "A sort of proto-polearm, the Dane Axe consists of an axe head mounted on a long shaft.",
-		"length": "long",
-		"type": "polearm",
-		"hands": 2,
-		"cost": 100,
-		"hook": true,
-		"components": [
-			{
-				"name": "Axe point",
-				"damage": 1,
-				"type": "piercing",
-				"attack": "thrust"
-			},
-			{
-				"name": "Axe head",
-				"damage": 3,
-				"attack": "swing",
-				"type": "cutting"
-			}
-		],
-		"secondary": 1021
-	},
-	"1053": {
-		"name": "Rondel Dagger",
-		"description": "A type of dagger that is primarily used for thrusting. Some rondels do not even have edges. They tend to have a square spike design that allows them to penetrate maille.",
-		"length": "hand",
-		"type": "brawling",
-		"hands": 1,
-		"cost": 30,
-		"hook": false,
-		"components": [
-			{
-				"name": "Spike",
-				"damage": 0,
-				"type": "piercing",
-				"attack": "thrust",
-				"properties": [ "maillepiercing" ]
-			},
-			{
-				"name": "Edge",
-				"damage": -2,
-				"attack": "swing",
-				"type": "cutting"
-			}
-		]
-	}
+    "1020": {
+        "name": "Polearm Queue w/Buttspike",
+        "description": "The queue end of a polearm, equipped with a spike. Typically found on nicer polearms.",
+        "length" : "short",
+        "type": "polearm",
+        "hands": 1,
+        "cost": 0,
+        "hook": false,
+        "shield": false,
+        "guardBtn": 6,
+        "components": [
+            {
+                "name": "Queue, Thrust",
+                "btn": 6,
+                "damage": 1,
+                "type": "piercing",
+                "properties": [ "maillepiercing", "defensive" ],
+                "attack": "thrust"
+            },
+            {
+                "name": "Queue, Swing",
+                "btn": 6,
+                "damage": 1,
+                "type": "blunt",
+                "properties": [ "defensive" ],
+                "attack": "swing"
+            }           
+        ]
+    },
+    "1021": {
+        "name": "Polearm Queue",
+        "description": "The queue end of a polearm.",
+        "length" : "short",
+        "type": "polearm",
+        "hands": 1,
+        "cost": 0,
+        "guardBtn": 6,
+        "hook": false,
+        "components": [
+            {
+                "name": "Queue, Thrust",
+                "btn": 6,
+                "damage": 1,
+                "type": "piercing",
+                "properties": [ "defensive" ],
+                "attack": "thrust"
+            },      
+            {
+                "name": "Queue, Swing",
+                "damage": 1,
+                "type": "blunt",
+                "properties": [ "defensive" ],
+                "attack": "swing"
+            }           
+        ]
+    },
+    "1022": {
+        "name": "Sword Pommel",
+        "description": "The pommel of a sword",
+        "length" : "short",
+        "type": "sword",
+        "hands": 1,
+        "cost": 0,
+        "hook": false,
+        "components": [
+            {
+                "name": "Pommel",
+                "damage": 1,
+                "type": "piercing",
+                "attack": "thrust"
+            },      
+            {
+                "name": "Crossguard",
+                "damage": 1,
+                "type": "blunt",
+                "attack": "swing"
+            }           
+        ]
+    },
+    "1040": {
+        "name": "Pollaxe",
+        "description":"A knightly polearm that consists of a top spike, an axe blade, and a hammer. Particularly effective against plate armor.",
+        "length": "verylong",
+        "type": "polearm",
+        "hands": 2,
+        "cost": 500,
+        "hook": true,
+        "components": [
+            {
+                "name": "Spike",
+                "damage": 2,
+                "type": "piercing",
+                "attack": "thrust",
+                "properties": [ "maillepiercing" ],
+                "polearmspike": true            
+            },
+            {
+                "name": "Axe head",
+                "damage": 3,
+                "attack": "swing",
+                "type": "cutting",
+                "polearmhead": true
+            },
+            {
+                "name": "Hammer head",
+                "damage": 2,
+                "type": "blunt",
+                "attack": "swing",
+                "properties": [ "crushing" ],
+                "polearmhead": true
+            }
+        ],
+        "secondary" : 1020
+    },
+    "1041": {
+        "name": "Arming Sword",
+        "description": "A type of 1 handed sword, commonly used by knights as a sidearm or with a shield.",
+        "length": "medium",
+        "type": "sword",
+        "hands": 1,
+        "cost": 150,
+        "hook": false,
+        "components": [
+            {
+                "name": "Blade Edge",
+                "damage": 1,
+                "type": "cutting",
+                "attack": "swing"
+            },
+            {
+                "name": "Blade Point",
+                "damage": 1,
+                "type": "piercing",
+                "attack": "thrust"
+            }
+        ],
+        "secondary": 1022
+    },
+    "1042": {
+        "name": "Spear",
+        "description": "The most popular weapon in history. A blade attached to an 8 foot pole.",
+        "length": "extended",
+        "type": "polearm",
+        "hands": 2,
+        "cost": 100,
+        "hook": false,
+        "components": [
+            {
+                "name": "Spear blade",
+                "damage": 1,
+                "type": "cutting",
+                "attack": "swing",
+                "polearmhead": true
+            },
+            {
+                "name": "Spear point",
+                "damage": 3,
+                "type": "piercing",
+                "attack": "thrust",
+                "polearmspike": true
+            }
+        ],
+        "secondary": 1021
+    },
+    "1043": {
+        "name": "Dagger",
+        "description": "A double edged knife.",
+        "length": "close",
+        "type": "brawling",
+        "hands": 1,
+        "cost": 25,
+        "hook": false,
+        "components": [
+            {
+                "name": "Blade Edge",
+                "damage": -1,
+                "type": "cutting",
+                "attack": "swing"
+            },
+            {
+                "name": "Blade Point",
+                "damage": 0,
+                "type": "piercing",
+                "attack": "thrust"
+            }
+        ]
+    },
+    "1044": {
+        "name": "Elegant Pollaxe",
+        "description":"A lighter and better balanced version of the knightly pollaxe. One of the best weapons money can buy.",
+        "length": "verylong",
+        "type": "polearm",
+        "hands": 2,
+        "cost": 1500,
+        "hook": true,
+        "components": [
+            {
+                "name": "Spike",
+                "damage": 3,
+                "type": "piercing",
+                "attack": "thrust",
+                "properties": [ "maillepiercing" ],
+                "polearmspike": true            
+            },
+            {
+                "name": "Axe head",
+                "damage": 3,
+                "attack": "swing",
+                "type": "cutting",
+                "polearmhead": true
+            },
+            {
+                "name": "Hammer head",
+                "damage": 2,
+                "type": "blunt",
+                "attack": "swing",
+                "properties": [ "crushing" ],
+                "polearmhead": true
+            }
+        ],
+        "secondary": 1020
+    },
+    "1045": {
+        "name": "Short Sword",
+        "description": "A short 1 handed sword.",
+        "length": "short",
+        "type": "sword",
+        "hands": 1,
+        "cost": 125,
+        "hook": false,
+        "components": [
+            {
+                "name": "Blade Edge",
+                "damage": 1,
+                "type": "cutting",
+                "attack": "swing"
+            },
+            {
+                "name": "Blade Thrust",
+                "damage": 1,
+                "type": "piercing",
+                "attack": "thrust"
+            }
+        ],
+        "secondary": 1022
+    },
+    "1046": {
+        "name": "Iron Short Sword",
+        "description": "A short sword made of soft iron. Very poor penetrative ability.",
+        "length": "short",
+        "type": "sword",
+        "hands": 1,
+        "cost": 75,
+        "hook": false,
+        "components": [
+            {
+                "name": "Blade Edge",
+                "damage": 0,
+                "type": "cutting",
+                "attack": "swing"
+            },
+            {
+                "name": "Blade Thrust",
+                "damage": 0,
+                "type": "piercing",
+                "attack": "thrust"
+            }
+        ],
+        "secondary": 1022
+    },
+    "1047": {
+        "name": "Quarterstaff",
+        "description": "The basis of all polearms. Surprisingly effective against armored foes.",
+        "length": "extended",
+        "type": "polearm",
+        "hands": 2,
+        "cost": 25,
+        "hook": false,
+        "components": [
+            {
+                "name": "Staff, Swing",
+                "damage": 1,
+                "type": "blunt",
+                "attack": "swing"
+            },
+            {
+                "name": "Staff, Thrust",
+                "damage": 1,
+                "type": "blunt",
+                "attack": "thrust"
+            }
+        ],
+        "secondary": 1021
+    },
+    "1048": {
+        "name": "Halberd",
+        "description":"The quintessential infantry weapon. Has a top spike, axe, and an armor piercing beak.",
+        "length": "extended",
+        "type": "polearm",
+        "hands": 2,
+        "cost": 300,
+        "hook": true,
+        "components": [
+            {
+                "name": "Spike",
+                "damage": 2,
+                "type": "piercing",
+                "attack": "thrust",
+                "properties": [ "maillepiercing" ]
+            },
+            {
+                "name": "Axe head",
+                "damage": 3,
+                "attack": "swing",
+                "type": "cutting"
+            },
+            {
+                "name": "Beak",
+                "damage": 1,
+                "type": "piercing",
+                "attack": "swing",
+                "properties": [ "platepiercing" ]
+            }
+        ],
+        "secondary": 1020
+    },
+    "1050": {
+        "name": "Longsword",
+        "description":"The longsword is a popular 2 handed sword, commonly used as a sidearm by knights.",
+        "length": "long",
+        "type": "longsword",
+        "hands": 2,
+        "cost": 300,
+        "hook": false,
+        "components": [
+            {
+                "name": "Blade Point",
+                "damage": 1,
+                "type": "piercing",
+                "attack": "thrust"
+            },
+            {
+                "name": "Blade Edge",
+                "damage": 2,
+                "attack": "swing",
+                "type": "cutting"
+            }
+        ],
+        "secondary": 1022
+    },
+    "1051": {
+        "name": "Seraphim Steel Pollaxe",
+        "description":"A pollaxe made from the rarest metal on the planet, seraphim steel. You can feel the power radiating from this weapon.",
+        "length": "verylong",
+        "type": "polearm",
+        "hands": 2,
+        "cost": 10000,
+        "hook": true,
+        "components": [
+            {
+                "name": "Spike",
+                "damage": 3,
+                "type": "piercing",
+                "attack": "thrust",
+                "properties": [ "maillepiercing" ]
+            },
+            {
+                "name": "Axe head",
+                "damage": 3,
+                "attack": "swing",
+                "type": "cutting"
+            },
+            {
+                "name": "Hammer head",
+                "damage": 3,
+                "type": "blunt",
+                "attack": "swing",
+                "properties": [ "crushing" ]
+            }
+        ],
+        "secondary": 1020
+    },
+    "1052": {
+        "name": "Dane Axe",
+        "description": "A sort of proto-polearm, the Dane Axe consists of an axe head mounted on a long shaft.",
+        "length": "long",
+        "type": "polearm",
+        "hands": 2,
+        "cost": 100,
+        "hook": true,
+        "components": [
+            {
+                "name": "Axe point",
+                "damage": 1,
+                "type": "piercing",
+                "attack": "thrust"
+            },
+            {
+                "name": "Axe head",
+                "damage": 3,
+                "attack": "swing",
+                "type": "cutting"
+            }
+        ],
+        "secondary": 1021
+    },
+    "1053": {
+        "name": "Rondel Dagger",
+        "description": "A type of dagger that is primarily used for thrusting. Some rondels do not even have edges. They tend to have a square spike design that allows them to penetrate maille.",
+        "length": "hand",
+        "type": "brawling",
+        "hands": 1,
+        "cost": 30,
+        "hook": false,
+        "components": [
+            {
+                "name": "Spike",
+                "damage": 0,
+                "type": "piercing",
+                "attack": "thrust",
+                "properties": [ "maillepiercing" ]
+            },
+            {
+                "name": "Edge",
+                "damage": -2,
+                "attack": "swing",
+                "type": "cutting"
+            }
+        ]
+    },
+    "1053": {
+        "name": "Rapier",
+        "description": "A long tapered thrusting sword used as a dueling weapon. Despite how it may look, it is quite study and heavy.",
+        "length": "long",
+        "type": "sword",
+        "hands": 1,
+        "cost": 75,
+        "hook": false,
+        "components": [
+            {
+                "name": "Blade Point",
+                "damage": 2,
+                "type": "piercing",
+                "attack": "thrust"
+            },
+            {
+                "name": "Edge",
+                "damage": 0,
+                "attack": "swing",
+                "type": "cutting"
+            }
+        ]
+    },
+    "1054": {
+        "name": "Zweihander",
+        "description":"The Zweihander is a type of greatsword, almost as tall as a man. A weapon of war used by specialized troops or bodyguards.",
+        "length": "verylong",
+        "type": "longsword",
+        "hands": 2,
+        "cost": 500,
+        "hook": false,
+        "components": [
+            {
+                "name": "Blade Point",
+                "damage": 1,
+                "type": "piercing",
+                "attack": "thrust"
+            },
+            {
+                "name": "Blade Edge",
+                "damage": 3,
+                "attack": "swing",
+                "type": "cutting"
+            }
+        ],
+        "secondary": 1022
+    }
 }

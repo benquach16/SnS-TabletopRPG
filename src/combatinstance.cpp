@@ -1311,6 +1311,7 @@ void CombatInstance::changeReachTo(const Creature* creature)
     Offense attack = creature->getQueuedOffense();
     eLength effectiveReach = getEffectiveReach(creature);
     switch (attack.manuever) {
+	case eOffensiveManuevers::NoOffense:
     case eOffensiveManuevers::Beat:
         return;
     case eOffensiveManuevers::Grab:

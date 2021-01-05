@@ -148,6 +148,9 @@ void Level::generate()
             idx = i;
         }
     }
+    for (unsigned i = rooms[idx].x; i < m_width; ++i) {
+        (*this)(i, rooms[idx].y).m_type = eTileType::Ground;
+    }
     HumanObject* object = new HumanObject;
     object->setPosition(rooms[idx].x, rooms[idx].y);
     object->setFaction(eCreatureFaction::Bandit);

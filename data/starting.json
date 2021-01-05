@@ -17,15 +17,29 @@
     "soldier": {
         "name": "Soldier",
         "description": "The soldier is a veteran of battlefields across the continent. Armed with a halberd, the soldier relies on their reach and striking power to eliminate enemies.\n\nRecommended Proficiencies: Polearms, Swords, Brawling.\n\nDifficulty: Easy",
-        "armor": [2040, 2044, 2042, 2046, 2047],
+        "armor": [2040, 2044, 2042, 2046, 2047, 2061],
         "quickdraw": [1041],
         "weapon": 1048
     },
     "duelist": {
         "name": "Duelist",
-        "description": "The duelist is a upper class citizen who lives for individual combat. Comes with civilian duelling weapons, such as the rapier.\n\nRecommended Proficiencies: Swords",
+        "description": "The duelist is a upper class citizen who lives for individual combat. Comes with civilian duelling weapons, such as the rapier.\n\nRecommended Proficiencies: Swords, Brawling.\n\nDifficulty: Hard",
         "armor": [2040, 2044, 2046],
         "quickdraw": [1041],
-        "weapon": 1050
+        "weapon": 1053
+    },
+    "militia": {
+        "name": "Militia",
+        "description": "The militia fighter is a quickly mobilized soldier, usually to defend their town or village. Carries a spear, and padded clothing.\n\nRecommended Proficiencies: Polearms, Brawling.\n\nDiffficulty: Hard",
+        "armor": [2040, 2044, 2046, 2077],
+        "quickdraw": [1043],
+        "weapon": 1042
+    },
+    "doppelsoldner": {
+        "name": "Doppelsoldner",
+        "description": "Doppelsoldner, meaning double pay men, are paid double because of their eagerness to take on suicidal missions. Armored with just a breastplate and a gigantic Zweihander, doppelsoldners have no fear in battle.\n\nDiffficulty: Medium",
+        "armor": [2040, 2044, 2046, 2078, 2067],
+        "quickdraw": [1041],
+        "weapon": 1054
     }
 }

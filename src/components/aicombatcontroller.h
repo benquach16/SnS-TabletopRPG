@@ -41,7 +41,7 @@ private:
         Creature* controlledCreature, eOffensiveManuevers manuever, eLength currentReach, bool payReach);
     bool setCreatureDefenseManuever(Creature* controlledCreature, eDefensiveManuevers manuever, eLength currentReach);
 
-    bool stealInitiative(Creature* controlledCreature, const Creature* attacker, int& outDie);
+    bool stealInitiative(Creature* controlledCreature, const Creature* attacker, int cost, int& outDie);
 
 	eHitLocations getBestHitLocation(const Creature* target, const Component* component, int& outDamage);
 

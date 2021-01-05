@@ -507,5 +507,29 @@
         ],
         "layer": "plate",
         "type": "plate"
+    },
+    "2077": {
+        "name": "Crude Kettlehat",
+        "description": "A type of open faced steel helmet with a wide brim.",
+        "cost": 100,
+        "AV": 3,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": ["crown"],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2078": {
+        "name": "Fancy Hat",
+        "description": "A fancy hat!",
+        "cost": 20,
+        "AV": 1,
+        "AP": 0,
+        "rigid": false,
+        "metal": false,
+        "coverage": ["crown"],
+        "layer": "plate",
+        "type": "none"
     }
 }
