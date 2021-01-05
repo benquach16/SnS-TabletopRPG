@@ -113,11 +113,11 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
     }
     if (instance->getState() == eCombatState::DualOffense1
         && instance->getAttacker()->getId() == creatureId) {
-        doOffense(controlledCreature, instance->getDefender(), reachCost, instance, false, true);
+        doOffense(controlledCreature, instance->getDefender(), reachCost, instance, true, true);
     }
     if (instance->getState() == eCombatState::DualOffense2
         && instance->getDefender()->getId() == creatureId) {
-        doOffense(controlledCreature, instance->getAttacker(), reachCost, instance, false, true);
+		doStolenInitiative(controlledCreature, instance->getAttacker(), true);
     }
     if (instance->getState() == eCombatState::DualOffenseSecondInitiative
         && instance->getDefender()->getId() == creatureId) {
@@ -224,7 +224,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             if (it.first == eOffensiveManuevers::HeavyBlow) {
                 // do this if we have a dice advantage
                 priority += (controlledCreature->getCombatPool() - target->getCombatPool()) / 2;
-
+                priority += target->primaryWeaponDisabled() ? 2 : 0;
                 bestDamage += 2;
             }
             priority += random_static::get(bestDamage, bestDamage + cFuzz);
@@ -259,6 +259,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             int damage = component->getDamage() - AV;
             damage = damage + cFuzz;
             priority += random_static::get(damage, damage + cFuzz);
+            priority += target->primaryWeaponDisabled() ? 2 : 0;
             priority += (controlledCreature->getCombatPool() - target->getCombatPool()) / 2;
             toPush.hitLocation = location;
             toPush.pinpointLocation = part;
@@ -266,6 +267,12 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
         case eOffensiveManuevers::Beat: {
             // big random
             if (target->primaryWeaponDisabled() == false) {
+                // if we are stealing initiative beat is a really good move
+                if (controlledCreature->getHasDefense()
+                    && controlledCreature->getQueuedDefense().manuever
+                        == eDefensiveManuevers::StealInitiative) {
+                    priority += random_static::get(0, controlledCreature->getCombatPool());
+                }
                 priority += random_static::get(0, cFuzz + reachCost);
             } else {
                 priority = cLowestPriority;
@@ -315,6 +322,22 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
         }
         manueverPriorities.pop();
     }
+	// handles dual red initiative steal
+	// should be moved out as it causes confusion
+	if (dualRedThrow == true && controlledCreature->getCombatPool() > 0) {
+		controlledCreature->setDefenseWeapon(true);
+		controlledCreature->setDefenseManuever(eDefensiveManuevers::StealInitiative);
+		int defDie
+			= controlledCreature->getCombatPool() / 2 + 2;
+		defDie = min(defDie, controlledCreature->getCombatPool());
+		defDie = max(0, defDie);
+		controlledCreature->setDefenseDice(defDie);
+		controlledCreature->setDefenseReady();
+		assert(defDie <= controlledCreature->getCombatPool() || defDie == 0);
+		if (payCosts) {
+			controlledCreature->reduceCombatPool(defDie);
+		}
+	}
 
     int dice = controlledCreature->getCombatPool() / 2
         + random_static::get(0, controlledCreature->getCombatPool() / 3)
@@ -343,18 +366,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
 
     controlledCreature->setOffenseDice(dice);
 
-    if (dualRedThrow == true && controlledCreature->getCombatPool() > 0) {
-        controlledCreature->setDefenseWeapon(true);
-        controlledCreature->setDefenseManuever(eDefensiveManuevers::StealInitiative);
-        int defDie
-            = controlledCreature->getCombatPool() - controlledCreature->getQueuedOffense().dice;
-        controlledCreature->setDefenseDice(defDie);
-        controlledCreature->setDefenseReady();
-        assert(defDie <= controlledCreature->getCombatPool() || defDie == 0);
-        if (payCosts) {
-            controlledCreature->reduceCombatPool(defDie);
-        }
-    }
+
     assert(controlledCreature->getQueuedOffense().dice <= controlledCreature->getCombatPool()
         || controlledCreature->getQueuedOffense().dice == 0);
     if (payCosts) {
@@ -459,10 +471,10 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
 
             if (isLastTempo == false) {
                 priority = cLowestPriority;
-            } else if (controlledCreature->getCombatPool() > reachCost) {
+            } else if (controlledCreature->getCombatPool() > reachCost + 3) {
                 // if incoming attack we can take, then just attack
-                if (attack == eOffensiveManuevers::Hook && diceAllocated < 10) {
-                    priority += 20;
+                if (attack == eOffensiveManuevers::Hook && diceAllocated < 9) {
+                    priority = 25;
                 }
             }
             if (attack == eOffensiveManuevers::NoOffense) {
@@ -477,6 +489,7 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
             int stealDie = 0;
             if (stealInitiative(controlledCreature, attacker, stealDie)) {
                 if (stealDie + reachCost < controlledCreature->getCombatPool()) {
+                    toPush.dice = stealDie;
                     priority += 20;
                 } else {
                     priority = cLowestPriority;
@@ -588,7 +601,7 @@ void AICombatController::doPrecombat(
 void AICombatController::doPreresolution(Creature* controlledCreature, const Creature* opponent)
 {
     if (getFeintCost() < controlledCreature->getCombatPool()) {
-        controlledCreature->setCreatureFeint();
+        //controlledCreature->setCreatureFeint();
     }
     controlledCreature->setPreResolutionReady();
 }
@@ -628,18 +641,18 @@ bool AICombatController::stealInitiative(
     float myDisadvantage = (maxDiff - (controlledCreature->getBTN() - cBaseBTN)) / maxDiff;
 
     // make sure this is enough for an attack + overcoming advantage
-    int bufferDie = random_static::get(4, 8);
+    int bufferDie = random_static::get(3, 8);
     int reachCost = max(attacker->getCurrentReach() - controlledCreature->getCurrentReach(), 0);
     bufferDie += reachCost;
-    if ((combatPool * attackerDisadvantage) + bufferDie
-        < (controlledCreature->getCombatPool() + getTap(controlledCreature->getMobility()))
-            * myDisadvantage) {
+    if ((combatPool) + bufferDie
+        < (controlledCreature->getCombatPool() + getTap(controlledCreature->getMobility()))) {
         float mult = 1.0;
         // favor in my tn difference
         mult += (controlledCreature->getBTN() - cBaseBTN) / 10.f;
         cout << mult << endl;
         int diff = attacker->getCombatPool() * mult;
-        int dice = diff + random_static::get(4, 8);
+        int dice = diff + random_static::get(3, 7) + getTap(attacker->getMobility())
+            - getTap(controlledCreature->getMobility());
         if (controlledCreature->getCombatPool() - bufferDie >= dice) {
             outDie = dice;
             return true;

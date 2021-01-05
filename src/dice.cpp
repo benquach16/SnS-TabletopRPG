@@ -1,8 +1,11 @@
 #include "dice.h"
 #include <iostream>
+#include <algorithm>
+
 using namespace std;
 
 namespace DiceRoller {
+constexpr int cMaxSuccesses = 7;
 std::vector<int> roll(int number, int sides)
 {
     std::vector<int> ret;
@@ -23,6 +26,7 @@ int rollGetSuccess(int BTN, int number)
             count++;
         }
     }
+	count = std::min(count, cMaxSuccesses);
     cout << "successes: " << count << endl;
     return count;
 }

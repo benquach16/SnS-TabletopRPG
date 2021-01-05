@@ -319,7 +319,7 @@ void CombatInstance::doDualOffenseSecondInitiative()
     // defender is person who went first, they need to respond with dice
     // allocation
 
-    if (defender->getHasOffense() == false) {
+    if (defender->getHasDefense() == false) {
         m_currentState = eCombatState::DualOffenseSecondInitiative;
         return;
     }
@@ -485,14 +485,26 @@ void CombatInstance::doResolution()
         // special case for thrust manuever, get an extra die
         constexpr unsigned cThrustDie = 1;
         // divide dice allocation by 2
-        int side1Dice = (m_side1->getQueuedOffense().manuever == eOffensiveManuevers::Thrust)
-            ? (m_side1->getQueuedDefense().dice + 1) / 2 + cThrustDie
-            : (m_side1->getQueuedDefense().dice + 1) / 2;
-        int side2Dice = (m_side2->getQueuedOffense().manuever == eOffensiveManuevers::Thrust)
-            ? (m_side2->getQueuedDefense().dice + 1) / 2 + cThrustDie
-            : (m_side2->getQueuedDefense().dice + 1) / 2;
+        int side1Dice = (m_side1->getQueuedDefense().dice + 1) / 2;
+        if (m_side1->getQueuedOffense().manuever == eOffensiveManuevers::Thrust
+            || m_side1->getQueuedOffense().manuever == eOffensiveManuevers::PinpointThrust) {
+            side1Dice += cThrustDie;
+        }
+        int side2Dice = (m_side2->getQueuedDefense().dice + 1) / 2;
+        if (m_side2->getQueuedOffense().manuever == eOffensiveManuevers::Thrust
+            || m_side2->getQueuedOffense().manuever == eOffensiveManuevers::PinpointThrust) {
+            side2Dice += cThrustDie;
+        }
         int side1reach = 0;
         int side2reach = 0;
+        if (m_side1->getCurrentReach() == m_currentReach
+            && m_side2->getCurrentReach() != m_currentReach) {
+            side1reach++;
+        } else if (m_side2->getCurrentReach() == m_currentReach
+            && m_side1->getCurrentReach() != m_currentReach) {
+            side2reach++;
+        }
+
         int side1InitiativeSuccesses = DiceRoller::rollGetSuccess(
             side1BTN, side1Dice + getTap(m_side1->getMobility()) + side1reach);
         int side2InitiativeSuccesses = DiceRoller::rollGetSuccess(
@@ -906,7 +918,8 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
         bodyPart = eBodyParts::Face;
     } else if (attack.manuever == eOffensiveManuevers::Snap) {
         bodyPart = eBodyParts::Elbow;
-    } else if (attack.manuever == eOffensiveManuevers::Swing || attack.manuever == eOffensiveManuevers::HeavyBlow) {
+    } else if (attack.manuever == eOffensiveManuevers::Swing
+        || attack.manuever == eOffensiveManuevers::HeavyBlow) {
         // swings in these grips do less damage, unless its a linked component
         eGrips grip = attacker->getGrip();
         if ((grip == eGrips::HalfSword || grip == eGrips::Staff || grip == eGrips::Overhand)) {
@@ -916,9 +929,9 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
             }
             MoS -= 1;
         }
-		if (attack.manuever == eOffensiveManuevers::HeavyBlow) {
-			MoS += 2;
-		}
+        if (attack.manuever == eOffensiveManuevers::HeavyBlow) {
+            MoS += 2;
+        }
         MoS += attack.heavyblow;
     } else if (attack.manuever == eOffensiveManuevers::Mordhau) {
         damageType = eDamageTypes::Blunt;
@@ -938,7 +951,8 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
         || attack.manuever == eOffensiveManuevers::Snap) {
         ignoreArmor = true;
     }
-
+    writeMessage(
+        "Attack strikes the " + bodyPartToString(bodyPart) + "!", Log::eMessageTypes::Announcement);
     int AV = armorAtLocation.AV;
     if (armorAtLocation.isMetal == true && damageType != eDamageTypes::Blunt && finalDamage > 0) {
         if ((attack.component->hasProperty(eWeaponProperties::MaillePiercing) == false

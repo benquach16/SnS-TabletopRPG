@@ -567,19 +567,23 @@ bool Creature::hasEnoughMetalArmor() const
 {
     // if there are more than half hit locations with metal armor on them, return true
     int total = 0;
+
     for (auto location : m_hitLocations) {
-        vector<eBodyParts> parts = WoundTable::getSingleton()->getUniqueParts(location);
+		auto parts = WoundTable::getSingleton()->getAllLocations(location).m_thrust;
         int metalArmorCount = 0;
-        for (auto part : parts) {
+		int count = 0;
+		for (int i = 0; i < WoundTable::cPartsPerLocation; ++i) {
+			auto part = parts[i];
             // ignore the secondpart arm/head
             if (part != eBodyParts::SecondLocationArm && part != eBodyParts::SecondLocationHead) {
                 ArmorSegment segment = getArmorAtPart(part);
                 if (segment.isMetal) {
                     metalArmorCount++;
                 }
+				count++;
             }
         }
-        if (metalArmorCount > parts.size() / 2) {
+        if (metalArmorCount > count / 2) {
             total++;
         }
     }
