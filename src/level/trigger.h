@@ -1,13 +1,16 @@
 #pragma once
 
+class Scene;
+
 class Trigger {
 public:
-    enum eTriggerConditions { factionCleared, itemInInventory, creatureCleared };
-    Trigger(eTriggerConditions condition);
-    bool active();
+    enum eTriggerConditions { factionCleared, itemInInventory, creatureCleared, changeLevel };
+    Trigger();
+    virtual bool run(Scene* scene) = 0;
+
+	virtual eTriggerConditions getTriggerCondition() = 0;
 
 private:
-    Trigger();
 
     eTriggerConditions m_condition;
 };

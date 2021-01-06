@@ -19,6 +19,7 @@ struct Tile {
     eTileType m_type = eTileType::Ground;
     eTileMaterial m_material = eTileMaterial::Stone;
     int m_levelChangeIdx = -1;
+	std::vector<Trigger*> m_triggers;
 
     template <class Archive> void serialize(Archive& ar, const unsigned int version)
     {
@@ -122,7 +123,7 @@ private:
         ar& m_logic;
     }
 
-    std::vector<Trigger> m_triggers;
+    std::vector<Trigger*> m_globalTriggers;
     std::vector<Object*> m_objects;
     std::vector<Object*> m_toDelete;
     int m_width;

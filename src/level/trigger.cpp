@@ -1,8 +1,7 @@
 #include "trigger.h"
+#include "../scene.h"
 
-Trigger::Trigger(eTriggerConditions condition)
-    : m_condition(condition)
+Trigger::Trigger()
 {
 }
 
-bool Trigger::active() { return false; }

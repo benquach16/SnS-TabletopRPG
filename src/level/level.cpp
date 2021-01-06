@@ -75,6 +75,12 @@ void Level::run(Scene* scene)
             scene->changeToLevel(tile.m_levelChangeIdx, m_objects[i], 1, 1);
         }
     }
+
+	for (auto trigger : m_globalTriggers) {
+		if (trigger->run(scene) == false) {
+			// delete
+		}
+	}
 }
 
 void Level::generateEnemy()
