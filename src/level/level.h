@@ -19,7 +19,7 @@ struct Tile {
     eTileType m_type = eTileType::Ground;
     eTileMaterial m_material = eTileMaterial::Stone;
     int m_levelChangeIdx = -1;
-	std::vector<Trigger*> m_triggers;
+    std::vector<Trigger*> m_triggers;
 
     template <class Archive> void serialize(Archive& ar, const unsigned int version)
     {
@@ -75,7 +75,7 @@ public:
 
     const Object* getObject(vector2d position);
     Object* getObjectMutable(vector2d position, const Object* exclude);
-	void assignLogic(eLevelLogic logic) { m_logic = logic; }
+    void assignLogic(eLevelLogic logic) { m_logic = logic; }
     int getWidth() const { return m_width; }
     int getHeight() const { return m_height; }
     bool isFreeSpace(int x, int y) const;
@@ -111,7 +111,7 @@ private:
     void removeIslands();
     void createCorridor(Room room1, Room room2);
     void generateEnemy();
-    
+
     template <class Archive> void serialize(Archive& ar, const unsigned int version)
     {
         ar& m_data;

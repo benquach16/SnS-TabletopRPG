@@ -46,7 +46,7 @@ void EquipmentManager::loadLoadout(eCreatureFaction faction, eRank rank, nlohman
     std::vector<int> baseChests = values["baseChests"];
     std::vector<int> baseLegs = values["baseLegs"];
     std::vector<int> helmets = values["helmets"];
-	std::vector<int> neck = values["neck"];
+    std::vector<int> neck = values["neck"];
     std::vector<int> chests = values["chests"];
     std::vector<int> plateChests = values["plateChests"];
     std::vector<int> leggings = values["leggings"];
@@ -61,7 +61,7 @@ void EquipmentManager::loadLoadout(eCreatureFaction faction, eRank rank, nlohman
 
     m_loadouts[faction][rank].baseChests = baseChests;
     m_loadouts[faction][rank].helmets = helmets;
-	m_loadouts[faction][rank].neck = neck;
+    m_loadouts[faction][rank].neck = neck;
     m_loadouts[faction][rank].baseLegs = baseLegs;
     m_loadouts[faction][rank].chests = chests;
     m_loadouts[faction][rank].plateChests = plateChests;
@@ -122,10 +122,10 @@ std::vector<int> EquipmentManager::getRandomArmors(eCreatureFaction faction, eRa
         ret.push_back(
             loadout.helmets[random_static::get(0, static_cast<int>(loadout.helmets.size()) - 1)]);
     }
-	if (loadout.neck.size() > 0) {
-		ret.push_back(
-			loadout.neck[random_static::get(0, static_cast<int>(loadout.neck.size()) - 1)]);
-	}
+    if (loadout.neck.size() > 0) {
+        ret.push_back(
+            loadout.neck[random_static::get(0, static_cast<int>(loadout.neck.size()) - 1)]);
+    }
     if (loadout.chests.size() > 0) {
         ret.push_back(
             loadout.chests[random_static::get(0, static_cast<int>(loadout.chests.size()) - 1)]);

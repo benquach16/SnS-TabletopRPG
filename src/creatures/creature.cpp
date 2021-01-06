@@ -366,13 +366,13 @@ ArmorSegment Creature::getMedianArmor(eHitLocations location, bool swing) const
             key = it.first;
         }
     }
-	avg = avg / hash.size();
+    avg = avg / hash.size();
     segment.AV = key;
-	// if the median isn't more than half, then its just a mess of armors and we should use the
-// average instead
-	if (key < total / 2) {
-		segment.AV = avg;
-	}
+    // if the median isn't more than half, then its just a mess of armors and we should use the
+    // average instead
+    if (key < total / 2) {
+        segment.AV = avg;
+    }
     if (metalCount > (total / 2)) {
         segment.isMetal = true;
     }

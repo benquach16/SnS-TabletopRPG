@@ -32,18 +32,18 @@ void MainMenuUI::run(bool hasKeyEvents, sf::Event event)
         switch (c) {
         case 'a':
             Game::getSingleton()->setupNewgame();
-			Game::getSingleton()->setState(Game::eApplicationState::CharCreation);
+            Game::getSingleton()->setState(Game::eApplicationState::CharCreation);
             break;
         case 'b':
             if (existingSave) {
-				Game::getSingleton()->load(Game::cSaveString);
+                Game::getSingleton()->load(Game::cSaveString);
             }
 
             break;
 
         case 'c':
-			Game::getSingleton()->setupArena();
-			Game::getSingleton()->setState(Game::eApplicationState::CharCreation);
+            Game::getSingleton()->setupArena();
+            Game::getSingleton()->setState(Game::eApplicationState::CharCreation);
             break;
         case 'd':
             break;

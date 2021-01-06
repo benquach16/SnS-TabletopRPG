@@ -90,7 +90,7 @@ public:
     const Weapon* getSecondaryWeapon() const;
     int getSecondaryWeaponId() const { return m_secondaryWeaponId; }
     const Weapon* getNaturalWeapon() const;
-	int getNaturalWeaponId() const { return m_naturalWeaponId; }
+    int getNaturalWeaponId() const { return m_naturalWeaponId; }
     std::vector<int> getQuickdrawItems() const { return m_quickDrawItems; }
     bool findInQuickdraw(int id);
     void addQuickdrawItem(int id) { m_quickDrawItems.push_back(id); }
@@ -122,8 +122,8 @@ public:
     void equipArmor(int id);
     bool canEquipArmor(int id);
     ArmorSegment getArmorAtPart(eBodyParts part) const;
-	std::vector<ArmorSegment> getArmorAtLocation(eHitLocations location) const;
-	ArmorSegment getMedianArmor(eHitLocations location, bool swing) const;
+    std::vector<ArmorSegment> getArmorAtLocation(eHitLocations location) const;
+    ArmorSegment getMedianArmor(eHitLocations location, bool swing) const;
     void removeArmor(int id);
     float getAP() const { return m_AP; }
 

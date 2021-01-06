@@ -70,21 +70,19 @@ Component* Weapon::getBestThrust() const
 
 Component* Weapon::getBestBlunt() const
 {
-	assert(m_components.size() > 0);
+    assert(m_components.size() > 0);
 
-	Component* ret = nullptr;
-	for (unsigned i = 0; i < m_components.size(); ++i) {
-		if (m_components[i]->getType() == eDamageTypes::Blunt) {
-			if (ret == nullptr || m_components[i]->getDamage() > ret->getDamage()) {
-				ret = m_components[i];
-			}
-		}
+    Component* ret = nullptr;
+    for (unsigned i = 0; i < m_components.size(); ++i) {
+        if (m_components[i]->getType() == eDamageTypes::Blunt) {
+            if (ret == nullptr || m_components[i]->getDamage() > ret->getDamage()) {
+                ret = m_components[i];
+            }
+        }
+    }
 
-	}
-
-	return ret;
+    return ret;
 }
-
 
 Component* Weapon::getPommelStrike() const
 {

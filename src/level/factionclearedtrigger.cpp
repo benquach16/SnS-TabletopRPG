@@ -1,0 +1,1 @@
+#include "factionclearedtrigger.h"

@@ -43,16 +43,17 @@ inline int operator<(eLength length1, eLength length2)
 
 int calculateReachCost(eLength length1, eLength length2);
 int getFeintCost();
-int getOffensiveManueverCost(
-    eOffensiveManuevers manuever, eGrips grip, eLength effectiveReach, eLength currentReach, bool payReach);
-int getDefensiveManueverCost(eDefensiveManuevers manuever, eGrips grip, eLength effectiveReach, eLength currentReach);
+int getOffensiveManueverCost(eOffensiveManuevers manuever, eGrips grip, eLength effectiveReach,
+    eLength currentReach, bool payReach);
+int getDefensiveManueverCost(
+    eDefensiveManuevers manuever, eGrips grip, eLength effectiveReach, eLength currentReach);
 
 //<maneuver, cost>
-std::map<eOffensiveManuevers, int> getAvailableOffManuevers(
-    const Creature* creature, bool primaryWeapon, eLength currentReach, bool inGrapple, bool payReach);
+std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* creature,
+    bool primaryWeapon, eLength currentReach, bool inGrapple, bool payReach);
 
 //<maneuver, cost>
-std::map<eDefensiveManuevers, int> getAvailableDefManuevers(
-	const Creature* creature, bool primaryWeapon, bool isLastTempo, eLength currentReach, bool inGrapple);
+std::map<eDefensiveManuevers, int> getAvailableDefManuevers(const Creature* creature,
+    bool primaryWeapon, bool isLastTempo, eLength currentReach, bool inGrapple);
 
 int getQuickdrawCost(const Weapon* weapon, bool inGrapple);

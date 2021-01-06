@@ -76,17 +76,17 @@ void Scene::setupLevel(PlayerObject* playerObject)
 
 void Scene::setupArena(PlayerObject* playerObject)
 {
-	m_currentIdx = 0;
-	Level* level = new Level(10, 10);
+    m_currentIdx = 0;
+    Level* level = new Level(10, 10);
 
-	playerObject->setPosition(1, 1);
-	// has some management of player here but cannot delete
-	// violates RAII
-	level->addObject(playerObject);
+    playerObject->setPosition(1, 1);
+    // has some management of player here but cannot delete
+    // violates RAII
+    level->addObject(playerObject);
 
-	level->assignLogic(Level::eLevelLogic::Arena);
-	m_currentState = eSceneState::Playing;
-	m_levels.push_back(level);
+    level->assignLogic(Level::eLevelLogic::Arena);
+    m_currentState = eSceneState::Playing;
+    m_levels.push_back(level);
 }
 
 void Scene::changeToLevel(int idx, Object* object, int x, int y)

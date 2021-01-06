@@ -8,7 +8,7 @@ RelationManager::RelationManager()
 {
     setRelationship(eCreatureFaction::Player, eCreatureFaction::Bandit, cHostile);
     setRelationship(eCreatureFaction::Player, eCreatureFaction::Confederacy, 0);
-	setRelationship(eCreatureFaction::Player, eCreatureFaction::ArenaFighter, cHostile);
+    setRelationship(eCreatureFaction::Player, eCreatureFaction::ArenaFighter, cHostile);
     setRelationship(eCreatureFaction::Bandit, eCreatureFaction::Confederacy, cHostile);
 }
 

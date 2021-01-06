@@ -21,12 +21,12 @@ public:
     void save(const std::string& filepath);
     void initialize();
     void setupNewgame();
-	void setupArena();
+    void setupArena();
 
-	void changeToScene();
+    void changeToScene();
     void run();
     void destroy();
-	Scene getCurrentScene();
+    Scene getCurrentScene();
     void setState(eApplicationState state) { m_appState = state; }
 
     static sf::Font& getDefaultFont() { return m_defaultFont; }
@@ -53,8 +53,8 @@ private:
 
     float zoom = 1.0f;
     Scene m_scene;
-	std::vector<Scene> m_scenes;
-	int m_currentScene;
+    std::vector<Scene> m_scenes;
+    int m_currentScene;
     Overworld m_overworld;
     eApplicationState m_appState;
 

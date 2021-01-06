@@ -1,6 +1,6 @@
 #include "dice.h"
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 
 using namespace std;
 
@@ -26,7 +26,7 @@ int rollGetSuccess(int BTN, int number)
             count++;
         }
     }
-	count = std::min(count, cMaxSuccesses);
+    count = std::min(count, cMaxSuccesses);
     cout << "successes: " << count << endl;
     return count;
 }

@@ -76,11 +76,11 @@ void Level::run(Scene* scene)
         }
     }
 
-	for (auto trigger : m_globalTriggers) {
-		if (trigger->run(scene) == false) {
-			// delete
-		}
-	}
+    for (auto trigger : m_globalTriggers) {
+        if (trigger->run(scene) == false) {
+            // delete
+        }
+    }
 }
 
 void Level::generateEnemy()

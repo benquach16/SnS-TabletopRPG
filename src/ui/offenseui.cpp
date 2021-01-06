@@ -10,9 +10,9 @@ using namespace std;
 void OffenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, Creature* target,
     const CombatInstance* instance, bool allowStealInitiative, bool linkedParry)
 {
-	if (player->getHasOffense()) {
-		return;
-	}
+    if (player->getHasOffense()) {
+        return;
+    }
     switch (m_currentState) {
     case eUiState::ChooseWeapon:
         doChooseWeapon(hasKeyEvents, event, player);
@@ -106,8 +106,8 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player,
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
     bool withPrimaryWeapon = player->getQueuedOffense().withPrimaryWeapon;
-    map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(
-        player, withPrimaryWeapon, instance->getCurrentReach(), instance->getInGrapple(), linkedParry == false);
+    map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(player, withPrimaryWeapon,
+        instance->getCurrentReach(), instance->getInGrapple(), linkedParry == false);
 
     string str = "Choose attack:\n";
     map<char, std::pair<eOffensiveManuevers, int>> indices;
@@ -151,7 +151,7 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player,
             case eOffensiveManuevers::Thrust:
             case eOffensiveManuevers::Beat:
             case eOffensiveManuevers::Hook:
-			case eOffensiveManuevers::HeavyBlow:
+            case eOffensiveManuevers::HeavyBlow:
             case eOffensiveManuevers::Disarm:
             case eOffensiveManuevers::Draw:
             case eOffensiveManuevers::VisorThrust:
@@ -267,9 +267,9 @@ void OffenseUI::doComponent(bool hasKeyEvents, sf::Event event, Player* player)
     std::string str("Choose weapon component:\n");
     switch (player->getQueuedOffense().manuever) {
     case eOffensiveManuevers::Swing:
-	case eOffensiveManuevers::Draw:
-	case eOffensiveManuevers::HeavyBlow:
-	case eOffensiveManuevers::Beat:
+    case eOffensiveManuevers::Draw:
+    case eOffensiveManuevers::HeavyBlow:
+    case eOffensiveManuevers::Beat:
     case eOffensiveManuevers::Hook: {
         for (int i = 0; i < weapon->getSwingComponents().size(); ++i) {
             char idx = ('a' + i);

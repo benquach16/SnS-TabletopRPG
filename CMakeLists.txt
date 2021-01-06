@@ -33,6 +33,9 @@ set(SOURCES
     ./src/level/level.cpp
     ./src/level/levelmanager.cpp
     ./src/level/trigger.cpp
+    ./src/level/changeleveltrigger.cpp
+    ./src/level/factionclearedtrigger.cpp
+    ./src/level/creatureclearedtrigger.cpp  
     ./src/object/object.cpp
     ./src/object/corpseobject.cpp
     ./src/object/creatureobject.cpp

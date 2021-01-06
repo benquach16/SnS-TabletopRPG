@@ -39,13 +39,13 @@ private:
 class WoundTable {
 public:
     ~WoundTable();
-	static constexpr unsigned cPartsPerLocation = 10;
-	struct woundParts {
-		eBodyParts m_swing[cPartsPerLocation];
-		eBodyParts m_thrust[cPartsPerLocation];
-	};
+    static constexpr unsigned cPartsPerLocation = 10;
+    struct woundParts {
+        eBodyParts m_swing[cPartsPerLocation];
+        eBodyParts m_thrust[cPartsPerLocation];
+    };
 
-	woundParts getAllLocations(eHitLocations location) const { return m_hitTable.at(location); }
+    woundParts getAllLocations(eHitLocations location) const { return m_hitTable.at(location); }
 
     eBodyParts getSwing(eHitLocations location);
     eBodyParts getThrust(eHitLocations location);

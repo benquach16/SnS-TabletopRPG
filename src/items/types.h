@@ -24,21 +24,21 @@ enum class eOffensiveManuevers : unsigned {
     Swing,
     Thrust,
     PinpointThrust,
-	HeavyBlow,
+    HeavyBlow,
     Beat,
     Mordhau,
     Hook,
     Slam,
     Grab,
     Disarm,
-	Draw,
+    Draw,
     // grapple moves
     Snap,
     Throw,
     Pin,
     VisorThrust,
     Bite,
-	NoOffense
+    NoOffense
 };
 
 enum class ePositionManuevers : unsigned { Invalid = 0, Stand, Pickup };
@@ -70,7 +70,7 @@ enum class eDefensiveManuevers : unsigned {
     Counter,
     Parry,
     Dodge,
-	DodgeTakeInitiative,
+    DodgeTakeInitiative,
     Expulsion,
     // grapple manuevers
     Break,

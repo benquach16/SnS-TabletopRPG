@@ -103,10 +103,10 @@ private:
     bool switchToStaffGrip(Creature* creature);
     const Weapon* getAttackingWeapon(const Creature* creature);
     const Weapon* getDefendingWeapon(const Creature* creature);
-	eLength getEffectiveReach(const Creature* creature);
+    eLength getEffectiveReach(const Creature* creature);
     void outputOffense(const Creature* creature);
     void outputDefense(const Creature* creature);
-	void changeReachTo(const Creature* creature);
+    void changeReachTo(const Creature* creature);
 
     void switchInitiative()
     {
