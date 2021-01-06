@@ -3,4 +3,5 @@
 #include "trigger.h"
 
 class ChangeLevelTrigger : public Trigger {
+	
 };

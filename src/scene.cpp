@@ -1,8 +1,10 @@
 #include "scene.h"
+#include "../3rdparty/random.hpp"
 #include "creatures/wound.h"
 #include "game.h"
 #include "gfxobjects/utils.h"
 #include "items/weapon.h"
+#include "level/factionclearedtrigger.h"
 #include "level/level.h"
 #include "log.h"
 #include "object/campfireobject.h"
@@ -18,6 +20,7 @@
 #include <iostream>
 #include <sstream>
 
+using namespace effolkronium;
 using namespace std;
 
 constexpr float cMaxZoom = 0.6f;
@@ -55,7 +58,6 @@ void Scene::setupLevel(PlayerObject* playerObject)
     for (unsigned i = 0; i < 60; i++) {
         (*level)(0, i).m_type = eTileType::Wall;
     }
-    (*level)(0, 1).m_levelChangeIdx = 1;
     // level->generateTown();
     playerObject->setStartingDialogueLabel("wakeup");
 
@@ -83,8 +85,30 @@ void Scene::setupArena(PlayerObject* playerObject)
     // has some management of player here but cannot delete
     // violates RAII
     level->addObject(playerObject);
+    FactionClearedTrigger* trigger = new FactionClearedTrigger(Trigger::cPersistentTrigger,
+        eCreatureFaction::ArenaFighter, [](Scene* scene, Level* level) {
+            HumanObject* object = new HumanObject;
+            object->setPosition(5, 5);
+            object->setFaction(eCreatureFaction::ArenaFighter);
+            // temporary
+            object->setLoadout(eCreatureFaction::Confederacy,
+                static_cast<eRank>(random_static::get((int)eRank::Recruit, (int)eRank::Count - 1)));
+            object->getCreatureComponent()->setAgility(random_static::get(5, 9));
+            object->getCreatureComponent()->setIntuition(random_static::get(5, 9));
+            object->getCreatureComponent()->setProficiency(
+                eWeaponTypes::Polearms, random_static::get(8, 12));
+            object->getCreatureComponent()->setProficiency(
+                eWeaponTypes::Brawling, random_static::get(8, 12));
+            object->getCreatureComponent()->setProficiency(
+                eWeaponTypes::Longswords, random_static::get(8, 12));
+            object->getCreatureComponent()->setProficiency(
+                eWeaponTypes::Swords, random_static::get(8, 12));
+            object->getCreatureComponent()->setProficiency(
+                eWeaponTypes::Mass, random_static::get(8, 12));
+            level->addObject(object);
+        });
 
-    level->assignLogic(Level::eLevelLogic::Arena);
+    level->addGlobalTrigger(trigger);
     m_currentState = eSceneState::Playing;
     m_levels.push_back(level);
 }

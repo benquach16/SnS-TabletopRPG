@@ -18,14 +18,12 @@ enum eTileType { Ground, Wall };
 struct Tile {
     eTileType m_type = eTileType::Ground;
     eTileMaterial m_material = eTileMaterial::Stone;
-    int m_levelChangeIdx = -1;
     std::vector<Trigger*> m_triggers;
 
     template <class Archive> void serialize(Archive& ar, const unsigned int version)
     {
         ar& m_type;
         ar& m_material;
-        ar& m_levelChangeIdx;
     }
 };
 
@@ -36,16 +34,8 @@ class Level {
 public:
     friend class boost::serialization::access;
 
-    // level wide triggers
-    enum eLevelLogic {
-        None,
-        Arena,
-    };
-
     Level(int width, int height);
     ~Level();
-    void save();
-    void load();
     void run(Scene* scene);
     void generate();
     void generateTown();
@@ -74,8 +64,9 @@ public:
     Tile get(vector2d pos) const { return (*this)(pos.x, pos.y); }
 
     const Object* getObject(vector2d position);
+	void addGlobalTrigger(Trigger* trigger) { m_globalTriggers.push_back(trigger); }
+	void addTrigger(Trigger* trigger, vector2d position);
     Object* getObjectMutable(vector2d position, const Object* exclude);
-    void assignLogic(eLevelLogic logic) { m_logic = logic; }
     int getWidth() const { return m_width; }
     int getHeight() const { return m_height; }
     bool isFreeSpace(int x, int y) const;
@@ -120,7 +111,6 @@ private:
         ar& m_width;
         ar& m_height;
         ar& m_lighting;
-        ar& m_logic;
     }
 
     std::vector<Trigger*> m_globalTriggers;
@@ -129,6 +119,5 @@ private:
     int m_width;
     int m_height;
     eLighting m_lighting;
-    eLevelLogic m_logic;
     std::vector<Tile> m_data;
 };

@@ -14,7 +14,6 @@ Level::Level(int width, int height)
     , m_height(height)
     , m_data(width * height)
     , m_lighting(eLighting::Cave)
-    , m_logic(eLevelLogic::None)
 {
 }
 
@@ -24,32 +23,8 @@ Level::~Level()
     clearObjects();
 }
 
-void Level::save() {}
-
-void Level::load() {}
-
 void Level::run(Scene* scene)
 {
-    switch (m_logic) {
-    case eLevelLogic::Arena: {
-        // temporary, should really be scripted somewhere or something
-        // but then it would become a real engine and thats a big problem
-        int count = 0;
-        for (unsigned i = 0; i < m_objects.size(); ++i) {
-            Object* object = m_objects[i];
-            if (object->getObjectType() == eObjectTypes::Creature) {
-                count++;
-            }
-        }
-        if (count < 2) {
-            generateEnemy();
-        }
-
-    } break;
-
-    default:
-        break;
-    }
     // OOP should be replaced with ECS if possible
     for (unsigned i = 0; i < m_objects.size(); ++i) {
         if (m_objects[i]->deleteMe() == true) {
@@ -68,19 +43,30 @@ void Level::run(Scene* scene)
         m_objects[i]->run(this);
         vector2d pos = m_objects[i]->getPosition();
         Tile tile = (*this)(pos.x, pos.y);
-        if (tile.m_levelChangeIdx != -1) {
-            // change level
-            // idx is coupled to scene, as scene manages all levels
-            // so this is unavoidable
-            scene->changeToLevel(tile.m_levelChangeIdx, m_objects[i], 1, 1);
+        for (unsigned j = 0; j < tile.m_triggers.size(); ++j) {
+            Trigger* trigger = tile.m_triggers[i];
+            if (trigger->run(scene, this, m_objects[i]) == false) {
+                // delete
+                tile.m_triggers.erase(tile.m_triggers.begin() + i);
+                i--;
+            }
         }
     }
 
-    for (auto trigger : m_globalTriggers) {
-        if (trigger->run(scene) == false) {
+    for (unsigned i = 0; i < m_globalTriggers.size(); ++i) {
+        Trigger* trigger = m_globalTriggers[i];
+        if (trigger->run(scene, this, nullptr) == false) {
             // delete
+            m_globalTriggers.erase(m_globalTriggers.begin() + i);
+            i--;
         }
     }
+}
+
+void Level::addTrigger(Trigger* trigger, vector2d position)
+{
+    assert(trigger != nullptr);
+    this->get(position).m_triggers.push_back(trigger);
 }
 
 void Level::generateEnemy()
@@ -454,6 +440,7 @@ void Level::cleanup()
         cout << "clearing.." << endl;
         delete m_toDelete[i];
     }
+
     m_toDelete.clear();
 }
 
@@ -465,6 +452,17 @@ void Level::clearObjects()
         }
     };
     m_objects.clear();
+    for (unsigned i = 0; i < m_globalTriggers.size(); ++i) {
+        delete m_globalTriggers[i];
+    }
+    for (Tile tile : m_data) {
+        for (Trigger* trigger : tile.m_triggers) {
+            delete trigger;
+        }
+        tile.m_triggers.clear();
+    }
+
+    m_globalTriggers.clear();
 }
 
 const Object* Level::getObject(vector2d position)
