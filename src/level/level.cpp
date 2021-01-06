@@ -44,11 +44,11 @@ void Level::run(Scene* scene)
         vector2d pos = m_objects[i]->getPosition();
         Tile tile = (*this)(pos.x, pos.y);
         for (unsigned j = 0; j < tile.m_triggers.size(); ++j) {
-            Trigger* trigger = tile.m_triggers[i];
+            Trigger* trigger = tile.m_triggers[j];
             if (trigger->run(scene, this, m_objects[i]) == false) {
                 // delete
-                tile.m_triggers.erase(tile.m_triggers.begin() + i);
-                i--;
+                tile.m_triggers.erase(tile.m_triggers.begin() + j);
+                j--;
             }
         }
     }
@@ -480,8 +480,9 @@ Object* Level::removeObject(Object::ObjectId id)
 {
     for (unsigned i = 0; i < m_objects.size(); ++i) {
         if (m_objects[i]->getId() == id) {
+			Object* ptr = m_objects[i];
             m_objects.erase(m_objects.begin() + i);
-            return m_objects[i];
+            return ptr;
         }
     }
     return nullptr;

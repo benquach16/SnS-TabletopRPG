@@ -61,7 +61,7 @@ public:
         return m_data[x * m_height + y];
     }
 
-    Tile get(vector2d pos) const { return (*this)(pos.x, pos.y); }
+    Tile& get(vector2d pos) { return (*this)(pos.x, pos.y); }
 
     const Object* getObject(vector2d position);
 	void addGlobalTrigger(Trigger* trigger) { m_globalTriggers.push_back(trigger); }

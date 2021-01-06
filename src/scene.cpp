@@ -4,6 +4,7 @@
 #include "game.h"
 #include "gfxobjects/utils.h"
 #include "items/weapon.h"
+#include "level/changeleveltrigger.h"
 #include "level/factionclearedtrigger.h"
 #include "level/level.h"
 #include "log.h"
@@ -48,8 +49,8 @@ void Scene::setupLevel(PlayerObject* playerObject)
 {
     m_currentIdx = 0;
     Level* level = new Level(60, 60);
-    Level* level2 = new Level(30, 30);
-
+    Level* level2 = new Level(60, 60);
+    level2->generateTown();
     level->generate();
     for (unsigned i = 0; i < 60; i++) {
         (*level)(i, 0).m_type = eTileType::Wall;
@@ -67,6 +68,8 @@ void Scene::setupLevel(PlayerObject* playerObject)
     CampfireObject* temp = new CampfireObject;
     temp->setPosition(2, 1);
     level->addObject(temp);
+    // ChangeLevelTrigger *trigger = new ChangeLevelTrigger(Trigger::cPersistentTrigger, 1,
+    // vector2d(4, 4)); level->addTrigger(trigger, vector2d(2, 2));
     playerObject->setPosition(1, 1);
     // has some management of player here but cannot delete
     // violates RAII
