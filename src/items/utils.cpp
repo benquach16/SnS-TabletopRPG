@@ -436,8 +436,11 @@ std::map<eDefensiveManuevers, int> getAvailableDefManuevers(const Creature* crea
             eDefensiveManuevers::ParryLinked, grip, effectiveReach, currentReach);
         ret[eDefensiveManuevers::Counter] = getDefensiveManueverCost(
             eDefensiveManuevers::Counter, grip, effectiveReach, currentReach);
-        ret[eDefensiveManuevers::Expulsion] = getDefensiveManueverCost(
-            eDefensiveManuevers::Expulsion, grip, effectiveReach, currentReach);
+		if (weapon->getNaturalWeapon() == false) {
+			ret[eDefensiveManuevers::Expulsion] = getDefensiveManueverCost(
+				eDefensiveManuevers::Expulsion, grip, effectiveReach, currentReach);
+		}
+
     } else {
         ret[eDefensiveManuevers::Reverse] = getDefensiveManueverCost(
             eDefensiveManuevers::Reverse, grip, effectiveReach, currentReach);

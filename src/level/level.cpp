@@ -5,6 +5,7 @@
 #include "../object/creatureobject.h"
 #include "../object/humanobject.h"
 #include "../scene.h"
+#include "changeleveltrigger.h"
 
 using namespace effolkronium;
 using namespace std;
@@ -143,6 +144,9 @@ void Level::generate()
     for (unsigned i = rooms[idx].x; i < m_width; ++i) {
         (*this)(i, rooms[idx].y).m_type = eTileType::Ground;
     }
+    ChangeLevelTrigger* trigger
+        = new ChangeLevelTrigger(Trigger::cPersistentTrigger, 1, vector2d(1, 1));
+    addTrigger(trigger, vector2d(m_width - 1, rooms[idx].y));
     HumanObject* object = new HumanObject;
     object->setPosition(rooms[idx].x, rooms[idx].y);
     object->setFaction(eCreatureFaction::Bandit);
@@ -172,7 +176,7 @@ void Level::generateTown()
         }
     }
 
-    for (unsigned i = 0; i < 12; ++i) {
+    for (unsigned i = 0; i < 8; ++i) {
         createBuilding();
     }
 }
@@ -225,7 +229,7 @@ Level::Building Level::createBuilding()
         building.yDoor = yStart + ylen - 1;
     } else {
         int yDoor = random_static::get(yStart + 1, yStart + ylen - 2);
-        (*this)(xStart, yDoor).m_type = eTileType::Ground;
+        (*this)(xStart + xlen - 1, yDoor).m_type = eTileType::Ground;
         building.xDoor = xStart;
         building.yDoor = yDoor;
     }
@@ -480,7 +484,7 @@ Object* Level::removeObject(Object::ObjectId id)
 {
     for (unsigned i = 0; i < m_objects.size(); ++i) {
         if (m_objects[i]->getId() == id) {
-			Object* ptr = m_objects[i];
+            Object* ptr = m_objects[i];
             m_objects.erase(m_objects.begin() + i);
             return ptr;
         }

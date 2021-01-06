@@ -68,8 +68,7 @@ void Scene::setupLevel(PlayerObject* playerObject)
     CampfireObject* temp = new CampfireObject;
     temp->setPosition(2, 1);
     level->addObject(temp);
-    // ChangeLevelTrigger *trigger = new ChangeLevelTrigger(Trigger::cPersistentTrigger, 1,
-    // vector2d(4, 4)); level->addTrigger(trigger, vector2d(2, 2));
+
     playerObject->setPosition(1, 1);
     // has some management of player here but cannot delete
     // violates RAII
