@@ -21,7 +21,10 @@ public:
     }
     const std::set<eWeaponProperties>& getProperties() const { return m_properties; }
 
+	int getTN() const { return m_tn; }
+
 private:
+	int m_tn;
     std::string m_name;
     int m_damage;
     eDamageTypes m_damageType;

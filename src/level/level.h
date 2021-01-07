@@ -24,6 +24,7 @@ struct Tile {
     {
         ar& m_type;
         ar& m_material;
+		ar& m_triggers;
     }
 };
 
@@ -111,6 +112,7 @@ private:
         ar& m_width;
         ar& m_height;
         ar& m_lighting;
+		ar& m_globalTriggers;
     }
 
     std::vector<Trigger*> m_globalTriggers;

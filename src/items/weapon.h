@@ -30,9 +30,13 @@ public:
 
     Component* getPommelStrike() const;
 
+	int getBaseTN() const { return m_tn; }
+
     bool canHook() const { return m_hook; }
 
     bool isShield() const { return false; }
+
+	bool isCurved() const { return false; }
 
     bool getNaturalWeapon() const { return m_naturalWeapon; }
 
@@ -50,6 +54,8 @@ private:
     int m_secondaryWeaponId;
 
     int m_hands;
+
+	int m_tn;
 
     bool canBeOffhand() const { return m_hands == 1; }
     bool m_naturalWeapon;

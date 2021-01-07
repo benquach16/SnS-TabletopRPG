@@ -1,6 +1,7 @@
 #pragma once
 
 #include <queue>
+#include <unordered_map>
 
 #include "../object/object.h"
 #include "gfxobject.h"
@@ -10,12 +11,19 @@ class Level;
 
 class GFXLevel {
 public:
+	enum class ePart {
+		Ground,
+		Left,
+		Right,
+		Top
+	};
     GFXLevel();
+	~GFXLevel();
     void renderBkg(const Level* level);
     void run(const Level* level, vector2d center);
     void renderText();
     void resize();
-
+	void regenerate(const Level* level);
 private:
     sf::Texture m_texture;
     sf::Texture m_grass;
@@ -24,7 +32,11 @@ private:
     std::queue<sf::RectangleShape> m_ground;
     std::queue<sf::RectangleShape> m_top;
 
+	std::unordered_map<ePart, sf::Shape*> m_shapes;
+
     GFXQueue m_queue;
+
+	std::vector<GFXObject> m_data;
 
     sf::RectangleShape m_bkg;
 };

@@ -2,6 +2,8 @@
 #include "../object/creatureobject.h"
 #include "level.h"
 
+BOOST_CLASS_EXPORT(FactionClearedTrigger)
+
 FactionClearedTrigger::FactionClearedTrigger(
     int timesToFire, eCreatureFaction faction, void (*PFN_event)(Scene*, Level*))
     : Trigger(timesToFire)

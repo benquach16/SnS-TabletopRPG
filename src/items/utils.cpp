@@ -306,7 +306,9 @@ int getOffensiveManueverCost(eOffensiveManuevers manuever, eGrips grip, eLength 
     }
     case eOffensiveManuevers::Beat: {
         int cost = (reachCost) / 2;
-        cost = std::max(0, cost);
+        if (reachCost > 0 && cost == 0) {
+            cost = 1;
+        }
         return cost;
     }
     case eOffensiveManuevers::Grab:
@@ -436,10 +438,10 @@ std::map<eDefensiveManuevers, int> getAvailableDefManuevers(const Creature* crea
             eDefensiveManuevers::ParryLinked, grip, effectiveReach, currentReach);
         ret[eDefensiveManuevers::Counter] = getDefensiveManueverCost(
             eDefensiveManuevers::Counter, grip, effectiveReach, currentReach);
-		if (weapon->getNaturalWeapon() == false) {
-			ret[eDefensiveManuevers::Expulsion] = getDefensiveManueverCost(
-				eDefensiveManuevers::Expulsion, grip, effectiveReach, currentReach);
-		}
+        if (weapon->getNaturalWeapon() == false) {
+            ret[eDefensiveManuevers::Expulsion] = getDefensiveManueverCost(
+                eDefensiveManuevers::Expulsion, grip, effectiveReach, currentReach);
+        }
 
     } else {
         ret[eDefensiveManuevers::Reverse] = getDefensiveManueverCost(

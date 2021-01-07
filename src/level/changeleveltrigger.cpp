@@ -1,6 +1,8 @@
 #include "changeleveltrigger.h"
 #include "../scene.h"
 
+BOOST_CLASS_EXPORT(ChangeLevelTrigger)
+
 ChangeLevelTrigger::ChangeLevelTrigger(int timesToFire, int newLevelIdx, vector2d moveToPosition)
     : Trigger(timesToFire)
     , m_newLevelIdx(newLevelIdx)

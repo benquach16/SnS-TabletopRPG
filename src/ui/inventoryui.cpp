@@ -292,7 +292,7 @@ void InventoryUI::doWounds(bool hasKeyEvents, sf::Event event, PlayerObject* pla
     ap.setCharacterSize(cCharSize);
     ap.setFont(Game::getDefaultFont());
     string str = "Inventory (1 - Backpack, 2 - Wounds, 3 - Profile, 4 - Armor Coverage):\n\n";
-    str += "Success rate: " + to_string(creature->getSuccessRate()) + "%" + '\n'
+    str += "Pain: " + to_string(creature->getPain()) + '\n'
         + "Blood loss: " + to_string(creature->getBloodLoss()) + '\n';
 
     str += "Thirst: " + to_string(player->getThirst()) + '\n';
