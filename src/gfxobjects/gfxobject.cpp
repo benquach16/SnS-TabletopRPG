@@ -1,9 +1,10 @@
 #include "gfxobject.h"
 
-GFXObject::GFXObject(sf::Drawable* draw, vector2d position)
+GFXObject::GFXObject(sf::Drawable* draw, vector2d position, bool persistent, int zmod)
     : m_draw(draw)
+    , m_persistent(persistent)
 {
-    m_Z = position.x + position.y;
+    m_Z = position.x + position.y + zmod;
 }
 
 void GFXObject::cleanup()
