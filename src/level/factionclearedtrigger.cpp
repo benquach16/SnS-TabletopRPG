@@ -5,10 +5,10 @@
 BOOST_CLASS_EXPORT(FactionClearedTrigger)
 
 FactionClearedTrigger::FactionClearedTrigger(
-    int timesToFire, eCreatureFaction faction, void (*PFN_event)(Scene*, Level*))
+    int timesToFire, eCreatureFaction faction, GameEffectManager::eGameEffect effect)
     : Trigger(timesToFire)
     , m_faction(faction)
-    , m_PFN_event(PFN_event)
+    , m_effect(effect)
 {
 }
 
@@ -29,7 +29,7 @@ bool FactionClearedTrigger::run(Scene* scene, Level* level, Object* triggeringOb
     // do event
     if (count == 0) {
         // call function pointer
-        m_PFN_event(scene, level);
+        GameEffectManager::getSingleton()->execute(m_effect, scene, level);
         decrement();
         if (m_timesToFire == 0) {
             return false;

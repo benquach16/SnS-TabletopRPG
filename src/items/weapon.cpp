@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "../3rdparty/json.hpp"
+#include "3rdparty/json.hpp"
 #include "utils.h"
 #include "weapon.h"
 
@@ -129,6 +129,7 @@ WeaponTable::WeaponTable()
         int cost = values["cost"];
         bool hook = values["hook"];
         int secondaryWeaponId = -1;
+		int baseTN = 7;
         vector<Component*> weaponComponents;
 
         if (values["secondary"].is_null() == false) {
