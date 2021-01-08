@@ -282,8 +282,14 @@ int getOffensiveManueverCost(eOffensiveManuevers manuever, eGrips grip, eLength 
         reachCost = 0;
     }
     switch (manuever) {
-    case eOffensiveManuevers::HeavyBlow:
-        return 2 + reachCost;
+    case eOffensiveManuevers::HeavyBlow: {
+        int cost = 2 + reachCost;
+        if (grip == eGrips::Staff) {
+            cost--;
+        }
+        return cost;
+    }
+
     case eOffensiveManuevers::Disarm:
     case eOffensiveManuevers::Hook:
         return 1 + reachCost;

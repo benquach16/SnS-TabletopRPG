@@ -1,6 +1,7 @@
 #pragma once
 
 #include <queue>
+#include <vector>
 #include <unordered_map>
 
 #include "../object/object.h"
@@ -25,6 +26,9 @@ public:
     void resize();
 	void regenerate(const Level* level);
 private:
+	struct Container {
+		std::vector<GFXObject> objects;
+	};
     sf::Texture m_texture;
     sf::Texture m_grass;
     sf::Texture m_stone;
@@ -36,7 +40,9 @@ private:
 
     GFXQueue m_queue;
 
-	std::vector<GFXObject> m_data;
+	const Level* m_processedLevel;
+
+	std::vector<Container> m_data;
 
     sf::RectangleShape m_bkg;
 };

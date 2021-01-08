@@ -76,7 +76,7 @@ public:
     Object* removeObject(Object::ObjectId id);
     const std::vector<Object*>& getObjects() const { return m_objects; }
     std::vector<Object*> getObjectsAtLocation(vector2d position);
-
+	
     eLighting getLighting() const { return m_lighting; }
 
 private:

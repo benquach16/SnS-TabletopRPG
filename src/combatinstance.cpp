@@ -895,7 +895,7 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
     }
 
     if (attack.manuever == eOffensiveManuevers::Beat) {
-        const int impact = MoS + 2;
+        const int impact = MoS + 1;
         writeMessage(target->getName() + "'s weapon has been disabled for 1 tempo and inflicts "
                 + to_string(impact) + " impact!",
             Log::eMessageTypes::Alert);

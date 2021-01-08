@@ -11,7 +11,7 @@ sf::Texture fire;
 constexpr int cWallWidthOffset = static_cast<int>(cWidth * cCos45 + 1);
 constexpr int cWallHeightOffset = static_cast<int>(cHeight * cCos45);
 
-GFXLevel::GFXLevel()
+GFXLevel::GFXLevel() : m_processedLevel(nullptr)
 {
     fire.loadFromFile("data/textures/fire.png");
     fire.setSmooth(true);
@@ -54,77 +54,85 @@ void GFXLevel::renderBkg(const Level* level)
 void GFXLevel::regenerate(const Level* level)
 {
     for (auto i : m_data) {
-        i.cleanup();
+		for (auto draw : i.objects) {
+			draw.cleanup();
+		}
     }
     m_data.clear();
+    int width = level->getWidth();
+    int height = level->getHeight();
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            Tile tile = (*level)(x, y);
+            sf::Texture* texture = &m_stone;
+            switch (tile.m_material) {
+            case eTileMaterial::Grass:
+                texture = &m_grass;
+                break;
+            }
+            Container container;
+            if (tile.m_type == eTileType::Ground) {
+                // this code is really slow and unncessary
 
-	for (int x = 0; x < level->getWidth(); x++) {
-		for (int y = 0; y < level->getHeight(); y++) {
-			Tile tile = (*level)(x, y);
-			sf::Texture* texture = &m_stone;
-			switch (tile.m_material) {
-			case eTileMaterial::Grass:
-				texture = &m_grass;
-				break;
-			}
+                sf::RectangleShape *rect = new sf::RectangleShape(sf::Vector2f(cWidth, cHeight));
+                rect->setFillColor(sf::Color(77, 77, 77));
+                sf::Vector2f pos(x, y);
 
-			if (tile.m_type == eTileType::Ground) {
-				// this code is really slow and unncessary
+                rect->setTexture(texture);
+                rect->setRotation(45.f);
+                pos = coordsToScreen(pos);
+                rect->setPosition(pos);
+				container.objects.push_back(GFXObject(rect, vector2d(x, y), true, -10));
+            } else if (tile.m_type == eTileType::Wall) {
+				sf::RectangleShape *rect = new sf::RectangleShape(sf::Vector2f(cWidth, cHeight));
+				int alpha = 255;
+                rect->setFillColor(sf::Color(33, 33, 33, alpha));
+                sf::Vector2f pos(x, y);
+                rect->setTexture(texture);
+                rect->setRotation(45.f);
+                pos = coordsToScreen(pos);
+                pos.y -= cWallHeightOffset * 2 - 5;
+                rect->setPosition(sf::Vector2f(pos.x, pos.y - (cWallHeightOffset - 1)));
+				container.objects.push_back(GFXObject(rect, vector2d(x, y), true, 1));
+                // culling
+                if (y == height - 1 || (*level)(x, y + 1).m_type != eTileType::Wall) {
+                    sf::ConvexShape* bottom = new sf::ConvexShape(4);
+                    bottom->setFillColor(sf::Color(44, 44, 44));
+                    bottom->setTexture(texture);
+                    sf::Vector2f bottomPos(pos);
+                    bottomPos.x -= cWallWidthOffset;
+                    bottomPos.y += cCos45;
+                    bottom->setPosition(bottomPos);
+                    bottom->setPoint(0, sf::Vector2f(0, 0));
+                    bottom->setPoint(1, sf::Vector2f(cWallWidthOffset, cWallHeightOffset));
+                    bottom->setPoint(
+                        2, sf::Vector2f(cWallWidthOffset, cHeight * 2 + (cWallHeightOffset)));
+                    bottom->setPoint(3, sf::Vector2f(0, cHeight * 2));
+                    container.objects.push_back(GFXObject(bottom, vector2d(x, y), true));
+                }
 
-				sf::RectangleShape rect(sf::Vector2f(cWidth, cHeight));
-				rect.setFillColor(sf::Color(77, 77, 77));
-				sf::Vector2f pos(x, y);
+                if (x == width - 1 || (*level)(x + 1, y).m_type != eTileType::Wall) {
+                    sf::ConvexShape* right = new sf::ConvexShape(4);
+                    right->setFillColor(sf::Color(66, 66, 66));
+                    right->setTexture(texture);
 
-				rect.setTexture(texture);
-				rect.setRotation(45.f);
-				pos = coordsToScreen(pos);
-				rect.setPosition(pos);
-				m_ground.push(rect);
+                    sf::Vector2f rightPos(pos);
+                    // rightPos.x+=cWidth*cCos45;
+                    rightPos.y += cWallHeightOffset;
+                    right->setPosition(rightPos);
+                    right->setPointCount(4);
+                    right->setPoint(0, sf::Vector2f(0, 0));
+                    right->setPoint(1, sf::Vector2f(cWallWidthOffset, -(cWallHeightOffset)));
+                    right->setPoint(
+                        2, sf::Vector2f(cWallWidthOffset, cHeight * 2 - (cWallHeightOffset)));
+                    right->setPoint(3, sf::Vector2f(0, cHeight * 2));
+                    container.objects.push_back(GFXObject(right, vector2d(x, y), true));
+                }
+            }
 
-			}
-			else if (tile.m_type == eTileType::Wall) {
-				sf::RectangleShape rect(sf::Vector2f(cWidth, cWidth));
-				rect.setFillColor(sf::Color(33, 33, 33));
-				sf::Vector2f pos(x, y);
-				rect.setTexture(texture);
-				rect.setRotation(45.f);
-				pos = coordsToScreen(pos);
-				pos.y -= cWallHeightOffset * 2 - 5;
-				rect.setPosition(sf::Vector2f(pos.x, pos.y - (cWallHeightOffset - 1)));
-				m_top.push(rect);
-
-				sf::ConvexShape* bottom = new sf::ConvexShape(4);
-				bottom->setFillColor(sf::Color(44, 44, 44));
-				bottom->setTexture(texture);
-				sf::Vector2f bottomPos(pos);
-				bottomPos.x -= cWallWidthOffset;
-				bottomPos.y += cCos45;
-				bottom->setPosition(bottomPos);
-				bottom->setPoint(0, sf::Vector2f(0, 0));
-				bottom->setPoint(1, sf::Vector2f(cWallWidthOffset, cWallHeightOffset));
-				bottom->setPoint(
-					2, sf::Vector2f(cWallWidthOffset, cHeight * 2 + (cWallHeightOffset)));
-				bottom->setPoint(3, sf::Vector2f(0, cHeight * 2));
-				m_queue.add(GFXObject(bottom, vector2d(x, y)));
-
-				sf::ConvexShape* right = new sf::ConvexShape(4);
-				right->setFillColor(sf::Color(66, 66, 66));
-				right->setTexture(texture);
-				sf::Vector2f rightPos(pos);
-				// rightPos.x+=cWidth*cCos45;
-				rightPos.y += cWallHeightOffset;
-				right->setPosition(rightPos);
-				right->setPointCount(4);
-				right->setPoint(0, sf::Vector2f(0, 0));
-				right->setPoint(1, sf::Vector2f(cWallWidthOffset - 1, -(cWallHeightOffset)));
-				right->setPoint(
-					2, sf::Vector2f(cWallWidthOffset - 1, cHeight * 2 - (cWallHeightOffset)));
-				right->setPoint(3, sf::Vector2f(0, cHeight * 2));
-				m_queue.add(GFXObject(right, vector2d(x, y)));
-			}
-		}
-	}
-
+            m_data.push_back(container);
+        }
+    }
 }
 
 void GFXLevel::run(const Level* level, vector2d center)
@@ -132,6 +140,11 @@ void GFXLevel::run(const Level* level, vector2d center)
     if (level == nullptr) {
         return;
     }
+
+	if (m_processedLevel != level) {
+		regenerate(level);
+		m_processedLevel = level;
+	}
 
     int width = level->getWidth();
     int height = level->getHeight();
@@ -182,63 +195,9 @@ void GFXLevel::run(const Level* level, vector2d center)
                 texture = &m_grass;
                 break;
             }
-            int x0 = center.x;
-            int y0 = center.y;
-            int x1 = x;
-            int y1 = y;
 
-            if (tile.m_type == eTileType::Ground) {
-                // this code is really slow and unncessary
-
-                sf::RectangleShape rect(sf::Vector2f(cWidth, cHeight));
-                rect.setFillColor(sf::Color(77, 77, 77));
-                sf::Vector2f pos(x, y);
-
-                rect.setTexture(texture);
-                rect.setRotation(45.f);
-                pos = coordsToScreen(pos);
-                rect.setPosition(pos);
-                m_ground.push(rect);
-
-            } else if (tile.m_type == eTileType::Wall) {
-                sf::RectangleShape rect(sf::Vector2f(cWidth, cWidth));
-                rect.setFillColor(sf::Color(33, 33, 33));
-                sf::Vector2f pos(x, y);
-                rect.setTexture(texture);
-                rect.setRotation(45.f);
-                pos = coordsToScreen(pos);
-                pos.y -= cWallHeightOffset * 2 - 5;
-                rect.setPosition(sf::Vector2f(pos.x, pos.y - (cWallHeightOffset - 1)));
-                m_top.push(rect);
-
-                sf::ConvexShape* bottom = new sf::ConvexShape(4);
-                bottom->setFillColor(sf::Color(44, 44, 44));
-                bottom->setTexture(texture);
-                sf::Vector2f bottomPos(pos);
-                bottomPos.x -= cWallWidthOffset;
-                bottomPos.y += cCos45;
-                bottom->setPosition(bottomPos);
-                bottom->setPoint(0, sf::Vector2f(0, 0));
-                bottom->setPoint(1, sf::Vector2f(cWallWidthOffset, cWallHeightOffset));
-                bottom->setPoint(
-                    2, sf::Vector2f(cWallWidthOffset, cHeight * 2 + (cWallHeightOffset)));
-                bottom->setPoint(3, sf::Vector2f(0, cHeight * 2));
-                m_queue.add(GFXObject(bottom, vector2d(x, y)));
-
-                sf::ConvexShape* right = new sf::ConvexShape(4);
-                right->setFillColor(sf::Color(66, 66, 66));
-                right->setTexture(texture);
-                sf::Vector2f rightPos(pos);
-                // rightPos.x+=cWidth*cCos45;
-                rightPos.y += cWallHeightOffset;
-                right->setPosition(rightPos);
-                right->setPointCount(4);
-                right->setPoint(0, sf::Vector2f(0, 0));
-                right->setPoint(1, sf::Vector2f(cWallWidthOffset - 1, -(cWallHeightOffset)));
-                right->setPoint(
-                    2, sf::Vector2f(cWallWidthOffset - 1, cHeight * 2 - (cWallHeightOffset)));
-                right->setPoint(3, sf::Vector2f(0, cHeight * 2));
-                m_queue.add(GFXObject(right, vector2d(x, y)));
+            for (auto object : m_data[x * height + y].objects) {
+                m_queue.add(object);
             }
         }
     }
@@ -258,16 +217,16 @@ void GFXLevel::run(const Level* level, vector2d center)
             continue;
         }
 
-        sf::RectangleShape rect(sf::Vector2f(cWidth, cHeight));
-        rect.setFillColor(sf::Color(99, 99, 99, 100));
+        sf::RectangleShape *rect = new sf::RectangleShape(sf::Vector2f(cWidth, cHeight));
+        rect->setFillColor(sf::Color(99, 99, 99, 100));
         sf::RectangleShape* sprite = new sf::RectangleShape(sf::Vector2f(40, 100));
         sprite->setFillColor(sf::Color(190, 190, 190));
         sprite->setTexture(&m_texture);
 
         sf::Vector2f pos(position.x, position.y);
         pos = coordsToScreen(pos);
-        rect.setPosition(pos);
-        rect.setRotation(45.f);
+        rect->setPosition(pos);
+        rect->setRotation(45.f);
         pos.y -= 60;
         pos.x -= 15;
         // please refactor me!
@@ -301,7 +260,7 @@ void GFXLevel::run(const Level* level, vector2d center)
         }
 
         sprite->setPosition(pos);
-        Game::getWindow().draw(rect);
+		m_queue.add(GFXObject(rect, position, -1));
 
         m_queue.add(GFXObject(sprite, position));
     }

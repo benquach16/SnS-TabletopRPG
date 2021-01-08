@@ -70,6 +70,7 @@ set(SOURCES
     ./src/gfxobjects/gfxqueue.cpp
     ./src/gfxobjects/gfxselector.cpp
     ./src/gfxobjects/utils.cpp
+    ./src/gameeffects/gameeffect.cpp
     )
 set(DIRS
     ./src
@@ -79,6 +80,7 @@ set(DIRS
     ./src/items
     ./src/creatures
     ./src/components
+    ./src/gameeffects
     ./src/3rdparty
     ./src/ui
     )
