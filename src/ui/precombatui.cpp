@@ -7,11 +7,12 @@
 
 using namespace std;
 
-void PrecombatUI::run(bool hasKeyEvents, sf::Event event, Player* player, bool inGrapple)
+void PrecombatUI::run(
+    bool hasKeyEvents, sf::Event event, Player* player, bool inGrapple, bool secondExchange)
 {
     switch (m_currentState) {
     case eUiState::ChooseFavoring:
-        doFavoring(hasKeyEvents, event, player);
+        doFavoring(hasKeyEvents, event, player, secondExchange);
         break;
     case eUiState::ChooseFavorLocations:
         doFavorLocation(hasKeyEvents, event, player);
@@ -24,32 +25,47 @@ void PrecombatUI::run(bool hasKeyEvents, sf::Event event, Player* player, bool i
     }
 }
 
-void PrecombatUI::doFavoring(bool hasKeyEvents, sf::Event event, Player* player)
+void PrecombatUI::doFavoring(
+    bool hasKeyEvents, sf::Event event, Player* player, bool secondExchange)
 {
     UiCommon::drawTopPanel();
 
     sf::Text text;
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    string str = "First Tempo Actions:\na - Confirm\n";
+    string str;
+    if (secondExchange) {
+        str += "Second Tempo Actions:\na - Confirm\n";
+    } else {
+        str += "First Tempo Actions:\na - Confirm\n";
+    }
 
     const Weapon* weapon = player->getPrimaryWeapon();
+    int cost = getGripChangeCost(secondExchange);
     str += "b - Quickdraw Weapon\n";
-    if (player->getFavoredLocations().size() == 0) {
+    if (player->getFavoredLocations().size() == 0 && secondExchange == false) {
         str += "c - Guard Location (1 AP)\n";
     }
     if (weapon->getType() == eWeaponTypes::Polearms) {
         if (player->getGrip() == eGrips::Standard) {
-            str += "d - Switch to Staff Grip\n";
+            str += "d - Switch to Staff Grip";
         } else {
-            str += "d - Switch to Standard Grip\n";
+            str += "d - Switch to Standard Grip";
         }
+        if (cost > 0) {
+            str += " (" + to_string(cost) + " AP)";
+        }
+        str += "\n";
     } else if (weapon->getType() == eWeaponTypes::Longswords) {
         if (player->getGrip() == eGrips::Standard) {
-            str += "d - Switch to Halfswording\n";
+            str += "d - Switch to Halfswording";
         } else {
-            str += "d - Switch to Standard Grip\n";
+            str += "d - Switch to Standard Grip";
         }
+        if (cost > 0) {
+            str += " (" + to_string(cost) + " AP)";
+        }
+        str += "\n";
     }
     if (player->getHasPosition() == false) {
         str += "e - Attempt to stand (3AP)\n";
@@ -76,19 +92,25 @@ void PrecombatUI::doFavoring(bool hasKeyEvents, sf::Event event, Player* player)
             }
             break;
         case 'd':
-            if (weapon->getType() == eWeaponTypes::Polearms) {
-                if (player->getGrip() == eGrips::Standard) {
-                    player->setGrip(eGrips::Staff);
-                } else {
-                    player->setGrip(eGrips::Standard);
+            if (player->getCombatPool() > cost) {
+                if (weapon->getType() == eWeaponTypes::Polearms) {
+                    if (player->getGrip() == eGrips::Standard) {
+                        player->setGrip(eGrips::Staff);
+                    } else {
+                        player->setGrip(eGrips::Standard);
+                    }
+                } else if (weapon->getType() == eWeaponTypes::Longswords) {
+                    if (player->getGrip() == eGrips::Standard) {
+                        player->setGrip(eGrips::HalfSword);
+                    } else {
+                        player->setGrip(eGrips::Standard);
+                    }
                 }
-            } else if (weapon->getType() == eWeaponTypes::Longswords) {
-                if (player->getGrip() == eGrips::Standard) {
-                    player->setGrip(eGrips::HalfSword);
-                } else {
-                    player->setGrip(eGrips::Standard);
-                }
+                player->reduceCombatPool(cost);
+            } else {
+                Log::push("Requires " + to_string(cost) + " AP");
             }
+
             break;
         case 'e':
             if (player->getHasPosition() == false) {

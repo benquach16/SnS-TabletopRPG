@@ -70,27 +70,6 @@ void Level::addTrigger(Trigger* trigger, vector2d position)
     this->get(position).m_triggers.push_back(trigger);
 }
 
-void Level::generateEnemy()
-{
-    HumanObject* object = new HumanObject;
-    object->setPosition(5, 5);
-    object->setFaction(eCreatureFaction::ArenaFighter);
-    // temporary
-    object->setLoadout(eCreatureFaction::Confederacy,
-        static_cast<eRank>(random_static::get((int)eRank::Recruit, (int)eRank::Count - 1)));
-    object->getCreatureComponent()->setAgility(random_static::get(5, 9));
-    object->getCreatureComponent()->setIntuition(random_static::get(5, 9));
-    object->getCreatureComponent()->setProficiency(
-        eWeaponTypes::Polearms, random_static::get(8, 12));
-    object->getCreatureComponent()->setProficiency(
-        eWeaponTypes::Brawling, random_static::get(8, 12));
-    object->getCreatureComponent()->setProficiency(
-        eWeaponTypes::Longswords, random_static::get(8, 12));
-    object->getCreatureComponent()->setProficiency(eWeaponTypes::Swords, random_static::get(8, 12));
-    object->getCreatureComponent()->setProficiency(eWeaponTypes::Mass, random_static::get(8, 12));
-    addObject(object);
-}
-
 void Level::generate()
 {
     std::vector<Room> rooms;
@@ -153,6 +132,7 @@ void Level::generate()
     object->setLoadout(eCreatureFaction::Bandit, eRank::Veteran);
     object->getCreatureComponent()->setAgility(9);
     object->getCreatureComponent()->setIntuition(9);
+	object->setAIRole(eAIRoles::Standing);
     object->setName("One-Eyed Doyt");
     m_objects.push_back(object);
 }

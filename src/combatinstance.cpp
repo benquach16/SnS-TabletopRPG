@@ -204,23 +204,6 @@ bool CombatInstance::doOffense()
     setSides(attacker, defender);
 
     if (attacker->getHasOffense() == false) {
-        // bug - this condition will not get hit since the ai might update faster than this function
-        // gets called
-        if (attacker->getCombatPool() <= 0 && defender->getCombatPool() > 0) {
-            writeMessage(
-                attacker->getName() + " has no more action points! Initiative swaps to defender");
-            switchInitiative();
-            setSides(attacker, defender);
-        }
-        if (attacker->getCombatPool() <= 0 && defender->getCombatPool() <= 0) {
-            writeMessage("Neither side has any action points left, starting "
-                         "new exchange and resetting combat pools. It is now first tempo");
-            m_currentTempo = eTempo::First;
-            attacker->resetCombatPool();
-            defender->resetCombatPool();
-            attacker->clearCreatureManuevers(true);
-            defender->clearCreatureManuevers(true);
-        }
         m_currentState = eCombatState::Offense;
         return false;
     }
@@ -665,9 +648,9 @@ void CombatInstance::doResolution()
             }
             if (defend.manuever == eDefensiveManuevers::Expulsion) {
                 attacker->disableWeapon();
-                attacker->inflictImpact(-MoS + 2);
+                attacker->inflictImpact(-MoS + 1);
                 Log::push(
-                    "Attacker's weapon disabled and " + to_string(-MoS + 2) + " impact inflicted!");
+                    "Attacker's weapon disabled and " + to_string(-MoS + 1) + " impact inflicted!");
             }
             if (defend.manuever == eDefensiveManuevers::ParryLinked) {
                 // resolve offense
@@ -802,13 +785,48 @@ void CombatInstance::doPostResolution()
     if (m_currentTempo == eTempo::Second) {
         m_currentState = eCombatState::PreexchangeActions;
     } else {
-        m_currentState = eCombatState::Offense;
+        m_currentState = eCombatState::BetweenExchangeActions;
     }
     // m_currentState = eCombatState::PreexchangeActions;
     switchTempo();
 }
 
-void CombatInstance::doBetweenExchange() { m_currentState = eCombatState::Offense; }
+void CombatInstance::doBetweenExchange()
+{
+    if (m_side1->getCombatPool() <= 0 && m_side2->getCombatPool() <= 0
+        && m_side1->getMaxCombatPool() > 0 && m_side2->getMaxCombatPool() > 0) {
+        writeMessage("Neither side has any action points left, starting "
+                     "new exchange and resetting combat pools. It is now first tempo");
+        m_currentTempo = eTempo::First;
+        m_side1->resetCombatPool();
+        m_side2->resetCombatPool();
+        m_side1->clearCreatureManuevers(true);
+        m_side2->clearCreatureManuevers(true);
+		m_currentState = eCombatState::PreexchangeActions;
+		return;
+    }
+    Creature* attacker = nullptr;
+    Creature* defender = nullptr;
+    setSides(attacker, defender);
+    // bug - this condition will not get hit since the ai might update faster than this function
+    // gets called
+    if (attacker->getCombatPool() <= 0 && defender->getCombatPool() > 0) {
+        writeMessage(
+            attacker->getName() + " has no more action points! Initiative swaps to defender");
+        switchInitiative();
+        setSides(attacker, defender);
+    }
+    if (m_side1->getHasPrecombat() == false || m_side2->getHasPrecombat() == false) {
+        m_currentState = eCombatState::BetweenExchangeActions;
+        return;
+    }
+    // check if grip causes combatants to move closer
+    eLength length = max(m_side1->getCurrentReach(), m_side2->getCurrentReach());
+    if (length < m_currentReach) {
+        m_currentReach = length;
+    }
+    m_currentState = eCombatState::PositionActions;
+}
 
 void CombatInstance::resolvePosition(Creature* creature)
 {
@@ -1176,6 +1194,7 @@ void CombatInstance::run()
         doEndCombat();
         break;
     case eCombatState::BetweenExchangeActions:
+        doBetweenExchange();
         break;
     }
 }

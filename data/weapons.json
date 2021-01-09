@@ -9,6 +9,7 @@
         "hook": false,
         "shield": false,
         "guardBtn": 6,
+        "baseBtn": 6,
         "components": [
             {
                 "name": "Queue, Thrust",
@@ -21,7 +22,7 @@
             {
                 "name": "Queue, Swing",
                 "btn": 6,
-                "damage": 1,
+                "damage": 2,
                 "type": "blunt",
                 "properties": [ "defensive" ],
                 "attack": "swing"
@@ -37,6 +38,7 @@
         "cost": 0,
         "guardBtn": 6,
         "hook": false,
+        "baseBtn": 6,
         "components": [
             {
                 "name": "Queue, Thrust",
@@ -48,7 +50,7 @@
             },      
             {
                 "name": "Queue, Swing",
-                "damage": 1,
+                "damage": 2,
                 "type": "blunt",
                 "properties": [ "defensive" ],
                 "attack": "swing"
@@ -86,14 +88,14 @@
         "hands": 2,
         "cost": 500,
         "hook": true,
+        "properties": [ "hook", "heavy" ],
         "components": [
             {
                 "name": "Spike",
                 "damage": 2,
                 "type": "piercing",
                 "attack": "thrust",
-                "properties": [ "maillepiercing" ],
-                "polearmspike": true            
+                "properties": [ "maillepiercing" ]
             },
             {
                 "name": "Axe head",
@@ -107,8 +109,7 @@
                 "damage": 2,
                 "type": "blunt",
                 "attack": "swing",
-                "properties": [ "crushing" ],
-                "polearmhead": true
+                "properties": [ "crushing" ]
             }
         ],
         "secondary" : 1020
@@ -150,15 +151,13 @@
                 "name": "Spear blade",
                 "damage": 1,
                 "type": "cutting",
-                "attack": "swing",
-                "polearmhead": true
+                "attack": "swing"
             },
             {
                 "name": "Spear point",
                 "damage": 3,
                 "type": "piercing",
-                "attack": "thrust",
-                "polearmspike": true
+                "attack": "thrust"
             }
         ],
         "secondary": 1021

@@ -272,6 +272,13 @@ int calculateReachCost(eLength length1, eLength length2)
     return reachCost;
 }
 
+int getGripChangeCost(bool isLastTempo) {
+	if (isLastTempo) {
+		return 1;
+	}
+	return 0;
+}
+
 int getFeintCost() { return 2; }
 
 int getOffensiveManueverCost(eOffensiveManuevers manuever, eGrips grip, eLength effectiveReach,

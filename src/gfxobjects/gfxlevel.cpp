@@ -95,7 +95,7 @@ void GFXLevel::regenerate(const Level* level)
                 rect->setPosition(sf::Vector2f(pos.x, pos.y - (cWallHeightOffset - 1)));
 				container.objects.push_back(GFXObject(rect, vector2d(x, y), true, 1));
                 // culling
-                if (y == height - 1 || (*level)(x, y + 1).m_type != eTileType::Wall) {
+                //if (y == height - 1 || (*level)(x, y + 1).m_type != eTileType::Wall) {
                     sf::ConvexShape* bottom = new sf::ConvexShape(4);
                     bottom->setFillColor(sf::Color(44, 44, 44));
                     bottom->setTexture(texture);
@@ -109,9 +109,9 @@ void GFXLevel::regenerate(const Level* level)
                         2, sf::Vector2f(cWallWidthOffset, cHeight * 2 + (cWallHeightOffset)));
                     bottom->setPoint(3, sf::Vector2f(0, cHeight * 2));
                     container.objects.push_back(GFXObject(bottom, vector2d(x, y), true));
-                }
+                //}
 
-                if (x == width - 1 || (*level)(x + 1, y).m_type != eTileType::Wall) {
+                //if (x == width - 1 || (*level)(x + 1, y).m_type != eTileType::Wall) {
                     sf::ConvexShape* right = new sf::ConvexShape(4);
                     right->setFillColor(sf::Color(66, 66, 66));
                     right->setTexture(texture);
@@ -127,7 +127,7 @@ void GFXLevel::regenerate(const Level* level)
                         2, sf::Vector2f(cWallWidthOffset, cHeight * 2 - (cWallHeightOffset)));
                     right->setPoint(3, sf::Vector2f(0, cHeight * 2));
                     container.objects.push_back(GFXObject(right, vector2d(x, y), true));
-                }
+                //}
             }
 
             m_data.push_back(container);
@@ -195,7 +195,6 @@ void GFXLevel::run(const Level* level, vector2d center)
                 texture = &m_grass;
                 break;
             }
-
             for (auto object : m_data[x * height + y].objects) {
                 m_queue.add(object);
             }
@@ -260,7 +259,7 @@ void GFXLevel::run(const Level* level, vector2d center)
         }
 
         sprite->setPosition(pos);
-		m_queue.add(GFXObject(rect, position, -1));
+		m_queue.add(GFXObject(rect, position, false, -1));
 
         m_queue.add(GFXObject(sprite, position));
     }

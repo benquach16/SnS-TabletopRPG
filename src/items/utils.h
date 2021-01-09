@@ -41,6 +41,8 @@ inline int operator<(eLength length1, eLength length2)
     return static_cast<int>(length1) < static_cast<int>(length2);
 }
 
+int getGripChangeCost(bool isLastTempo);
+
 int calculateReachCost(eLength length1, eLength length2);
 int getFeintCost();
 int getOffensiveManueverCost(eOffensiveManuevers manuever, eGrips grip, eLength effectiveReach,

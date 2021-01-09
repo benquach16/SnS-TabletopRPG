@@ -70,6 +70,9 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
     if (instance->getState() == eCombatState::PreexchangeActions) {
         doPrecombat(controlledCreature, enemy, instance);
     }
+    if (instance->getState() == eCombatState::BetweenExchangeActions) {
+        doPrecombat(controlledCreature, enemy, instance);
+    }
     if (instance->getState() == eCombatState::PreResolution
         && instance->getAttacker()->getId() == creatureId) {
         doPreresolution(controlledCreature, enemy);
@@ -376,6 +379,27 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
     controlledCreature->setOffenseReady();
 }
 
+void AICombatController::shortenGrip(Creature* controlledCreature, bool isLastTempo)
+{
+    assert(controlledCreature->getSecondaryWeaponId() == controlledCreature->getNaturalWeaponId());
+    if (controlledCreature->getGrip() != eGrips::Standard) {
+        return;
+    }
+    eWeaponTypes type = controlledCreature->getPrimaryWeapon()->getType();
+    if (type != eWeaponTypes::Polearms || type != eWeaponTypes::Longswords) {
+        return;
+    }
+    int cost = getGripChangeCost(isLastTempo);
+    if (controlledCreature->getCombatPool() > cost) {
+        if (type == eWeaponTypes::Polearms) {
+            controlledCreature->setGrip(eGrips::Staff);
+        } else if (type == eWeaponTypes::Longswords) {
+            controlledCreature->setGrip(eGrips::HalfSword);
+        }
+        controlledCreature->reduceCombatPool(cost);
+    }
+}
+
 void AICombatController::doDefense(Creature* controlledCreature, const Creature* attacker,
     const CombatInstance* instance, bool isLastTempo)
 {
@@ -435,7 +459,7 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
 
         break;
         case eDefensiveManuevers::Dodge: {
-            if (controlledCreature->primaryWeaponDisabled()) {
+            if (controlledCreature->primaryWeaponDisabled() && weapon->getNaturalWeapon()) {
                 priority++;
             } else {
                 priority--;
@@ -492,6 +516,9 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
                 if (stealDie + reachCost < controlledCreature->getCombatPool()) {
                     toPush.dice = stealDie;
                     priority += 20;
+                    if (weapon->getNaturalWeapon()) {
+                        priority -= 10;
+                    }
                 } else {
                     priority = cLowestPriority;
                 }
@@ -564,29 +591,32 @@ void AICombatController::doPrecombat(
 {
     const Weapon* weapon = controlledCreature->getPrimaryWeapon();
     if (opponent->hasEnoughMetalArmor()) {
+        bool hasCrushing = false;
         if (weapon->getType() == eWeaponTypes::Polearms) {
             // with swingy blunt polearms like the pollaxe, we don't need to always switch to staff
             // grip cause the hammer hurts
             auto component = weapon->getBestBlunt();
-
-            controlledCreature->setGrip(eGrips::Staff);
             if (component != nullptr) {
                 if (component->getProperties().find(eWeaponProperties::Crushing)
                     != component->getProperties().end()) {
-                    controlledCreature->setGrip(eGrips::Standard);
+                    hasCrushing = true;
                 }
             }
-        } else if (weapon->getType() == eWeaponTypes::Longswords) {
-            controlledCreature->setGrip(eGrips::HalfSword);
         }
+        if (hasCrushing == false) {
+            // shorter grip == better against armor usually
+            shortenGrip(controlledCreature, instance->getLastTempo());
+        }
+    }
+    if (controlledCreature->primaryWeaponDisabled()
+        && controlledCreature->getGrip() == eGrips::Standard
+        && controlledCreature->getSecondaryWeaponId() != controlledCreature->getNaturalWeaponId()) {
+        // unlocks a secondary weapon if we didn't already have one
+        shortenGrip(controlledCreature, instance->getLastTempo());
     }
     if (instance->getCurrentReach() < controlledCreature->getCurrentReach()
         && controlledCreature->getGrip() == eGrips::Standard) {
-        if (weapon->getType() == eWeaponTypes::Polearms) {
-            controlledCreature->setGrip(eGrips::Staff);
-        } else if (weapon->getType() == eWeaponTypes::Longswords) {
-            controlledCreature->setGrip(eGrips::HalfSword);
-        }
+        shortenGrip(controlledCreature, instance->getLastTempo());
     }
     if (controlledCreature->getCombatPool() > 3 && controlledCreature->droppedWeapon()) {
         controlledCreature->attemptPickup();
@@ -673,11 +703,9 @@ eHitLocations AICombatController::getBestHitLocation(
         ArmorSegment segment
             = target->getMedianArmor(location, component->getAttack() == eAttacks::Swing);
         if (component->getType() != eDamageTypes::Blunt && segment.isMetal) {
-            if ((component->getProperties().find(eWeaponProperties::PlatePiercing)
-                    == component->getProperties().end())
+            if ((component->hasPlatePiercing() == false)
                 || (segment.type == eArmorTypes::Maille
-                    && component->getProperties().find(eWeaponProperties::MaillePiercing)
-                        == component->getProperties().end())) {
+                    && component->hasMaillePiercing() == false)) {
                 segment.AV *= 2;
                 if (component->getType() == eDamageTypes::Piercing) {
                     segment.AV -= 2;
