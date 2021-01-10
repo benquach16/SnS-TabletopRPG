@@ -386,7 +386,7 @@ void AICombatController::shortenGrip(Creature* controlledCreature, bool isLastTe
         return;
     }
     eWeaponTypes type = controlledCreature->getPrimaryWeapon()->getType();
-    if (type != eWeaponTypes::Polearms || type != eWeaponTypes::Longswords) {
+    if (type != eWeaponTypes::Polearms && type != eWeaponTypes::Longswords) {
         return;
     }
     int cost = getGripChangeCost(isLastTempo);
@@ -490,7 +490,6 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
             }
         } break;
         case eDefensiveManuevers::Counter:
-
             break;
         case eDefensiveManuevers::AttackFromDef: {
 
@@ -610,7 +609,7 @@ void AICombatController::doPrecombat(
     }
     if (controlledCreature->primaryWeaponDisabled()
         && controlledCreature->getGrip() == eGrips::Standard
-        && controlledCreature->getSecondaryWeaponId() != controlledCreature->getNaturalWeaponId()) {
+        && controlledCreature->getSecondaryWeaponId() == controlledCreature->getNaturalWeaponId()) {
         // unlocks a secondary weapon if we didn't already have one
         shortenGrip(controlledCreature, instance->getLastTempo());
     }

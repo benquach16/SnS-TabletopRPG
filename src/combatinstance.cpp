@@ -114,7 +114,7 @@ void CombatInstance::doRollInitiative()
                 = DiceRoller::rollGetSuccess(m_side2->getBTN(), m_side2->getWillpower());
 
             m_initiative
-                = side1Successes < side2Successes ? eInitiative::Side1 : eInitiative::Side2;
+                = side1Successes > side2Successes ? eInitiative::Side1 : eInitiative::Side2;
 
             if (m_initiative == eInitiative::Side1) {
                 writeMessage(m_side1->getName() + " takes initiative");
@@ -793,8 +793,8 @@ void CombatInstance::doPostResolution()
 
 void CombatInstance::doBetweenExchange()
 {
-    if (m_side1->getCombatPool() <= 0 && m_side2->getCombatPool() <= 0
-        && m_side1->getMaxCombatPool() > 0 && m_side2->getMaxCombatPool() > 0) {
+    // bug - if both sides have combat pools totally wiped then this will go on infinitely
+    if (m_side1->getCombatPool() <= 0 && m_side2->getCombatPool() <= 0) {
         writeMessage("Neither side has any action points left, starting "
                      "new exchange and resetting combat pools. It is now first tempo");
         m_currentTempo = eTempo::First;
@@ -802,8 +802,8 @@ void CombatInstance::doBetweenExchange()
         m_side2->resetCombatPool();
         m_side1->clearCreatureManuevers(true);
         m_side2->clearCreatureManuevers(true);
-		m_currentState = eCombatState::PreexchangeActions;
-		return;
+        m_currentState = eCombatState::PreexchangeActions;
+        return;
     }
     Creature* attacker = nullptr;
     Creature* defender = nullptr;
@@ -883,7 +883,7 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
         writeMessage(target->getName() + " loses " + to_string(MoS) + " action points from impact",
             Log::eMessageTypes::Alert);
         target->inflictImpact(MoS);
-        if (MoS >= 4) {
+        if (MoS >= 3) {
             writeMessage(target->getName() + " has been hooked and thrown prone!",
                 Log::eMessageTypes::Alert, true);
             target->setProne();

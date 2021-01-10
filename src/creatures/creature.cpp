@@ -131,14 +131,14 @@ eLength Creature::getSecondaryWeaponReach() const
     // if in staff grip or halfsword, we have alternate secondary
     // so we should not override the reach
 
-    if (getGrip() == eGrips::Staff || getGrip() == eGrips::HalfSword) {
+    if (getGrip() == eGrips::Staff) {
         //return static_cast<eLength>(max(getCurrentReach() - static_cast<eLength>(1), 0));
 		return getCurrentReach();
     }
 
     const Weapon* weapon = getSecondaryWeapon();
     // ugly
-    int reach = static_cast<int>(weapon->getLength()) - gripReachDifference(m_currentGrip);
+	int reach = static_cast<int>(weapon->getLength());
     if (m_currentStance == eCreatureStance::Prone) {
         reach -= 2;
     }
@@ -492,7 +492,10 @@ void Creature::disableWeapon()
 {
     // remove all dice from offense and defense pools when this happens
     // so impact gets transferred directly to remainig CP
-    m_currentOffense.dice = 0;
+	// this only applies if was attacking with primary weapon
+	if (m_currentOffense.withPrimaryWeapon == true && getHasOffense()) {
+		m_currentOffense.dice = 0;
+	}
     m_currentDefense.dice = 0;
 
     // do nothing, since we cannot drop fists

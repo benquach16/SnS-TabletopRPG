@@ -119,10 +119,10 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
         m_precombatUI.run(hasKeyEvents, event, player, instance->getInGrapple(), false);
         return;
     }
-	if (instance->getState() == eCombatState::BetweenExchangeActions) {
-		m_precombatUI.run(hasKeyEvents, event, player, instance->getInGrapple(), true);
-		return;
-	}
+    if (instance->getState() == eCombatState::BetweenExchangeActions) {
+        m_precombatUI.run(hasKeyEvents, event, player, instance->getInGrapple(), true);
+        return;
+    }
     if (instance->getState() == eCombatState::ResetState) {
         resetState();
         return;
@@ -388,8 +388,8 @@ void CombatUI::showSide1Stats(const CombatInstance* instance)
     ap.setPosition(6, windowSize.y - logHeight - rectHeight + (cCharSize * 2));
     ap.setString("Action Points : " + to_string(creature->getCombatPool()) + " / "
         + to_string(creature->getMaxCombatPool()) + " - Pain: " + to_string(creature->getPain())
-        + '\n' + "Blood loss: " + to_string(creature->getBloodLoss()) + '\n'
-        + stanceToString(creature->getStance()));
+        + " Fatigue: " + to_string(creature->getFatigue()) + '\n' + "Blood loss: "
+        + to_string(creature->getBloodLoss()) + '\n' + stanceToString(creature->getStance()));
 
     Game::getWindow().draw(ap);
 }
@@ -421,8 +421,8 @@ void CombatUI::showSide2Stats(const CombatInstance* instance)
     ap.setPosition(windowSize.x / 2 + 5, windowSize.y - logHeight - rectHeight + (cCharSize * 2));
     ap.setString("Action Points : " + to_string(creature->getCombatPool()) + " / "
         + to_string(creature->getMaxCombatPool()) + " - Pain: " + to_string(creature->getPain())
-        + '\n' + "Blood loss: " + to_string(creature->getBloodLoss()) + '\n'
-        + stanceToString(creature->getStance()));
+        + " Fatigue: " + to_string(creature->getFatigue()) + '\n' + "Blood loss: "
+        + to_string(creature->getBloodLoss()) + '\n' + stanceToString(creature->getStance()));
 
     Game::getWindow().draw(ap);
 }

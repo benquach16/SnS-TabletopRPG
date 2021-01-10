@@ -20,7 +20,8 @@ enum class eWeaponProperties {
     PlatePiercing,
     Draw,
     Defensive,
-    Curved
+    Curved,
+	Heavy
 };
 
 enum class eAttacks {

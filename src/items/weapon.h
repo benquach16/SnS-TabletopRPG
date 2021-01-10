@@ -11,8 +11,9 @@ constexpr int cFistsId = 1000;
 class Weapon : public Item {
 public:
     Weapon(const std::string& name, const std::string& description, eLength length,
-        std::vector<Component*> components, eWeaponTypes type, int cost, bool hook,
-        bool naturalWeapon = false, int secondaryWeaponId = -1);
+        std::vector<Component*> components, eWeaponTypes type, int cost,
+        std::set<eWeaponProperties> properties, bool naturalWeapon = false,
+        int secondaryWeaponId = -1);
     ~Weapon();
     eItemType getItemType() const override { return eItemType::Weapon; }
 
@@ -30,13 +31,18 @@ public:
 
     Component* getPommelStrike() const;
 
-	int getBaseTN() const { return m_tn; }
+    int getBaseTN() const { return m_tn; }
 
-    bool canHook() const { return m_hook; }
+    bool canHook() const
+    {
+        return m_properties.find(eWeaponProperties::Hook) != m_properties.end();
+    }
 
     bool isShield() const { return false; }
 
-	bool isCurved() const { return false; }
+    bool isCurved() const { return false; }
+
+    bool isSecondary() const { return false; }
 
     bool getNaturalWeapon() const { return m_naturalWeapon; }
 
@@ -49,13 +55,16 @@ private:
     std::vector<Component*> m_thrustComponents;
     std::vector<Component*> m_swingComponents;
 
+    std::set<eWeaponProperties> m_properties;
+
     eWeaponTypes m_type;
 
     int m_secondaryWeaponId;
 
     int m_hands;
 
-	int m_tn;
+    int m_tn;
+    int m_guardTn;
 
     bool canBeOffhand() const { return m_hands == 1; }
     bool m_naturalWeapon;

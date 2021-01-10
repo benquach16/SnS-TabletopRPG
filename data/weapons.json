@@ -8,8 +8,9 @@
         "cost": 0,
         "hook": false,
         "shield": false,
-        "guardBtn": 6,
+        "guardBtn": 7,
         "baseBtn": 6,
+        "secondary": true,
         "components": [
             {
                 "name": "Queue, Thrust",
@@ -26,7 +27,7 @@
                 "type": "blunt",
                 "properties": [ "defensive" ],
                 "attack": "swing"
-            }           
+            }
         ]
     },
     "1021": {
@@ -36,9 +37,9 @@
         "type": "polearm",
         "hands": 1,
         "cost": 0,
-        "guardBtn": 6,
-        "hook": false,
+        "guardBtn": 7,
         "baseBtn": 6,
+        "secondary": true,
         "components": [
             {
                 "name": "Queue, Thrust",
@@ -50,6 +51,7 @@
             },      
             {
                 "name": "Queue, Swing",
+                "btn": 6,
                 "damage": 2,
                 "type": "blunt",
                 "properties": [ "defensive" ],
@@ -64,7 +66,7 @@
         "type": "sword",
         "hands": 1,
         "cost": 0,
-        "hook": false,
+        "secondary": true,
         "components": [
             {
                 "name": "Pommel",
@@ -87,7 +89,6 @@
         "type": "polearm",
         "hands": 2,
         "cost": 500,
-        "hook": true,
         "properties": [ "hook", "heavy" ],
         "components": [
             {
@@ -101,8 +102,7 @@
                 "name": "Axe head",
                 "damage": 3,
                 "attack": "swing",
-                "type": "cutting",
-                "polearmhead": true
+                "type": "cutting"
             },
             {
                 "name": "Hammer head",
@@ -145,7 +145,6 @@
         "type": "polearm",
         "hands": 2,
         "cost": 100,
-        "hook": false,
         "components": [
             {
                 "name": "Spear blade",
@@ -169,7 +168,6 @@
         "type": "brawling",
         "hands": 1,
         "cost": 25,
-        "hook": false,
         "components": [
             {
                 "name": "Blade Edge",
@@ -192,7 +190,7 @@
         "type": "polearm",
         "hands": 2,
         "cost": 1500,
-        "hook": true,
+        "properties": [ "hook", "heavy" ],
         "components": [
             {
                 "name": "Spike",
@@ -227,7 +225,6 @@
         "type": "sword",
         "hands": 1,
         "cost": 125,
-        "hook": false,
         "components": [
             {
                 "name": "Blade Edge",
@@ -251,7 +248,6 @@
         "type": "sword",
         "hands": 1,
         "cost": 75,
-        "hook": false,
         "components": [
             {
                 "name": "Blade Edge",
@@ -271,11 +267,10 @@
     "1047": {
         "name": "Quarterstaff",
         "description": "The basis of all polearms. Surprisingly effective against armored foes.",
-        "length": "extended",
+        "length": "verylong",
         "type": "polearm",
         "hands": 2,
         "cost": 25,
-        "hook": false,
         "components": [
             {
                 "name": "Staff, Swing",
@@ -299,7 +294,7 @@
         "type": "polearm",
         "hands": 2,
         "cost": 300,
-        "hook": true,
+        "properties": [ "hook", "heavy" ],
         "components": [
             {
                 "name": "Spike",
@@ -331,7 +326,6 @@
         "type": "longsword",
         "hands": 2,
         "cost": 300,
-        "hook": false,
         "components": [
             {
                 "name": "Blade Point",
@@ -355,7 +349,7 @@
         "type": "polearm",
         "hands": 2,
         "cost": 10000,
-        "hook": true,
+        "properties": [ "hook", "heavy" ],
         "components": [
             {
                 "name": "Spike",
@@ -387,7 +381,7 @@
         "type": "polearm",
         "hands": 2,
         "cost": 100,
-        "hook": true,
+        "properties": [ "hook" ],
         "components": [
             {
                 "name": "Axe point",
@@ -411,7 +405,6 @@
         "type": "brawling",
         "hands": 1,
         "cost": 30,
-        "hook": false,
         "components": [
             {
                 "name": "Spike",
@@ -435,7 +428,6 @@
         "type": "sword",
         "hands": 1,
         "cost": 75,
-        "hook": false,
         "components": [
             {
                 "name": "Blade Point",
@@ -458,7 +450,6 @@
         "type": "longsword",
         "hands": 2,
         "cost": 500,
-        "hook": false,
         "components": [
             {
                 "name": "Blade Point",

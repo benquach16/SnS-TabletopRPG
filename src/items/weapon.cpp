@@ -13,13 +13,13 @@ using namespace std;
 const string filepath = "data/weapons.json";
 
 Weapon::Weapon(const std::string& name, const std::string& description, eLength length,
-    std::vector<Component*> components, eWeaponTypes type, int cost, bool hook, bool naturalWeapon,
-    int secondaryWeaponId)
+    std::vector<Component*> components, eWeaponTypes type, int cost,
+    set<eWeaponProperties> properties, bool naturalWeapon, int secondaryWeaponId)
     : Item(name, description, cost, eItemType::Weapon)
     , m_length(length)
     , m_components(components)
     , m_type(type)
-    , m_hook(hook)
+    , m_properties(properties)
     , m_naturalWeapon(naturalWeapon)
     , m_secondaryWeaponId(secondaryWeaponId)
 {
@@ -119,7 +119,6 @@ WeaponTable::WeaponTable()
         assert(values["hands"].is_null() == false);
         assert(values["description"].is_null() == false);
         assert(values["cost"].is_null() == false);
-        assert(values["hook"].is_null() == false);
         assert(componentJson.size() > 0);
 
         string weaponName = values["name"];
@@ -127,13 +126,21 @@ WeaponTable::WeaponTable()
         eLength length = convertLengthFromStr(values["length"]);
         eWeaponTypes weaponType = convertTypeFromStr(values["type"]);
         int cost = values["cost"];
-        bool hook = values["hook"];
         int secondaryWeaponId = -1;
-		int baseTN = 7;
+        int baseTN = 7;
+        int guardTN = baseTN;
         vector<Component*> weaponComponents;
+        set<eWeaponProperties> weaponProperties;
 
         if (values["secondary"].is_null() == false) {
             secondaryWeaponId = values["secondary"];
+        }
+        if (values["properties"].is_null() == false) {
+            auto propertiesJson = values["properties"];
+            for (unsigned j = 0; j < propertiesJson.size(); ++j) {
+                eWeaponProperties property = convertPropertiesFromStr(propertiesJson[j]);
+                weaponProperties.insert(property);
+            }
         }
 
         for (unsigned i = 0; i < componentJson.size(); ++i) {
@@ -148,6 +155,7 @@ WeaponTable::WeaponTable()
             eDamageTypes damageType = convertDamageFromStr(componentJson[i]["type"]);
             eAttacks attack = convertAttackFromStr(componentJson[i]["attack"]);
             std::set<eWeaponProperties> properties;
+            int tn = baseTN;
 
             // check for component properties
             if (componentJson[i]["properties"].is_null() == false) {
@@ -166,7 +174,7 @@ WeaponTable::WeaponTable()
         }
 
         Weapon* weapon = new Weapon(weaponName, description, length, weaponComponents, weaponType,
-            cost, hook, false, secondaryWeaponId);
+            cost, weaponProperties, false, secondaryWeaponId);
         assert(m_weaponsList.find(id) == m_weaponsList.end());
         m_weaponsList[id] = weapon;
         ItemTable::getSingleton()->addWeapon(id, weapon);
@@ -182,12 +190,13 @@ void WeaponTable::createNaturalWeapons()
     std::unordered_map<eGrips, bool> grips;
     grips[eGrips::Standard] = false;
     std::vector<Component*> components;
+
     components.push_back(
         new Component("Fist", -1, eDamageTypes::Blunt, eAttacks::Swing, properties));
     components.push_back(
         new Component("Fist", -1, eDamageTypes::Blunt, eAttacks::Thrust, properties));
-    Weapon* fists = new Weapon(
-        name, "For punching", eLength::Hand, components, eWeaponTypes::Brawling, 0, false, true);
+    Weapon* fists = new Weapon(name, "For punching", eLength::Hand, components,
+        eWeaponTypes::Brawling, 0, properties, true);
     assert(m_weaponsList.find(cFistsId) == m_weaponsList.end());
     m_weaponsList[cFistsId] = fists;
     ItemTable::getSingleton()->addWeapon(cFistsId, fists);
@@ -256,6 +265,9 @@ eWeaponProperties WeaponTable::convertPropertiesFromStr(const std::string& str)
     }
     if (str == "hook") {
         return eWeaponProperties::Hook;
+    }
+    if (str == "heavy") {
+        return eWeaponProperties::Heavy;
     }
     if (str == "platepiercing") {
         return eWeaponProperties::PlatePiercing;
