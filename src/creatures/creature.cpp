@@ -132,13 +132,13 @@ eLength Creature::getSecondaryWeaponReach() const
     // so we should not override the reach
 
     if (getGrip() == eGrips::Staff) {
-        //return static_cast<eLength>(max(getCurrentReach() - static_cast<eLength>(1), 0));
-		return getCurrentReach();
+        // return static_cast<eLength>(max(getCurrentReach() - static_cast<eLength>(1), 0));
+        return getCurrentReach();
     }
 
     const Weapon* weapon = getSecondaryWeapon();
     // ugly
-	int reach = static_cast<int>(weapon->getLength());
+    int reach = static_cast<int>(weapon->getLength());
     if (m_currentStance == eCreatureStance::Prone) {
         reach -= 2;
     }
@@ -475,7 +475,8 @@ bool Creature::rollFatigue()
 {
     int requiredSuccesses = 1;
     requiredSuccesses += static_cast<int>(m_AP);
-
+    requiredSuccesses -= getTap(getGrit());
+    requiredSuccesses = max(1, requiredSuccesses);
     // int successes = DiceRoller::rollGetSuccess(getBTN(), getGrit());
     int temp = m_fatigue[eCreatureFatigue::Stamina] / cFatigueDivisor;
     m_fatigue[eCreatureFatigue::Stamina] += requiredSuccesses;
@@ -492,10 +493,10 @@ void Creature::disableWeapon()
 {
     // remove all dice from offense and defense pools when this happens
     // so impact gets transferred directly to remainig CP
-	// this only applies if was attacking with primary weapon
-	if (m_currentOffense.withPrimaryWeapon == true && getHasOffense()) {
-		m_currentOffense.dice = 0;
-	}
+    // this only applies if was attacking with primary weapon
+    if (m_currentOffense.withPrimaryWeapon == true && getHasOffense()) {
+        m_currentOffense.dice = 0;
+    }
     m_currentDefense.dice = 0;
 
     // do nothing, since we cannot drop fists

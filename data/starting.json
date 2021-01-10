@@ -2,7 +2,15 @@
     "knight": {
         "name": "Knight",
         "description": "The quintessential knight, unmatched in melee combat. Armed with the most knightly weapon, the pollaxe, and equipped with plate armor, the knight is a force to be feared.\n\nRecommended Proficiencies: Polearms, Brawling.\n\nDifficulty: Very Easy",
-        "armor": [2040, 2044, 2055, 2043, 2056, 2070, 2046, 2076, 2064, 2071, 2052, 2069],
+        "armor": [2040, 2044, 2055, 2043, 2056, 2070, 2046, 2076, 2064, 2071, 2052, 2069, 2063],
+        "weapon": 1040,
+        "quickdraw": [1041, 1053],
+        "inventory": []
+    },
+    "veteranknight": {
+        "name": "Veteran Knight",
+        "description": "The veteran knight is a knight that has seen many battles, and has been able to afford a full suit of articulated Gothic Plate armor.\n\nRecommended Proficiencies: Polearms, Brawling.\n\nDifficulty: Very Easy",
+        "armor": [2040, 2044, 2079, 2080, 2081, 2082, 2083, 2084, 2085, 2086, 2087, 2088, 2089, 2056],
         "weapon": 1040,
         "quickdraw": [1041, 1053],
         "inventory": []
@@ -40,6 +48,6 @@
         "description": "Doppelsoldner, meaning double pay men, are paid double because of their eagerness to take on suicidal missions. Armored with just a breastplate and a gigantic Zweihander, doppelsoldners have no fear in battle.\n\nDiffficulty: Medium",
         "armor": [2040, 2044, 2046, 2078, 2067],
         "quickdraw": [1041],
-        "weapon": 1054
+        "weapon": 1055
     }
 }

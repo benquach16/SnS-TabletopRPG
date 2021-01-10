@@ -79,7 +79,7 @@
                 "damage": 1,
                 "type": "blunt",
                 "attack": "swing"
-            }           
+            }
         ]
     },
     "1040": {
@@ -88,7 +88,7 @@
         "length": "verylong",
         "type": "polearm",
         "hands": 2,
-        "cost": 500,
+        "cost": 125,
         "properties": [ "hook", "heavy" ],
         "components": [
             {
@@ -120,7 +120,7 @@
         "length": "medium",
         "type": "sword",
         "hands": 1,
-        "cost": 150,
+        "cost": 30,
         "hook": false,
         "components": [
             {
@@ -144,7 +144,7 @@
         "length": "extended",
         "type": "polearm",
         "hands": 2,
-        "cost": 100,
+        "cost": 10,
         "components": [
             {
                 "name": "Spear blade",
@@ -167,7 +167,7 @@
         "length": "close",
         "type": "brawling",
         "hands": 1,
-        "cost": 25,
+        "cost": 2,
         "components": [
             {
                 "name": "Blade Edge",
@@ -189,7 +189,7 @@
         "length": "verylong",
         "type": "polearm",
         "hands": 2,
-        "cost": 1500,
+        "cost": 500,
         "properties": [ "hook", "heavy" ],
         "components": [
             {
@@ -198,7 +198,7 @@
                 "type": "piercing",
                 "attack": "thrust",
                 "properties": [ "maillepiercing" ],
-                "polearmspike": true            
+                "polearmspike": true
             },
             {
                 "name": "Axe head",
@@ -224,7 +224,7 @@
         "length": "short",
         "type": "sword",
         "hands": 1,
-        "cost": 125,
+        "cost": 25,
         "components": [
             {
                 "name": "Blade Edge",
@@ -247,7 +247,7 @@
         "length": "short",
         "type": "sword",
         "hands": 1,
-        "cost": 75,
+        "cost": 5,
         "components": [
             {
                 "name": "Blade Edge",
@@ -270,7 +270,7 @@
         "length": "verylong",
         "type": "polearm",
         "hands": 2,
-        "cost": 25,
+        "cost": 5,
         "components": [
             {
                 "name": "Staff, Swing",
@@ -293,7 +293,7 @@
         "length": "extended",
         "type": "polearm",
         "hands": 2,
-        "cost": 300,
+        "cost": 100,
         "properties": [ "hook", "heavy" ],
         "components": [
             {
@@ -325,7 +325,7 @@
         "length": "long",
         "type": "longsword",
         "hands": 2,
-        "cost": 300,
+        "cost": 70,
         "components": [
             {
                 "name": "Blade Point",
@@ -348,7 +348,7 @@
         "length": "verylong",
         "type": "polearm",
         "hands": 2,
-        "cost": 10000,
+        "cost": 2000,
         "properties": [ "hook", "heavy" ],
         "components": [
             {
@@ -380,7 +380,7 @@
         "length": "long",
         "type": "polearm",
         "hands": 2,
-        "cost": 100,
+        "cost": 20,
         "properties": [ "hook" ],
         "components": [
             {
@@ -404,7 +404,7 @@
         "length": "hand",
         "type": "brawling",
         "hands": 1,
-        "cost": 30,
+        "cost": 15,
         "components": [
             {
                 "name": "Spike",
@@ -421,13 +421,13 @@
             }
         ]
     },
-    "1053": {
+    "1054": {
         "name": "Rapier",
         "description": "A long tapered thrusting sword used as a dueling weapon. Despite how it may look, it is quite study and heavy.",
         "length": "long",
         "type": "sword",
         "hands": 1,
-        "cost": 75,
+        "cost": 85,
         "components": [
             {
                 "name": "Blade Point",
@@ -443,13 +443,13 @@
             }
         ]
     },
-    "1054": {
+    "1055": {
         "name": "Zweihander",
         "description":"The Zweihander is a type of greatsword, almost as tall as a man. A weapon of war used by specialized troops or bodyguards.",
         "length": "verylong",
         "type": "longsword",
         "hands": 2,
-        "cost": 500,
+        "cost": 150,
         "components": [
             {
                 "name": "Blade Point",

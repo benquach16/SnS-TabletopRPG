@@ -2,7 +2,7 @@
     "2040": {
         "name": "Gambeson",
         "description": "A jacket made of quilted linen.",
-        "cost": 50,
+        "cost": 10,
         "AV": 2,
         "AP": 0.0,
         "rigid": false,
@@ -26,9 +26,9 @@
     "2042": {
         "name": "Sallet",
         "description": "A type of visored steel helmet, popular with foot knights and men at arms.",
-        "cost": 500,
+        "cost": 200,
         "AV": 4,
-        "AP": 0.5,
+        "AP": 1.5,
         "rigid": true,
         "metal": true,
         "coverage": ["crown", "face"],
@@ -38,7 +38,7 @@
     "2043": {
         "name": "Brigandine",
         "description": "A type of breastplate that consists of of steel plates riveted to a vest.",
-        "cost": 500,
+        "cost": 150,
         "AV": 3,
         "AP": 0.0,
         "rigid": true,
@@ -50,7 +50,7 @@
     "2044": {
         "name": "Hosen",
         "description": "Leggings made of quilted linen.",
-        "cost": 50,
+        "cost": 10,
         "AV": 2,
         "AP": 0.0,
         "rigid": false,
@@ -62,7 +62,7 @@
     "2045": {
         "name": "Cloth shirt",
         "description": "Better than nothing.",
-        "cost": 20,
+        "cost": 2,
         "AV": 1,
         "AP": 0.0,
         "rigid": false,
@@ -74,7 +74,7 @@
     "2046": {
         "name": "Leather shoes",
         "description": "Shoes with a bit of protection",
-        "cost": 30,
+        "cost": 10,
         "AV": 2,
         "AP": 0.0,
         "rigid": false,
@@ -86,7 +86,7 @@
     "2047": {
         "name": "Leather gloves",
         "description": "Leather that covers your hands.",
-        "cost": 30,
+        "cost": 10,
         "AV": 2,
         "AP": 0.0,
         "rigid": false,
@@ -98,7 +98,7 @@
     "2048": {
         "name": "Cloth pants",
         "description": "Better than nothing.",
-        "cost": 20,
+        "cost": 2,
         "AV": 1,
         "AP": 0.0,
         "rigid": false,
@@ -110,7 +110,7 @@
     "2049": {
         "name": "Fancy shirt",
         "description": "Shirt for nobility that provides no protection whatsoever, but looks nice.",
-        "cost": 1000,
+        "cost": 100,
         "AV": 0,
         "AP": 0.0,
         "rigid": false,
@@ -122,7 +122,7 @@
     "2050": {
         "name": "Arming cap",
         "description": "A cap made of quilted linen. Usually worn under a helmet.",
-        "cost": 75,
+        "cost": 10,
         "AV": 2,
         "AP": 0.0,
         "rigid": false,
@@ -134,7 +134,7 @@
     "2051": {
         "name": "Maille coif",
         "description": "A chainmail hood.",
-        "cost": 200,
+        "cost": 50,
         "AV": 3,
         "AP": 0.25,
         "rigid": false,
@@ -146,7 +146,7 @@
     "2052": {
         "name": "Bascinet",
         "description": "A type of open faced steel helmet. Usually attached to an aventail.",
-        "cost": 300,
+        "cost": 200,
         "AV": 4,
         "AP": 0.25,
         "rigid": true,
@@ -158,7 +158,7 @@
     "2053": {
         "name": "Lamellar Cuirass",
         "description": "A chestpiece made of metal scales that are laced together.",
-        "cost": 500,
+        "cost": 150,
         "AV": 3,
         "AP": 0.0,
         "rigid": true,
@@ -173,7 +173,7 @@
     "2054": {
         "name": "Maille mittens",
         "description": "Protective mittens made of chainmail.",
-        "cost": 30,
+        "cost": 10,
         "AV": 3,
         "AP": 0.0,
         "rigid": true,
@@ -187,7 +187,7 @@
     "2055": {
         "name": "Chainmail shirt (long sleeved)",
         "description": "A long sleeved shirt made of chainmail.",
-        "cost": 175,
+        "cost": 180,
         "AV": 3,
         "AP": 0.5,
         "rigid": false,
@@ -207,7 +207,7 @@
     "2056": {
         "name": "Maille skirt",
         "description": "A skirt made of chainmail that provides lower body protection while preserving mobility.",
-        "cost": 100,
+        "cost": 50,
         "AV": 3,
         "AP": 0.25,
         "rigid": false,
@@ -222,7 +222,7 @@
     "2057": {
         "name": "Maille chausses",
         "description": "Protective leggings made of maille.",
-        "cost": 200,
+        "cost": 100,
         "AV": 3,
         "AP": 0.5,
         "rigid": false,
@@ -239,7 +239,7 @@
     "2058": {
         "name": "Gorget",
         "description": "A rigid collar made of plate steel to protect the neck",
-        "cost": 900,
+        "cost": 100,
         "AV": 4,
         "AP": 0.25,
         "rigid": true,
@@ -253,7 +253,7 @@
     "2059": {
         "name": "Ventail",
         "description": "A maille flap that can be connected to an aventail to cover the face.",
-        "cost": 200,
+        "cost": 100,
         "AV": 3,
         "AP": 0.25,
         "rigid": false,
@@ -265,15 +265,17 @@
         "type": "maille"
     },
     "2060": {
-        "name": "Gorget",
-        "description": "A rigid collar made of plate steel to protect the neck",
+        "name": "Hounskull",
+        "description": "A ype of full plate helmet that has a pointed face.",
         "cost": 200,
         "AV": 4,
         "AP": 0.25,
         "rigid": true,
         "metal": true,
         "coverage": [
-            "neck"
+            "face",
+            "crown",
+            "chin"
         ],
         "layer": "plate",
         "type": "plate"
@@ -281,7 +283,7 @@
     "2061": {
         "name": "Plate Cuirass (Simple)",
         "description": "A breastplate and plackart made of hardened steel. Amazing plate armor protection at a high price.",
-        "cost": 1400,
+        "cost": 300,
         "AV": 4,
         "AP": 0,
         "rigid": true,
@@ -296,7 +298,7 @@
     "2062": {
         "name": "Plate Pauldrons",
         "description": "Plate armored shoulder protection. Does not include armpit protection.",
-        "cost": 1400,
+        "cost": 200,
         "AV": 4,
         "AP": 0.25,
         "rigid": true,
@@ -310,7 +312,7 @@
     "2063": {
         "name": "Splinted Spaulders",
         "description": "Almost as good as plate armor, splinted spaulders provide ample shoulder protection.",
-        "cost": 500,
+        "cost": 150,
         "AV": 3,
         "AP": 0.25,
         "rigid": true,
@@ -324,7 +326,7 @@
     "2064": {
         "name": "Plate Gauntlets",
         "description": "Plate armored guantlets. Protective enough to block a blow from any bladed weapon.",
-        "cost": 1000,
+        "cost": 300,
         "AV": 4,
         "AP": 0,
         "rigid": true,
@@ -338,7 +340,7 @@
     "2065": {
         "name": "Plate Rerebraces",
         "description": "Pieces of harded steel intended to cover the upper arm. Includes couters for elbow protection.",
-        "cost": 1400,
+        "cost": 200,
         "AV": 4,
         "AP": 0.25,
         "rigid": true,
@@ -353,7 +355,7 @@
     "2066": {
         "name": "Plate Vambraces",
         "description": "Hardened steel wrapped around the forearm.",
-        "cost": 1000,
+        "cost": 300,
         "AV": 4,
         "AP": 0.25,
         "rigid": true,
@@ -367,7 +369,7 @@
     "2067": {
         "name": "Plate Cuirass (Complex)",
         "description": "A plate cuirass with additional protection in the form of faulds",
-        "cost": 800,
+        "cost": 400,
         "AV": 4,
         "AP": 0.25,
         "rigid": true,
@@ -383,7 +385,7 @@
     "2068": {
         "name": "Plate Cuisses",
         "description": "Form of plate armor intended to protect the thigh. Comes with poleyns.",
-        "cost": 1300,
+        "cost": 300,
         "AV": 4,
         "AP": 0.25,
         "rigid": true,
@@ -398,7 +400,7 @@
     "2069": {
         "name": "Plate Poleyns",
         "description": "A piece of hardened steel designed to protect the knee. Small and easier to make.",
-        "cost": 500,
+        "cost": 200,
         "AV": 4,
         "AP": 0,
         "rigid": true,
@@ -412,7 +414,7 @@
     "2070": {
         "name": "Plate Greaves",
         "description": "Protection for the shins. Protects the inside of the leg.",
-        "cost": 800,
+        "cost": 300,
         "AV": 4,
         "AP": 0.25,
         "rigid": true,
@@ -426,7 +428,7 @@
     "2071": {
         "name": "Plate Sabatons",
         "description": "Heavily articulated piece of metal armor that covers the feet.",
-        "cost": 1200,
+        "cost": 300,
         "AV": 4,
         "AP": 0.25,
         "rigid": true,
@@ -454,7 +456,7 @@
     "2073": {
         "name": "Splinted Rerebraces",
         "description": "Strips of metal attached to leather, designed to wrap around the upper arm.",
-        "cost": 500,
+        "cost": 150,
         "AV": 3,
         "AP": 0.25,
         "rigid": true,
@@ -468,7 +470,7 @@
     "2074": {
         "name": "Splinted Vambraces",
         "description": "Transitional armor piece designed to protect the forearms.",
-        "cost": 500,
+        "cost": 150,
         "AV": 3,
         "AP": 0.25,
         "rigid": true,
@@ -482,7 +484,7 @@
     "2075": {
         "name": "Splinted Cuisses",
         "description": "A form of splinted armor to cover the thighs.",
-        "cost": 500,
+        "cost": 150,
         "AV": 3,
         "AP": 0.25,
         "rigid": true,
@@ -496,9 +498,9 @@
     "2076": {
         "name": "Gorget with Bevor",
         "description": "A gorget with a bevor to protect the lower face/chin.",
-        "cost": 1000,
+        "cost": 300,
         "AV": 4,
-        "AP": 0.5,
+        "AP": 0.25,
         "rigid": true,
         "metal": true,
         "coverage": [
@@ -511,7 +513,7 @@
     "2077": {
         "name": "Crude Kettlehat",
         "description": "A type of open faced steel helmet with a wide brim.",
-        "cost": 100,
+        "cost": 180,
         "AV": 3,
         "AP": 0.25,
         "rigid": true,
@@ -531,5 +533,157 @@
         "coverage": ["crown"],
         "layer": "plate",
         "type": "none"
+    },
+    "2079": {
+        "name": "Fluted Cuirass",
+        "description": "A plate cuirass with additional protection in the form of faulds",
+        "cost": 500,
+        "AV": 5,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "abs",
+            "ribs",
+            "hip",
+            "thigh"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2080": {
+        "name": "Gothic Plate Sallet",
+        "description": "A type of sallet that is fluted and articulated for better protection and mobility.",
+        "cost": 300,
+        "AV": 5,
+        "AP": 1.5,
+        "rigid": true,
+        "metal": true,
+        "coverage": ["crown", "face"],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2081": {
+        "name": "Gothic Plate Bevor",
+        "description": "A fluted gorget and bevor.",
+        "cost": 300,
+        "AV": 5,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": ["neck", "chin"],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2082": {
+        "name": "Fluted Pauldrons",
+        "description": "Highly articulated fluted pauldrons and besagews that are extremely protective.",
+        "cost": 500,
+        "AV": 5,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": ["shoulder"],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2083": {
+        "name": "Fluted Rerebraces",
+        "description": "Hardened steel upper armor protection, with flutings to deflect blows.",
+        "cost": 500,
+        "AV": 5,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "upperarm"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2084": {
+        "name": "Fluted Vambraces",
+        "description": "Fluted and articulated vambraces to cover the forearm.",
+        "cost": 500,
+        "AV": 5,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "forearm"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2085": {
+        "name": "Gothic Plate Gauntlets",
+        "description": "Highly articulated plate guantlets. The best protection one can have for your hands.",
+        "cost": 500,
+        "AV": 5,
+        "AP": 0,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "hand"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2086": {
+        "name": "Gothic Plate Greaves",
+        "description": "The finest greaves, made by the best blacksmiths around.",
+        "cost": 500,
+        "AV": 5,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "shin"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2087": {
+        "name": "Gothic Plate Poleyns",
+        "description": "A piece of hardened steel designed to protect the knee. Small and easier to make.",
+        "cost": 400,
+        "AV": 5,
+        "AP": 0,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "knee"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2088": {
+        "name": "Gothic Plate Sabatons",
+        "description": "Fluted Sabatons to cover the foot. Found in Gothic Plate armor sets.",
+        "cost": 500,
+        "AV": 5,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "foot"
+        ],
+        "layer": "plate",
+        "type": "plate"
+    },
+    "2089": {
+        "name": "Maille Voiders",
+        "description": "Voiders are small pieces of maille that attaches to clothing to protect joints and increase mobility compared to wearing a full shirt of maille",
+        "cost": 300,
+        "AV": 3,
+        "AP": 0.25,
+        "rigid": true,
+        "metal": true,
+        "coverage": [
+            "armpit",
+            "elbow"
+        ],
+        "layer": "maille",
+        "type": "maille"
     }
 }
