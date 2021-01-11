@@ -170,7 +170,16 @@ void CombatInstance::doPreexchangeActions()
         m_currentState = eCombatState::PreexchangeActions;
         return;
     }
-
+    if (m_side1->getMaxCombatPool() == 0) {
+        m_side1->knockOut();
+        writeMessage(m_side1->getName() + " has passed out from the pain...",
+            Log::eMessageTypes::Announcement, true);
+    }
+    if (m_side2->getMaxCombatPool() == 0) {
+        m_side2->knockOut();
+        writeMessage(m_side2->getName() + " has passed out from the pain...",
+            Log::eMessageTypes::Announcement, true);
+    }
     // check if grip causes combatants to move closer
     eLength length = max(m_side1->getCurrentReach(), m_side2->getCurrentReach());
     if (length < m_currentReach) {
@@ -854,6 +863,7 @@ void CombatInstance::doEndCombat()
     m_side1->clearCreatureManuevers();
     m_side2->clearCreatureManuevers();
     m_side1->enableWeapon();
+	m_side2->enableWeapon();
     m_side1 = nullptr;
     m_side2 = nullptr;
     m_currentState = eCombatState::Uninitialized;
@@ -1249,6 +1259,10 @@ void CombatInstance::outputOffense(const Creature* creature)
         writeMessage(creature->getName() + " attempts to start a grapple using "
             + to_string(creature->getQueuedOffense().dice) + " action points");
         break;
+    case eOffensiveManuevers::Throw:
+        writeMessage(creature->getName() + " attempts a throw using "
+            + to_string(creature->getQueuedOffense().dice) + " action points");
+        break;
     default:
         assert(attack.component != nullptr);
         assert(offenseWeapon);
@@ -1329,13 +1343,19 @@ void CombatInstance::changeReachTo(const Creature* creature)
 {
     Offense attack = creature->getQueuedOffense();
     eLength effectiveReach = getEffectiveReach(creature);
-    switch (attack.manuever) {
-    case eOffensiveManuevers::NoOffense:
-    case eOffensiveManuevers::Beat:
-        return;
-    case eOffensiveManuevers::Grab:
-        m_currentReach = eLength::Hand;
-    default:
-        m_currentReach = effectiveReach;
-    }
+	if (m_inGrapple == false) {
+		switch (attack.manuever) {
+		case eOffensiveManuevers::NoOffense:
+		case eOffensiveManuevers::Beat:
+			return;
+		case eOffensiveManuevers::Grab:
+			m_currentReach = eLength::Hand;
+		default:
+			m_currentReach = effectiveReach;
+		}
+	}
+	else {
+		m_currentReach = eLength::Hand;
+	}
+
 }

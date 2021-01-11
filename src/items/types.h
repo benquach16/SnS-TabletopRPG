@@ -30,23 +30,25 @@ enum class eAttacks {
 };
 
 enum class eOffensiveManuevers : unsigned {
-    Swing,
-    Thrust,
-    PinpointThrust,
-    HeavyBlow,
-    Beat,
-    Mordhau,
-    Hook,
-    Slam,
-    Grab,
-    Disarm,
-    Draw,
-    // grapple moves
-    Snap,
-    Throw,
-    Pin,
-    VisorThrust,
-    Bite,
+	Swing,
+	Thrust,
+	PinpointThrust,
+	HeavyBlow,
+	Beat,
+	Mordhau,
+	Hook,
+	Slam,
+	Grab,
+	Disarm,
+	Draw,
+	// grapple moves
+	Snap,
+	Throw,
+	Pin,
+	VisorThrust,
+	Bite,
+	Strangle,
+	Gouge,
     NoOffense
 };
 

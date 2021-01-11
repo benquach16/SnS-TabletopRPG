@@ -76,10 +76,7 @@ public:
 
     int getConstitution() const { return cBaseConstitution; }
 
-    int getBTN() const
-    {
-        return m_currentStance == eCreatureStance::Prone ? getDisadvantagedBTN() : m_BTN;
-    }
+    int getBTN() const { return m_BTN; }
     int getAdvantagedBTN() const { return std::max(m_BTN - 1, cMinBTN); }
     int getDisadvantagedBTN() const { return std::min(m_BTN + 1, cMaxBTN); }
     int getBloodLoss() const { return m_bloodLoss; }
@@ -229,6 +226,7 @@ public:
     }
     void setIdle() { m_currentState = eCreatureState::Idle; }
     void kill() { m_currentState = eCreatureState::Dead; }
+    void knockOut() { m_currentState = eCreatureState::Unconscious; }
 
     int getFatigue() const;
 

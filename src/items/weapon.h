@@ -12,7 +12,7 @@ class Weapon : public Item {
 public:
     Weapon(const std::string& name, const std::string& description, eLength length,
         std::vector<Component*> components, eWeaponTypes type, int cost,
-        std::set<eWeaponProperties> properties, bool naturalWeapon = false,
+        std::set<eWeaponProperties> properties, bool m_secondary, bool naturalWeapon = false,
         int secondaryWeaponId = -1);
     ~Weapon();
     eItemType getItemType() const override { return eItemType::Weapon; }
@@ -42,7 +42,7 @@ public:
 
     bool isCurved() const { return false; }
 
-    bool isSecondary() const { return false; }
+    bool isSecondary() const { return m_secondary; }
 
     bool getNaturalWeapon() const { return m_naturalWeapon; }
 
@@ -60,6 +60,7 @@ private:
     eWeaponTypes m_type;
 
     int m_secondaryWeaponId;
+	bool m_secondary;
 
     int m_hands;
 

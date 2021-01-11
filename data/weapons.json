@@ -78,7 +78,8 @@
                 "name": "Crossguard",
                 "damage": 1,
                 "type": "blunt",
-                "attack": "swing"
+                "attack": "swing",
+                "properties": [ "crushing" ]
             }
         ]
     },
@@ -112,7 +113,7 @@
                 "properties": [ "crushing" ]
             }
         ],
-        "secondary" : 1020
+        "secondaryId" : 1020
     },
     "1041": {
         "name": "Arming Sword",
@@ -136,7 +137,7 @@
                 "attack": "thrust"
             }
         ],
-        "secondary": 1022
+        "secondaryId": 1022
     },
     "1042": {
         "name": "Spear",
@@ -159,7 +160,7 @@
                 "attack": "thrust"
             }
         ],
-        "secondary": 1021
+        "secondaryId": 1021
     },
     "1043": {
         "name": "Dagger",
@@ -216,7 +217,7 @@
                 "polearmhead": true
             }
         ],
-        "secondary": 1020
+        "secondaryId": 1020
     },
     "1045": {
         "name": "Short Sword",
@@ -239,7 +240,7 @@
                 "attack": "thrust"
             }
         ],
-        "secondary": 1022
+        "secondaryId": 1022
     },
     "1046": {
         "name": "Iron Short Sword",
@@ -262,7 +263,7 @@
                 "attack": "thrust"
             }
         ],
-        "secondary": 1022
+        "secondaryId": 1022
     },
     "1047": {
         "name": "Quarterstaff",
@@ -285,7 +286,7 @@
                 "attack": "thrust"
             }
         ],
-        "secondary": 1021
+        "secondaryId": 1021
     },
     "1048": {
         "name": "Halberd",
@@ -317,7 +318,7 @@
                 "properties": [ "platepiercing" ]
             }
         ],
-        "secondary": 1020
+        "secondaryId": 1020
     },
     "1050": {
         "name": "Longsword",
@@ -340,7 +341,7 @@
                 "type": "cutting"
             }
         ],
-        "secondary": 1022
+        "secondaryId": 1022
     },
     "1051": {
         "name": "Seraphim Steel Pollaxe",
@@ -372,7 +373,7 @@
                 "properties": [ "crushing" ]
             }
         ],
-        "secondary": 1020
+        "secondaryId": 1020
     },
     "1052": {
         "name": "Dane Axe",
@@ -396,7 +397,7 @@
                 "type": "cutting"
             }
         ],
-        "secondary": 1021
+        "secondaryId": 1021
     },
     "1053": {
         "name": "Rondel Dagger",
@@ -464,6 +465,6 @@
                 "type": "cutting"
             }
         ],
-        "secondary": 1022
+        "secondaryId": 1022
     }
 }

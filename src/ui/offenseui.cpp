@@ -166,13 +166,9 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player,
                 const Weapon* weapon = player->getPrimaryWeapon();
                 player->setOffenseManuever(eOffensiveManuevers::Mordhau);
                 player->setOffenseComponent(weapon->getPommelStrike());
-                player->setOffenseTarget(eHitLocations::Head);
-                if (linkedParry == true) {
-                    player->setOffenseReady();
-                    m_currentState = eUiState::Finished;
-                } else {
-                    m_currentState = eUiState::ChooseDice;
-                }
+
+                m_currentState = eUiState::ChooseTarget;
+
                 break;
             }
             case eOffensiveManuevers::NoOffense:

@@ -420,26 +420,7 @@ void Creature::resetCombatPool()
     const Weapon* weapon = getPrimaryWeapon();
     int carry = m_combatPool;
     carry = min(0, carry);
-    m_combatPool = getProficiency(weapon->getType()) + getReflex() + carry;
-    m_combatPool -= static_cast<int>(m_AP);
-    m_combatPool -= getPain();
-    // apply fatigue
-    /*
-    for (auto it : m_fatigue) {
-        m_combatPool -= it.second;
-        }*/
-    m_combatPool -= m_fatigue[eCreatureFatigue::Stamina] / cFatigueDivisor;
-
-    // prone gives us less CP
-    /* too imbalanced right now
-    if (m_currentStance == eCreatureStance::Prone) {
-        m_combatPool -= 2;
-    }
-    */
-
-    // cant go below 0 for CP even if impact took out a lot of dice
-    m_combatPool = max(0, m_combatPool);
-    // cout << getName() << m_combatPool << endl;
+    m_combatPool = getMaxCombatPool() + carry;
 }
 
 int Creature::getMaxCombatPool()
@@ -450,7 +431,9 @@ int Creature::getMaxCombatPool()
     combatPool -= static_cast<int>(m_AP);
     combatPool -= getPain();
     combatPool -= m_fatigue[eCreatureFatigue::Stamina] / cFatigueDivisor;
-
+    if (m_currentStance == eCreatureStance::Prone) {
+        combatPool = (combatPool + 1) / 2;
+    }
     return max(combatPool, 0);
 }
 

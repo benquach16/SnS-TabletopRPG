@@ -38,6 +38,10 @@ std::string offensiveManueverToString(eOffensiveManuevers manuever)
         return "Draw Cut";
     case eOffensiveManuevers::HeavyBlow:
         return "Heavy Blow";
+	case eOffensiveManuevers::Gouge:
+		return "Gouge";
+	case eOffensiveManuevers::Strangle:
+		return "Strangle";
     default:
         assert(false);
         return "";
@@ -331,7 +335,7 @@ int getOffensiveManueverCost(eOffensiveManuevers manuever, eGrips grip, eLength 
     case eOffensiveManuevers::Throw:
         return 2;
     case eOffensiveManuevers::Snap:
-        return 1;
+        return 0;
     case eOffensiveManuevers::Draw: {
         // draw removes any reach disadvantage if target is too close
         if (effectiveReach > currentReach) {
@@ -354,7 +358,7 @@ int getDefensiveManueverCost(
     }
     switch (manuever) {
     case eDefensiveManuevers::StealInitiative:
-        return 2;
+        return 1;
     case eDefensiveManuevers::AttackFromDef:
     case eDefensiveManuevers::Dodge:
         return 0;
@@ -408,7 +412,9 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* crea
         ret[eOffensiveManuevers::Disarm] = getOffensiveManueverCost(
             eOffensiveManuevers::Disarm, grip, effectiveReach, currentReach, payReach);
         eWeaponTypes type = weapon->getType();
-        if (type == eWeaponTypes::Swords || type == eWeaponTypes::Longswords) {
+        // don't need to do mordhau if doing a pommel strike
+        if (type == eWeaponTypes::Swords
+            || type == eWeaponTypes::Longswords && weapon->isSecondary() == false) {
             ret[eOffensiveManuevers::Mordhau] = getOffensiveManueverCost(
                 eOffensiveManuevers::Mordhau, grip, effectiveReach, currentReach, payReach);
         }
@@ -416,7 +422,7 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* crea
             ret[eOffensiveManuevers::HeavyBlow] = getOffensiveManueverCost(
                 eOffensiveManuevers::HeavyBlow, grip, effectiveReach, currentReach, payReach);
         }
-        if (weapon->canHook()) {
+        if (weapon->canHook() || grip == eGrips::Staff || grip == eGrips::HalfSword) {
             ret[eOffensiveManuevers::Hook] = getOffensiveManueverCost(
                 eOffensiveManuevers::Hook, grip, effectiveReach, currentReach, payReach);
         }

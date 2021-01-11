@@ -288,7 +288,20 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             if (target->getStance() == eCreatureStance::Prone) {
                 priority = cLowestPriority;
             } else {
+                // if we are stealing initiative hook is a really good move
+                if (controlledCreature->getHasDefense()
+                    && controlledCreature->getQueuedDefense().manuever
+                        == eDefensiveManuevers::StealInitiative) {
+                    priority += random_static::get(0, controlledCreature->getCombatPool());
+					if (controlledCreature->getCombatPool() > 7 && allin) {
+						priority += 50;
+					}
+                }
                 priority += random_static::get(0, cFuzz);
+                // do this if we have enough die for a knockdown
+                if (controlledCreature->getCombatPool() > target->getCombatPool() + 5) {
+                    priority *= 2;
+                }
             }
 
         } break;
@@ -297,6 +310,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
                 priority = cLowestPriority;
             } else {
             }
+            component = weapon->getPommelStrike();
             break;
         case eOffensiveManuevers::Throw: {
             if (target->getStance() == eCreatureStance::Prone) {
@@ -711,7 +725,12 @@ eHitLocations AICombatController::getBestHitLocation(
                 }
             }
         }
+
+
         int damage = component->getDamage() - segment.AV;
+		if (component->hasProperty(eWeaponProperties::Crushing) && location == eHitLocations::Head) {
+			damage++;
+		}
         if (damage > highestDamage) {
             highestDamage = damage;
             ret = location;
