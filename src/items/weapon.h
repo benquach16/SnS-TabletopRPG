@@ -11,7 +11,7 @@ constexpr int cFistsId = 1000;
 class Weapon : public Item {
 public:
     Weapon(const std::string& name, const std::string& description, eLength length,
-        std::vector<Component*> components, eWeaponTypes type, int cost,
+        std::vector<Component*> components, eWeaponTypes type, int cost, int baseTn, int guardTn,
         std::set<eWeaponProperties> properties, bool m_secondary, bool naturalWeapon = false,
         int secondaryWeaponId = -1);
     ~Weapon();
@@ -32,6 +32,8 @@ public:
     Component* getPommelStrike() const;
 
     int getBaseTN() const { return m_tn; }
+
+	int getGuardTN() const { return m_guardTn; }
 
     bool canHook() const
     {

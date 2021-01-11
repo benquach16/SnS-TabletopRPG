@@ -9,7 +9,7 @@
 // axe heads, spear heads, buttspikes...
 class Component {
 public:
-    Component(std::string name, int damage, eDamageTypes type, eAttacks attack,
+    Component(std::string name, int damage, eDamageTypes type, eAttacks attack, int tn,
         std::set<eWeaponProperties> properties);
     std::string getName() const { return m_name; }
     int getDamage() const { return m_damage; }

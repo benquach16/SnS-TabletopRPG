@@ -1,9 +1,9 @@
 #include "aicontroller.h"
-#include "../3rdparty/random.hpp"
-#include "../level/level.h"
-#include "../object/creatureobject.h"
-#include "../object/playerobject.h"
-#include "../object/relationmanager.h"
+#include "3rdparty/random.hpp"
+#include "level/level.h"
+#include "object/creatureobject.h"
+#include "object/playerobject.h"
+#include "object/relationmanager.h"
 
 AIController::AIController()
     : m_role(eAIRoles::Patrolling)

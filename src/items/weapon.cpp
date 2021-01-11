@@ -5,6 +5,7 @@
 #include "3rdparty/json.hpp"
 #include "utils.h"
 #include "weapon.h"
+#include "creatures/creature.h"
 
 WeaponTable* WeaponTable::singleton = nullptr;
 
@@ -13,7 +14,7 @@ using namespace std;
 const string filepath = "data/weapons.json";
 
 Weapon::Weapon(const std::string& name, const std::string& description, eLength length,
-    std::vector<Component*> components, eWeaponTypes type, int cost,
+    std::vector<Component*> components, eWeaponTypes type, int cost, int baseTn, int guardTn,
     set<eWeaponProperties> properties, bool secondary, bool naturalWeapon, int secondaryWeaponId)
     : Item(name, description, cost, eItemType::Weapon)
     , m_length(length)
@@ -21,6 +22,8 @@ Weapon::Weapon(const std::string& name, const std::string& description, eLength 
     , m_type(type)
     , m_properties(properties)
     , m_secondary(secondary)
+    , m_tn(baseTn)
+    , m_guardTn(guardTn)
     , m_naturalWeapon(naturalWeapon)
     , m_secondaryWeaponId(secondaryWeaponId)
 {
@@ -128,7 +131,7 @@ WeaponTable::WeaponTable()
         eWeaponTypes weaponType = convertTypeFromStr(values["type"]);
         int cost = values["cost"];
         int secondaryWeaponId = -1;
-        int baseTN = 7;
+        int baseTN = cBaseBTN;
         int guardTN = baseTN;
         vector<Component*> weaponComponents;
         set<eWeaponProperties> weaponProperties;
@@ -139,6 +142,12 @@ WeaponTable::WeaponTable()
         }
         if (values["secondaryId"].is_null() == false) {
             secondaryWeaponId = values["secondaryId"];
+        }
+        if (values["baseTn"].is_null() == false) {
+            baseTN = values["baseTn"];
+        }
+        if (values["guardTn"].is_null() == false) {
+            guardTN = values["guardTn"];
         }
 
         if (values["properties"].is_null() == false) {
@@ -172,15 +181,17 @@ WeaponTable::WeaponTable()
                     properties.insert(property);
                 }
             }
-
+            if (componentJson[i]["tn"].is_null() == false) {
+                tn = componentJson[i]["tn"];
+            }
             Component* component
-                = new Component(componentName, damage, damageType, attack, properties);
+                = new Component(componentName, damage, damageType, attack, tn, properties);
 
             weaponComponents.push_back(component);
         }
 
         Weapon* weapon = new Weapon(weaponName, description, length, weaponComponents, weaponType,
-            cost, weaponProperties, isSecondary, false, secondaryWeaponId);
+            cost, baseTN, guardTN, weaponProperties, isSecondary, false, secondaryWeaponId);
         assert(m_weaponsList.find(id) == m_weaponsList.end());
         m_weaponsList[id] = weapon;
         ItemTable::getSingleton()->addWeapon(id, weapon);
@@ -198,11 +209,11 @@ void WeaponTable::createNaturalWeapons()
     std::vector<Component*> components;
 
     components.push_back(
-        new Component("Fist", -1, eDamageTypes::Blunt, eAttacks::Swing, properties));
+        new Component("Fist", -1, eDamageTypes::Blunt, eAttacks::Swing, 6, properties));
     components.push_back(
-        new Component("Fist", -1, eDamageTypes::Blunt, eAttacks::Thrust, properties));
+        new Component("Fist", -1, eDamageTypes::Blunt, eAttacks::Thrust, 6, properties));
     Weapon* fists = new Weapon(name, "For punching", eLength::Hand, components,
-        eWeaponTypes::Brawling, 0, properties, true);
+        eWeaponTypes::Brawling, 0, 6, 8, properties, false, true);
     assert(m_weaponsList.find(cFistsId) == m_weaponsList.end());
     m_weaponsList[cFistsId] = fists;
     ItemTable::getSingleton()->addWeapon(cFistsId, fists);

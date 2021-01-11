@@ -212,10 +212,12 @@ bool CombatInstance::doOffense()
     Creature* defender = nullptr;
     setSides(attacker, defender);
 
+	attacker->addAndResetBonusDice();
     if (attacker->getHasOffense() == false) {
         m_currentState = eCombatState::Offense;
         return false;
     }
+	
     int reachCost = calcReachCost(attacker, true);
     outputReachCost(reachCost, attacker, true);
     outputOffense(attacker);
@@ -327,14 +329,13 @@ void CombatInstance::doAttackFromDefense()
     Creature* attacker = nullptr;
     Creature* defender = nullptr;
     setSides(attacker, defender);
-
+	defender->addAndResetBonusDice();
     if (defender->getHasOffense() == false) {
         m_currentState = eCombatState::AttackFromDefense;
         return;
     }
     int reachCost = calcReachCost(defender, true);
     outputReachCost(reachCost, defender, true);
-    defender->addAndResetBonusDice();
     outputOffense(defender);
 
     m_currentState = eCombatState::Resolution;
@@ -365,7 +366,7 @@ void CombatInstance::doDefense()
     const Weapon* defendingWeapon = getDefendingWeapon(defender);
 
     if (defend.manuever == eDefensiveManuevers::ParryLinked) {
-        writeMessage(defender->getName() + " performs a block and strike with "
+        writeMessage(defender->getName() + " performs a Masterstrike with "
             + defendingWeapon->getName() + " using " + to_string(defend.dice) + " action points");
         m_currentState = eCombatState::ParryLinked;
         return;
@@ -390,8 +391,7 @@ void CombatInstance::doParryLinked()
     }
     Offense offense = defender->getQueuedOffense();
 
-    writeMessage(defender->getName() + " prepares to attack with " + offense.component->getName()
-        + " at " + hitLocationToString(offense.target));
+	outputOffense(defender);
     m_currentState = eCombatState::Resolution;
 }
 
@@ -407,12 +407,12 @@ void CombatInstance::doStealInitiative()
     // do dice to steal initiative first
     // this polls for offense since the initiative steal is stored inside the
     // defense struct
-
+	defender->addAndResetBonusDice();
     if (defender->getHasOffense() == false) {
         m_currentState = eCombatState::StealInitiative;
         return;
     }
-
+	
     writeMessage(defender->getName() + " attempts to steal intiative using "
         + to_string(defend.dice) + " action points!");
 
@@ -677,8 +677,7 @@ void CombatInstance::doResolution()
                 }
                 int BTN = linked == true ? defender->getBTN() : defender->getDisadvantagedBTN();
 
-                MoS = (-MoS);
-                int linkedOffenseMoS = DiceRoller::rollGetSuccess(BTN, MoS + 1);
+                int linkedOffenseMoS = DiceRoller::rollGetSuccess(BTN, offense.dice);
                 cout << "Linked hits: " << linkedOffenseMoS << endl;
 
                 if (linkedOffenseMoS > 0
@@ -689,6 +688,7 @@ void CombatInstance::doResolution()
             }
             if (defend.manuever == eDefensiveManuevers::Counter
                 || defend.manuever == eDefensiveManuevers::Reverse) {
+				offenseSuccesses += 2;
                 cout << "bonus: " << offenseSuccesses << endl;
                 defender->setBonusDice(offenseSuccesses);
                 writeMessage(defender->getName() + " receives " + to_string(offenseSuccesses)

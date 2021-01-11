@@ -8,8 +8,8 @@
         "inventory": []
     },
     "veteranknight": {
-        "name": "Veteran Knight",
-        "description": "The veteran knight is a knight that has seen many battles, and has been able to afford a full suit of articulated Gothic Plate armor.\n\nRecommended Proficiencies: Polearms, Brawling.\n\nDifficulty: Very Easy",
+        "name": "Lord",
+        "description": "The lord is a knight that has seen many battles, and has been able to afford a full suit of articulated Gothic Plate armor.\n\nRecommended Proficiencies: Polearms, Brawling.\n\nDifficulty: Very Easy",
         "armor": [2040, 2044, 2079, 2080, 2081, 2082, 2083, 2084, 2085, 2086, 2087, 2088, 2089, 2056],
         "weapon": 1040,
         "quickdraw": [1041, 1053],
@@ -34,7 +34,7 @@
         "description": "The duelist is a upper class citizen who lives for individual combat. Comes with civilian duelling weapons, such as the rapier.\n\nRecommended Proficiencies: Swords, Brawling.\n\nDifficulty: Hard",
         "armor": [2040, 2044, 2046],
         "quickdraw": [1041],
-        "weapon": 1053
+        "weapon": 1054
     },
     "militia": {
         "name": "Militia",

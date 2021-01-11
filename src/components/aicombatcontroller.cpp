@@ -1,8 +1,8 @@
 #include <iostream>
 #include <queue>
 
-#include "../3rdparty/random.hpp"
-#include "../items/utils.h"
+#include "3rdparty/random.hpp"
+#include "items/utils.h"
 #include "aicombatcontroller.h"
 #include "combatinstance.h"
 #include "combatmanager.h"
@@ -106,7 +106,7 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
         && instance->getDefender()->getId() == creatureId) {
         // do not pay costs
         doOffense(
-            controlledCreature, instance->getAttacker(), reachCost, instance, false, false, false);
+            controlledCreature, instance->getAttacker(), reachCost, instance, false, false, true);
         return;
     }
 
@@ -243,6 +243,12 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             if (weapon->getBestAttack()->getAttack() == eAttacks::Thrust) {
                 damage += 1;
             }
+            // thrust is better on steal init
+            if (controlledCreature->getHasDefense()
+                && controlledCreature->getQueuedDefense().manuever
+                    == eDefensiveManuevers::StealInitiative) {
+                damage += 1;
+            }
             damage = damage + cFuzz;
             priority += random_static::get(damage, damage + cFuzz);
         } break;
@@ -262,6 +268,12 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             // killshot
             int damage = component->getDamage() - AV;
             damage = damage + cFuzz;
+            // thrust is better on steal init
+            if (controlledCreature->getHasDefense()
+                && controlledCreature->getQueuedDefense().manuever
+                    == eDefensiveManuevers::StealInitiative) {
+                damage += 1;
+            }
             priority += random_static::get(damage, damage + cFuzz);
             priority += target->primaryWeaponDisabled() ? 2 : 0;
             priority += (controlledCreature->getCombatPool() - target->getCombatPool()) / 2;
@@ -293,13 +305,15 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
                     && controlledCreature->getQueuedDefense().manuever
                         == eDefensiveManuevers::StealInitiative) {
                     priority += random_static::get(0, controlledCreature->getCombatPool());
-					if (controlledCreature->getCombatPool() > 7 && allin) {
-						priority += 50;
-					}
+                    if (controlledCreature->getCombatPool() > 7 && allin) {
+                        priority += 10;
+                    }
                 }
                 priority += random_static::get(0, cFuzz);
                 // do this if we have enough die for a knockdown
-                if (controlledCreature->getCombatPool() > target->getCombatPool() + 5) {
+                // never do a hook if we can't afford to get enough MoS for knockdown
+                if (controlledCreature->getCombatPool() > target->getCombatPool() + 5
+                    && controlledCreature->getCombatPool() > 8) {
                     priority *= 2;
                 }
             }
@@ -455,7 +469,7 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
                         - random_static::get(0, diceAllocated / 4),
                     controlledCreature->getCombatPool());
                 if (attack == eOffensiveManuevers::Hook) {
-                    dice = dice / 2;
+                    dice = dice + 1 / 2;
                 }
                 dice = max(dice, 3);
                 toPush.dice = dice;
@@ -685,7 +699,7 @@ bool AICombatController::stealInitiative(
     float myDisadvantage = (maxDiff - (controlledCreature->getBTN() - cBaseBTN)) / maxDiff;
 
     // make sure this is enough for an attack + overcoming advantage
-    int bufferDie = random_static::get(2, 6);
+    int bufferDie = random_static::get(3, 7);
     int reachCost = max(attacker->getCurrentReach() - controlledCreature->getCurrentReach(), 0);
     bufferDie += reachCost + cost;
     if ((combatPool) + bufferDie
@@ -695,7 +709,7 @@ bool AICombatController::stealInitiative(
         mult += (controlledCreature->getBTN() - cBaseBTN) / 10.f;
         cout << mult << endl;
         int diff = attacker->getCombatPool() * mult;
-        int dice = diff + random_static::get(3, 7) + getTap(attacker->getMobility())
+        int dice = diff + random_static::get(3, 8) + getTap(attacker->getMobility())
             - getTap(controlledCreature->getMobility());
         if (controlledCreature->getCombatPool() - bufferDie >= dice) {
             outDie = dice;
@@ -726,11 +740,11 @@ eHitLocations AICombatController::getBestHitLocation(
             }
         }
 
-
         int damage = component->getDamage() - segment.AV;
-		if (component->hasProperty(eWeaponProperties::Crushing) && location == eHitLocations::Head) {
-			damage++;
-		}
+        if (component->hasProperty(eWeaponProperties::Crushing)
+            && location == eHitLocations::Head) {
+            damage++;
+        }
         if (damage > highestDamage) {
             highestDamage = damage;
             ret = location;

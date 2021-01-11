@@ -60,7 +60,7 @@ std::string defensiveManueverToString(eDefensiveManuevers manuever)
     case eDefensiveManuevers::Counter:
         return "Riposte";
     case eDefensiveManuevers::ParryLinked:
-        return "Block and Strike";
+        return "Masterstrike";
     case eDefensiveManuevers::StealInitiative:
         return "Steal Initiative";
     case eDefensiveManuevers::AttackFromDef:

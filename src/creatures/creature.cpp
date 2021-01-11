@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "../3rdparty/random.hpp"
-#include "../dice.h"
-#include "../items/utils.h"
+#include "3rdparty/random.hpp"
+#include "dice.h"
+#include "items/utils.h"
 #include "creature.h"
 
 using namespace std;
@@ -439,7 +439,7 @@ int Creature::getMaxCombatPool()
 
 void Creature::addAndResetBonusDice()
 {
-    m_currentOffense.dice += m_bonusDice;
+    m_combatPool += m_bonusDice;
     m_bonusDice = 0;
 }
 

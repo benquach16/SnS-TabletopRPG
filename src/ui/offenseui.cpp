@@ -18,7 +18,7 @@ void OffenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, Creature
         doChooseWeapon(hasKeyEvents, event, player);
         break;
     case eUiState::ChooseManuever:
-        doManuever(hasKeyEvents, event, player, instance, linkedParry);
+        doManuever(hasKeyEvents, event, player, instance);
         break;
     case eUiState::ChooseFeint:
         doFeint(hasKeyEvents, event, player);
@@ -30,7 +30,7 @@ void OffenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, Creature
         doDice(hasKeyEvents, event, player);
         break;
     case eUiState::ChooseTarget:
-        doTarget(hasKeyEvents, event, player, linkedParry, target);
+        doTarget(hasKeyEvents, event, player, target);
         break;
     case eUiState::InspectTarget:
         doInspect(hasKeyEvents, event, target);
@@ -97,8 +97,8 @@ void OffenseUI::doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* playe
     }
 }
 
-void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player,
-    const CombatInstance* instance, bool linkedParry)
+void OffenseUI::doManuever(
+    bool hasKeyEvents, sf::Event event, Player* player, const CombatInstance* instance)
 {
     UiCommon::drawTopPanel();
 
@@ -106,8 +106,8 @@ void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player,
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
     bool withPrimaryWeapon = player->getQueuedOffense().withPrimaryWeapon;
-    map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(player, withPrimaryWeapon,
-        instance->getCurrentReach(), instance->getInGrapple(), linkedParry == false);
+    map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(
+        player, withPrimaryWeapon, instance->getCurrentReach(), instance->getInGrapple(), true);
 
     string str = "Choose attack:\n";
     map<char, std::pair<eOffensiveManuevers, int>> indices;
@@ -334,7 +334,7 @@ void OffenseUI::doDice(bool hasKeyEvents, sf::Event event, Player* player)
 }
 
 void OffenseUI::doTarget(
-    bool hasKeyEvents, sf::Event event, Player* player, bool linkedParry, Creature* target)
+    bool hasKeyEvents, sf::Event event, Player* player, Creature* target)
 {
     UiCommon::drawTopPanel();
 
@@ -361,14 +361,6 @@ void OffenseUI::doTarget(
             if (player->getQueuedOffense().manuever == eOffensiveManuevers::PinpointThrust
                 && m_currentState == eUiState::ChooseDice) {
                 m_currentState = eUiState::PinpointThrust;
-                return;
-            }
-            // the uistate comparision is a hacky way to repurpose it
-            if (linkedParry == true && m_currentState == eUiState::ChooseDice) {
-                player->setOffenseDice(0);
-                m_currentState = eUiState::Finished;
-                // linked parry so set flag
-                player->setOffenseReady();
                 return;
             }
         }
