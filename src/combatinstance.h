@@ -107,6 +107,8 @@ private:
     void outputOffense(const Creature* creature);
     void outputDefense(const Creature* creature);
     void changeReachTo(const Creature* creature);
+	int getAttackTN(const Creature* creature);
+	int getDefendTN(const Creature* creature);
 
     void switchInitiative()
     {

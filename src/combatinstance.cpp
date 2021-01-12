@@ -212,12 +212,12 @@ bool CombatInstance::doOffense()
     Creature* defender = nullptr;
     setSides(attacker, defender);
 
-	attacker->addAndResetBonusDice();
+    attacker->addAndResetBonusDice();
     if (attacker->getHasOffense() == false) {
         m_currentState = eCombatState::Offense;
         return false;
     }
-	
+
     int reachCost = calcReachCost(attacker, true);
     outputReachCost(reachCost, attacker, true);
     outputOffense(attacker);
@@ -329,7 +329,7 @@ void CombatInstance::doAttackFromDefense()
     Creature* attacker = nullptr;
     Creature* defender = nullptr;
     setSides(attacker, defender);
-	defender->addAndResetBonusDice();
+    defender->addAndResetBonusDice();
     if (defender->getHasOffense() == false) {
         m_currentState = eCombatState::AttackFromDefense;
         return;
@@ -391,7 +391,7 @@ void CombatInstance::doParryLinked()
     }
     Offense offense = defender->getQueuedOffense();
 
-	outputOffense(defender);
+    outputOffense(defender);
     m_currentState = eCombatState::Resolution;
 }
 
@@ -407,12 +407,12 @@ void CombatInstance::doStealInitiative()
     // do dice to steal initiative first
     // this polls for offense since the initiative steal is stored inside the
     // defense struct
-	defender->addAndResetBonusDice();
+    defender->addAndResetBonusDice();
     if (defender->getHasOffense() == false) {
         m_currentState = eCombatState::StealInitiative;
         return;
     }
-	
+
     writeMessage(defender->getName() + " attempts to steal intiative using "
         + to_string(defend.dice) + " action points!");
 
@@ -518,8 +518,8 @@ void CombatInstance::doResolution()
         }
 
         cout << "attack roll" << endl;
-        int attackerSuccesses
-            = DiceRoller::rollGetSuccess(attacker->getBTN(), attacker->getQueuedOffense().dice);
+        int tn = getAttackTN(attacker);
+        int attackerSuccesses = DiceRoller::rollGetSuccess(tn, attacker->getQueuedOffense().dice);
 
         bool wasStanding = defender->getStance() == eCreatureStance::Standing;
         bool wasGrappled = false;
@@ -568,8 +568,8 @@ void CombatInstance::doResolution()
             m_currentState = eCombatState::Offense;
 
         } else {
-            int defendSuccesses
-                = DiceRoller::rollGetSuccess(defender->getBTN(), defender->getQueuedOffense().dice);
+            int tn = getAttackTN(defender);
+            int defendSuccesses = DiceRoller::rollGetSuccess(tn, defender->getQueuedOffense().dice);
             if (defendSuccesses > 0) {
                 if (defender->getQueuedOffense().manuever != eOffensiveManuevers::Grab) {
                     if (inflictWound(
@@ -622,8 +622,10 @@ void CombatInstance::doResolution()
             keenDifference = max(0, keenDifference);
             defend.dice -= keenDifference;
         }
-        int offenseSuccesses = DiceRoller::rollGetSuccess(attacker->getBTN(), attack.dice);
-        int defenseSuccesses = DiceRoller::rollGetSuccess(defender->getBTN(), defend.dice);
+        int tn = getAttackTN(attacker);
+        int offenseSuccesses = DiceRoller::rollGetSuccess(tn, attack.dice);
+        const Weapon* defendWeapon = getDefendingWeapon(defender);
+        int defenseSuccesses = DiceRoller::rollGetSuccess(defendWeapon->getGuardTN(), defend.dice);
 
         int MoS = offenseSuccesses - defenseSuccesses;
         cout << MoS << endl;
@@ -675,7 +677,9 @@ void CombatInstance::doResolution()
                         linked = true;
                     }
                 }
-                int BTN = linked == true ? defender->getBTN() : defender->getDisadvantagedBTN();
+                const Component* component = offense.component;
+                int tn = getAttackTN(defender);
+                int BTN = linked == true ? tn : getDisadvantagedTN(tn);
 
                 int linkedOffenseMoS = DiceRoller::rollGetSuccess(BTN, offense.dice);
                 cout << "Linked hits: " << linkedOffenseMoS << endl;
@@ -688,7 +692,7 @@ void CombatInstance::doResolution()
             }
             if (defend.manuever == eDefensiveManuevers::Counter
                 || defend.manuever == eDefensiveManuevers::Reverse) {
-				offenseSuccesses += 2;
+                offenseSuccesses += 2;
                 cout << "bonus: " << offenseSuccesses << endl;
                 defender->setBonusDice(offenseSuccesses);
                 writeMessage(defender->getName() + " receives " + to_string(offenseSuccesses)
@@ -717,8 +721,10 @@ void CombatInstance::doDualOffenseResolve()
     Offense attack = m_side1->getQueuedOffense();
     Offense attack2 = m_side2->getQueuedOffense();
 
-    int MoS = DiceRoller::rollGetSuccess(m_side1->getBTN(), attack.dice);
-    int MoS2 = DiceRoller::rollGetSuccess(m_side2->getBTN(), attack2.dice);
+    int tn1 = getAttackTN(m_side1);
+    int tn2 = getAttackTN(m_side2);
+    int MoS = DiceRoller::rollGetSuccess(tn1, attack.dice);
+    int MoS2 = DiceRoller::rollGetSuccess(tn2, attack2.dice);
 
     // resolve both
     bool death = false;
@@ -863,7 +869,7 @@ void CombatInstance::doEndCombat()
     m_side1->clearCreatureManuevers();
     m_side2->clearCreatureManuevers();
     m_side1->enableWeapon();
-	m_side2->enableWeapon();
+    m_side2->enableWeapon();
     m_side1 = nullptr;
     m_side2 = nullptr;
     m_currentState = eCombatState::Uninitialized;
@@ -1332,6 +1338,22 @@ const Weapon* CombatInstance::getDefendingWeapon(const Creature* creature)
                                                                   : creature->getSecondaryWeapon();
 }
 
+int CombatInstance::getAttackTN(const Creature* creature)
+{
+    int tn = getAttackingWeapon(creature)->getBaseTN();
+    if (creature->getQueuedOffense().component != nullptr) {
+        tn = creature->getQueuedOffense().component->getTN();
+    }
+    return tn;
+}
+
+int CombatInstance::getDefendTN(const Creature* creature)
+{
+    const Weapon* defendWeapon = getDefendingWeapon(creature);
+    assert(defendWeapon != nullptr);
+    return defendWeapon->getGuardTN();
+}
+
 eLength CombatInstance::getEffectiveReach(const Creature* creature)
 {
     return creature->getQueuedOffense().withPrimaryWeapon == true
@@ -1343,19 +1365,17 @@ void CombatInstance::changeReachTo(const Creature* creature)
 {
     Offense attack = creature->getQueuedOffense();
     eLength effectiveReach = getEffectiveReach(creature);
-	if (m_inGrapple == false) {
-		switch (attack.manuever) {
-		case eOffensiveManuevers::NoOffense:
-		case eOffensiveManuevers::Beat:
-			return;
-		case eOffensiveManuevers::Grab:
-			m_currentReach = eLength::Hand;
-		default:
-			m_currentReach = effectiveReach;
-		}
-	}
-	else {
-		m_currentReach = eLength::Hand;
-	}
-
+    if (m_inGrapple == false) {
+        switch (attack.manuever) {
+        case eOffensiveManuevers::NoOffense:
+        case eOffensiveManuevers::Beat:
+            return;
+        case eOffensiveManuevers::Grab:
+            m_currentReach = eLength::Hand;
+        default:
+            m_currentReach = effectiveReach;
+        }
+    } else {
+        m_currentReach = eLength::Hand;
+    }
 }

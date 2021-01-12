@@ -26,11 +26,16 @@ std::string weaponTypeToString(eWeaponTypes type);
 
 std::string weaponPropToString(eWeaponProperties prop);
 
+std::string tnToString(int tn);
+
 eItemType stringToItemType(const std::string& str);
 
 eGrips stringToGrip(const std::string& str);
 
 std::string gripToString(eGrips grip);
+
+int getDisadvantagedTN(int tn);
+int getAdvantagedTN(int tn);
 
 inline int operator-(eLength length1, eLength length2)
 {

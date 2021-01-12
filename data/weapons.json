@@ -14,14 +14,14 @@
         "components": [
             {
                 "name": "Queue, Thrust",
-                "damage": 1,
+                "damage": 0,
                 "type": "piercing",
                 "properties": [ "maillepiercing", "defensive" ],
                 "attack": "thrust"
             },
             {
                 "name": "Queue, Swing",
-                "damage": 2,
+                "damage": 1,
                 "type": "blunt",
                 "properties": [ "defensive" ],
                 "attack": "swing"
@@ -41,14 +41,14 @@
         "components": [
             {
                 "name": "Queue, Thrust",
-                "damage": 1,
-                "type": "piercing",
+                "damage": 0,
+                "type": "blunt",
                 "properties": [ "defensive" ],
                 "attack": "thrust"
             },      
             {
                 "name": "Queue, Swing",
-                "damage": 2,
+                "damage": 1,
                 "type": "blunt",
                 "properties": [ "defensive" ],
                 "attack": "swing"
@@ -74,7 +74,8 @@
             },      
             {
                 "name": "Crossguard",
-                "damage": 1,
+                "damage": 2,
+                "tn": 6,
                 "type": "blunt",
                 "attack": "swing",
                 "properties": [ "crushing" ]

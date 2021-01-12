@@ -38,10 +38,10 @@ std::string offensiveManueverToString(eOffensiveManuevers manuever)
         return "Draw Cut";
     case eOffensiveManuevers::HeavyBlow:
         return "Heavy Blow";
-	case eOffensiveManuevers::Gouge:
-		return "Gouge";
-	case eOffensiveManuevers::Strangle:
-		return "Strangle";
+    case eOffensiveManuevers::Gouge:
+        return "Gouge";
+    case eOffensiveManuevers::Strangle:
+        return "Strangle";
     default:
         assert(false);
         return "";
@@ -199,6 +199,25 @@ std::string weaponTypeToString(eWeaponTypes type)
     }
 }
 
+std::string tnToString(int tn)
+{
+    switch (tn) {
+    case 9:
+        return "Nonexistent";
+    case 8:
+        return "Lumbering";
+    case 7:
+        return "Slow";
+    case 6:
+        return "Average";
+    case 5:
+        return "Nimble";
+    case 4:
+        return "Fast";
+    }
+    return "";
+}
+
 std::string weaponPropToString(eWeaponProperties prop)
 {
     switch (prop) {
@@ -283,6 +302,10 @@ int getGripChangeCost(bool isLastTempo)
     }
     return 0;
 }
+
+int getDisadvantagedTN(int tn) { return std::min(cMaxBTN, tn + 1); }
+
+int getAdvantagedTN(int tn) { return std::max(cMinBTN, tn - 1); }
 
 int getFeintCost() { return 2; }
 
@@ -413,8 +436,8 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* crea
             eOffensiveManuevers::Disarm, grip, effectiveReach, currentReach, payReach);
         eWeaponTypes type = weapon->getType();
         // don't need to do mordhau if doing a pommel strike
-        if (type == eWeaponTypes::Swords
-            || type == eWeaponTypes::Longswords && weapon->isSecondary() == false) {
+        if ((type == eWeaponTypes::Swords || type == eWeaponTypes::Longswords)
+            && weapon->isSecondary() == false) {
             ret[eOffensiveManuevers::Mordhau] = getOffensiveManueverCost(
                 eOffensiveManuevers::Mordhau, grip, effectiveReach, currentReach, payReach);
         }

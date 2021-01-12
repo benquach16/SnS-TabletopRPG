@@ -2,10 +2,10 @@
 #include <queue>
 
 #include "3rdparty/random.hpp"
-#include "items/utils.h"
 #include "aicombatcontroller.h"
 #include "combatinstance.h"
 #include "combatmanager.h"
+#include "items/utils.h"
 
 using namespace std;
 using namespace effolkronium;
@@ -106,7 +106,7 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
         && instance->getDefender()->getId() == creatureId) {
         // do not pay costs
         doOffense(
-            controlledCreature, instance->getAttacker(), reachCost, instance, false, false, true);
+            controlledCreature, instance->getAttacker(), reachCost, instance, true, false, true);
         return;
     }
 
@@ -256,7 +256,9 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             // only used for bypassing armor
             eHitLocations location;
             eBodyParts part;
-            target->getLowestArmorPart(&part, &location);
+            bool inAltGrip = controlledCreature->getGrip() == eGrips::Staff
+                || controlledCreature->getGrip() == eGrips::HalfSword;
+            target->getLowestArmorPart(inAltGrip, &part, &location);
             component = weapon->getBestThrust();
             int AV = target->getArmorAtPart(part).AV;
             if (target->getArmorAtPart(part).isMetal
@@ -478,10 +480,12 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
         case eDefensiveManuevers::ParryLinked: {
             constexpr int buffer = 3;
             // for now don't do this until we figure out reach costs for compound defenses
-            if (diceAllocated + buffer < controlledCreature->getCombatPool()) {
-                if (isLastTempo) {
-                    // priority += 10;
-                }
+            if (diceAllocated < controlledCreature->getCombatPool() / 2 && isLastTempo == false) {
+                priority += 10;
+                priority -= reachCost;
+                toPush.dice = diceAllocated + random_static::get(2, 4);
+            } else {
+                priority = cLowestPriority;
             }
         }
 

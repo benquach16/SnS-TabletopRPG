@@ -1,9 +1,9 @@
 #include <iostream>
 
 #include "3rdparty/random.hpp"
+#include "creature.h"
 #include "dice.h"
 #include "items/utils.h"
-#include "creature.h"
 
 using namespace std;
 using namespace effolkronium;
@@ -586,20 +586,26 @@ bool Creature::hasEnoughMetalArmor() const
     return total == m_hitLocations.size();
 }
 
-void Creature::getLowestArmorPart(eBodyParts* pPartOut, eHitLocations* pHitOut) const
+void Creature::getLowestArmorPart(
+    bool inAltGrip, eBodyParts* pPartOut, eHitLocations* pHitOut) const
 {
     int lowestAV = -1;
     for (auto location : getHitLocations()) {
         vector<eBodyParts> parts = WoundTable::getSingleton()->getUniqueParts(location);
         for (auto part : parts) {
             // ignore the secondpart arm/head
-            if (part != eBodyParts::SecondLocationArm && part != eBodyParts::SecondLocationHead) {
-                ArmorSegment segment = getArmorAtPart(part);
-                if (lowestAV == -1 || segment.AV < lowestAV) {
-                    *pHitOut = location;
-                    *pPartOut = part;
-                    lowestAV = segment.AV;
-                }
+            if (part == eBodyParts::SecondLocationArm || part == eBodyParts::SecondLocationHead) {
+                continue;
+            }
+			if (inAltGrip && (part == eBodyParts::Armpit || part == eBodyParts::Elbow)) {
+				continue;
+			}
+            ArmorSegment segment = getArmorAtPart(part);
+
+            if (lowestAV == -1 || segment.AV < lowestAV) {
+                *pHitOut = location;
+                *pPartOut = part;
+                lowestAV = segment.AV;
             }
         }
     }

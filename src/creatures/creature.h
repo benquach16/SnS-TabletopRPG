@@ -32,7 +32,7 @@
 
 // testing this
 static constexpr int cBaseBTN = 6;
-static constexpr int cMinBTN = 5;
+static constexpr int cMinBTN = 4;
 static constexpr int cMaxBTN = 10;
 // different based on race
 static constexpr int cBaseBloodLoss = 8;
@@ -240,7 +240,7 @@ public:
 
     bool hasEnoughMetalArmor() const;
 
-    void getLowestArmorPart(eBodyParts* pPartOut, eHitLocations* pHitOut) const;
+    void getLowestArmorPart(bool inAltGrip, eBodyParts* pPartOut, eHitLocations* pHitOut) const;
 
     CreatureId getId() const { return m_id; }
 
