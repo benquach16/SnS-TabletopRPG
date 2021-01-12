@@ -336,6 +336,10 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
                 priority += 20;
             }
         } break;
+		case eOffensiveManuevers::Snap: {
+			// temporary
+			priority += 10;
+		}
         }
 
         toPush.priority = priority;
@@ -460,6 +464,8 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
         toPush.cost = it.second;
         toPush.dice = 0;
         switch (it.first) {
+		case eDefensiveManuevers::Resist:
+			// resist and parry are basically the same
         case eDefensiveManuevers::Parry: {
             if (weapon->getNaturalWeapon()) {
                 priority -= random_static::get(0, 3);

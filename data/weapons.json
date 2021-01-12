@@ -69,7 +69,7 @@
             {
                 "name": "Pommel",
                 "damage": 1,
-                "type": "piercing",
+                "type": "blunt",
                 "attack": "thrust"
             },      
             {

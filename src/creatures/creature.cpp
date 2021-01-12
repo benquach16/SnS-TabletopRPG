@@ -434,6 +434,8 @@ int Creature::getMaxCombatPool()
     if (m_currentStance == eCreatureStance::Prone) {
         combatPool = (combatPool + 1) / 2;
     }
+	constexpr int minCombatPool = 4;
+	combatPool = max(combatPool, minCombatPool);
     return max(combatPool, 0);
 }
 

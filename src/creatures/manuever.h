@@ -24,7 +24,7 @@ struct Offense : public Manuever {
     eBodyParts pinpointTarget;
     // const Weapon* weapon;
     bool withPrimaryWeapon = true;
-    const Component* component;
+    const Component* component = nullptr;
 
     void reset() override
     {

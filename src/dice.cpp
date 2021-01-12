@@ -6,6 +6,17 @@ using namespace std;
 
 namespace DiceRoller {
 constexpr int cMaxSuccesses = 7;
+
+#ifdef TRUE_RANDOM
+int roll() { return effolkronium::random_static::get(1, cDiceSides); }
+#else
+int roll()
+{
+    return effolkronium::basic_random_static<std::mt19937, effolkronium::seeder_default>::get(
+        1, cDiceSides);
+}
+#endif
+
 std::vector<int> roll(int number, int sides)
 {
     std::vector<int> ret;

@@ -1340,6 +1340,7 @@ const Weapon* CombatInstance::getDefendingWeapon(const Creature* creature)
 
 int CombatInstance::getAttackTN(const Creature* creature)
 {
+	assert(creature->getHasOffense());
     int tn = getAttackingWeapon(creature)->getBaseTN();
     if (creature->getQueuedOffense().component != nullptr) {
         tn = creature->getQueuedOffense().component->getTN();
@@ -1349,8 +1350,12 @@ int CombatInstance::getAttackTN(const Creature* creature)
 
 int CombatInstance::getDefendTN(const Creature* creature)
 {
+	assert(creature->getHasDefense());
     const Weapon* defendWeapon = getDefendingWeapon(creature);
-    assert(defendWeapon != nullptr);
+	if (creature->getQueuedDefense().manuever == eDefensiveManuevers::Dodge) {
+		constexpr int cDodgeTn = 7;
+		return cDodgeTn;
+	}
     return defendWeapon->getGuardTN();
 }
 

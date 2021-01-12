@@ -2,7 +2,7 @@
 	"blunt": {
 		"BTN": [7, 7, 8, 9, 10],
 		"impact": [2, 5, 7, 11, 13],
-		"pain": [0, 2, 7, 11, 16],
+		"pain": [0, 2, 7, 12, 17],
 		"crown": {
 			"1": {
 				"text": ["Mild blow to the forehead."],
@@ -38,12 +38,12 @@
 				"pain": 6
 			},
 			"3": {
-				"text": ["Blunt eye trauma, and eye socket bruised", "Broken nose.", "Dislocated jaw, with teeth chipped", "Lower jaw broken and teeth gone."],
+				"text": ["Jaw dislocated, with several teeth broken and eye socket bruised"],
 				"effects": ["KO1"],
 				"pain": 9
 			},
 			"4": {
-				"text": ["Face mangled. Shattered jaw.", "Face mangled. Shattered cheekbone.", "Face mangled. Eye damaged."],
+				"text": ["Jaw and cheekbones are shattered. Mouth won’t close right, can barely speak."],
 				"effects": ["KO2", "BL1"],
 				"pain": 11
 			},
@@ -68,12 +68,12 @@
 				"pain": 8
 			},
 			"4": {
-				"text": ["Face mangled. Shattered jaw.", "Face mangled. Shattered cheekbone.", "Face mangled. Eye damaged."],
+				"text": ["Face mangled. Shattered jaw and broken cheekbone."],
 				"effects": ["KO2", "BL1"],
 				"pain": 10
 			},
 			"5": {
-				"text": ["Blow to the jaw breaks the neck. Death is immediate."],
+				"text": ["Blow completely shatters the jaw, sending teeth and bone flying, and breaks the neck. Dead."],
 				"effects": ["death"],
 				"pain": 15
 			}
@@ -92,7 +92,7 @@
 				"text": ["Windpipe is crushed. It takes everything to breathe."]
 			},
 			"5": {
-				"text": ["Vertebrae in the neck are shattered, contorting the head unnaturally.  Instant death."],
+				"text": ["Vertebrae in the neck are shattered, contorting the head unnaturally. Instant death."],
 				"effects": ["death"]
 			}
 		},
@@ -160,22 +160,22 @@
 		},
 		"forearm": {
 			"1": {
-				"text": ["Minor bump. Barely notice it."]
+				"text": ["Slight pain. Might bruise."]
 			},
 			"2": {
-				"text": ["Arm knocked aside, some bruising."],
+				"text": ["Bruising on forearm."],
 				"effects": ["drop1"]
 			},
 			"3": {
-				"text": ["Brutal blow knocks arm aside. Sudden movements are painful"],
+				"text": ["Forearm swells up, while stinging pain shoots up to fingers."],
 				"effects": ["drop3"]
 			},
 			"4": {
-				"text": ["Radius fractured with blinding pain."],
+				"text": ["Forearm has an open fracture. Broken bone pushes against skin uncomfortably."],
 				"effects": ["drop3"]
 			},
 			"5": {
-				"text": ["Open compound fracture with severed blood veseels."],
+				"text": ["Forearm bent at an unnatural angle. Bone pokes out through the wound."],
 				"effects": ["drop", "BL2"]
 			}
 		},
@@ -189,15 +189,15 @@
 				"effects": ["drop2"]
 			},
 			"3": {
-				"text": ["Fingers smashed."],
+				"text": ["Fingers feel fractured, and don’t move right."],
 				"effects": ["drop3"]
 			},
 			"4": {
-				"text": ["Hand or wrist mangled with some fingers disabled."],
+				"text": ["Fingers are broken, scaphoid isn’t doing much better."],
 				"effects": ["drop"]
 			},
 			"5": {
-				"text": ["Hand completely crushed."],
+				"text": ["Hand crushed and bones ground into dust. Hand flops unnaturally."],
 				"effects": ["drop"]
 			}
 		},
@@ -228,7 +228,7 @@
 				"text": ["Solid blow, minor brusing."]
 			},
 			"3": {
-				"text": ["Knocks out the wind. Bad brusing. Taking deep breaths is going to be painful for a while."]
+				"text": ["Knocks the wind out of you. Breath becomes raspy."]
 			},
 			"4": {
 				"text": ["A few ribs fractured. Every breath sends sharp pain throughout your body."],
@@ -244,10 +244,10 @@
 				"text": ["Bump."]
 			},
 			"2": {
-				"text": ["Blow to the gut forces to bend over."]
+				"text": ["Blow causes you to double over, but no internal organ damage."]
 			},
 			"3": {
-				"text": ["Knocks out the wind. Bad bruising and concussed organs."],
+				"text": ["Nausea hits hard. Bile bubbles up in your mouth. It takes everything to remain standing."],
 				"effects": ["KD2", "KO1"]
 			},
 			"4": {
@@ -264,10 +264,10 @@
 				"text": ["Bump."]
 			},
 			"2": {
-				"text": ["Solid blow leaves a bruise."]
+				"text": ["Solid blow leaves a bruise, but bone does its job."]
 			},
 			"3": {
-				"text": ["Bad bruising and abdominal pain."],
+				"text": ["Heavy blow throws you off balance. Hip is heavily inflamed."],
 				"effects": ["KD1"]
 			},
 			"4": {
@@ -284,7 +284,7 @@
 				"text": ["Minor bump."]
 			},
 			"2": {
-				"text": ["Some bruising."],
+				"text": ["Painful blow, but organs still functional."],
 				"effects": ["KD1"]
 			},
 			"3": {
@@ -308,15 +308,15 @@
 				"text": ["Solid blow. Will leave a bruise."]
 			},
 			"3": {
-				"text": ["Minor fracture in the femur. Some swelling."],
+				"text": ["Femur is fractured. Putting weight on the leg is extremely painful."],
 				"effects": ["KD1"]
 			},
 			"4": {
-				"text": ["Broken femur with bad swelling."],
+				"text": ["Femur is broken in multiple locations. Broken bones push up against skin."],
 				"effects": ["KD3"]
 			},
 			"5": {
-				"text": ["Open femur fracture with sharp bone ends showing through tissue."],
+				"text": ["Femur annihilated. Leg bends at unnatural angle with bone sticking out of wound."],
 				"effects": ["KD", "BL2"]
 			}
 		},
@@ -325,19 +325,19 @@
 				"text": ["Thump."]
 			},
 			"2": {
-				"text": ["Solid blow creates a buzzing sensation in the joint."],
+				"text": ["Some bruising along the kneecap. Stings every so often."],
 				"effects": ["KD1"]
 			},
 			"3": {
-				"text": ["Concussed knee and minor ruptures. Some swelling."],
+				"text": ["Completely swollen, the pain makes it hard to stand."],
 				"effects": ["KD2"]
 			},
 			"4": {
-				"text": ["Closed knee fracture. Causes limp due to chipped bone and torn tendons."],
+				"text": ["Kneecap is fractured by the blow. Will cause a limp."],
 				"effects": ["KD3"]
 			},
 			"5": {
-				"text": ["Knee shattered beyond repair. Leg unstable and can't stand."],
+				"text": ["Knee shattered. Lower leg flops around with no kneecap to brace it."],
 				"effects": ["KD", "BL1"]
 			}
 		},
@@ -353,11 +353,11 @@
 				"effects": ["KD1"]
 			},
 			"4": {
-				"text": ["Closed shin bone fracture with bad swelling."],
+				"text": ["Shin broken. Bone fragments are visible through the skin."],
 				"effects": ["KD2"]
 			},
 			"5": {
-				"text": ["Shin bends into an unnatural shape with sharp bone fragments poking out.."],
+				"text": ["Shin nearly folds in half. Sharp bone fragments poke out while foot is perpendicular to ground."],
 				"effects": ["BL1", "KD"]
 			}
 		},
@@ -373,11 +373,11 @@
 				"effects": ["KD2", "KO1"]
 			},
 			"4": {
-				"text": ["Some toes smashed."],
+				"text": ["Toes broken. Balance is seriously compromised."],
 				"effects": ["KD2"]
 			},
 			"5": {
-				"text": ["Foot completely smashed."],
+				"text": ["Foot completely smashed. Bones fragments are floating and no longer attached by tendons."],
 				"effects": ["KD", "BL1"]
 			}
 		}
@@ -385,25 +385,25 @@
 	"piercing": {
 		"BTN": [7, 8, 9, 10, 10],
 		"impact": [1, 3, 4, 5, 7],
-		"pain": [1, 6, 9, 13, 18],
+		"pain": [1, 6, 9, 14, 18],
 		"crown": {
 			"1": {
 				"text":["Some torn skin, a little blood."]
 			},
 			"2": {
-				"text":["Grazed scalp or temple. Surprising amount of blood."],
+				"text":["Rakes the scalp, but slides off of the skull."],
 				"effects": ["BL1"]
 			},
 			"3": {
-				"text":["Long graze along the skull. Serious bleeding."],
+				"text":["Weapon bites into skull and fractures it. Everything is throbbing and blurry."],
 				"effects":["BL1", "KO1"]
 			},
 			"4": {
-				"text":["Skull is pierced. Brain damaged."],
+				"text":["Point nearly breaks through skull. Brain damage causes immediate knockout."],
 				"effects":["KO"]
 			},
 			"5": {
-				"text":["The brain is pierced. Body goes limp and collapses. Instant death."],
+				"text":["Brain is impaled. Body flops forward onto weapon. Dead."],
 				"effects":["death"]
 			}
 		},
@@ -416,15 +416,15 @@
 				"effects": ["BL1"]
 			},
 			"3": {
-				"text":["Scarring slice on cheekbone."],
+				"text":["Large gash on cheek, as well as fractures to the upper jaw."],
 				"effects":["BL1", "KO1"]
 			},
 			"4": {
-				"text":["Part of the face pierced, but misses the brain. It's bad. Hideous scar on jaw."],
+				"text":["Point smashes through upper jaw and teeth, embedding itself in the roof of the mouth."],
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":["Head pierced through the eye. Body goes limp and collapses. Death is instantaneous."],
+				"text":["Head pierced through eye, weapon visible out of the back of the head. Dead."],
 				"effects":["death"]
 			}
 		},
@@ -441,11 +441,11 @@
 				"effects":["BL1", "KO1"]
 			},
 			"4": {
-				"text":["Jaw completely shattered, many teeth destroyed."],
+				"text":["Jaw completely shattered, many teeth destroyed. Tongue pierced through."],
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":["Brainstem pierced. Death is instantaneous."],
+				"text":["Splits jawbone in two and pierces the brainstem. Death is instantaneous."],
 				"effects":["death"]
 			}
 		},
@@ -457,15 +457,15 @@
 				"text":["Deflected by collarbone. Some blood."]
 			},
 			"3": {
-				"text":["Pierced above the collarbone, missing major blood vessels."],
+				"text":["Weapon dodges windpipe, but nicks an artery along the way."],
 				"effects":["BL1"]
 			},
 			"4": {
-				"text":["Throat is pierced, damaging the windpipe."],
+				"text":["Windpipe ventilated. Vocal cords damaged, and arteries severed. Blood begins to spurt unevenly."],
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":["Throat implaed, neck possibly broken. Death is almost instantaneous."],
+				"text":["Throat pierced, shattering the vertebrae. Blood spurts from gaping hole in neck.  Instant death."],
 				"effects":["death"]
 			}
 		},
@@ -477,15 +477,15 @@
 				"text":["Skids off the shoulder. Stings pretty bad."]
 			},
 			"3": {
-				"text":["Skids off the bone. Not much blood, but hurts."],
+				"text":["Weapon tears through tendon and muscles. Shoulder bone chipped."],
 				"effects":["drop1"]
 			},
 			"4": {
-				"text":["Shoulder pierced."],
+				"text":["Weapon pierces through shoulder socket, blood spurts out."],
 				"effects":["BL2", "drop2"]
 			},
 			"5": {
-				"text":["Shoulder pierced. Bad bleeding."],
+				"text":["Shatters shoulder socket. Bone fragments stick out of wound in a bloody mess."],
 				"effects":["BL2", "drop2"]
 			}
 		},
@@ -501,12 +501,12 @@
 				"effects":["drop1"]
 			},
 			"4": {
-				"text":["Passes through the arm, chipping the bone."],
+				"text":["Point embeds itself in bicep. Hairline fracture on the humerus."],
 				"effects":["BL1", "drop2"]
 			},
 			"5": {
-				"text":["Goes clean through the arm, tearing the flesh. Major blood vessel cut."],
-				"effects":["BL2", "drop2"]
+				"text":["Weapon passes clean through arm, shattering the humerus. Arm limp and useless."],
+				"effects":["BL2", "drop3"]
 			}
 		},
 		"elbow": {
@@ -522,11 +522,11 @@
 				"effects":["drop3"]
 			},
 			"4": {
-				"text":["Pierces elbow area and damages bone. Arm useless until healed."],
-				"effects":["BL1", "drop2"]
+				"text":["Severs almost all the tendons in the arm. Lower arm flops uselessly."],
+				"effects":["BL1", "drop"]
 			},
 			"5": {
-				"text":["Elbow broken. Open frature. Arm useless with a lot of blood."],
+				"text":["Giant hole in elbow that goes out the other side. Arm refuses to move, and bleeds profusely."],
 				"effects":["drop", "BL2"]
 			}
 		},
@@ -547,7 +547,7 @@
 				"effects":["BL1", "drop"]
 			},
 			"5": {
-				"text":["Passes through the arm, spurting blood. Major blood vessel cut."],
+				"text":["Forearm completely opened up, with broken bones visible through wound."],
 				"effects":["BL2", "drop"]
 			}
 		},
@@ -565,11 +565,11 @@
 				"effects":["drop3"]
 			},
 			"4": {
-				"text":["Hand pierced with lots of blood."],
+				"text":["Bone breaks with a sickening crack. Blood begins to flow"],
 				"effects":["drop", "BL1"]
 			},
 			"5": {
-				"text":["Hand pierced. Lost a finger."],
+				"text":["Weapon pierces hole through the palm gushing blood, rendering hand useless"],
 				"effects":["drop", "BL1"]
 			}
 		},
@@ -581,15 +581,15 @@
 				"text":["Long, shallow wound along the ribs."]
 			},
 			"3": {
-				"text":["Most of the softer tissue under in armpit is messed up."],
+				"text":["Pierces flesh under armpit and tears through tendon and muscle."],
 				"effects":["drop1"]
 			},
 			"4": {
-				"text":["Pierces deep, but slides along the ribs and misses major organs."],
+				"text":["Pushes past ribcage to ventilate lung and causes internal bleeding."],
 				"effects":["BL1", "drop2"]
 			},
 			"5": {
-				"text":["Pierced heart. Death is almost instantaneous"],
+				"text":["Tears through lungs and severs important arteries. Massive internal bleeding causes hypovolemic shock."],
 				"effects":["death"]
 			}
 		},
@@ -605,11 +605,11 @@
 				"effects":["BL1"]
 			},
 			"4": {
-				"text":["Punctured lung leads to stabbing pain, shortness of breath and eerie sucking sound with bubbles in the blood."],
+				"text":["Perforates a lung. Hard to breath, and blood bubbles out with every breath."],
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":["Pierced heart. Death is almost instantaneous"],
+				"text":["Weapon forces its way past the rib cage and straight into the heart. Instant death."],
 				"effects":["death"]
 			}
 		},
@@ -621,15 +621,15 @@
 				"text":["Pierces skin and surface fat, passing straight through."]
 			},
 			"3": {
-				"text":["Pierces body without puncturing any major organs. Painful and bleeds hard."],
-				"effects":["BL1"]
+				"text":["Pierces through body, opening the stomach and intestines. Starts internal bleeding."],
+				"effects":["BL2"]
 			},
 			"4": {
-				"text":["Bad puncture with a lot of blood and some internal damage."],
-				"effects":["BL2", "KO2"]
+				"text":["Punctures diaphragm and intestines. It’s bad. Hemorrhaging internally from multiple sources."],
+				"effects":["BL3", "KO2"]
 			},
 			"5": {
-				"text":["Massive organ damage. Death is imminent."],
+				"text":["Liver and intestines completely perforated. Blood pours out and it just won’t stop."],
 				"effects":["death"]
 			}
 		},
@@ -670,7 +670,7 @@
 				"effects":["BL1", "KO2"]
 			},
 			"5": {
-				"text":["Point splits pelvis in two and lands in abdomen, tearing apart all organs and causes fatal bloodloss"],
+				"text":["Point splits pelvis in two and lands in abdomen, tearing apart all organs and causes fatal bloodloss."],
 				"effects":["death"]
 			}
 		},
@@ -686,11 +686,11 @@
 				"effects":["BL1"]
 			},
 			"4": {
-				"text":["Thigh completely pierced. Leg can only support for short amounts of time."],
+				"text":["Weapon strikes femur, fracturing it. Standing becomes difficult."],
 				"effects":["BL1", "KD1"]
 			},
 			"5": {
-				"text":["Inner thigh pierced, femoral artery cut."],
+				"text":["Puncture wound goes straight through thigh, cracking the femur and cutting the femoral artery."],
 				"effects":["BL3", "KD2"]
 			}
 		},
@@ -706,11 +706,11 @@
 				"effects":["BL1", "KO1"]
 			},
 			"4": {
-				"text":["Blow jacks up knee. Causes limp due chipped bone and torn tendons."],
+				"text":["Kneecap fractured, tendons torn. Hard to stand and intense pain radiates outwards."],
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":["Knee fractured, femoral nerve severed. Leg is numb and knee won't lock anymore."],
+				"text":["Kneecap completely broken. Lower leg bends unnaturally."],
 				"effects":["BL1", "KD"]
 			}
 		},
@@ -752,7 +752,7 @@
 				"effects":["BL1", "KD2"]
 			},
 			"5": {
-				"text":["Foot pierced."],
+				"text":["Weapon tears through foot, shattering bone. Several toes are lost."],
 				"effects":["BL2", "KD"]
 			}
 		}
@@ -760,7 +760,7 @@
 	"cutting": {
 		"BTN": [7, 8, 9, 10, 10],
 		"impact": [2, 5, 7, 9, 11],
-		"pain": [1, 6, 10, 14, 19],
+		"pain": [1, 6, 10, 16, 19],
 		"crown": {
 			"1": {
 				"text":["A graze, but nothing serious. Some blood in the hair."]
@@ -770,15 +770,15 @@
 				"effects": ["BL1"]
 			},
 			"3": {
-				"text":["Flap of loose scalp. Dizziness and bleeding.", "Deep cut with skull intact. Dizziness and bleeding."],
+				"text":["Bites into the skull. Blood and a concussion follows."],
 				"effects":["BL1", "KO1"]
 			},
 			"4": {
-				"text":["Cracked skull and a lot of blood. Severe concussion.", "Cracked skull and a lot of blood. Brain damage.", "Cracked skull and a lot of blood. Ear trauma."],
+				"text":["Lodges into the skull and pulls out with considerable blood. Possible brain damage."],
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":["The skull cracks open like an egg, blood spurting high in the air. Instant death."],
+				"text":["Smashes the head and goes straight through the cranium, brains and all. Very dead."],
 				"effects":["death"]
 			}
 		},
@@ -791,15 +791,15 @@
 				"effects": ["BL1"]
 			},
 			"3": {
-				"text":["Ugly scar on forehead."],
+				"text":["Weapon catches eye socket and reaches teeth. Cheekbone fractured"],
 				"effects":["BL1", "KO1"]
 			},
 			"4": {
-				"text":["Face mangled. Shattered jaw."],
+				"text":["Blade shatters cheekbone, travelling through eye and nose and ends inside mouth."],
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":["Cerebellum destroyed in a fountain of blood. Instant death."],
+				"text":["Blade smashes through face, sending bits of bone and teeth everywhere. Instant death."],
 				"effects":["death"]
 			}
 		},
@@ -820,7 +820,7 @@
 				"effects":["BL2", "KO2"]
 			},
 			"5": {
-				"text":["Head almost decapitated above the jaw. Instant death."],
+				"text":["Head almost decapitated above the jaw, hanging on by just a sliver of flesh. Instant death."],
 				"effects":["death"]
 			}
 		},
@@ -837,11 +837,11 @@
 				"effects":["BL2"]
 			},
 			"4": {
-				"text":["Jugular vein cut. Lots of blood."],
+				"text":["Throat mangled. Sucking sound comes from open wound."],
 				"effects":["BL3"]
 			},
 			"5": {
-				"text":["Total or near-total decapitation in a fountain of blood. Instant death."],
+				"text":["Total decapitation results in blood pouring from the stump of the neck. Instant death."],
 				"effects":["death"]
 			}
 		},
@@ -861,8 +861,8 @@
 				"effects":["BL2", "drop2"]
 			},
 			"5": {
-				"text":["Arm severed clean at the shoulder in a spray of blood. Barely a stump remains."],
-				"effects":["BL3"]
+				"text":["Arm completely severed. A fountain of blood paints everything a dark red."],
+				"effects":["BL3", "drop"]
 			}
 		},		
 		"upperarm": {
@@ -877,11 +877,11 @@
 				"effects":["BL1", "drop1"]
 			},
 			"4": {
-				"text":["Blade bites through the muscle and reached bone on the outer arm."],
+				"text":["Weapon cleaves through muscle, breaking the bones underneath. Blood is everywhere."],
 				"effects":["BL1", "drop2"]
 			},
 			"5": {
-				"text":["Arm severed above the elbow in a shower of blood."],
+				"text":["Arm amputated above the elbow. Bone pokes out of the stump."],
 				"effects":["BL2"]
 			}
 		},
@@ -1021,11 +1021,11 @@
 				"effects": ["KD1"]
 			},
 			"4": {
-				"text": ["Blade claves deep. Surface organs annihilated."],
+				"text": ["Swing smashes the hip, fracturing pelvis and compromising balance."],
 				"effects": ["BL2", "KD2"]
 			},
 			"5": {
-				"text": ["Cleaves through the pelvis and reaches the abdomen. Blood pours nonstop. Death is mercifully immediate."],
+				"text": ["Weapon cleaves through hip, reaching the groin. Blood pours unendingly. Dead."],
 				"effects": ["death"]
 			}
 		},
@@ -1042,11 +1042,11 @@
 				"effects": ["KO1"]
 			},
 			"4": {
-				"text": ["Say goodby to reproduction. Lots of blood."],
+				"text": ["Blade cleaves deep. Surface organs annihilated."],
 				"effects": ["BL2", "KO2"]
 			},
 			"5": {
-				"text": ["Weapon almost reaches the navel and is stuck. Death is imminent."],
+				"text": ["Cleaves through the pelvis and reaches abdomen. Blood pours from the wound. Death is mercifully immediate."],
 				"effects": ["death"]
 			}
 		} ,
@@ -1062,12 +1062,12 @@
 				"effects": ["BL1", "KD1"]
 			},
 			"4": {
-				"text": ["Blade bites deep. Femur chipped."],
-				"effects": ["BL2", "KD2"]
+				"text": ["Weapon goes deep and nicks an artery. Blood sprays out."],
+				"effects": ["BL3", "KD2"]
 			},
 			"5": {
-				"text": ["Femur broken with lots of blood. Epic feat of surgery needed to save the leg."],
-				"effects": ["KD", "BL2"]
+				"text": ["Blade reaches past the femur, shattering the bone. Blood flows nonstop."],
+				"effects": ["KD", "BL3"]
 			}
 		},
 		"knee": {

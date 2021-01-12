@@ -61,7 +61,7 @@ void DefenseUI::doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* playe
             if (player->primaryWeaponDisabled()) {
                 Log::push("You cannot use a disabled weapon this tempo!");
             } else {
-                player->setOffenseWeapon(true);
+                player->setDefenseWeapon(true);
                 m_currentState = eUiState::ChooseManuever;
             }
 
@@ -70,7 +70,7 @@ void DefenseUI::doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* playe
             if (player->secondaryWeaponDisabled()) {
                 Log::push("You cannot use a disabled weapon this tempo!");
             } else {
-                player->setOffenseWeapon(false);
+                player->setDefenseWeapon(false);
                 m_currentState = eUiState::ChooseManuever;
             }
             break;
