@@ -951,6 +951,7 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
     } else if (attack.manuever == eOffensiveManuevers::VisorThrust) {
         bodyPart = eBodyParts::Face;
     } else if (attack.manuever == eOffensiveManuevers::Snap) {
+		damageType = eDamageTypes::Blunt;
         bodyPart = eBodyParts::Elbow;
     } else if (attack.manuever == eOffensiveManuevers::Swing
         || attack.manuever == eOffensiveManuevers::HeavyBlow) {
@@ -969,7 +970,6 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
         MoS += attack.heavyblow;
     } else if (attack.manuever == eOffensiveManuevers::Mordhau) {
         damageType = eDamageTypes::Blunt;
-        MoS++;
     }
 
     int finalDamage = MoS + attack.component->getDamage();

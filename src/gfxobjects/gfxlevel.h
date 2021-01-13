@@ -26,6 +26,10 @@ public:
     void resize();
 	void regenerate(const Level* level);
 private:
+	sf::RectangleShape *createGround(sf::Texture *texture, sf::Vector2f pos, bool dark);
+	sf::RectangleShape *createTop(sf::Texture *texture, sf::Vector2f pos, bool dark);
+	sf::ConvexShape *createBottom(sf::Texture *texture, sf::Vector2f pos, bool dark);
+	sf::ConvexShape *createRight(sf::Texture *texture, sf::Vector2f pos, bool dark);
 	struct Container {
 		std::vector<GFXObject> objects;
 	};
@@ -42,7 +46,9 @@ private:
 
 	const Level* m_processedLevel;
 
-	std::vector<Container> m_data;
+	std::vector<Container> m_litData;
+	std::vector<Container> m_darkData;
+	std::vector<bool> m_visibleData;
 
     sf::RectangleShape m_bkg;
 };

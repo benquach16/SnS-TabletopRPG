@@ -257,7 +257,8 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             eHitLocations location;
             eBodyParts part;
             bool inAltGrip = controlledCreature->getGrip() == eGrips::Staff
-                || controlledCreature->getGrip() == eGrips::HalfSword;
+                || controlledCreature->getGrip() == eGrips::HalfSword
+                || weapon->getLength() == eLength::Hand;
             target->getLowestArmorPart(inAltGrip, &part, &location);
             component = weapon->getBestThrust();
             int AV = target->getArmorAtPart(part).AV;
@@ -336,10 +337,10 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
                 priority += 20;
             }
         } break;
-		case eOffensiveManuevers::Snap: {
-			// temporary
-			priority += 10;
-		}
+        case eOffensiveManuevers::Snap: {
+            // temporary
+            priority += 10;
+        }
         }
 
         toPush.priority = priority;
@@ -464,8 +465,8 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
         toPush.cost = it.second;
         toPush.dice = 0;
         switch (it.first) {
-		case eDefensiveManuevers::Resist:
-			// resist and parry are basically the same
+        case eDefensiveManuevers::Resist:
+            // resist and parry are basically the same
         case eDefensiveManuevers::Parry: {
             if (weapon->getNaturalWeapon()) {
                 priority -= random_static::get(0, 3);

@@ -4,6 +4,7 @@
 #include <string>
 
 #include "types.h"
+#include "creatures/types.h"
 #include "weapon.h"
 
 class Creature;
@@ -50,10 +51,14 @@ int getGripChangeCost(bool isLastTempo);
 
 int calculateReachCost(eLength length1, eLength length2);
 int getFeintCost();
+
 int getOffensiveManueverCost(eOffensiveManuevers manuever, eGrips grip, eLength effectiveReach,
     eLength currentReach, bool payReach);
 int getDefensiveManueverCost(
     eDefensiveManuevers manuever, eGrips grip, eLength effectiveReach, eLength currentReach);
+
+//<location, cost>
+std::map<eHitLocations, int> getHitLocationCost(const Creature* target);
 
 //<maneuver, cost>
 std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* creature,

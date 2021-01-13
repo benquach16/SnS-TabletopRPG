@@ -440,18 +440,20 @@
         "type": "plate"
     },
     "2072": {
-        "name": "Plate Couters",
-        "description": "A type of besagew for the elbow. Can be highly articulated.",
+        "name": "Maille Mantle",
+        "description": "A type of maille covering, like a coif but is long enough to also cover the shoulders.",
         "cost": 700,
-        "AV": 4,
-        "AP": 0,
+        "AV": 3,
+        "AP": 0.5,
         "rigid": true,
         "metal": true,
         "coverage": [
-            "elbow"
+            "head",
+            "neck",
+            "shoulder"
         ],
-        "layer": "plate",
-        "type": "plate"
+        "layer": "maille",
+        "type": "maille"
     },
     "2073": {
         "name": "Splinted Rerebraces",
@@ -462,7 +464,7 @@
         "rigid": true,
         "metal": true,
         "coverage": [
-            "elbow"
+            "upperarm"
         ],
         "layer": "plate",
         "type": "plate"

@@ -333,8 +333,7 @@ void OffenseUI::doDice(bool hasKeyEvents, sf::Event event, Player* player)
     m_numberInput.setPosition(sf::Vector2f(0, cCharSize));
 }
 
-void OffenseUI::doTarget(
-    bool hasKeyEvents, sf::Event event, Player* player, Creature* target)
+void OffenseUI::doTarget(bool hasKeyEvents, sf::Event event, Player* player, Creature* target)
 {
     UiCommon::drawTopPanel();
 
@@ -379,7 +378,8 @@ void OffenseUI::doPinpointThrust(bool hasKeyEvents, sf::Event event, Player* pla
 
     string str = "Choose body part to pinpoint:\n";
     eHitLocations location = player->getQueuedOffense().target;
-    bool canHitX = (player->getGrip() == eGrips::Staff || player->getGrip() == eGrips::HalfSword);
+    bool canHitX = (player->getGrip() == eGrips::Staff || player->getGrip() == eGrips::HalfSword
+        || player->getCurrentReach() == eLength::Hand);
     std::vector<eBodyParts> parts
         = WoundTable::getSingleton()->getPinpointThrustTargets(location, canHitX);
 
