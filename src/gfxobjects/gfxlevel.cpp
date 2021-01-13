@@ -184,7 +184,7 @@ void GFXLevel::regenerate(const Level* level)
 
             m_litData.push_back(litContainer);
             m_darkData.push_back(darkContainer);
-            m_visibleData.push_back(false);
+            m_visibleData.push_back(0);
         }
     }
     assert(m_litData.size() == m_darkData.size());
@@ -241,32 +241,36 @@ void GFXLevel::run(const Level* level, vector2d center)
     for (int i = 0; i < 360; i += 3) {
         float ox = center.x;
         float oy = center.y;
-        float stepx = cos((float)i * 0.01745f);
-        float stepy = sin((float)i * 0.01745f);
+        float fi = static_cast<float>(i);
+        float stepx = cos(fi * 0.01745f);
+        float stepy = sin(fi * 0.01745f);
+		int step = 1;
         for (int j = 0; j < range; j++) {
-            int x = (int)ox;
-            int y = (int)oy;
+            int x = static_cast<int>(ox);
+            int y = static_cast<int>(oy);
             Tile tile = (*level)(x, y);
-            m_visibleData[x * height + y] = true;
-            if (tile.m_type == eTileType::Wall) {
-                break;
-            }
+            m_visibleData[x * height + y] = step;
+			if (tile.m_type == eTileType::Wall) {
+				break;
+			}
             if (x > 0) {
                 int tx = x - 1;
-                m_visibleData[tx * height + y] = true;
+                m_visibleData[tx * height + y] = step;
             }
             if (x < width - 1) {
                 int tx = x + 1;
-                m_visibleData[tx * height + y] = true;
+                m_visibleData[tx * height + y] = step;
             }
             if (y > 0) {
                 int ty = y - 1;
-                m_visibleData[x * height + ty] = true;
+                m_visibleData[x * height + ty] = step;
             }
             if (y < height - 1) {
                 int ty = y + 1;
-                m_visibleData[x * height + ty] = true;
+                m_visibleData[x * height + ty] = step;
             }
+
+            // bounds
             if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
                 break;
             }
@@ -287,7 +291,7 @@ void GFXLevel::run(const Level* level, vector2d center)
                 continue;
             }
 
-            if (m_visibleData[x * height + y]) {
+            if (m_visibleData[x * height + y] == 1) {
                 for (auto object : m_litData[x * height + y].objects) {
                     object.getDraw();
                     m_queue.add(object);
@@ -295,7 +299,7 @@ void GFXLevel::run(const Level* level, vector2d center)
             } else {
                 for (auto object : m_darkData[x * height + y].objects) {
                     object.getDraw();
-                    m_queue.add(object);
+					m_queue.add(object);
                 }
             }
         }
@@ -316,10 +320,10 @@ void GFXLevel::run(const Level* level, vector2d center)
             continue;
         }
 
-		// hide objects we can't see directly
-		if (m_visibleData[position.x * height + position.y] == false) {
-			continue;
-		}
+        // hide objects we can't see directly
+        if (m_visibleData[position.x * height + position.y] == false) {
+            continue;
+        }
         sf::RectangleShape* rect = new sf::RectangleShape(sf::Vector2f(cWidth, cHeight));
         rect->setFillColor(sf::Color(99, 99, 99, 100));
         sf::RectangleShape* sprite = new sf::RectangleShape(sf::Vector2f(40, 100));

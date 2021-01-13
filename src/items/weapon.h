@@ -7,6 +7,7 @@
 #include <vector>
 
 constexpr int cFistsId = 1000;
+constexpr int cClawId = 1001;
 
 class Weapon : public Item {
 public:

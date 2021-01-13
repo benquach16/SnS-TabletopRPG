@@ -62,7 +62,7 @@ std::map<eHitLocations, int> getHitLocationCost(const Creature* target);
 
 //<maneuver, cost>
 std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* creature,
-    bool primaryWeapon, eLength currentReach, bool inGrapple, bool payReach);
+    bool primaryWeapon, eLength currentReach, bool inGrapple, bool payReach, bool feint);
 
 //<maneuver, cost>
 std::map<eDefensiveManuevers, int> getAvailableDefManuevers(const Creature* creature,

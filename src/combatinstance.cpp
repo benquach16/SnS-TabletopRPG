@@ -652,7 +652,7 @@ void CombatInstance::doResolution()
                 writeMessage("attack parried with " + to_string(-MoS) + " successes");
 
                 // natural weapon parries still take damage thru the parry
-                if (defender->getPrimaryWeapon()->getNaturalWeapon() == true) {
+                if (getDefendingWeapon(defender)->getNaturalWeapon()) {
                     attack.target = eHitLocations::Arm;
                     inflictWound(attacker, 0, attack, defender);
                 }
@@ -698,7 +698,8 @@ void CombatInstance::doResolution()
                 writeMessage(defender->getName() + " receives " + to_string(offenseSuccesses)
                     + " action points in their next attack");
             }
-            if (defend.manuever != eDefensiveManuevers::Dodge) {
+            // dodge needs 2 MoS to take init
+            if (defend.manuever != eDefensiveManuevers::Dodge || -MoS > 1) {
                 writeMessage(defender->getName() + " now has initative, becoming attacker");
                 switchInitiative();
             }
@@ -951,7 +952,7 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
     } else if (attack.manuever == eOffensiveManuevers::VisorThrust) {
         bodyPart = eBodyParts::Face;
     } else if (attack.manuever == eOffensiveManuevers::Snap) {
-		damageType = eDamageTypes::Blunt;
+        damageType = eDamageTypes::Blunt;
         bodyPart = eBodyParts::Elbow;
     } else if (attack.manuever == eOffensiveManuevers::Swing
         || attack.manuever == eOffensiveManuevers::HeavyBlow) {
@@ -1340,7 +1341,7 @@ const Weapon* CombatInstance::getDefendingWeapon(const Creature* creature)
 
 int CombatInstance::getAttackTN(const Creature* creature)
 {
-	assert(creature->getHasOffense());
+    assert(creature->getHasOffense());
     int tn = getAttackingWeapon(creature)->getBaseTN();
     if (creature->getQueuedOffense().component != nullptr) {
         tn = creature->getQueuedOffense().component->getTN();
@@ -1350,12 +1351,12 @@ int CombatInstance::getAttackTN(const Creature* creature)
 
 int CombatInstance::getDefendTN(const Creature* creature)
 {
-	assert(creature->getHasDefense());
+    assert(creature->getHasDefense());
     const Weapon* defendWeapon = getDefendingWeapon(creature);
-	if (creature->getQueuedDefense().manuever == eDefensiveManuevers::Dodge) {
-		constexpr int cDodgeTn = 7;
-		return cDodgeTn;
-	}
+    if (creature->getQueuedDefense().manuever == eDefensiveManuevers::Dodge) {
+        constexpr int cDodgeTn = 7;
+        return cDodgeTn;
+    }
     return defendWeapon->getGuardTN();
 }
 

@@ -627,9 +627,9 @@ void Creature::doPositionRoll(const Creature* opponent)
 
     m_currentPosition.dice
         = dice + random_static::get(0, dice / 3) - random_static::get(0, dice / 4);
+
     m_currentPosition.dice = min(m_combatPool, m_currentPosition.dice);
-    m_currentPosition.dice = max(0, m_currentPosition.dice);
-    assert(m_currentPosition.dice <= m_combatPool);
+	m_currentPosition.dice = max(0, m_currentPosition.dice);
     reduceCombatPool(m_currentPosition.dice);
     m_hasPosition = true;
 }

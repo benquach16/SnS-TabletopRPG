@@ -15,6 +15,7 @@ void GameUI::run()
 {
     sf::FloatRect backgroundRect = m_helpText.getLocalBounds();
     backgroundRect.width += 5;
+	backgroundRect.height += 10;
     m_bkg.setSize(sf::Vector2f(backgroundRect.width, backgroundRect.height));
     m_bkg.setFillColor(sf::Color(50, 50, 50, 30));
     Game::getWindow().draw(m_bkg);

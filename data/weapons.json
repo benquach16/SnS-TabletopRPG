@@ -16,14 +16,14 @@
                 "name": "Queue, Thrust",
                 "damage": 0,
                 "type": "piercing",
-                "properties": [ "maillepiercing", "defensive" ],
+                "properties": [ "maillepiercing" ],
                 "attack": "thrust"
             },
             {
                 "name": "Queue, Swing",
-                "damage": 1,
+                "damage": 0,
                 "type": "blunt",
-                "properties": [ "defensive" ],
+                "properties": [ "crushing" ],
                 "attack": "swing"
             }
         ]
@@ -43,14 +43,13 @@
                 "name": "Queue, Thrust",
                 "damage": 0,
                 "type": "blunt",
-                "properties": [ "defensive" ],
                 "attack": "thrust"
             },      
             {
                 "name": "Queue, Swing",
-                "damage": 1,
+                "damage": 0,
                 "type": "blunt",
-                "properties": [ "defensive" ],
+                "properties": [ "crushing" ],
                 "attack": "swing"
             }
         ]
@@ -428,17 +427,18 @@
         "length": "long",
         "type": "sword",
         "hands": 1,
+        "baseTn": 5,
         "cost": 85,
         "components": [
             {
                 "name": "Blade Point",
-                "damage": 2,
+                "damage": 0,
                 "type": "piercing",
                 "attack": "thrust"
             },
             {
                 "name": "Edge",
-                "damage": 0,
+                "damage": -1,
                 "attack": "swing",
                 "type": "cutting"
             }

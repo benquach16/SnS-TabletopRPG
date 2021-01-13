@@ -45,8 +45,13 @@ void PlayerObject::run(const Level* level)
 
     m_toMove.x = 0;
     m_toMove.y = 0;
+
+	if (m_creature->getBleeding()) {
+		// tick bleeding until death
+	}
 }
 
+// player has special combat manager instance code due to player state in scene
 bool PlayerObject::runCombat(float tick)
 {
     // we are in a duel but not parent

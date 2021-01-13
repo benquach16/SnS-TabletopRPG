@@ -48,7 +48,7 @@ private:
 
 	std::vector<Container> m_litData;
 	std::vector<Container> m_darkData;
-	std::vector<bool> m_visibleData;
+	std::vector<int> m_visibleData;
 
     sf::RectangleShape m_bkg;
 };

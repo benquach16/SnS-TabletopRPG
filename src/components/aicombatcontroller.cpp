@@ -182,7 +182,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
     }
     map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(controlledCreature,
         controlledCreature->getQueuedOffense().withPrimaryWeapon, instance->getCurrentReach(),
-        instance->getInGrapple(), payCosts);
+        instance->getInGrapple(), payCosts, false);
 
     bool targetHasEnoughArmor = target->hasEnoughMetalArmor();
     // algorithm - for each manuever, assign some priority and add to priority queue
@@ -412,6 +412,22 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
         controlledCreature->reduceCombatPool(controlledCreature->getQueuedOffense().dice);
     }
     controlledCreature->setOffenseReady();
+}
+
+void AICombatController::normalizeGrip(Creature* controlledCreature, bool isLastTempo)
+{
+    if (controlledCreature->getGrip() == eGrips::Standard) {
+        return;
+    }
+    eWeaponTypes type = controlledCreature->getPrimaryWeapon()->getType();
+    if (type != eWeaponTypes::Polearms && type != eWeaponTypes::Longswords) {
+        return;
+    }
+    int cost = getGripChangeCost(isLastTempo);
+    if (controlledCreature->getCombatPool() > cost) {
+        controlledCreature->setGrip(eGrips::Standard);
+        controlledCreature->reduceCombatPool(cost);
+    }
 }
 
 void AICombatController::shortenGrip(Creature* controlledCreature, bool isLastTempo)
@@ -645,6 +661,9 @@ void AICombatController::doPrecombat(
             // shorter grip == better against armor usually
             shortenGrip(controlledCreature, instance->getLastTempo());
         }
+    } else if (instance->getCurrentReach() > controlledCreature->getCurrentReach()) {
+        // switch back to normal grip if its not a problem
+        normalizeGrip(controlledCreature, instance->getLastTempo());
     }
     if (controlledCreature->primaryWeaponDisabled()
         && controlledCreature->getGrip() == eGrips::Standard

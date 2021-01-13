@@ -371,6 +371,26 @@ int getOffensiveManueverCost(eOffensiveManuevers manuever, eGrips grip, eLength 
     return reachCost;
 }
 
+std::map<eHitLocations, int> getHitLocationCost(const Creature* target)
+{
+    std::map<eHitLocations, int> ret;
+
+    for (auto location : target->getHitLocations()) {
+        switch (location) {
+        case eHitLocations::Arm:
+        case eHitLocations::Thigh:
+            ret[location] = 1;
+        case eHitLocations::Tail:
+        case eHitLocations::Shin:
+            ret[location] = 2;
+        default:
+            ret[location] = 0;
+        }
+    }
+
+    return ret;
+}
+
 int getDefensiveManueverCost(
     eDefensiveManuevers manuever, eGrips grip, eLength effectiveReach, eLength currentReach)
 {
@@ -400,7 +420,7 @@ int getDefensiveManueverCost(
 }
 
 std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* creature,
-    bool primaryWeapon, eLength currentReach, bool inGrapple, bool payReach)
+    bool primaryWeapon, eLength currentReach, bool inGrapple, bool payReach, bool feint)
 {
     const Weapon* weapon
         = primaryWeapon ? creature->getPrimaryWeapon() : creature->getSecondaryWeapon();
@@ -410,10 +430,21 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* crea
     eGrips grip = creature->getGrip();
     std::map<eOffensiveManuevers, int> ret;
 
+	// theorectically already paid for reach
+    if (feint) {
+        payReach = false;
+    }
+
     ret[eOffensiveManuevers::Swing] = getOffensiveManueverCost(
         eOffensiveManuevers::Swing, grip, effectiveReach, currentReach, payReach);
     ret[eOffensiveManuevers::Thrust] = getOffensiveManueverCost(
         eOffensiveManuevers::Thrust, grip, effectiveReach, currentReach, payReach);
+
+	// only can swing or thrust in a feint
+    if (feint) {
+        return ret;
+    }
+
     ret[eOffensiveManuevers::PinpointThrust] = getOffensiveManueverCost(
         eOffensiveManuevers::PinpointThrust, grip, effectiveReach, currentReach, payReach);
 
@@ -477,13 +508,18 @@ std::map<eDefensiveManuevers, int> getAvailableDefManuevers(const Creature* crea
             eDefensiveManuevers::Dodge, grip, effectiveReach, currentReach);
         ret[eDefensiveManuevers::Parry] = getDefensiveManueverCost(
             eDefensiveManuevers::Parry, grip, effectiveReach, currentReach);
-        ret[eDefensiveManuevers::ParryLinked] = getDefensiveManueverCost(
-            eDefensiveManuevers::ParryLinked, grip, effectiveReach, currentReach);
+
         ret[eDefensiveManuevers::Counter] = getDefensiveManueverCost(
             eDefensiveManuevers::Counter, grip, effectiveReach, currentReach);
         if (weapon->getNaturalWeapon() == false) {
             ret[eDefensiveManuevers::Expulsion] = getDefensiveManueverCost(
                 eDefensiveManuevers::Expulsion, grip, effectiveReach, currentReach);
+
+            // can't single tempo counter with a secondary part of a weapon (queue, pommel)
+            if (weapon->getSecondaryWeapon() == false) {
+                ret[eDefensiveManuevers::ParryLinked] = getDefensiveManueverCost(
+                    eDefensiveManuevers::ParryLinked, grip, effectiveReach, currentReach);
+            }
         }
 
     } else {

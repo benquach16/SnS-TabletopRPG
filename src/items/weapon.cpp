@@ -204,10 +204,7 @@ void WeaponTable::createNaturalWeapons()
 {
     string name = "Fists";
     set<eWeaponProperties> properties;
-    std::unordered_map<eGrips, bool> grips;
-    grips[eGrips::Standard] = false;
     std::vector<Component*> components;
-
     components.push_back(
         new Component("Fist", -1, eDamageTypes::Blunt, eAttacks::Swing, 6, properties));
     components.push_back(
@@ -259,6 +256,9 @@ eLength WeaponTable::convertLengthFromStr(const std::string& str)
 
 eWeaponTypes WeaponTable::convertTypeFromStr(const std::string& str)
 {
+	if (str == "massweapon") {
+		return eWeaponTypes::Mass;
+	}
     if (str == "polearm") {
         return eWeaponTypes::Polearms;
     }
