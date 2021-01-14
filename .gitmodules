@@ -1,0 +1,3 @@
+[submodule "external/SFGUI"]
+	path = external/SFGUI
+	url = https://github.com/TankOs/SFGUI
