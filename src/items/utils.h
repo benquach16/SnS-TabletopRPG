@@ -3,8 +3,8 @@
 #include <map>
 #include <string>
 
-#include "types.h"
 #include "creatures/types.h"
+#include "types.h"
 #include "weapon.h"
 
 class Creature;

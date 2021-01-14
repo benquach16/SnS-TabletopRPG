@@ -22,7 +22,7 @@ class Object;
 
 class Trigger {
 public:
-	friend class boost::serialization::access;
+    friend class boost::serialization::access;
 
     static const int cPersistentTrigger = -1;
 
@@ -47,8 +47,8 @@ private:
 protected:
     int m_timesToFire;
 
-	template <class Archive> void serialize(Archive& ar, const unsigned int version)
-	{
-		ar& m_timesToFire;
-	}
+    template <class Archive> void serialize(Archive& ar, const unsigned int version)
+    {
+        ar& m_timesToFire;
+    }
 };

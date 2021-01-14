@@ -3,9 +3,9 @@
 #include <iostream>
 
 #include "3rdparty/json.hpp"
+#include "creatures/creature.h"
 #include "utils.h"
 #include "weapon.h"
-#include "creatures/creature.h"
 
 WeaponTable* WeaponTable::singleton = nullptr;
 
@@ -256,9 +256,9 @@ eLength WeaponTable::convertLengthFromStr(const std::string& str)
 
 eWeaponTypes WeaponTable::convertTypeFromStr(const std::string& str)
 {
-	if (str == "massweapon") {
-		return eWeaponTypes::Mass;
-	}
+    if (str == "massweapon") {
+        return eWeaponTypes::Mass;
+    }
     if (str == "polearm") {
         return eWeaponTypes::Polearms;
     }

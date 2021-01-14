@@ -20,7 +20,7 @@ struct Offense : public Manuever {
     bool pinpoint = false;
     bool stomp = false;
     int heavyblow = 0;
-	int feintdie = 0;
+    int feintdie = 0;
     eHitLocations target;
     eBodyParts pinpointTarget;
     // const Weapon* weapon;
@@ -36,7 +36,7 @@ struct Offense : public Manuever {
         pinpoint = false;
         stomp = false;
         heavyblow = 0;
-		feintdie = 0;
+        feintdie = 0;
         // weapon = nullptr;
         withPrimaryWeapon = true;
         component = nullptr;

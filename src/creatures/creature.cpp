@@ -434,8 +434,8 @@ int Creature::getMaxCombatPool()
     if (m_currentStance == eCreatureStance::Prone) {
         combatPool = (combatPool + 1) / 2;
     }
-	constexpr int minCombatPool = 4;
-	combatPool = max(combatPool, minCombatPool);
+    constexpr int minCombatPool = 4;
+    combatPool = max(combatPool, minCombatPool);
     return max(combatPool, 0);
 }
 
@@ -599,9 +599,9 @@ void Creature::getLowestArmorPart(
             if (part == eBodyParts::SecondLocationArm || part == eBodyParts::SecondLocationHead) {
                 continue;
             }
-			if (inAltGrip && (part == eBodyParts::Armpit || part == eBodyParts::Elbow)) {
-				continue;
-			}
+            if (inAltGrip && (part == eBodyParts::Armpit || part == eBodyParts::Elbow)) {
+                continue;
+            }
             ArmorSegment segment = getArmorAtPart(part);
 
             if (lowestAV == -1 || segment.AV < lowestAV) {
@@ -629,7 +629,7 @@ void Creature::doPositionRoll(const Creature* opponent)
         = dice + random_static::get(0, dice / 3) - random_static::get(0, dice / 4);
 
     m_currentPosition.dice = min(m_combatPool, m_currentPosition.dice);
-	m_currentPosition.dice = max(0, m_currentPosition.dice);
+    m_currentPosition.dice = max(0, m_currentPosition.dice);
     reduceCombatPool(m_currentPosition.dice);
     m_hasPosition = true;
 }

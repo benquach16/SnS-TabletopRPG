@@ -24,7 +24,7 @@ struct Tile {
     {
         ar& m_type;
         ar& m_material;
-		ar& m_triggers;
+        ar& m_triggers;
     }
 };
 
@@ -65,8 +65,8 @@ public:
     Tile& get(vector2d pos) { return (*this)(pos.x, pos.y); }
 
     const Object* getObject(vector2d position);
-	void addGlobalTrigger(Trigger* trigger) { m_globalTriggers.push_back(trigger); }
-	void addTrigger(Trigger* trigger, vector2d position);
+    void addGlobalTrigger(Trigger* trigger) { m_globalTriggers.push_back(trigger); }
+    void addTrigger(Trigger* trigger, vector2d position);
     Object* getObjectMutable(vector2d position, const Object* exclude);
     int getWidth() const { return m_width; }
     int getHeight() const { return m_height; }
@@ -76,7 +76,7 @@ public:
     Object* removeObject(Object::ObjectId id);
     const std::vector<Object*>& getObjects() const { return m_objects; }
     std::vector<Object*> getObjectsAtLocation(vector2d position);
-	
+
     eLighting getLighting() const { return m_lighting; }
 
 private:
@@ -112,7 +112,7 @@ private:
         ar& m_width;
         ar& m_height;
         ar& m_lighting;
-		ar& m_globalTriggers;
+        ar& m_globalTriggers;
     }
 
     std::vector<Trigger*> m_globalTriggers;

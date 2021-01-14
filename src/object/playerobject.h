@@ -32,7 +32,7 @@ public:
     void moveRight() override;
 
 private:
-	unsigned m_bleedTick;
+    unsigned m_bleedTick;
     vector2d m_toMove;
     template <class Archive> void serialize(Archive& ar, const unsigned int version)
     {

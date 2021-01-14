@@ -34,7 +34,7 @@ public:
 
     int getBaseTN() const { return m_tn; }
 
-	int getGuardTN() const { return m_guardTn; }
+    int getGuardTN() const { return m_guardTn; }
 
     bool canHook() const
     {
@@ -63,7 +63,7 @@ private:
     eWeaponTypes m_type;
 
     int m_secondaryWeaponId;
-	bool m_secondary;
+    bool m_secondary;
 
     int m_hands;
 

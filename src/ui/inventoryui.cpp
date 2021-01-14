@@ -184,20 +184,20 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
         const Weapon* weapon = static_cast<const Weapon*>(item);
         str += "Length: " + lengthToString(weapon->getLength()) + ' ';
         str += "Proficiency: " + weaponTypeToString(weapon->getType()) + '\n';
-		str += "Defense Rating: " + tnToString(weapon->getGuardTN()) + '\n';
+        str += "Defense Rating: " + tnToString(weapon->getGuardTN()) + '\n';
         str += "\nWeapon Parts: \n";
         std::vector<Component*> components = weapon->getComponents();
         for (unsigned i = 0; i < components.size(); ++i) {
             str += components[i]->getName() + " - ";
-			
+
             str += "Damage: " + to_string(components[i]->getDamage()) + ' '
                 + damageTypeToString(components[i]->getType()) + " [ ";
             for (auto it : components[i]->getProperties()) {
                 str += weaponPropToString(it) + ' ';
             }
-			str += "]";
-			str += " Attack Rating: " + tnToString(components[i]->getTN());
-			str += "\n";
+            str += "]";
+            str += " Attack Rating: " + tnToString(components[i]->getTN());
+            str += "\n";
         }
 
         const Weapon* secondary = weapon->getSecondaryWeapon();
@@ -213,9 +213,9 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
                 for (auto it : components[i]->getProperties()) {
                     str += weaponPropToString(it) + ' ';
                 }
-				str += "]";
-				str += " Attack Rating: " + tnToString(components[i]->getTN());
-				str += "\n";
+                str += "]";
+                str += " Attack Rating: " + tnToString(components[i]->getTN());
+                str += "\n";
             }
         }
 

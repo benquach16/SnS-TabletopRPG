@@ -44,8 +44,8 @@ private:
     bool setCreatureDefenseManuever(
         Creature* controlledCreature, eDefensiveManuevers manuever, eLength currentReach);
 
-	void normalizeGrip(Creature* controlledCreature, bool isLastTempo);
-	void shortenGrip(Creature* controlledCreature, bool isLastTempo);
+    void normalizeGrip(Creature* controlledCreature, bool isLastTempo);
+    void shortenGrip(Creature* controlledCreature, bool isLastTempo);
 
     bool stealInitiative(
         Creature* controlledCreature, const Creature* attacker, int cost, int& outDie);

@@ -5,7 +5,8 @@
 
 class PrecombatUI {
 public:
-    void run(bool hasKeyEvents, sf::Event event, Player* player, bool inGrapple, bool secondExchange);
+    void run(
+        bool hasKeyEvents, sf::Event event, Player* player, bool inGrapple, bool secondExchange);
     void resetState() { m_currentState = eUiState::ChooseFavoring; }
 
 private:

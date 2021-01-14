@@ -17,11 +17,14 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
+#include <SFGUI/Button.hpp>
+#include <SFGUI/Desktop.hpp>
+#include <SFGUI/SFGUI.hpp>
+#include <SFGUI/Window.hpp>
 #include <boost/serialization/binary_object.hpp>
 #include <boost/serialization/serialization.hpp>
 #include <iostream>
 #include <sstream>
-
 using boost::serialization::make_binary_object;
 
 using namespace std;
@@ -77,6 +80,7 @@ void Game::initialize()
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
     m_window.create(sf::VideoMode(1600, 900), "window", sf::Style::Default, settings);
+
     // sm_window.setFramerateLimit(165);
     m_defaultFont.loadFromFile("data/fonts/MorePerfectDOSVGA.ttf");
     // quite possibly the worst way of doing this, but cannot disable AA on sfml text without this.
@@ -98,7 +102,6 @@ void Game::setupArena()
 
 void Game::run()
 {
-
     while (m_window.isOpen()) {
         sf::Event event;
         bool hasKeyEvents = false;
@@ -131,6 +134,7 @@ void Game::run()
             break;
         }
         m_window.display();
+
         float currentTime = clock.restart().asSeconds();
         float fps = 1.f / currentTime;
         // cout << "FPS"  << fps << endl;

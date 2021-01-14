@@ -15,18 +15,18 @@ public:
     int getDamage() const { return m_damage; }
     eDamageTypes getType() const { return m_damageType; }
     eAttacks getAttack() const { return m_attack; }
-	bool hasMaillePiercing() const { return hasProperty(eWeaponProperties::MaillePiercing); }
-	bool hasPlatePiercing() const { return hasProperty(eWeaponProperties::PlatePiercing); }
+    bool hasMaillePiercing() const { return hasProperty(eWeaponProperties::MaillePiercing); }
+    bool hasPlatePiercing() const { return hasProperty(eWeaponProperties::PlatePiercing); }
     bool hasProperty(eWeaponProperties prop) const
     {
         return (m_properties.find(prop) != m_properties.end());
     }
     const std::set<eWeaponProperties>& getProperties() const { return m_properties; }
 
-	int getTN() const { return m_tn; }
+    int getTN() const { return m_tn; }
 
 private:
-	int m_tn;
+    int m_tn;
     std::string m_name;
     int m_damage;
     eDamageTypes m_damageType;

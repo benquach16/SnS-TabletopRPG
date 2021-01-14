@@ -430,7 +430,7 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* crea
     eGrips grip = creature->getGrip();
     std::map<eOffensiveManuevers, int> ret;
 
-	// theorectically already paid for reach
+    // theorectically already paid for reach
     if (feint) {
         payReach = false;
     }
@@ -440,7 +440,7 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* crea
     ret[eOffensiveManuevers::Thrust] = getOffensiveManueverCost(
         eOffensiveManuevers::Thrust, grip, effectiveReach, currentReach, payReach);
 
-	// only can swing or thrust in a feint
+    // only can swing or thrust in a feint
     if (feint) {
         return ret;
     }

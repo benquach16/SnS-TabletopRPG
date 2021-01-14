@@ -10,11 +10,11 @@ public:
     void cleanup();
     void setZ(int z) { m_Z = z; }
     int getZ() const { return m_Z; }
-	bool getPersistent() const { return m_persistent; }
+    bool getPersistent() const { return m_persistent; }
     sf::Drawable* getDraw() { return m_draw; }
 
 protected:
-	bool m_persistent;
+    bool m_persistent;
     sf::Drawable* m_draw;
     int m_Z;
 };

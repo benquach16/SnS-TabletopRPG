@@ -12,10 +12,9 @@ void GFXQueue::render()
 
     for (auto i : m_queuedObjects) {
         Game::getWindow().draw(*i.getDraw());
-		if (i.getPersistent() == false) {
-			i.cleanup();
-		}
-        
+        if (i.getPersistent() == false) {
+            i.cleanup();
+        }
     }
 
     m_queuedObjects.clear();
