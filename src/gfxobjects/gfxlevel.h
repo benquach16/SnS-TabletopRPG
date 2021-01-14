@@ -26,6 +26,7 @@ public:
     void resize();
 	void regenerate(const Level* level);
 private:
+	void set(int x, int y, int height, int width, int val);
 	sf::RectangleShape *createGround(sf::Texture *texture, sf::Vector2f pos, bool dark);
 	sf::RectangleShape *createTop(sf::Texture *texture, sf::Vector2f pos, bool dark);
 	sf::ConvexShape *createBottom(sf::Texture *texture, sf::Vector2f pos, bool dark);

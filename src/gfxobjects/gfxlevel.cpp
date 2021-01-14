@@ -191,6 +191,15 @@ void GFXLevel::regenerate(const Level* level)
     assert(m_litData.size() == m_visibleData.size());
 }
 
+void GFXLevel::set(int x, int y, int height, int width, int val)
+{
+    if (x < 0 || y < 0 || x > width - 1 || y > height - 1)
+        return;
+    if (m_visibleData[x * height + y] == 1)
+        return;
+    m_visibleData[x * height + y] = val;
+}
+
 void GFXLevel::run(const Level* level, vector2d center)
 {
     if (level == nullptr) {
@@ -238,38 +247,34 @@ void GFXLevel::run(const Level* level, vector2d center)
     int maxX = center.x + range;
     int maxY = center.y + range;
 
-    for (int i = 0; i < 360; i += 3) {
+    for (int i = 0; i < 360; i += 2) {
         float ox = center.x;
         float oy = center.y;
         float fi = static_cast<float>(i);
         float stepx = cos(fi * 0.01745f);
         float stepy = sin(fi * 0.01745f);
-		int step = 1;
+        int step = 1;
         for (int j = 0; j < range; j++) {
             int x = static_cast<int>(ox);
             int y = static_cast<int>(oy);
             Tile tile = (*level)(x, y);
-            m_visibleData[x * height + y] = step;
-			if (tile.m_type == eTileType::Wall) {
-				break;
-			}
-            if (x > 0) {
-                int tx = x - 1;
-                m_visibleData[tx * height + y] = step;
+            if (tile.m_type == eTileType::Wall || step > 1) {
+                step++;
             }
-            if (x < width - 1) {
-                int tx = x + 1;
-                m_visibleData[tx * height + y] = step;
-            }
-            if (y > 0) {
-                int ty = y - 1;
-                m_visibleData[x * height + ty] = step;
-            }
-            if (y < height - 1) {
-                int ty = y + 1;
-                m_visibleData[x * height + ty] = step;
+            if (step > range / 2) {
+                break;
             }
 
+            set(x, y, height, width, step);
+            set(x - 1, y, height, width, step);
+            set(x + 1, y, height, width, step);
+            set(x, y - 1, height, width, step);
+            set(x, y + 1, height, width, step);
+
+            set(x - 1, y - 1, height, width, step);
+            set(x + 1, y - 1, height, width, step);
+            set(x + 1, y + 1, height, width, step);
+            set(x - 1, y + 1, height, width, step);
             // bounds
             if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
                 break;
@@ -296,10 +301,10 @@ void GFXLevel::run(const Level* level, vector2d center)
                     object.getDraw();
                     m_queue.add(object);
                 }
-            } else {
+            } else if (m_visibleData[x * height + y] > 1) {
                 for (auto object : m_darkData[x * height + y].objects) {
                     object.getDraw();
-					m_queue.add(object);
+                    m_queue.add(object);
                 }
             }
         }
@@ -321,7 +326,7 @@ void GFXLevel::run(const Level* level, vector2d center)
         }
 
         // hide objects we can't see directly
-        if (m_visibleData[position.x * height + position.y] == false) {
+        if (m_visibleData[position.x * height + position.y] != 1) {
             continue;
         }
         sf::RectangleShape* rect = new sf::RectangleShape(sf::Vector2f(cWidth, cHeight));
