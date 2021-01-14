@@ -57,7 +57,7 @@ sf::RectangleShape* GFXLevel::createGround(sf::Texture* texture, sf::Vector2f po
     sf::RectangleShape* rect = new sf::RectangleShape(sf::Vector2f(cWidth, cHeight));
     rect->setFillColor(sf::Color(77, 77, 77));
     if (dark) {
-        rect->setFillColor(sf::Color(54, 54, 54));
+        rect->setFillColor(sf::Color(34, 34, 34));
     }
     rect->setTexture(texture);
     rect->setRotation(45.f);
@@ -69,9 +69,9 @@ sf::RectangleShape* GFXLevel::createGround(sf::Texture* texture, sf::Vector2f po
 sf::RectangleShape* GFXLevel::createTop(sf::Texture* texture, sf::Vector2f pos, bool dark)
 {
     sf::RectangleShape* rect = new sf::RectangleShape(sf::Vector2f(cWidth, cHeight));
-    rect->setFillColor(sf::Color(33, 33, 33));
+    rect->setFillColor(sf::Color(38, 38, 38));
     if (dark) {
-        rect->setFillColor(sf::Color(22, 22, 22));
+        rect->setFillColor(sf::Color(28, 28, 28));
     }
     rect->setTexture(texture);
     rect->setRotation(45.f);
@@ -105,9 +105,9 @@ sf::ConvexShape* GFXLevel::createRight(sf::Texture* texture, sf::Vector2f pos, b
 sf::ConvexShape* GFXLevel::createBottom(sf::Texture* texture, sf::Vector2f pos, bool dark)
 {
     sf::ConvexShape* bottom = new sf::ConvexShape(4);
-    bottom->setFillColor(sf::Color(44, 44, 44));
+    bottom->setFillColor(sf::Color(49, 49, 49));
     if (dark) {
-        bottom->setFillColor(sf::Color(31, 31, 31));
+        bottom->setFillColor(sf::Color(24, 24, 24));
     }
     bottom->setTexture(texture);
     bottom->setPoint(0, sf::Vector2f(0, 0));
