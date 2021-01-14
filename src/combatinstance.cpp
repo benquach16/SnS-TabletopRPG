@@ -683,7 +683,8 @@ void CombatInstance::doResolution()
 
                 int linkedOffenseMoS = DiceRoller::rollGetSuccess(BTN, offense.dice);
                 cout << "Linked hits: " << linkedOffenseMoS << endl;
-
+				// reset attacker offense to properly deal impact
+				attacker->clearCreatureManuevers();
                 if (linkedOffenseMoS > 0
                     && inflictWound(defender, linkedOffenseMoS, offense, attacker) == true) {
                     m_currentState = eCombatState::FinishedCombat;

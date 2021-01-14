@@ -516,7 +516,7 @@ std::map<eDefensiveManuevers, int> getAvailableDefManuevers(const Creature* crea
                 eDefensiveManuevers::Expulsion, grip, effectiveReach, currentReach);
 
             // can't single tempo counter with a secondary part of a weapon (queue, pommel)
-            if (weapon->getSecondaryWeapon() == false) {
+            if (weapon->isSecondary() == false) {
                 ret[eDefensiveManuevers::ParryLinked] = getDefensiveManueverCost(
                     eDefensiveManuevers::ParryLinked, grip, effectiveReach, currentReach);
             }
