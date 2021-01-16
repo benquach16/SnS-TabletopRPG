@@ -113,7 +113,8 @@ void Scene::run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
     m_gfxlevel.renderBkg(m_levels[m_currentIdx]);
     // todo: remove all this sfml specific stuff and move to a gfx specific class
     //------------------
-    sf::View v = Game::getWindow().getDefaultView();
+    sf::View original = Game::getWindow().getView();
+    sf::View v = Game::getWindow().getView();
     v.setSize(v.getSize().x, v.getSize().y * 2);
     // v.setCenter(v.getSize() *.5f);
     sf::Vector2f center(playerObject->getPosition().x, playerObject->getPosition().y);
@@ -130,7 +131,7 @@ void Scene::run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
         m_gfxSelector.run(&m_selector);
     }
     m_gfxlevel.renderText();
-    Game::getWindow().setView(Game::getWindow().getDefaultView());
+    Game::getWindow().setView(original);
 
     m_ui.run();
 

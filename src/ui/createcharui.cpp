@@ -86,6 +86,8 @@ void CreateCharUI::doName(bool hasKeyEvents, sf::Event event, PlayerObject* play
         && event.key.code == sf::Keyboard::Enter) {
         string name = m_text.getString();
         if (name != "") {
+			// strip return
+			name = name.substr(0, name.size() - 1);
             player->getCreatureComponent()->setName(name);
             m_currentState = eUiState::Loadout;
         }

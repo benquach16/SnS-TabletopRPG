@@ -86,10 +86,22 @@ void Game::initialize()
     m_desktop.SetProperty<sf::Color>("Button:PRELIGHT", "BackgroundColor", sf::Color(22, 22, 33));
     m_desktop.SetProperty<sf::Color>("Button:ACTIVE", "BackgroundColor", sf::Color(22, 22, 33));
     m_desktop.SetProperty<string>("*", "FontName", "data/fonts/MorePerfectDOSVGA.ttf");
-    m_desktop.SetProperty<int>("*", "FontSize", 14);
+    m_desktop.SetProperty<int>("*", "FontSize", 16);
+    m_desktop.SetProperty<sf::Color>("*", "Color", sf::Color::White);
+    m_desktop.SetProperty<sf::Color>("Label#red", "Color", sf::Color::Red);
+    m_desktop.SetProperty<sf::Color>("Label#yellow", "Color", sf::Color::Yellow);
+    m_desktop.SetProperty<sf::Color>("Label#cyan", "Color", sf::Color::Cyan);
+    m_desktop.SetProperty<sf::Color>("Label#magenta", "Color", sf::Color::Magenta);
+    m_desktop.SetProperty<sf::Color>("Label#background", "Color", sf::Color(77, 77, 77));
+    m_desktop.SetProperty<sf::Color>("Label#other", "Color", sf::Color(255, 200, 255));
     m_desktop.SetProperty<sf::Color>("Window", "BorderColor", sf::Color(22, 22, 33));
+    m_desktop.SetProperty<sf::Color>("ScrolledWindow", "BorderColor", sf::Color(22, 22, 33));
     m_desktop.SetProperty<sf::Color>("Window", "TitleBackgroundColor", sf::Color(22, 22, 33));
-	m_mainmenu.initialize();
+    m_desktop.SetProperty<sf::Color>("Scrollbar", "SliderColor", sf::Color(22, 22, 33));
+    m_desktop.SetProperty<sf::Color>("Scrollbar", "StepperBackgroundColor", sf::Color(22, 22, 33));
+    m_desktop.SetProperty<sf::Color>("Scrollbar", "StepperArrowColor", sf::Color(22, 22, 33));
+    m_desktop.SetProperty<sf::Color>("Scrollbar", "TroughColor", sf::Color(12, 12, 23));
+    m_mainmenu.initialize();
     m_appState = eApplicationState::MainMenu;
 }
 
@@ -97,12 +109,14 @@ void Game::setupNewgame()
 {
     m_playerObject = new PlayerObject;
     m_scene.setupLevel(m_playerObject);
+    Log::initialize();
 }
 
 void Game::setupArena()
 {
     m_playerObject = new PlayerObject;
     m_scene.setupArena(m_playerObject);
+    Log::initialize();
 }
 
 void Game::run()
@@ -111,7 +125,7 @@ void Game::run()
         sf::Event event;
         bool hasKeyEvents = false;
         while (m_window.pollEvent(event)) {
-			m_desktop.HandleEvent(event);
+            m_desktop.HandleEvent(event);
 
             switch (event.type) {
             case sf::Event::Closed:
@@ -123,12 +137,14 @@ void Game::run()
             case sf::Event::KeyReleased:
                 hasKeyEvents = true;
                 break;
+            case sf::Event::Resized:
+                m_window.setView(
+                    sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
             default:
                 hasKeyEvents = false;
                 break;
             }
         }
-
 
         m_window.clear();
         switch (m_appState) {
@@ -142,7 +158,7 @@ void Game::run()
             m_scene.run(hasKeyEvents, event, m_playerObject);
             break;
         }
-		m_desktop.Update(0.f);
+        m_desktop.Update(0.f);
         m_gui.Display(m_window);
         m_window.display();
 
@@ -150,11 +166,11 @@ void Game::run()
         float fps = 1.f / currentTime;
         // cout << "FPS"  << fps << endl;
         m_window.setTitle(std::to_string(fps));
-		while (m_toDelete.empty() == false) {
-			auto ptr = m_toDelete.front();
-			m_toDelete.pop();
-			m_desktop.Remove(ptr);
-		}
+        while (m_toDelete.empty() == false) {
+            auto ptr = m_toDelete.front();
+            m_toDelete.pop();
+            m_desktop.Remove(ptr);
+        }
     }
 }
 
