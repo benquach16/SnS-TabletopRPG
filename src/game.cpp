@@ -17,10 +17,6 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
-#include <SFGUI/Button.hpp>
-#include <SFGUI/Desktop.hpp>
-#include <SFGUI/SFGUI.hpp>
-#include <SFGUI/Window.hpp>
 #include <boost/serialization/binary_object.hpp>
 #include <boost/serialization/serialization.hpp>
 #include <iostream>
@@ -80,11 +76,20 @@ void Game::initialize()
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
     m_window.create(sf::VideoMode(1600, 900), "window", sf::Style::Default, settings);
-
     // sm_window.setFramerateLimit(165);
     m_defaultFont.loadFromFile("data/fonts/MorePerfectDOSVGA.ttf");
     // quite possibly the worst way of doing this, but cannot disable AA on sfml text without this.
     const_cast<sf::Texture&>(m_defaultFont.getTexture(11)).setSmooth(false);
+    m_desktop.SetProperty<sf::Color>("*", "BackgroundColor", sf::Color(12, 12, 23));
+    m_desktop.SetProperty<sf::Color>("Button", "BackgroundColor", sf::Color(12, 12, 23));
+    m_desktop.SetProperty<sf::Color>("Button", "BorderColor", sf::Color(22, 22, 33));
+    m_desktop.SetProperty<sf::Color>("Button:PRELIGHT", "BackgroundColor", sf::Color(22, 22, 33));
+    m_desktop.SetProperty<sf::Color>("Button:ACTIVE", "BackgroundColor", sf::Color(22, 22, 33));
+    m_desktop.SetProperty<string>("*", "FontName", "data/fonts/MorePerfectDOSVGA.ttf");
+    m_desktop.SetProperty<int>("*", "FontSize", 14);
+    m_desktop.SetProperty<sf::Color>("Window", "BorderColor", sf::Color(22, 22, 33));
+    m_desktop.SetProperty<sf::Color>("Window", "TitleBackgroundColor", sf::Color(22, 22, 33));
+	m_mainmenu.initialize();
     m_appState = eApplicationState::MainMenu;
 }
 
@@ -106,10 +111,13 @@ void Game::run()
         sf::Event event;
         bool hasKeyEvents = false;
         while (m_window.pollEvent(event)) {
+			m_desktop.HandleEvent(event);
+
             switch (event.type) {
             case sf::Event::Closed:
                 m_window.close();
-                break;
+                // don't render to window after it's been closed
+                return;
             case sf::Event::KeyPressed:
             case sf::Event::TextEntered:
             case sf::Event::KeyReleased:
@@ -120,6 +128,8 @@ void Game::run()
                 break;
             }
         }
+
+
         m_window.clear();
         switch (m_appState) {
         case eApplicationState::CharCreation:
@@ -130,15 +140,21 @@ void Game::run()
             break;
         case eApplicationState::Gameplay:
             m_scene.run(hasKeyEvents, event, m_playerObject);
-            // gameloop(hasKeyEvents, event);
             break;
         }
+		m_desktop.Update(0.f);
+        m_gui.Display(m_window);
         m_window.display();
 
         float currentTime = clock.restart().asSeconds();
         float fps = 1.f / currentTime;
         // cout << "FPS"  << fps << endl;
         m_window.setTitle(std::to_string(fps));
+		while (m_toDelete.empty() == false) {
+			auto ptr = m_toDelete.front();
+			m_toDelete.pop();
+			m_desktop.Remove(ptr);
+		}
     }
 }
 

@@ -14,7 +14,7 @@ int main()
 
     Game::getSingleton()->initialize();
     Game::getSingleton()->run();
-
+	Game::cleanup();
     WoundTable::cleanupSingleton();
     // item table is a superset of armor and weapons
     ItemTable::cleanupSingleton();

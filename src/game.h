@@ -1,6 +1,11 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFGUI/Button.hpp>
+#include <SFGUI/Box.hpp>
+#include <SFGUI/Desktop.hpp>
+#include <SFGUI/SFGUI.hpp>
+#include <SFGUI/Window.hpp>
 
 #include "combatinstance.h"
 #include "combatmanager.h"
@@ -31,7 +36,8 @@ public:
 
     static sf::Font& getDefaultFont() { return m_defaultFont; }
     static sf::RenderWindow& getWindow() { return m_window; }
-
+	sfg::Desktop& getDesktop() { return m_desktop; }
+	void deleteWidget(sfg::Widget::Ptr ptr) { m_toDelete.push(ptr); }
     static Game* getSingleton()
     {
         if (singleton == nullptr) {
@@ -40,12 +46,22 @@ public:
         return singleton;
     }
 
+	static void cleanup()
+	{
+		if (singleton != nullptr) {
+			delete singleton;
+		}
+		singleton = nullptr;
+	}
+
 private:
     Game();
     ~Game();
 
     void charCreation(bool hasKeyEvents, sf::Event event);
-
+	sfg::SFGUI m_gui;
+	sfg::Desktop m_desktop;
+	std::queue<sfg::Widget::Ptr> m_toDelete;
     PlayerObject* m_playerObject;
     GameUI m_ui;
     MainMenuUI m_mainmenu;
