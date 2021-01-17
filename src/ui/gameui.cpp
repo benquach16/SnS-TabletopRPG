@@ -11,6 +11,11 @@ GameUI::GameUI()
                          "Attack\nK - Talk\nR - Rest\nU - Use object");
 }
 
+void GameUI::initialize()
+{
+    m_combatUI.initialize();
+}
+
 void GameUI::run()
 {
     sf::FloatRect backgroundRect = m_helpText.getLocalBounds();
@@ -47,9 +52,4 @@ void GameUI::runTrade(bool hasKeyEvents, sf::Event event, std::map<int, int>& in
     std::map<int, int>& container)
 {
     m_tradeUI.run(hasKeyEvents, event, inventory, container);
-}
-
-void GameUI::runCreate(bool hasKeyEvents, sf::Event event, PlayerObject* player)
-{
-    m_createUI.run(hasKeyEvents, event, player);
 }

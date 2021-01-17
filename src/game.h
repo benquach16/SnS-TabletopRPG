@@ -63,7 +63,7 @@ private:
 	sfg::Desktop m_desktop;
 	std::queue<sfg::Widget::Ptr> m_toDelete;
     PlayerObject* m_playerObject;
-    GameUI m_ui;
+    CreateCharUI m_createUI;
     MainMenuUI m_mainmenu;
     sf::Clock clock;
 

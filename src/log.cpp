@@ -45,7 +45,7 @@ void Log::push(std::string str, eMessageTypes type)
             newlines++;
         }
     }
-    label->SetRequisition(sf::Vector2f(windowSize.x - 32, cCharSize * newlines));
+    label->SetRequisition(sf::Vector2f(windowSize.x - 32, 19 * newlines));
     switch (type) {
     case eMessageTypes::Announcement:
         label->SetId("yellow");
@@ -72,7 +72,10 @@ void Log::push(std::string str, eMessageTypes type)
         m_windowBox->Remove(m_windowBox->GetChildren()[0]);
     }
     // force to the bottom
+    m_display->GetVerticalAdjustment()->IncrementPage();
     m_display->GetVerticalAdjustment()->SetValue(m_display->GetVerticalAdjustment()->GetUpper());
+    // force update in case too many items get added at once
+    m_windowBox->Update(0.f);
 }
 
 void Log::run()
@@ -81,11 +84,10 @@ void Log::run()
     unsigned rectHeight = cCharSize * (cLinesDisplayed + 1);
     auto windowSize = Game::getWindow().getSize();
     m_display->SetAllocation(
-        sf::FloatRect(0, windowSize.y - rectHeight, windowSize.x, rectHeight - 3));
+        sf::FloatRect(3, windowSize.y - rectHeight, windowSize.x - 3, rectHeight - 10));
     const unsigned maxHistory = (windowSize.y - 100) / cCharSize - 2;
-
     // magic numbers
-    static sf::RectangleShape logBkg(sf::Vector2f(windowSize.x - 6, rectHeight - 3));
+    sf::RectangleShape logBkg(sf::Vector2f(windowSize.x - 6, rectHeight - 3));
     logBkg.setPosition(3, windowSize.y - rectHeight);
 
     logBkg.setFillColor(sf::Color(12, 12, 23));

@@ -8,7 +8,8 @@ enum class eWeaponTypes : unsigned {
     Polearms,
     Bows,
     Crossbows,
-    Firearms
+    Firearms,
+    Count
 };
 
 enum class eDamageTypes { Blunt, Piercing, Cutting };

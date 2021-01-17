@@ -1,6 +1,13 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFGUI/Button.hpp>
+#include <SFGUI/Box.hpp>
+#include <SFGUI/Label.hpp>
+#include <SFGUI/Desktop.hpp>
+#include <SFGUI/SFGUI.hpp>
+#include <SFGUI/Entry.hpp>
+#include <SFGUI/Window.hpp>
 #include <memory>
 
 #include "../combatmanager.h"
@@ -16,7 +23,9 @@ class CombatInstance;
 class CombatUI {
 public:
     CombatUI();
-
+    void initialize();
+    void show();
+    void hide();
     void run(bool hasKeyEvents, sf::Event event, const CombatManager* manager);
 
 private:

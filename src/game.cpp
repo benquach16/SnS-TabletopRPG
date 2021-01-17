@@ -101,7 +101,9 @@ void Game::initialize()
     m_desktop.SetProperty<sf::Color>("Scrollbar", "StepperBackgroundColor", sf::Color(22, 22, 33));
     m_desktop.SetProperty<sf::Color>("Scrollbar", "StepperArrowColor", sf::Color(22, 22, 33));
     m_desktop.SetProperty<sf::Color>("Scrollbar", "TroughColor", sf::Color(12, 12, 23));
+    m_desktop.SetProperty<sf::Color>("Entry", "BackgroundColor", sf::Color::Black);
     m_mainmenu.initialize();
+
     m_appState = eApplicationState::MainMenu;
 }
 
@@ -109,6 +111,7 @@ void Game::setupNewgame()
 {
     m_playerObject = new PlayerObject;
     m_scene.setupLevel(m_playerObject);
+    m_createUI.initialize(m_playerObject);
     Log::initialize();
 }
 
@@ -116,6 +119,7 @@ void Game::setupArena()
 {
     m_playerObject = new PlayerObject;
     m_scene.setupArena(m_playerObject);
+    m_createUI.initialize(m_playerObject);
     Log::initialize();
 }
 
@@ -176,8 +180,5 @@ void Game::run()
 
 void Game::charCreation(bool hasKeyEvents, sf::Event event)
 {
-    m_ui.runCreate(hasKeyEvents, event, m_playerObject);
-    if (m_ui.charCreated() == true) {
-        m_appState = eApplicationState::Gameplay;
-    }
+    m_createUI.run(hasKeyEvents, event, m_playerObject);
 }

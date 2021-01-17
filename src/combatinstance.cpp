@@ -249,7 +249,7 @@ void CombatInstance::doDualOffense1()
     }
     switchInitiative();
 
-    m_currentState = eCombatState::DualOffense2;
+    m_currentState = eCombatState::DualOffense1;
 }
 
 void CombatInstance::doDualOffenseStealInitiative()

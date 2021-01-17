@@ -14,9 +14,11 @@ class MainMenuUI {
 public:
     MainMenuUI();
 	void initialize();
-	void cleanup();
+    void show();
+    void hide();
     void run(bool hasKeyEvents, sf::Event event);
 private:
+    void cleanup();
 	sfg::Window::Ptr m_window;
 
 };

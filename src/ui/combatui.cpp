@@ -1,11 +1,11 @@
 #include <iostream>
 
-#include "../combatinstance.h"
-#include "../creatures/player.h"
-#include "../creatures/utils.h"
-#include "../game.h"
-#include "../items/utils.h"
-#include "../items/weapon.h"
+#include "combatinstance.h"
+#include "creatures/player.h"
+#include "creatures/utils.h"
+#include "game.h"
+#include "items/utils.h"
+#include "items/weapon.h"
 #include "combatui.h"
 #include "common.h"
 #include "types.h"
@@ -26,7 +26,18 @@ void CombatUI::resetState()
     m_preresolveUI.resetState();
     m_initiativeState = eInitiativeSubState::ChooseInitiative;
     m_stolenOffenseState = eStolenOffenseSubState::ChooseDice;
-    m_dualRedState = eDualRedStealSubState::ChooseInitiative;
+    m_dualRedState = eDualRedStealSubState::ChooseDice;
+
+}
+
+void CombatUI::initialize()
+{
+
+    auto current_number_entry = sfg::Entry::Create();
+    auto window = sfg::Window::Create();
+    window->Add(current_number_entry);
+    window->SetRequisition(sf::Vector2f(100, 40));
+    //Game::getSingleton()->getDesktop().Add(window);
 }
 
 void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* manager)
@@ -318,23 +329,9 @@ std::string CombatUI::constructStatBoxText(const Creature* creature)
 void CombatUI::doDualRedSteal(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();
+    player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
     // TODO :remove this, make everyone steal initiatve on dual red
-    if (m_dualRedState == eDualRedStealSubState::ChooseInitiative) {
-        sf::Text text;
-        text.setCharacterSize(cCharSize);
-        text.setFont(Game::getDefaultFont());
-        text.setString("Steal Initiative?\na - Yes\nb - No");
-        if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
-            if (event.key.code == sf::Keyboard::A) {
-                player->setDefenseManuever(eDefensiveManuevers::StealInitiative);
-                m_dualRedState = eDualRedStealSubState::ChooseDice;
-            }
-            if (event.key.code == sf::Keyboard::B) {
-                m_dualRedState = eDualRedStealSubState::Finished;
-            }
-        }
-        Game::getWindow().draw(text);
-    } else if (m_dualRedState == eDualRedStealSubState::ChooseDice) {
+    if (m_dualRedState == eDualRedStealSubState::ChooseDice) {
         sf::Text text;
         text.setCharacterSize(cCharSize);
         text.setFont(Game::getDefaultFont());

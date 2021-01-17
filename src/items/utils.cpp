@@ -1,5 +1,5 @@
 #include "utils.h"
-#include "../creatures/creature.h"
+#include "creatures/creature.h"
 #include <algorithm>
 #include <assert.h>
 
