@@ -7,20 +7,16 @@ GameUI::GameUI()
 {
     m_helpText.setCharacterSize(cCharSize);
     m_helpText.setFont(Game::getDefaultFont());
-    m_helpText.setString("I - Inventory\nP - Pickup\nD - Look at object\nA - "
-                         "Attack\nK - Talk\nR - Rest\nU - Use object");
+    m_helpText.setString("1 - Attack\n2 - Inspect\n3 - Use\n4 - Pickup\n5 - Talk\n6 - Rest\nI - "
+                         "Inventory\nPg Up - Scroll Up\nPg Dwn - Scroll Down\n");
 }
 
-void GameUI::initialize()
-{
-    m_combatUI.initialize();
-}
+void GameUI::initialize() { m_combatUI.initialize(); }
 
 void GameUI::run()
 {
     sf::FloatRect backgroundRect = m_helpText.getLocalBounds();
     backgroundRect.width += 5;
-    backgroundRect.height += 10;
     m_bkg.setSize(sf::Vector2f(backgroundRect.width, backgroundRect.height));
     m_bkg.setFillColor(sf::Color(50, 50, 50, 30));
     Game::getWindow().draw(m_bkg);

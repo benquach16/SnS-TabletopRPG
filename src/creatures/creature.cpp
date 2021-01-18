@@ -188,6 +188,7 @@ void Creature::inflictWound(Wound* wound)
         }
     }
 
+    /*
     if (getHasPosition() == true) {
         m_currentPosition.dice -= impact;
         if (m_currentPosition.dice < 0) {
@@ -197,6 +198,7 @@ void Creature::inflictWound(Wound* wound)
             impact = 0;
         }
     }
+    */
 
     m_combatPool -= impact;
 

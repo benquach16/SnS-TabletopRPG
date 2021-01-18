@@ -202,6 +202,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
         case eOffensiveManuevers::NoOffense:
             priority = 0;
             break;
+        case eOffensiveManuevers::Draw:
         case eOffensiveManuevers::HeavyBlow:
         case eOffensiveManuevers::Swing: {
             auto swings = weapon->getSwingComponents();
@@ -688,9 +689,16 @@ void AICombatController::doPrecombat(
 
 void AICombatController::doPreresolution(Creature* controlledCreature, const Creature* opponent)
 {
-    if (getFeintCost() < controlledCreature->getCombatPool()) {
-        // controlledCreature->setCreatureFeint();
+    int shrewdDiff = controlledCreature->getShrewdness() - opponent->getShrewdness();
+    int die = controlledCreature->getQueuedOffense().dice;
+    if (die < controlledCreature->getMaxCombatPool() / 2 + shrewdDiff) {
+        if (getFeintCost() < controlledCreature->getCombatPool()) {
+            controlledCreature->setCreatureFeint();
+            controlledCreature->setOffenseFeintDice(controlledCreature->getCombatPool());
+            controlledCreature->reduceCombatPool(controlledCreature->getCombatPool());
+        }
     }
+
     controlledCreature->setPreResolutionReady();
 }
 

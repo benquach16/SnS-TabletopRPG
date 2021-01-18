@@ -67,7 +67,7 @@
         "AP": 0.0,
         "rigid": false,
         "metal": false,
-        "coverage": ["abs", "ribs", "shoulder", "armpit", "armpit", "elbow"],
+        "coverage": ["abs", "ribs", "shoulder", "armpit"],
         "layer": "cloth",
         "type": "none"
     },
@@ -115,7 +115,7 @@
         "AP": 0.0,
         "rigid": false,
         "metal": false,
-        "coverage": ["abs", "ribs", "shoulder", "armpit", "armpit", "elbow"],
+        "coverage": ["abs", "ribs", "shoulder", "armpit", "armpit", "elbow", "upperarm"],
         "layer": "cloth",
         "type": "none"
     },

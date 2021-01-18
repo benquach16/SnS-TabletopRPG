@@ -392,7 +392,7 @@ void CombatInstance::doParryLinked()
     Offense offense = defender->getQueuedOffense();
 
     outputOffense(defender);
-    m_currentState = eCombatState::Resolution;
+    m_currentState = eCombatState::PreResolution;
 }
 
 void CombatInstance::doStealInitiative()
@@ -448,7 +448,11 @@ void CombatInstance::doPreResolution()
         m_currentState = eCombatState::PreResolution;
         return;
     }
-
+    Offense attack = attacker->getQueuedOffense();
+    if (attack.feint) {
+        writeMessage(attacker->getName() + " attempts to feint with " + to_string(attack.feintdie)
+            + " action points!");
+    }
     m_currentState = eCombatState::Resolution;
 }
 
@@ -605,8 +609,9 @@ void CombatInstance::doResolution()
         // roll dice
         if (attack.feint == true) {
             // resolve feint to change successes
-            int attackerKeen
-                = DiceRoller::rollGetSuccess(attacker->getBTN(), attacker->getShrewdness());
+            int bonusDie = attack.feintdie / 2;
+            int attackerKeen = DiceRoller::rollGetSuccess(
+                attacker->getBTN(), attacker->getShrewdness() + bonusDie);
             int defenderKeen
                 = DiceRoller::rollGetSuccess(defender->getBTN(), defender->getShrewdness());
 

@@ -32,7 +32,9 @@ public:
     PlayerObject* getPlayer();
 
 private:
+    
     static constexpr float cPlayingTick = 0.3;
+    static constexpr int cViewDiff = 200;
     void playing(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
     void selection(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
     void dialogSelect(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
@@ -44,7 +46,7 @@ private:
     void pickup(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
     void attack(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);
 
-    void doMoveSelector(sf::Event, PlayerObject* playerObject, bool limit);
+    void doMoveSelector(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject, bool limit);
     enum class eSceneState : unsigned {
         Uninitialized,
         Playing,

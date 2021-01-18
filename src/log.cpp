@@ -94,5 +94,13 @@ void Log::run()
     logBkg.setOutlineThickness(3);
     logBkg.setOutlineColor(sf::Color(22, 22, 33));
 
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageUp)) {
+        m_display->GetVerticalAdjustment()->Decrement();
+        m_display->GetVerticalAdjustment()->Decrement();
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageDown)) {
+        m_display->GetVerticalAdjustment()->Increment();
+        m_display->GetVerticalAdjustment()->Increment();
+    }
     Game::getWindow().draw(logBkg);
 }

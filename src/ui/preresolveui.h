@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../creatures/player.h"
+#include "creatures/player.h"
 #include "numberinput.h"
 
 class PreresolveUI {
@@ -10,7 +10,9 @@ public:
 
 private:
     void doFeint(bool hasKeyEvents, sf::Event event, Player* player);
-    enum class eUiState : unsigned { ChooseFeint, Finished };
+    void doDice(bool hasKeyEvents, sf::Event event, Player* player);
+    enum class eUiState : unsigned { ChooseFeint, ChooseDice, Finished };
 
     eUiState m_currentState;
+    NumberInput m_numberInput;
 };

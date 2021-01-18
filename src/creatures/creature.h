@@ -186,6 +186,7 @@ public:
     void setOffensePinpoint() { m_currentOffense.pinpoint = true; }
     void setOffenseLinked() { m_currentOffense.linked = true; }
     void setOffenseFeint() { m_currentOffense.feint = true; }
+    void setOffenseFeintDice(int dice) { m_currentOffense.feintdie = dice; }
     void setOffenseHeavyDice(int dice) { m_currentOffense.heavyblow = dice; }
 
     void setDefenseWeapon(bool isPrimary) { m_currentDefense.withPrimaryWeapon = isPrimary; }

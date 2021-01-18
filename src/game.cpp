@@ -139,6 +139,7 @@ void Game::run()
             case sf::Event::KeyPressed:
             case sf::Event::TextEntered:
             case sf::Event::KeyReleased:
+            case sf::Event::MouseButtonReleased:
                 hasKeyEvents = true;
                 break;
             case sf::Event::Resized:
@@ -148,9 +149,12 @@ void Game::run()
                 hasKeyEvents = false;
                 break;
             }
+            if (hasKeyEvents) {
+                break;
+            }
         }
-
         m_window.clear();
+        m_desktop.Update(0.f);
         switch (m_appState) {
         case eApplicationState::CharCreation:
             charCreation(hasKeyEvents, event);
@@ -162,9 +166,9 @@ void Game::run()
             m_scene.run(hasKeyEvents, event, m_playerObject);
             break;
         }
-        m_desktop.Update(0.f);
         m_gui.Display(m_window);
         m_window.display();
+
 
         float currentTime = clock.restart().asSeconds();
         float fps = 1.f / currentTime;
