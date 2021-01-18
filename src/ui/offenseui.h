@@ -1,6 +1,15 @@
 #pragma once
 
-#include "../creatures/player.h"
+#include <SFGUI/Button.hpp>
+#include <SFGUI/Box.hpp>
+#include <SFGUI/Label.hpp>
+#include <SFGUI/Desktop.hpp>
+#include <SFGUI/SFGUI.hpp>
+#include <SFGUI/Entry.hpp>
+#include <SFGUI/Window.hpp>
+#include <SFGUI/ComboBox.hpp>
+
+#include "creatures/player.h"
 #include "numberinput.h"
 
 class CombatInstance;
@@ -11,7 +20,7 @@ public:
         const CombatInstance* instance, bool allowStealInitiative = false,
         bool linkedParry = false);
     void resetState() { m_currentState = eUiState::ChooseWeapon; }
-
+    void initialize();
 private:
     void doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* player);
     void doManuever(

@@ -47,6 +47,7 @@ Scene::~Scene()
 
 void Scene::setupLevel(PlayerObject* playerObject)
 {
+    m_ui.initialize();
     m_currentIdx = 0;
     Level* level = new Level(60, 60);
     Level* level2 = new Level(60, 60);
@@ -80,6 +81,7 @@ void Scene::setupLevel(PlayerObject* playerObject)
 
 void Scene::setupArena(PlayerObject* playerObject)
 {
+    m_ui.initialize();
     m_currentIdx = 0;
     Level* level = new Level(10, 10);
 

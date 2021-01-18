@@ -46,6 +46,13 @@ void OffenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, Creature
     }
 }
 
+void OffenseUI::initialize()
+{
+    auto m_window = sfg::Window::Create();
+    auto wpnBtn = sfg::Button::Create("");
+
+}
+
 void OffenseUI::doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();

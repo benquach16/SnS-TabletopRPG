@@ -1,13 +1,13 @@
 #include <iostream>
 
 #include "combatinstance.h"
+#include "combatui.h"
+#include "common.h"
 #include "creatures/player.h"
 #include "creatures/utils.h"
 #include "game.h"
 #include "items/utils.h"
 #include "items/weapon.h"
-#include "combatui.h"
-#include "common.h"
 #include "types.h"
 
 using namespace std;
@@ -15,7 +15,11 @@ using namespace std;
 constexpr unsigned logHeight = cCharSize * (cLinesDisplayed + 1);
 constexpr unsigned rectHeight = cCharSize * 6;
 
-CombatUI::CombatUI() { resetState(); }
+CombatUI::CombatUI()
+    : m_currentPlayer(nullptr)
+{
+    resetState();
+}
 
 void CombatUI::resetState()
 {
@@ -27,18 +31,62 @@ void CombatUI::resetState()
     m_initiativeState = eInitiativeSubState::ChooseInitiative;
     m_stolenOffenseState = eStolenOffenseSubState::ChooseDice;
     m_dualRedState = eDualRedStealSubState::ChooseDice;
-
 }
 
 void CombatUI::initialize()
 {
+    m_precombatUI.initialize();
 
-    auto current_number_entry = sfg::Entry::Create();
-    auto window = sfg::Window::Create();
-    window->Add(current_number_entry);
-    window->SetRequisition(sf::Vector2f(100, 40));
-    //Game::getSingleton()->getDesktop().Add(window);
+    sf::Vector2u windowSize = Game::getWindow().getSize();
+    auto attack = sfg::Button::Create("Attack");
+    auto def = sfg::Button::Create("Defend");
+    auto inspect = sfg::Button::Create("Inspect");
+    m_info = sfg::Label::Create("");
+    m_info->SetLineWrap(true);
+    m_info->SetRequisition(sf::Vector2f(windowSize.x, 0));
+    auto box = sfg::Box::Create(sfg::Box::Orientation::VERTICAL, 10);
+    m_initWindow = sfg::Window::Create();
+    m_initWindow->SetStyle(m_initWindow->GetStyle() ^ sfg::Window::RESIZE);
+    m_initWindow->SetStyle(m_initWindow->GetStyle() ^ sfg::Window::TITLEBAR);
+    m_initWindow->Add(box);
+    box->Pack(sfg::Label::Create("Choose Initiative"), false, false);
+    box->Pack(attack, false, false);
+    box->Pack(def, false, false);
+
+    // shared ptr memory leak
+    attack->GetSignal(sfg::Button::OnMouseEnter).Connect([this] {
+        m_info->SetText("Choosing Attack means you will attempt to take initiative on the first "
+                      "exchange. If the enemy also chooses attack, then both of you will attempt "
+                      "to land an attack without defending, which can result in a double-kill.");
+    });
+    attack->GetSignal(sfg::Button::OnLeftClick).Connect([this] {
+        m_currentPlayer->setInitiative(eInitiativeRoll::Attack);
+        m_initiativeState = eInitiativeSubState::Finished;
+        m_info->SetText("");
+        hide();
+    });
+    def->GetSignal(sfg::Button::OnMouseEnter).Connect([this] {
+        m_info->SetText(
+            "Choosing Defend means you will attempt to defend on the first exchange. If both of "
+            "you defend, then no one takes initiative and you can choose initiative again.");
+    });
+    def->GetSignal(sfg::Button::OnLeftClick).Connect([this] {
+        m_currentPlayer->setInitiative(eInitiativeRoll::Defend);
+        m_initiativeState = eInitiativeSubState::Finished;
+        m_info->SetText("");
+        hide();
+    });
+    inspect->GetSignal(sfg::Button::OnLeftClick).Connect([this] {
+
+    });
+    box->Pack(sfg::Button::Create("Inspect Target"), false, false);
+    box->Pack(m_info);
+    m_initWindow->SetRequisition(sf::Vector2f(100, 40));
+    Game::getSingleton()->getDesktop().Add(m_initWindow);
+    hide();
 }
+
+void CombatUI::hide() { m_initWindow->Show(false); }
 
 void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* manager)
 {
@@ -63,6 +111,7 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
 
     assert(instance->getSide1()->isPlayer() == true);
     Player* player = static_cast<Player*>(instance->getSide1());
+    m_currentPlayer = player;
     Creature* target = instance->getSide2();
 
     sf::RectangleShape reachBkg(sf::Vector2f(windowSize.x - 4, cCharSize));
@@ -221,59 +270,9 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
 void CombatUI::doInitiative(bool hasKeyEvents, sf::Event event, Player* player, Creature* target)
 {
     if (m_initiativeState == eInitiativeSubState::ChooseInitiative) {
-        UiCommon::drawTopPanel();
-
-        sf::Text text;
-        text.setCharacterSize(cCharSize);
-        text.setFont(Game::getDefaultFont());
-        text.setString("Choose initiative:\na - Attack \nb - Defend\nc - Inspect target");
-        Game::getWindow().draw(text);
-
-        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
-            char c = event.text.unicode;
-            switch (c) {
-            case 'a':
-                player->setInitiative(eInitiativeRoll::Attack);
-                m_initiativeState = eInitiativeSubState::Finished;
-                break;
-            case 'b':
-                player->setInitiative(eInitiativeRoll::Defend);
-                m_initiativeState = eInitiativeSubState::Finished;
-                break;
-            case 'c':
-                m_initiativeState = eInitiativeSubState::InspectTarget;
-                break;
-            }
-        }
-    } else if (m_initiativeState == eInitiativeSubState::InspectTarget) {
-        UiCommon::drawTopPanel();
-
-        sf::Text text;
-        text.setCharacterSize(cCharSize);
-        text.setFont(Game::getDefaultFont());
-        string str = "They ";
-        if (target->getStrength() < player->getStrength()) {
-            str += "have less strength than you. ";
-        } else {
-            str += "have more strength than you. ";
-        }
-        str += "They ";
-        if (target->getShrewdness() < player->getShrewdness()) {
-            str += "have less shrewdness than you.";
-        } else {
-            str += "have more shrewdness than you.";
-        }
-        str += "They ";
-        if (target->getMobility() < player->getMobility()) {
-            str += "are slower than you.";
-        } else {
-            str += "are faster than you.";
-        }
-        text.setString(str);
-        Game::getWindow().draw(text);
-        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
-            m_initiativeState = eInitiativeSubState::ChooseInitiative;
-        }
+        sf::Vector2u windowSize = Game::getWindow().getSize();
+        m_info->SetRequisition(sf::Vector2f(windowSize.x, 0));
+        m_initWindow->Show();
     }
 }
 

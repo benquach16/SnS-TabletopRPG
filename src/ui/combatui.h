@@ -8,9 +8,10 @@
 #include <SFGUI/SFGUI.hpp>
 #include <SFGUI/Entry.hpp>
 #include <SFGUI/Window.hpp>
+#include <SFGUI/ComboBox.hpp>
 #include <memory>
 
-#include "../combatmanager.h"
+#include "combatmanager.h"
 #include "defenseui.h"
 #include "numberinput.h"
 #include "offenseui.h"
@@ -70,4 +71,8 @@ private:
     PositionUI m_positionUI;
     PrecombatUI m_precombatUI;
     PreresolveUI m_preresolveUI;
+
+    sfg::Window::Ptr m_initWindow;
+    sfg::Label::Ptr m_info;
+    Player* m_currentPlayer;
 };

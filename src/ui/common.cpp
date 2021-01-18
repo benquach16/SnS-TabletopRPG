@@ -1,12 +1,10 @@
 #include <vector>
 
-#include "../creatures/creature.h"
-#include "../creatures/utils.h"
-#include "../game.h"
+#include "creatures/creature.h"
+#include "creatures/utils.h"
+#include "game.h"
 #include "common.h"
 #include "types.h"
-
-constexpr int cHeight = 14;
 
 using namespace std;
 
@@ -16,7 +14,7 @@ void drawTopPanel()
 {
     auto windowSize = Game::getWindow().getSize();
 
-    static sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize * cHeight));
+    static sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize * cLinesHeight));
     bkg.setFillColor(sf::Color(12, 12, 23));
     Game::getWindow().draw(bkg);
 }

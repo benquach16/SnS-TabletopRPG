@@ -14,6 +14,7 @@ GameUI::GameUI()
 void GameUI::initialize()
 {
     m_combatUI.initialize();
+    m_dialogueUI.initialize();
 }
 
 void GameUI::run()

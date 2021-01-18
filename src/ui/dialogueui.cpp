@@ -1,12 +1,12 @@
 #include <fstream>
 
-#include "../3rdparty/json.hpp"
-#include "../game.h"
-#include "../log.h"
-#include "../object/creatureobject.h"
-#include "../object/playerobject.h"
+#include "3rdparty/json.hpp"
 #include "common.h"
 #include "dialogueui.h"
+#include "game.h"
+#include "log.h"
+#include "object/creatureobject.h"
+#include "object/playerobject.h"
 #include "types.h"
 
 using namespace std;
@@ -57,6 +57,29 @@ DialogueUI::~DialogueUI()
     }
 }
 
+void DialogueUI::initialize()
+{
+    auto windowSize = Game::getWindow().getSize();
+    m_window = sfg::Window::Create();
+    m_box = sfg::Box::Create(sfg::Box::Orientation::VERTICAL, 10);
+    m_window->Add(m_box);
+    m_label = sfg::Label::Create();
+    m_box->Pack(m_label, false, false);
+    m_window->SetStyle(m_window->GetStyle() ^ sfg::Window::RESIZE);
+    m_window->SetStyle(m_window->GetStyle() ^ sfg::Window::TITLEBAR);
+    Game::getSingleton()->getDesktop().Add(m_window);
+    hide();
+}
+
+void DialogueUI::hide()
+{
+    m_window->Show(false);
+    for (auto it : m_responses) {
+        m_box->Remove(it);
+    }
+    m_responses.clear();
+}
+
 void DialogueUI::init(std::string startingLabel)
 {
     m_currentLabel = startingLabel;
@@ -66,14 +89,19 @@ void DialogueUI::init(std::string startingLabel)
 bool DialogueUI::run(
     bool hasKeyEvents, sf::Event event, PlayerObject* player, CreatureObject* creature)
 {
+    m_window->SetPosition(
+        sf::Vector2f(Game::getWindow().getSize().x / 2 - m_window->GetClientRect().width / 2,
+            Game::getWindow().getSize().y / 2 - m_window->GetClientRect().height / 2));
     switch (m_currentState) {
     case eUiState::TalkingNPC:
         doTalkingNPC(player, creature);
         break;
     case eUiState::TalkingPlayer:
+        m_window->Show();
         doTalkingPlayer(hasKeyEvents, event, player, creature);
         break;
     case eUiState::Finished:
+        hide();
         return false;
         break;
     }
@@ -83,6 +111,7 @@ bool DialogueUI::run(
 void DialogueUI::doTalkingNPC(PlayerObject* player, CreatureObject* creature)
 {
     UiCommon::drawTopPanel();
+    hide();
     string message = m_dialogueTree.at(m_currentLabel)->getMessage();
     Log::push(
         creature->getCreatureComponent()->getName() + ": " + message, Log::eMessageTypes::Dialogue);
@@ -92,37 +121,27 @@ void DialogueUI::doTalkingNPC(PlayerObject* player, CreatureObject* creature)
 void DialogueUI::doTalkingPlayer(
     bool hasKeyEvents, sf::Event event, PlayerObject* player, CreatureObject* creature)
 {
-    UiCommon::drawTopPanel();
-
-    sf::Text text;
-    text.setCharacterSize(cCharSize);
-    text.setFont(Game::getDefaultFont());
-
     std::vector<std::string> responses = m_dialogueTree.at(m_currentLabel)->getResponses();
 
     if (responses.size() == 0) {
         m_currentState = eUiState::Finished;
+        hide();
         return;
     }
     string str;
     if (creature->isPlayer() == false) {
-        str += "Dialogue with " + creature->getName() + '\n';
+        m_label->SetText("Dialogue with " + creature->getName() + '\n');
     } else {
-        str += "Internal Monologue\n";
+        m_label->SetText("Internal Monologue\n");
     }
-    for (unsigned i = 0; i < responses.size(); ++i) {
-        char idx = 'a' + i;
-        str += idx;
-        DialogueNode* node = m_dialogueTree[responses[i]];
-
-        str += " - " + node->getMessage() + "\n";
-
-        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
-            char c = event.text.unicode;
-            if (c == idx) {
+    if (m_responses.size() == 0) {
+        for (unsigned i = 0; i < responses.size(); ++i) {
+            DialogueNode* node = m_dialogueTree[responses[i]];
+            auto response = sfg::Button::Create(node->getMessage());
+            response->SetRequisition(sf::Vector2f(0, 20));
+            response->GetSignal(sfg::Button::OnLeftClick).Connect([this, node, player] {
                 Log::push(player->getName() + ": " + node->getMessage(),
                     Log::eMessageTypes::OtherDialogue);
-
                 vector<string> chosenResponses = node->getResponses();
                 if (chosenResponses.size() == 0) {
                     m_currentState = eUiState::Finished;
@@ -133,10 +152,11 @@ void DialogueUI::doTalkingPlayer(
                 m_currentLabel = chosenResponses[0];
                 m_currentState = eUiState::TalkingNPC;
                 return;
-            }
+            });
+            m_box->Pack(response, false, false);
+            m_responses.push_back(response);
         }
     }
-    text.setString(str);
-    Game::getWindow().draw(text);
+
     m_currentState = eUiState::TalkingPlayer;
 }
