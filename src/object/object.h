@@ -35,6 +35,10 @@ struct vector2d {
     {
     }
 
+    bool operator==(const vector2d &rhs) {
+        return rhs.x == x && rhs.y == y;
+    }
+
     template <class Archive> void serialize(Archive& ar, const unsigned int version)
     {
         ar& x;

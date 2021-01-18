@@ -119,7 +119,8 @@ void Scene::run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
     // v.setCenter(v.getSize() *.5f);
     sf::Vector2f center(playerObject->getPosition().x, playerObject->getPosition().y);
     center = coordsToScreen(center);
-    v.setCenter(center.x, center.y + 200);
+    constexpr int cViewDiff = 0;
+    v.setCenter(center.x, center.y + cViewDiff);
     v.zoom(zoom);
     Game::getWindow().setView(v);
     //------------------
@@ -130,9 +131,25 @@ void Scene::run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
         || m_currentState == eSceneState::UseMode) {
         m_gfxSelector.run(&m_selector);
     }
+    m_gfxSelector.run(&m_selector);
     m_gfxlevel.renderText();
     Game::getWindow().setView(original);
+    if (event.type == sf::Event::MouseMoved) {
+        auto size = Game::getWindow().getSize();
+        float x = event.mouseMove.x - (int)size.x / 2;
+        float y = event.mouseMove.y - (int)size.y / 2 + cViewDiff;
+        x *= zoom;
+        y *= zoom;
+        sf::Vector2f coords = screenToCoords(sf::Vector2f(x, y));
+        vector2d mousePos(
+            coords.x + playerObject->getPosition().x, coords.y + playerObject->getPosition().y);
 
+        cout << "cx: " << coords.x << " cy: " << coords.y << endl;
+        cout << "x: " << mousePos.x << " y: " << mousePos.y << endl;
+        mousePos.x = max(0, mousePos.x);
+        mousePos.y = max(0, mousePos.y);
+        m_selector.setPosition(mousePos.x, mousePos.y);
+    }
     m_ui.run();
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Equal) {
@@ -239,6 +256,13 @@ void Scene::selection(bool hasKeyEvents, sf::Event event, PlayerObject* playerOb
 void Scene::playing(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
 {
     vector2d pos = playerObject->getPosition();
+    if (event.type == sf::Event::MouseButtonPressed) {
+        if (event.mouseButton.button == sf::Mouse::Right) {
+            m_moving = true;
+            m_tomove = m_selector.getPosition();
+        }
+    }
+
     if (hasKeyEvents && event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Down) {
             tick = cPlayingTick + 1;
@@ -325,11 +349,44 @@ void Scene::playing(bool hasKeyEvents, sf::Event event, PlayerObject* playerObje
     if (playerObject->isInCombat() == true) {
         m_currentState = eSceneState::InCombat;
     }
-
-    if (aiTick > cPlayingTick) {
+    float tick = cPlayingTick;
+    if (m_moving) tick = 0.1;
+    if (aiTick > tick) {
         m_levels[m_currentIdx]->run(this);
         aiTick = 0;
         m_levels[m_currentIdx]->cleanup();
+
+        vector2d pos = playerObject->getPosition();
+        if (m_moving) {
+            if (m_tomove == pos) {
+                m_moving = false;
+            }
+            bool moved = false;
+            if (m_tomove.y < pos.y && moved == false) {
+                if (m_levels[m_currentIdx]->isFreeSpace(pos.x, pos.y - 1) == true) {
+                    playerObject->moveUp();
+                    moved = true;
+                }
+            }
+            if (m_tomove.y > pos.y && moved == false) {
+                if (m_levels[m_currentIdx]->isFreeSpace(pos.x, pos.y + 1) == true) {
+                    playerObject->moveDown();
+                    moved = true;
+                }
+            }
+            if (m_tomove.x > pos.x && moved == false) {
+                if (m_levels[m_currentIdx]->isFreeSpace(pos.x + 1, pos.y) == true) {
+                    playerObject->moveRight();
+                    moved = true;
+                }
+            }
+            if (m_tomove.x < pos.x && moved == false) {
+                if (m_levels[m_currentIdx]->isFreeSpace(pos.x - 1, pos.y) == true) {
+                    playerObject->moveLeft();
+                    moved = true;
+                }
+            }
+        }
     }
 }
 

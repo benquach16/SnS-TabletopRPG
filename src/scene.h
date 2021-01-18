@@ -64,7 +64,8 @@ private:
     eSceneState m_currentState;
     SelectorObject m_selector;
     Object* m_pickup;
-
+    bool m_moving = false;
+    vector2d m_tomove;
     std::vector<Level*> m_levels;
     int m_currentIdx;
     // who i am talking to
