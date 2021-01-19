@@ -44,7 +44,8 @@ enum class eCombatState : unsigned {
     PostResolution = 19,
     FinishedCombat = 20,
     AttackFromDefense = 21,
-    BetweenExchangeActions = 22
+    BetweenExchangeActions = 22,
+    FeintAttack = 23,
 };
 
 class CombatInstance {
@@ -90,6 +91,7 @@ private:
     void doStealInitiative();
     void doPostDefense();
     void doPreResolution();
+    void doFeintAttack();
     void doResolution();
     void doBetweenExchange();
     // this is a special case because if both sides roll to attack since both of

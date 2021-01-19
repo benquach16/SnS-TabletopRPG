@@ -25,6 +25,7 @@ private:
     eWeaponDetail m_weaponType;
     eUiState m_uiState;
     int m_id;
-
+    std::map<int, int> m_lowIterator;
+    std::map<int, int> m_highIterator;
     sf::RectangleShape m_bkg;
 };

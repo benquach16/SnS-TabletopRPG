@@ -8,7 +8,7 @@
 using namespace std;
 
 void OffenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, Creature* target,
-    const CombatInstance* instance, bool allowStealInitiative, bool linkedParry)
+    const CombatInstance* instance, bool allowStealInitiative, bool payCosts)
 {
     if (player->getHasOffense()) {
         return;
@@ -30,7 +30,7 @@ void OffenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, Creature
         doDice(hasKeyEvents, event, player);
         break;
     case eUiState::ChooseTarget:
-        doTarget(hasKeyEvents, event, player, target);
+        doTarget(hasKeyEvents, event, player, target, payCosts);
         break;
     case eUiState::InspectTarget:
         doInspect(hasKeyEvents, event, target);
@@ -333,7 +333,7 @@ void OffenseUI::doDice(bool hasKeyEvents, sf::Event event, Player* player)
     m_numberInput.setPosition(sf::Vector2f(0, cCharSize));
 }
 
-void OffenseUI::doTarget(bool hasKeyEvents, sf::Event event, Player* player, Creature* target)
+void OffenseUI::doTarget(bool hasKeyEvents, sf::Event event, Player* player, Creature* target, bool payCosts)
 {
     UiCommon::drawTopPanel();
 
@@ -354,7 +354,14 @@ void OffenseUI::doTarget(bool hasKeyEvents, sf::Event event, Player* player, Cre
             char c = event.text.unicode;
             if (c == idx) {
                 player->setOffenseTarget(locations[i]);
-                m_currentState = eUiState::ChooseDice;
+                if (payCosts) {
+                    m_currentState = eUiState::ChooseDice;
+                }
+                else {
+                    player->setOffenseReady();
+                    m_currentState = eUiState::Finished;
+                }
+                
             }
             // if player chose pinpoit thrust allow them to pick a specific location
             if (player->getQueuedOffense().manuever == eOffensiveManuevers::PinpointThrust

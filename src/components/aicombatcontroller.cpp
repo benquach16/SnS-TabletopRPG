@@ -232,6 +232,9 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
                 priority += target->primaryWeaponDisabled() ? 2 : 0;
                 bestDamage += 2;
             }
+            if (it.first == eOffensiveManuevers::Draw) {
+                bestDamage -= 1;
+            }
             priority += random_static::get(bestDamage, bestDamage + cFuzz);
             assert(component != nullptr);
         } break;

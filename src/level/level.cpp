@@ -155,9 +155,41 @@ void Level::generateTown()
             (*this)(x, y).m_type = eTileType::Ground;
         }
     }
-
+    std::vector<Building> buildings;
     for (unsigned i = 0; i < 8; ++i) {
-        createBuilding();
+        buildings.push_back(createBuilding());
+    }
+    for (int i = 0; i < buildings.size(); ++i) {
+        HumanObject* object = new HumanObject;
+        object->setPosition(
+            buildings[i].x + buildings[i].width / 2, buildings[i].y + buildings[i].height / 2);
+        object->setFaction(eCreatureFaction::Confederacy);
+        object->setLoadout(eCreatureFaction::Civilian, eRank::Recruit);
+        object->setAIRole(eAIRoles::Standing);
+        m_objects.push_back(object);
+    }
+
+    HumanObject* wilhelm = new HumanObject;
+    wilhelm->setPosition(m_width / 2, m_height / 2);
+    wilhelm->setFaction(eCreatureFaction::Confederacy);
+    wilhelm->setLoadout(eCreatureFaction::Confederacy, eRank::Lord);
+    wilhelm->setAIRole(eAIRoles::Standing);
+    wilhelm->setName("Sir Wilhelm");
+    m_objects.push_back(wilhelm);
+
+    for (int i = 0; i < 5; ++i) {
+        HumanObject* object = new HumanObject;
+        object->setPosition(m_width / 2, m_height / 2);
+        object->setFaction(eCreatureFaction::Confederacy);
+        object->setLoadout(eCreatureFaction::Civilian, eRank::Soldier);
+        m_objects.push_back(object);
+    }
+    for (int i = 0; i < 5; ++i) {
+        HumanObject* object = new HumanObject;
+        object->setPosition(m_width / 2, m_height / 2);
+        object->setFaction(eCreatureFaction::Confederacy);
+        object->setLoadout(eCreatureFaction::Confederacy, eRank::Soldier);
+        m_objects.push_back(object);
     }
 }
 

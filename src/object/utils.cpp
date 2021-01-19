@@ -67,7 +67,7 @@ eCreatureFaction stringToFaction(const std::string& str)
     } else if (str == "confederacy") {
         return eCreatureFaction::Confederacy;
     }
-    return eCreatureFaction::None;
+    return eCreatureFaction::Civilian;
 }
 
 eCreatureRace stringToRace(const std::string& str)

@@ -9,7 +9,7 @@ class OffenseUI {
 public:
     void run(bool hasKeyEvents, sf::Event event, Player* player, Creature* target,
         const CombatInstance* instance, bool allowStealInitiative = false,
-        bool linkedParry = false);
+        bool payCosts = true);
     void resetState() { m_currentState = eUiState::ChooseWeapon; }
 
 private:
@@ -20,7 +20,7 @@ private:
     void doHeavyBlow(bool hasKeyEvents, sf::Event event, Player* player);
     void doComponent(bool hasKeyEvents, sf::Event event, Player* player);
     void doDice(bool hasKeyEvents, sf::Event event, Player* player);
-    void doTarget(bool hasKeyEvents, sf::Event event, Player* player, Creature* target);
+    void doTarget(bool hasKeyEvents, sf::Event event, Player* player, Creature* target, bool payCosts);
     void doInspect(bool hasKeyEvents, sf::Event event, Creature* target);
     void doPinpointThrust(bool hasKeyEvents, sf::Event event, Player* player);
 

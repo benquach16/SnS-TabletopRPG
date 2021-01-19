@@ -456,6 +456,11 @@ void CombatInstance::doPreResolution()
     m_currentState = eCombatState::Resolution;
 }
 
+void CombatInstance::doFeintAttack()
+{
+    m_currentState = eCombatState::Resolution;
+}
+
 void CombatInstance::doResolution()
 {
     cout << "Resolving combat" << endl;
@@ -1218,6 +1223,8 @@ void CombatInstance::run()
         break;
     case eCombatState::BetweenExchangeActions:
         doBetweenExchange();
+        break;
+    case eCombatState::FeintAttack:
         break;
     }
 }

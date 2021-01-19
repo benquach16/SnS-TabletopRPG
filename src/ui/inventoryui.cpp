@@ -64,6 +64,8 @@ void InventoryUI::doBackpack(bool hasKeyEvents, sf::Event event, PlayerObject* p
     str += to_string(player->getCreatureComponent()->getAP()) + "AP\n";
 
     int count = 0;
+    std::map<int, int> startIterator;
+    std::map<int, int> endIterator;
     for (auto it = inventory.begin(); it != inventory.end();) {
         if (it->second <= 0) {
             it = inventory.erase(it);

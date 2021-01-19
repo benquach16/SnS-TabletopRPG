@@ -259,15 +259,15 @@ void CombatUI::doInitiative(bool hasKeyEvents, sf::Event event, Player* player, 
         }
         str += "They ";
         if (target->getShrewdness() < player->getShrewdness()) {
-            str += "have less shrewdness than you.";
+            str += "have less shrewdness than you. ";
         } else {
-            str += "have more shrewdness than you.";
+            str += "have more shrewdness than you. ";
         }
         str += "They ";
         if (target->getMobility() < player->getMobility()) {
-            str += "are slower than you.";
+            str += "are slower than you. ";
         } else {
-            str += "are faster than you.";
+            str += "are faster than you. ";
         }
         text.setString(str);
         Game::getWindow().draw(text);

@@ -11,7 +11,7 @@ BOOST_CLASS_EXPORT(CreatureObject)
 
 CreatureObject::CreatureObject(Creature* creature)
     : m_creature(creature)
-    , m_creatureFaction(eCreatureFaction::None)
+    , m_creatureFaction(eCreatureFaction::Civilian)
     , m_experience(0)
     , m_thirst(0)
     , m_hunger(0)

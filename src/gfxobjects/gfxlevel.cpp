@@ -321,7 +321,7 @@ void GFXLevel::run(const Level* level, vector2d center)
         vector2d position = rLevelObjs[i]->getPosition();
         int dist = (position.x - center.x) * (position.x - center.x)
             + (position.y - center.y) * (position.y - center.y);
-        if (dist > 200) {
+        if (dist > range * range) {
             continue;
         }
 

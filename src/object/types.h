@@ -1,7 +1,7 @@
 #pragma once
 
 enum class eCreatureFaction : unsigned {
-    None = 0,
+    Civilian = 0,
     Player = 1,
     Bandit = 2,
     Wildlife = 3,

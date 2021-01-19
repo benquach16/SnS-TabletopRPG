@@ -8,7 +8,7 @@ GameUI::GameUI()
     m_helpText.setCharacterSize(cCharSize);
     m_helpText.setFont(Game::getDefaultFont());
     m_helpText.setString("1 - Attack\n2 - Inspect\n3 - Use\n4 - Pickup\n5 - Talk\n6 - Rest\nI - "
-                         "Inventory\nPg Up - Scroll Up\nPg Dwn - Scroll Down\n");
+                         "Inventory\nPg Up - Scroll Up\nPg Dwn - Scroll Down\nArrow Keys - Movement\nWASD - Movement\n");
 }
 
 void GameUI::initialize() { m_combatUI.initialize(); }
