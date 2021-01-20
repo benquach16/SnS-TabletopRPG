@@ -301,7 +301,7 @@ void InventoryUI::doWounds(bool hasKeyEvents, sf::Event event, PlayerObject* pla
     ap.setFont(Game::getDefaultFont());
     string str = "Inventory (1 - Backpack, 2 - Wounds, 3 - Profile, 4 - Armor Coverage):\n\n";
     str += "Pain: " + to_string(creature->getPain()) + '\n'
-        + "Blood loss: " + to_string(creature->getBloodLoss()) + '\n';
+        + "Blood loss: " + to_string(creature->getBloodLoss()) + "\n";
 
     str += "Thirst: " + to_string(player->getThirst()) + '\n';
     str += "Hunger: " + to_string(player->getHunger()) + '\n';
@@ -313,16 +313,17 @@ void InventoryUI::doWounds(bool hasKeyEvents, sf::Event event, PlayerObject* pla
     }
     ap.setString(str);
 
-    if (player->getBleeding() == true) {
-        sf::Text bleeding;
-        bleeding.setPosition(sf::Vector2f(ap.getLocalBounds().width, cCharSize));
-        bleeding.setString("Bleeding!");
-        bleeding.setCharacterSize(cCharSize);
-        bleeding.setFont(Game::getDefaultFont());
-        bleeding.setFillColor(sf::Color::Red);
-        bleeding.setStyle(sf::Text::Bold);
-        Game::getWindow().draw(bleeding);
+    sf::Text bleeding;
+    bleeding.setPosition(sf::Vector2f(windowSize.x / 2, cCharSize * 2));
+    string parts;
+    for (auto it : creature->getBleedLevels()) {
+        parts += bodyPartToString(it.first) + " is bleeding " + to_string(it.second) + " points\n";
     }
+    bleeding.setString(parts);
+    bleeding.setCharacterSize(cCharSize);
+    bleeding.setFont(Game::getDefaultFont());
+    Game::getWindow().draw(bleeding);
+
     Game::getWindow().draw(ap);
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;

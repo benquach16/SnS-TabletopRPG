@@ -14,7 +14,7 @@ Human::Human()
     m_hitLocations.push_back(eHitLocations::Belly);
     m_hitLocations.push_back(eHitLocations::Thigh);
     m_hitLocations.push_back(eHitLocations::Shin);
-
+    createBodyParts();
     randomizeStats();
 }
 

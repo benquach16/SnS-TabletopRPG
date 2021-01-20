@@ -150,7 +150,8 @@ void CombatManager::doRunCombat(float tick)
         if (m_edges.size() > 1) {
             writeMessage("Combatant has been killed, refreshing combat pools");
             m_doPositionRoll = true;
-        }
+        } 
+        
         refreshInstances();
         m_edgeId = 0;
         m_currentTempo = eTempo::First;
@@ -159,6 +160,11 @@ void CombatManager::doRunCombat(float tick)
         if (m_edges.size() == 1) {
             m_edges[0]->setActive(true);
         }
+    }
+
+   
+    if (m_edges.size() == 0) {
+        return;
     }
     if (m_edges[m_edgeId]->getInstance()->getInGrapple()) {
         // if we are in a grapple, turn this into a duel

@@ -21,6 +21,9 @@ public:
     int getPain() const { return m_pain; }
     int getImpact() const { return m_impact; }
     int getLevel() const { return m_level; }
+    int getKO() const;
+    int getKD() const;
+    int seversLimb() const { return m_effects.find(eEffects::Severed) != m_effects.end(); }
     eBodyParts getLocation() const { return m_location; }
     bool causesDeath();
     bool immediateKO();
@@ -59,6 +62,8 @@ public:
 
     Wound* getWound(eDamageTypes type, eBodyParts part, int level);
 
+    bool isLimb(eBodyParts part) const;
+    std::vector<eBodyParts> limbConnection(eBodyParts part, std::vector<eBodyParts> existingParts) const;
     static WoundTable* getSingleton()
     {
         if (singleton == nullptr) {

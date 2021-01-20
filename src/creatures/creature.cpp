@@ -39,13 +39,25 @@ Creature::Creature(int naturalWeaponId)
     , m_hasPosition(false)
     , m_hasPreResolution(false)
     , m_flagInitiative(false)
-    , m_bleeding(false)
     , m_hasPrecombat(false)
     , m_currentGrip(eGrips::Standard)
     , m_currentStance(eCreatureStance::Standing)
     , m_id(ids++)
 {
     m_fatigue[eCreatureFatigue::Stamina] = 0;
+}
+
+void Creature::createBodyParts()
+{
+    // should never be generated if we already have body parts
+    assert(m_bodyParts.empty());
+    assert(m_hitLocations.empty() == false);
+
+    for (eHitLocations location : m_hitLocations) {
+        for (eBodyParts part : WoundTable::getSingleton()->getUniqueParts(location)) {
+            m_bodyParts.push_back(part);
+        }
+    }
 }
 
 const Weapon* Creature::getPrimaryWeapon() const
@@ -100,6 +112,20 @@ bool Creature::findInQuickdraw(int id)
         }
     }
     return false;
+}
+
+void Creature::bleed()
+{
+    int increment = 0;
+    for (auto it : m_bleedLevel) {
+        increment += it.second;
+    }
+    increment -= getTap(getGrit());
+    increment = max(1, increment);
+    m_bloodLoss += increment;
+    if (m_bloodLoss >= cBaseBloodLoss) {
+        m_currentState = eCreatureState::Unconscious;
+    }
 }
 
 int Creature::getNumEquipped(int id)
@@ -203,7 +229,8 @@ void Creature::inflictWound(Wound* wound)
     m_combatPool -= impact;
 
     // m_wounds.push_back(wound);
-    m_wounds[wound->getLocation()] = wound->getLevel();
+    eBodyParts location = wound->getLocation();
+    m_wounds[location] = wound->getLevel();
 
     if (wound->causesDeath() == true) {
         m_currentState = eCreatureState::Dead;
@@ -217,15 +244,15 @@ void Creature::inflictWound(Wound* wound)
     auto BL3 = effects.find(eEffects::BL3);
     if (BL1 != effects.end()) {
         m_bloodLoss++;
-        m_bleeding = true;
+        m_bleedLevel[location] += 1;
     }
     if (BL2 != effects.end()) {
         m_bloodLoss += 2;
-        m_bleeding = true;
+        m_bleedLevel[location] += 2;
     }
     if (BL3 != effects.end()) {
         m_bloodLoss += 3;
-        m_bleeding = true;
+        m_bleedLevel[location] += 3;
     }
     auto KO1 = effects.find(eEffects::KO1);
     auto KO2 = effects.find(eEffects::KO2);
@@ -298,6 +325,22 @@ void Creature::inflictWound(Wound* wound)
         dropWeapon();
     }
 
+    if (effects.find(eEffects::Severed) != effects.end()) {
+        // sever the limb
+        vector<eBodyParts> partsToSever
+            = WoundTable::getSingleton()->limbConnection(location, m_bodyParts);
+        for (eBodyParts part : partsToSever) {
+            m_severedParts.push_back(part);
+            // remove from existing body parts
+            for (unsigned i = 0; i < m_bodyParts.size(); ++i) {
+                if (m_bodyParts[i] == part) {
+                    m_bodyParts.erase(m_bodyParts.begin() + i);
+                    break;
+                }
+            }
+        }
+    }
+
     // m_BTN = max(m_BTN, wound->getBTN());
     m_pain += wound->getPain();
 }
@@ -310,6 +353,19 @@ int Creature::getSuccessRate() const
     float val = btn / sides;
     val *= 100;
     return static_cast<int>(val);
+}
+
+bool Creature::canStand() const 
+{
+    for (eBodyParts part : m_severedParts) {
+        switch (part) {
+        case eBodyParts::Foot:
+        case eBodyParts::Shin:
+        case eBodyParts::Knee:
+            return false;
+        }
+    }
+    return true;
 }
 
 ArmorSegment Creature::getArmorAtPart(eBodyParts part) const
@@ -516,6 +572,8 @@ void Creature::dropSecondaryWeapon()
 }
 
 void Creature::enableWeapon() { m_primaryWeaponDisabled = false; }
+
+int Creature::getAvailableHands() const { return 2; }
 
 void Creature::pickupWeapon()
 {

@@ -532,7 +532,7 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
             constexpr int buffer = 3;
             if (diceAllocated + buffer < controlledCreature->getCombatPool()) {
                 if (isLastTempo) {
-                    priority += 10;
+                    priority += 5;
                     toPush.dice = controlledCreature->getCombatPool();
                 } else {
                     int dice = std::min(diceAllocated + random_static::get(0, diceAllocated / 3)
@@ -560,7 +560,8 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
                     priority = 25;
                 }
             }
-            if (attack == eOffensiveManuevers::NoOffense) {
+            if (attack == eOffensiveManuevers::NoOffense
+                && controlledCreature->getCombatPool() > 1) {
                 priority = 25;
             } else {
                 priority = cLowestPriority;

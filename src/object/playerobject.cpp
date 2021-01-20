@@ -7,9 +7,12 @@ using namespace std;
 
 BOOST_CLASS_EXPORT(PlayerObject)
 
+constexpr unsigned cBleedTicks = 30;
+
 PlayerObject::PlayerObject()
     : CreatureObject(new Player)
     , m_toMove(0.f, 0.f)
+    , m_bleedTick(0)
 {
     /*
     m_creature->setWeapon(1040);
@@ -48,6 +51,12 @@ void PlayerObject::run(const Level* level)
 
     if (m_creature->getBleeding()) {
         // tick bleeding until death
+        m_bleedTick++;
+        if (m_bleedTick > cBleedTicks) {
+            m_creature->bleed();
+            Log::push("You stuggle as you keep bleeding from an open wound...", Log::Damage);
+            m_bleedTick = 0;
+        }
     }
 }
 

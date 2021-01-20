@@ -615,6 +615,7 @@ void CombatInstance::doResolution()
         if (attack.feint == true) {
             // resolve feint to change successes
             int bonusDie = attack.feintdie / 2;
+            cout << "feint bonus die: " << bonusDie << endl;
             int attackerKeen = DiceRoller::rollGetSuccess(
                 attacker->getBTN(), attacker->getShrewdness() + bonusDie);
             int defenderKeen
@@ -858,6 +859,10 @@ void CombatInstance::doBetweenExchange()
 void CombatInstance::resolvePosition(Creature* creature)
 {
     Position position = creature->getQueuedPosition();
+    if (creature->canStand() == false) {
+        writeMessage(creature->getName() + " tried to stand but they are missing a leg and fall over instead!", Log::Damage);
+        return;
+    }
     // don't roll, because not being able to stand or pick up weapon is frustrating
     int successes = position.dice;
     if (successes < 1) {

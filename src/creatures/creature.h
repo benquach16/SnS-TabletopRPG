@@ -104,6 +104,7 @@ public:
     void removeSecondaryWeapon() { m_secondaryWeaponId = m_naturalWeaponId; }
     std::vector<int> getDroppedWeapons() const { return m_droppedWeapons; }
     void clearDroppedWeapons();
+    void bleed();
     int getNumEquipped(int id);
 
     void setName(const std::string& name) { m_name = name; }
@@ -148,7 +149,7 @@ public:
     }
     const std::vector<eHitLocations> getHitLocations() const;
     const std::set<eHitLocations>& getFavoredLocations() const { return m_favoredLocations; }
-
+    std::unordered_map<eBodyParts, int> getBleedLevels() const { return m_bleedLevel; }
     // AI functions
     // move these to ai combat controller
     virtual bool isPlayer() { return false; }
@@ -210,7 +211,12 @@ public:
     bool setCreatureFeint();
 
     void setProne() { m_currentStance = eCreatureStance::Prone; }
-    void setStand() { m_currentStance = eCreatureStance::Standing; }
+    void setStand()
+    {
+        if (canStand()) {
+            m_currentStance = eCreatureStance::Standing;
+        }
+    }
     void disableWeapon();
     void dropWeapon();
     void dropSecondaryWeapon();
@@ -233,7 +239,7 @@ public:
 
     int getPain() const { return std::max(m_pain - getGrit(), 0); }
 
-    bool getBleeding() const { return m_bleeding; }
+    bool getBleeding() const { return m_bleedLevel.size() > 0; }
 
     bool rollFatigue();
 
@@ -254,6 +260,7 @@ public:
 
     void attemptStand();
     void attemptPickup();
+    bool canStand() const;
 
     bool droppedWeapon() const
     {
@@ -264,6 +271,8 @@ public:
 
     bool secondaryWeaponDisabled() const { return m_secondaryWeaponDisabled; }
 
+    int getAvailableHands() const;
+
 protected:
     CreatureId m_id;
 
@@ -273,11 +282,17 @@ protected:
     void clearArmor();
     void applyArmor();
 
+    void createBodyParts();
+
     std::vector<eHitLocations> m_hitLocations;
+    std::vector<eBodyParts> m_bodyParts;
+    std::vector<eBodyParts> m_severedParts;
     std::set<eHitLocations> m_favoredLocations;
     std::map<eBodyParts, ArmorSegment> m_armorValues;
     // int == wound level
     std::unordered_map<eBodyParts, int> m_wounds;
+    // which body parts are bleeding and how badly
+    std::unordered_map<eBodyParts, int> m_bleedLevel;
     std::vector<int> m_armor;
     bool m_hasLeftHand;
     bool m_hasRightHand;
@@ -310,7 +325,6 @@ protected:
     eGrips m_currentGrip;
 
     unsigned m_bloodLoss;
-    bool m_bleeding;
     int m_BTN;
     int m_pain;
     float m_AP;
@@ -358,7 +372,6 @@ private:
         ar& m_currentState;
         ar& m_currentStance;
 
-        ar& m_bleeding;
         ar& m_BTN;
         ar& m_pain;
 

@@ -59,6 +59,8 @@ enum class eEffects {
     KD3,
     KD,
     Death,
+    Severed,
+    Infection
 };
 
 enum class eCreatureStance { Standing, Prone };

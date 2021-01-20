@@ -169,7 +169,7 @@ void WoundTable::initHitLocationTable()
     m_hitTable[eHitLocations::Chest].m_thrust[9] = eBodyParts::Abs;
 
     m_partsTable[eHitLocations::Chest].push_back(eBodyParts::Ribs);
-    m_partsTable[eHitLocations::Chest].push_back(eBodyParts::Abs);
+    // m_partsTable[eHitLocations::Chest].push_back(eBodyParts::Abs);
     m_partsTable[eHitLocations::Chest].push_back(eBodyParts::Armpit);
 
     // arms
@@ -224,7 +224,7 @@ void WoundTable::initHitLocationTable()
     m_hitTable[eHitLocations::Belly].m_thrust[8] = eBodyParts::Hip;
     m_hitTable[eHitLocations::Belly].m_thrust[9] = eBodyParts::Groin;
 
-    m_partsTable[eHitLocations::Belly].push_back(eBodyParts::Ribs);
+    // m_partsTable[eHitLocations::Belly].push_back(eBodyParts::Ribs);
     m_partsTable[eHitLocations::Belly].push_back(eBodyParts::Abs);
     m_partsTable[eHitLocations::Belly].push_back(eBodyParts::Groin);
     m_partsTable[eHitLocations::Belly].push_back(eBodyParts::Hip);
@@ -252,11 +252,11 @@ void WoundTable::initHitLocationTable()
     m_hitTable[eHitLocations::Thigh].m_thrust[8] = eBodyParts::Thigh;
     m_hitTable[eHitLocations::Thigh].m_thrust[9] = eBodyParts::Knee;
 
-    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Hip);
-    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Groin);
+    // m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Hip);
+    // m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Groin);
     m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Thigh);
     m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Knee);
-    m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Shin);
+    // m_partsTable[eHitLocations::Thigh].push_back(eBodyParts::Shin);
 
     // shin
     m_hitTable[eHitLocations::Shin].m_swing[0] = eBodyParts::Thigh;
@@ -281,8 +281,8 @@ void WoundTable::initHitLocationTable()
     m_hitTable[eHitLocations::Shin].m_thrust[8] = eBodyParts::Shin;
     m_hitTable[eHitLocations::Shin].m_thrust[9] = eBodyParts::Foot;
 
-    m_partsTable[eHitLocations::Shin].push_back(eBodyParts::Thigh);
-    m_partsTable[eHitLocations::Shin].push_back(eBodyParts::Knee);
+    // m_partsTable[eHitLocations::Shin].push_back(eBodyParts::Thigh);
+    // m_partsTable[eHitLocations::Shin].push_back(eBodyParts::Knee);
     m_partsTable[eHitLocations::Shin].push_back(eBodyParts::Shin);
     m_partsTable[eHitLocations::Shin].push_back(eBodyParts::Foot);
 }
@@ -319,8 +319,80 @@ eEffects WoundTable::stringToEffect(const std::string& str)
         return eEffects::KD3;
     } else if (str == "KD") {
         return eEffects::KD;
+    } else if (str == "severed") {
+        return eEffects::Severed;
+    } else if (str == "infection") {
+        return eEffects::Infection;
     }
     return eEffects::Death;
+}
+
+bool WoundTable::isLimb(eBodyParts part) const
+{
+    switch (part) {
+    case eBodyParts::Shoulder:
+    case eBodyParts::UpperArm:
+    case eBodyParts::Elbow:
+    case eBodyParts::Forearm:
+    case eBodyParts::Hand:
+    case eBodyParts::Thigh:
+    case eBodyParts::Knee:
+    case eBodyParts::Shin:
+    case eBodyParts::Foot:
+        return true;
+    }
+    return false;
+}
+
+std::vector<eBodyParts> WoundTable::limbConnection(
+    eBodyParts part, std::vector<eBodyParts> existingParts) const
+{
+    assert(isLimb(part));
+    // maintain ordering, as it is important here
+    vector<eBodyParts> arm;
+    arm.push_back(eBodyParts::Shoulder);
+    arm.push_back(eBodyParts::UpperArm);
+    arm.push_back(eBodyParts::Elbow);
+    arm.push_back(eBodyParts::Forearm);
+    arm.push_back(eBodyParts::Hand);
+    vector<eBodyParts> leg;
+    arm.push_back(eBodyParts::Thigh);
+    arm.push_back(eBodyParts::Knee);
+    arm.push_back(eBodyParts::Shin);
+    arm.push_back(eBodyParts::Foot);
+
+    vector<eBodyParts> ret;
+    bool found = false;
+    for (unsigned i = 0; i < arm.size(); ++i) {
+        if (arm[i] == part) {
+            found = true;
+        }
+        if (found) {
+            // do not add parts that don't exist
+            // so that cutting off hand then forearm doesn't add hand twice
+            if (std::find(existingParts.begin(), existingParts.end(), arm[i])
+                != existingParts.end()) {
+                ret.push_back(arm[i]);
+            }
+        }
+    }
+    if (found) {
+        return ret;
+    }
+    for (unsigned i = 0; i < leg.size(); ++i) {
+        if (leg[i] == part) {
+            found = true;
+        }
+        if (found) {
+            // do not add parts that don't exist
+            // so that cutting off hand then forearm doesn't add hand twice
+            if (std::find(existingParts.begin(), existingParts.end(), leg[i])
+                != existingParts.end()) {
+                ret.push_back(leg[i]);
+            }
+        }
+    }
+    return ret;
 }
 
 eBodyParts WoundTable::getSwing(eHitLocations location)

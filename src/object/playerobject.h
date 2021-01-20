@@ -5,8 +5,6 @@
 #include "../creatures/player.h"
 #include "creatureobject.h"
 
-constexpr unsigned cBleedTicks = 10;
-
 class PlayerObject : public CreatureObject {
 public:
     friend class boost::serialization::access;

@@ -204,185 +204,364 @@
         "upperarm": {
             "1": {
                 "text": ["Thump."],
-                "pain": 4
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "2": {
-                "text": ["Will leave a bruise."]
+                "text": ["Will leave a bruise."],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "3": {
                 "text": ["Bicep is heavily bruised and inflamed, sending sharp pain with every movement."],
-                "effects": ["drop1"]
+                "effects": ["drop1"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "4": {
                 "text": ["Fractured humerus, with major swelling. Moving the arm is extremely painful."],
-                "effects": ["drop2"]
+                "effects": ["drop2"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "5": {
                 "text": ["Broken humerus. Arm is limp and bleeding profusely."],
-                "effects": ["drop"]
+                "effects": ["drop"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             }
         },
         "elbow": {
             "1": {
-                "text": ["Slight bump."]
+                "text": ["Slight bump."],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "2": {
                 "text": ["Funny bone effect."],
-                "effects": ["drop1"]
+                "effects": ["drop1"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "3": {
                 "text": ["Blow strikes a nerve and causes forearm to go numb. Elbow swells up."],
-                "effects": ["drop3"]
+                "effects": ["drop3"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "4": {
                 "text": ["Elbow dislocated. Recoverable, but arm refuses to move."],
-                "effects": ["drop"]
+                "effects": ["drop"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "5": {
                 "text": ["Elbow joint broken into many pieces. Lower arm can bend in opposite direction."],
-                "effects": ["drop"]
+                "effects": ["drop"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             }
         },
         "forearm": {
             "1": {
-                "text": ["Slight pain. Might bruise."]
+                "text": ["Slight pain. Might bruise."],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "2": {
                 "text": ["Bruising on forearm."],
-                "effects": ["drop1"]
+                "effects": ["drop1"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "3": {
                 "text": ["Forearm swells up, while stinging pain shoots up to fingers."],
-                "effects": ["drop3"]
+                "effects": ["drop3"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "4": {
                 "text": ["Forearm has an open fracture. Broken bone pushes against skin uncomfortably."],
-                "effects": ["drop3"]
+                "effects": ["drop3"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "5": {
                 "text": ["Forearm bent at an unnatural angle. Bone pokes out through the wound."],
-                "effects": ["drop", "BL2"]
+                "effects": ["drop", "BL2"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             }
         },
         "hand": {
             "1": {
                 "text": ["Blow connects to the hand."],
-                "effects": ["drop1"]
+                "effects": ["drop1"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "2": {
                 "text": ["Hand knocked aside, some bruising."],
-                "effects": ["drop2"]
+                "effects": ["drop2"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "3": {
                 "text": ["Fingers feel fractured, and don’t move right."],
-                "effects": ["drop3"]
+                "effects": ["drop3"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "4": {
                 "text": ["Fingers are broken, scaphoid isn’t doing much better."],
-                "effects": ["drop"]
+                "effects": ["drop"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "5": {
                 "text": ["Hand crushed and bones ground into dust. Hand flops unnaturally."],
-                "effects": ["drop"]
+                "effects": ["drop"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             }
         },
         "armpit": {
             "1": {
-                "text": ["Bump."]
+                "text": ["Bump."],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "2": {
-                "text": ["Solid blow, minor brusing."]
+                "text": ["Solid blow, minor brusing."],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "3": {
-                "text": ["Knocks out the wind. Bad brusing. Taking deep breaths is going to be painful for a while."]
+                "text": ["Knocks out the wind. Bad brusing. Taking deep breaths is going to be painful for a while."],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "4": {
                 "text": ["Mighty upwards blow fractures and dislocates the shoulder. Arm disabled until fixed."],
-                "effects": ["drop2"]
+                "effects": ["drop2"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "5": {
                 "text": ["Several broken ribs and internal bleeding. Punctured lung."],
-                "effects": ["BL1", "KO2"]
+                "effects": ["BL1", "KO2"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             }
         },
         "ribs": {
             "1": {
-                "text": ["Thump."]
+                "text": ["Thump."],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "2": {
-                "text": ["Solid blow, minor brusing."]
+                "text": ["Solid blow, minor brusing."],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "3": {
-                "text": ["Knocks the wind out of you. Breath becomes raspy."]
+                "text": ["Knocks the wind out of you. Breath becomes raspy."],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "4": {
                 "text": ["A few ribs fractured. Every breath sends sharp pain throughout your body."],
-                "effects": ["KO2"]
+                "effects": ["KO2"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "5": {
                 "text": ["Sternum explodes, and lungs are punctured. You cough up blood and breathing is ragged."],
-                "effects": ["BL2", "KO3"]
+                "effects": ["BL2", "KO3"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             }
         },
         "abs": {
             "1": {
-                "text": ["Bump."]
+                "text": ["Bump."],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "2": {
-                "text": ["Blow causes you to double over, but no internal organ damage."]
+                "text": ["Blow causes you to double over, but no internal organ damage."],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "3": {
                 "text": ["Nausea hits hard. Bile bubbles up in your mouth. It takes everything to remain standing."],
-                "effects": ["KD2", "KO1"]
+                "effects": ["KD2", "KO1"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "4": {
                 "text": ["Spleen ruptured. Intestines compressed against spinal cord. You will need a good doctor."],
-                "effects": ["KD", "BL1"]
+                "effects": ["KD", "BL1"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "5": {
                 "text": ["Spleen explodes, and diaphragmatic rupture puts intestines inside chest. Internal bleeding everywhere."],
-                "effects": ["BL2", "KO3", "KD"]
+                "effects": ["BL2", "KO3", "KD"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             }
         },
         "hip": {
             "1": {
-                "text": ["Bump."]
+                "text": ["Bump."],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "2": {
-                "text": ["Solid blow leaves a bruise, but bone does its job."]
+                "text": ["Solid blow leaves a bruise, but bone does its job."],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "3": {
                 "text": ["Heavy blow throws you off balance. Hip is heavily inflamed."],
-                "effects": ["KD1"]
+                "effects": ["KD1"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "4": {
                 "text": ["Fractured hipbone. Joint feels like it can give at any moment."],
-                "effects": ["KD2"]
+                "effects": ["KD2"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "5": {
                 "text": ["Hipbones shatter, internal organs rupture. Can never walk again."],
-                "effects": ["KD", "BL1"]
+                "effects": ["KD", "BL1"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             }
         },
         "groin": {
             "1": {
-                "text": ["Minor bump."]
+                "text": ["Minor bump."],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "2": {
                 "text": ["Painful blow, but organs still functional."],
-                "effects": ["KD1"]
+                "effects": ["KD1"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "3": {
                 "text": ["Swelling and some tearing on reproductive organs. Pain causes you to double over."],
-                "effects": ["KO2"]
+                "effects": ["KO2"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "4": {
                 "text": ["Surface organs crushed. Nausea hits like a truck."],
-                "effects": ["KO2"]
+                "effects": ["KO2"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             },
             "5": {
                 "text": ["Pelvic bones shattered, nearest organs reduced to a bloody mess. You will never walk again."],
-                "effects": ["KO"]
+                "effects": ["KO"],
+                "pain": 4,
+                "bl": 0,
+                "ko": 0,
+                "kd": 0
             }
         },
         "thigh": {
@@ -935,19 +1114,19 @@
                 "text":["Shaves off some skin."]
             },
             "2": {
-                "text":["Nasty cut scrapes on the shoulder bones."]
+                "text":["Cut slides off shoulder bone."]
             },
             "3": {
-                "text":["Deeper flesh wound on the outer arm."],
+                "text":["Swing makes contact with shoulder bone. Some blood."],
                 "effects":["BL1", "drop1"]
             },
             "4": {
-                "text":["Blade cuts to the bone. Lots of blood."],
+                "text":["Swing smashes into shoulder, breaking it. Arm hangs by a thread."],
                 "effects":["BL2", "drop2"]
             },
             "5": {
                 "text":["Arm completely severed. A fountain of blood paints everything a dark red."],
-                "effects":["BL3", "drop"]
+                "effects":["BL3", "drop", "severed"]
             }
         },      
         "upperarm": {
@@ -967,7 +1146,7 @@
             },
             "5": {
                 "text":["Arm amputated above the elbow. Bone pokes out of the stump."],
-                "effects":["BL2"]
+                "effects":["BL2", "severed"]
             }
         },
         "elbow": {
@@ -988,7 +1167,7 @@
             },
             "5": {
                 "text": ["Arm severed at the elbow in a spray of blood."],
-                "effects": ["BL2", "drop"]
+                "effects": ["BL2", "drop", "severed"]
             }
         },
         "forearm": {
@@ -1000,16 +1179,16 @@
                 "effects": ["drop1"]
             },
             "3": {
-                "text": ["Nasty cut damages ulnar nerve. Fingers are numb."],
+                "text": ["Tendons in forearm are severed. Hand becomes difficult to move."],
                 "effects": ["drop3"]
             },
             "4": {
-                "text": ["Arm broken with a lot of blood."],
+                "text": ["Muscles in forearm are sliced through, bones are broken."],
                 "effects": ["drop", "BL1"]
             },
             "5": {
-                "text": ["Forearm completely mangled"],
-                "effects": ["BL2", "drop"]
+                "text": ["Forearm is severed above the wrist"],
+                "effects": ["BL2", "drop", "severed"]
             }
         },
         "hand": {
@@ -1026,12 +1205,12 @@
                 "effects": ["drop3", "BL1"]
             },
             "4": {
-                "text": ["Some fingers lost."],
+                "text": ["Multiple fingers lopped off."],
                 "effects": ["drop", "BL1"]
             },
             "5": {
-                "text": ["Hand completely mangled."],
-                "effects": ["BL2", "drop"]
+                "text": ["Hand severed from the body in a horrible spray of blood."],
+                "effects": ["BL2", "drop", "severed"]
             }
         },
         "armpit": {
@@ -1051,7 +1230,7 @@
             },
             "5": {
                 "text": ["Arm severed at a shoulder in a spray of blood."],
-                "effects": ["BL3", "drop"]
+                "effects": ["BL3", "drop", "severed"]
             }
         },
         "ribs": {
@@ -1173,7 +1352,7 @@
             },
             "5": {
                 "text": ["Limb torn off at knee. Lots of blood."],
-                "effects": ["KD", "BL2"]
+                "effects": ["KD", "BL2", "severed"]
             }
         },
         "shin": {
@@ -1194,7 +1373,7 @@
             },
             "5": {
                 "text": ["Limb cut off with lots of blood."],
-                "effects": ["KD", "BL2"]
+                "effects": ["KD", "BL2", "severed"]
             }
         },
         "foot": {
@@ -1215,7 +1394,7 @@
             },
             "5": {
                 "text": ["Foot destroyed."],
-                "effects": ["KD", "BL2"]
+                "effects": ["KD", "BL2", "severed"]
             }
         } 
     }
