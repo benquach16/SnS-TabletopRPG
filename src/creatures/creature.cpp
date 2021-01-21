@@ -739,7 +739,7 @@ void Creature::setInitiative(eInitiativeRoll initiative)
 void Creature::clearArmor()
 {
     m_AP = 0;
-    for (auto it : m_armorValues) {
+    for (auto &it : m_armorValues) {
         it.second.AV = 0;
         it.second.isMetal = false;
         it.second.isRigid = false;
