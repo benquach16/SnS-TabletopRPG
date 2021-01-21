@@ -42,6 +42,7 @@ Creature::Creature(int naturalWeaponId)
     , m_hasPrecombat(false)
     , m_currentGrip(eGrips::Standard)
     , m_currentStance(eCreatureStance::Standing)
+    , m_currentGuard(eCombatGuard::None)
     , m_id(ids++)
 {
     m_fatigue[eCreatureFatigue::Stamina] = 0;
@@ -355,7 +356,7 @@ int Creature::getSuccessRate() const
     return static_cast<int>(val);
 }
 
-bool Creature::canStand() const 
+bool Creature::canStand() const
 {
     for (eBodyParts part : m_severedParts) {
         switch (part) {

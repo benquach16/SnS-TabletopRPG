@@ -14,14 +14,30 @@
 
 using namespace std;
 
+constexpr unsigned cMaxDisplay = 25;
+
 InventoryUI::InventoryUI()
     : m_uiState(eUiState::Backpack)
     , m_id(-1)
     , m_equipped(false)
     , m_weaponType(eWeaponDetail::Primary)
+    , m_beginCount(0)
+    , m_endCount(cMaxDisplay)
 {
 }
-constexpr int cDisplayLines = 28;
+constexpr unsigned cDisplayLines = 36;
+constexpr unsigned cPad = 40;
+constexpr unsigned cBorderWidth = 3;
+void InventoryUI::drawBkg()
+{
+    auto windowSize = Game::getWindow().getSize();
+    sf::RectangleShape bkg(sf::Vector2f(windowSize.x - cPad, cCharSize * cDisplayLines));
+    bkg.setFillColor(sf::Color(12, 12, 23));
+    bkg.setOutlineThickness(2);
+    bkg.setOutlineColor(sf::Color(22, 22, 33));
+    bkg.setPosition(sf::Vector2f(cPad / 2, cPad / 2));
+    Game::getWindow().draw(bkg);
+}
 
 void InventoryUI::run(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
@@ -47,10 +63,7 @@ void InventoryUI::run(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 void InventoryUI::doBackpack(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
     auto windowSize = Game::getWindow().getSize();
-
-    sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize * cDisplayLines));
-    bkg.setFillColor(sf::Color(12, 12, 23));
-    Game::getWindow().draw(bkg);
+    drawBkg();
 
     Player* playerComponent = static_cast<Player*>(player->getCreatureComponent());
 
@@ -61,50 +74,55 @@ void InventoryUI::doBackpack(bool hasKeyEvents, sf::Event event, PlayerObject* p
     string str = "Inventory (1 - Backpack, 2 - Wounds, 3 - Profile, 4 - Armor Coverage):\n\n";
     str += to_string(inventory.size()) + " items, ";
     str += "Equipped Armor - ";
-    str += to_string(player->getCreatureComponent()->getAP()) + "AP\n";
+    str += to_string(player->getCreatureComponent()->getAP()) + "AP\n\n";
 
     int count = 0;
-    std::map<int, int> startIterator;
-    std::map<int, int> endIterator;
+    int current = 0;
     for (auto it = inventory.begin(); it != inventory.end();) {
-        if (it->second <= 0) {
-            it = inventory.erase(it);
+        if (current >= m_beginCount && current < m_endCount) {
+            if (it->second <= 0) {
+                it = inventory.erase(it);
+            } else {
+                char idx = ('a' + count);
+                const Item* item = ItemTable::getSingleton()->get(it->first);
+                str += idx;
+                bool equipped = playerComponent->getNumEquipped(it->first) > 0;
+
+                // str += " - [" + itemTypeToString(item->getItemType()) + "] ";
+                str += " - " + item->getName() + " x" + to_string(it->second);
+                if (equipped) {
+                    str += " - Equipped";
+                    if (playerComponent->getPrimaryWeaponId() == it->first) {
+                        str += " in Right Hand";
+                    }
+                    if (playerComponent->getSecondaryWeaponId() == it->first) {
+                        str += " in Left Hand";
+                    }
+                    if (playerComponent->findInQuickdraw(it->first)) {
+                        str += " on belt";
+                    }
+                }
+                str += '\n';
+
+                count++;
+
+                if (event.type == sf::Event::TextEntered) {
+                    char c = event.text.unicode;
+                    if (c == idx) {
+                        m_id = it->first;
+                        m_equipped = false;
+                        m_uiState = eUiState::Detailed;
+                    }
+                }
+                it++;
+            }
         } else {
-            char idx = ('a' + count);
-            const Item* item = ItemTable::getSingleton()->get(it->first);
-            str += idx;
-            bool equipped = playerComponent->getNumEquipped(it->first) > 0;
-
-            // str += " - [" + itemTypeToString(item->getItemType()) + "] ";
-            str += " - " + item->getName() + " x" + to_string(it->second);
-            if (equipped) {
-                str += " - Equipped";
-                if (playerComponent->getPrimaryWeaponId() == it->first) {
-                    str += " in Right Hand";
-                }
-                if (playerComponent->getSecondaryWeaponId() == it->first) {
-                    str += " in Left Hand";
-                }
-                if (playerComponent->findInQuickdraw(it->first)) {
-                    str += " on belt";
-                }
-            }
-            str += '\n';
-
-            count++;
-
-            if (event.type == sf::Event::TextEntered) {
-                char c = event.text.unicode;
-                if (c == idx) {
-                    m_id = it->first;
-                    m_equipped = false;
-                    m_uiState = eUiState::Detailed;
-                }
-            }
             it++;
         }
+        current++;
     }
     txt.setString(str);
+    txt.setPosition(sf::Vector2f(cPad / 2 + cBorderWidth, cPad / 2));
     Game::getWindow().draw(txt);
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
@@ -122,16 +140,26 @@ void InventoryUI::doBackpack(bool hasKeyEvents, sf::Event event, PlayerObject* p
             break;
         }
     }
+    if (hasKeyEvents && event.type == sf::Event::KeyReleased) {
+        if (event.key.code == sf::Keyboard::Down) {
+            if (m_endCount < current) {
+                m_beginCount++;
+                m_endCount++;
+            }
+        }
+        if (event.key.code == sf::Keyboard::Up) {
+            if (m_beginCount > 0) {
+                m_beginCount--;
+                m_endCount--;
+            }
+        }
+    }
 }
 
 void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
     assert(m_id != -1);
-    auto windowSize = Game::getWindow().getSize();
-
-    sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize * cDisplayLines));
-    bkg.setFillColor(sf::Color(12, 12, 23));
-    Game::getWindow().draw(bkg);
+    drawBkg();
 
     sf::Text txt;
     txt.setFont(Game::getDefaultFont());
@@ -276,7 +304,7 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
 
     insertLineBreaks(str);
     txt.setString(str);
-
+    txt.setPosition(sf::Vector2f(cPad / 2 + cBorderWidth, cPad / 2));
     Game::getWindow().draw(txt);
 
     if (hasKeyEvents && event.type == sf::Event::KeyReleased
@@ -288,11 +316,7 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
 void InventoryUI::doWounds(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
     auto windowSize = Game::getWindow().getSize();
-    sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize * cDisplayLines));
-    bkg.setFillColor(sf::Color(12, 12, 23));
-    bkg.setOutlineThickness(1);
-    bkg.setOutlineColor(sf::Color(22, 22, 33));
-    Game::getWindow().draw(bkg);
+    drawBkg();
 
     Creature* creature = player->getCreatureComponent();
 
@@ -314,17 +338,22 @@ void InventoryUI::doWounds(bool hasKeyEvents, sf::Event event, PlayerObject* pla
     ap.setString(str);
 
     sf::Text bleeding;
-    bleeding.setPosition(sf::Vector2f(windowSize.x / 2, cCharSize * 2));
+    bleeding.setPosition(sf::Vector2f(windowSize.x / 2, cCharSize * 3));
     string parts;
     for (auto it : creature->getBleedLevels()) {
         parts += bodyPartToString(it.first) + " is bleeding " + to_string(it.second) + " points\n";
+    }
+    parts += "\n";
+    for (auto it : creature->getSeveredParts()) {
+        parts += bodyPartToString(it) + " is severed!\n";
     }
     bleeding.setString(parts);
     bleeding.setCharacterSize(cCharSize);
     bleeding.setFont(Game::getDefaultFont());
     Game::getWindow().draw(bleeding);
-
+    ap.setPosition(sf::Vector2f(cPad / 2 + cBorderWidth, cPad / 2));
     Game::getWindow().draw(ap);
+
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
         switch (c) {
@@ -345,11 +374,7 @@ void InventoryUI::doProfile(bool hasKeyEvents, sf::Event event, PlayerObject* pl
 {
     auto windowSize = Game::getWindow().getSize();
 
-    sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize * cDisplayLines));
-    bkg.setFillColor(sf::Color(12, 12, 23));
-    bkg.setOutlineThickness(1);
-    bkg.setOutlineColor(sf::Color(22, 22, 33));
-    Game::getWindow().draw(bkg);
+    drawBkg();
 
     Creature* creature = player->getCreatureComponent();
 
@@ -375,7 +400,7 @@ void InventoryUI::doProfile(bool hasKeyEvents, sf::Event event, PlayerObject* pl
     statStr
         += "Longswords: " + to_string(creature->getProficiency(eWeaponTypes::Longswords)) + '\n';
     stats.setString(statStr);
-
+    stats.setPosition(sf::Vector2f(cPad / 2 + cBorderWidth, cPad / 2));
     Game::getWindow().draw(stats);
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
@@ -399,19 +424,14 @@ void InventoryUI::doProfile(bool hasKeyEvents, sf::Event event, PlayerObject* pl
 void InventoryUI::doPaperdoll(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
     auto windowSize = Game::getWindow().getSize();
-    sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize * cDisplayLines));
-    bkg.setFillColor(sf::Color(12, 12, 23));
-    bkg.setOutlineThickness(1);
-    bkg.setOutlineColor(sf::Color(22, 22, 33));
-    Game::getWindow().draw(bkg);
-
+    drawBkg();
     std::string str = "Inventory (1 - Backpack, 2 - Wounds, 3 - Profile, 4 - Armor Coverage):\n\n";
     str += UiCommon::drawPaperdoll(player->getCreatureComponent());
     sf::Text txt;
     txt.setFont(Game::getDefaultFont());
     txt.setCharacterSize(cCharSize);
     txt.setString(str);
-
+    txt.setPosition(sf::Vector2f(cPad / 2, cPad / 2));
     Game::getWindow().draw(txt);
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
@@ -435,11 +455,7 @@ void InventoryUI::doPaperdoll(bool hasKeyEvents, sf::Event event, PlayerObject* 
 void InventoryUI::doLevelup(bool hasKeyEvents, sf::Event event, PlayerObject* player)
 {
     auto windowSize = Game::getWindow().getSize();
-    sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize * cDisplayLines));
-    bkg.setFillColor(sf::Color(12, 12, 23));
-    bkg.setOutlineThickness(1);
-    bkg.setOutlineColor(sf::Color(22, 22, 33));
-    Game::getWindow().draw(bkg);
+    drawBkg();
 
     std::string str = "Inventory (1 - Backpack, 2 - Wounds, 3 - Profile, 4 - Armor Coverage, 5 - "
                       "Allocate Experience):\n\n";
@@ -448,7 +464,7 @@ void InventoryUI::doLevelup(bool hasKeyEvents, sf::Event event, PlayerObject* pl
     txt.setFont(Game::getDefaultFont());
     txt.setCharacterSize(cCharSize);
     txt.setString(str);
-
+    txt.setPosition(sf::Vector2f(cPad / 2 + cBorderWidth, cPad / 2));
     Game::getWindow().draw(txt);
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;

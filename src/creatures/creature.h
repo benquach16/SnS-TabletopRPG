@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../items/armor.h"
-#include "../items/types.h"
-#include "../items/weapon.h"
+#include "items/armor.h"
+#include "items/types.h"
+#include "items/weapon.h"
 #include "manuever.h"
 #include "types.h"
 #include "wound.h"
@@ -150,6 +150,7 @@ public:
     const std::vector<eHitLocations> getHitLocations() const;
     const std::set<eHitLocations>& getFavoredLocations() const { return m_favoredLocations; }
     std::unordered_map<eBodyParts, int> getBleedLevels() const { return m_bleedLevel; }
+    std::vector<eBodyParts> getSeveredParts() const { return m_severedParts; }
     // AI functions
     // move these to ai combat controller
     virtual bool isPlayer() { return false; }
@@ -284,6 +285,7 @@ protected:
 
     void createBodyParts();
 
+    eCombatGuard m_currentGuard;
     std::vector<eHitLocations> m_hitLocations;
     std::vector<eBodyParts> m_bodyParts;
     std::vector<eBodyParts> m_severedParts;
@@ -372,6 +374,10 @@ private:
         ar& m_currentState;
         ar& m_currentStance;
 
+        ar& m_severedParts;
+        ar& m_bodyParts;
+        ar& m_bleedLevel;
+        ar& m_bloodLoss;
         ar& m_BTN;
         ar& m_pain;
 

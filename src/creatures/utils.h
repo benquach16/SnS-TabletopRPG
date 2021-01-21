@@ -17,3 +17,5 @@ std::string stanceToString(eCreatureStance stance);
 bool isLimb(eHitLocations location);
 
 eHitLocations getHitLocation(eBodyParts part);
+
+eCombatGuard getLocationGuard(eHitLocations location);

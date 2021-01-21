@@ -18,6 +18,7 @@ public:
     void doLevelup(bool hasKeyEvents, sf::Event event, PlayerObject* player);
 
 private:
+    void drawBkg();
     enum eUiState { Backpack, Detailed, Wounds, Profile, Paperdoll, Levelup };
     enum eWeaponDetail { Primary, Secondary, Quickdraw };
     // for equipping and unequipping
@@ -25,6 +26,8 @@ private:
     eWeaponDetail m_weaponType;
     eUiState m_uiState;
     int m_id;
+    unsigned m_beginCount;
+    unsigned m_endCount;
     std::map<int, int> m_lowIterator;
     std::map<int, int> m_highIterator;
     sf::RectangleShape m_bkg;

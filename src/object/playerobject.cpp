@@ -7,7 +7,7 @@ using namespace std;
 
 BOOST_CLASS_EXPORT(PlayerObject)
 
-constexpr unsigned cBleedTicks = 30;
+constexpr unsigned cBleedTicks = 50;
 
 PlayerObject::PlayerObject()
     : CreatureObject(new Player)

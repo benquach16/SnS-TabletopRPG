@@ -210,6 +210,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             // base this on the median armor value and properties
             // if more than half the target location is metal armor, then favor blunt
             int bestDamage = -10;
+            component = swings[0];
             for (auto swing : swings) {
                 int damage = 0;
                 eHitLocations bestTarget = getBestHitLocation(target, swing, damage);

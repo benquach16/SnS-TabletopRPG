@@ -184,3 +184,19 @@ eHitLocations getHitLocation(eBodyParts part)
         return eHitLocations::Head;
     }
 }
+
+eCombatGuard getLocationGuard(eHitLocations part)
+{
+    switch (part) {
+    case eHitLocations::Head:
+    case eHitLocations::Arm:
+        return eCombatGuard::HighGuard;
+    case eHitLocations::Chest:
+    case eHitLocations::Belly:
+        return eCombatGuard::MiddleGuard;
+    case eHitLocations::Thigh:
+    case eHitLocations::Shin:
+        return eCombatGuard::LowGuard;
+    }
+    return eCombatGuard::None;
+}

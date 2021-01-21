@@ -332,9 +332,20 @@ void CreateCharUI::run(bool hasKeyEvents, sf::Event event, PlayerObject* player)
         sf::Vector2f(Game::getWindow().getSize().x / 2 - m_statsWindow->GetClientRect().width / 2,
             Game::getWindow().getSize().y / 2 - m_statsWindow->GetClientRect().height / 2));
     switch (m_currentState) {
-    case eUiState::Name:
+    case eUiState::Name: {
         m_nameWindow->Show();
+        if (hasKeyEvents && event.type == sf::Event::KeyReleased
+            && event.key.code == sf::Keyboard::Enter) {
+            std::string name = m_entry->GetText();
+            if (name.size() != 0) {
+                player->setName(name);
+                m_currentState = eUiState::Loadout;
+                m_nameWindow->Show(false);
+            }
+        }
         break;
+    }
+
     case eUiState::Loadout:
         m_loadoutWindow->Show();
         break;

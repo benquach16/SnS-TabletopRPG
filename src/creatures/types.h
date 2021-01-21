@@ -64,3 +64,5 @@ enum class eEffects {
 };
 
 enum class eCreatureStance { Standing, Prone };
+
+enum class eCombatGuard { None, HighGuard, MiddleGuard, LowGuard };
