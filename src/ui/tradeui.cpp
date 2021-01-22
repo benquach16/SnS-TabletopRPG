@@ -1,5 +1,6 @@
 #include "tradeui.h"
-#include "../game.h"
+#include "common.h"
+#include "game.h"
 #include "types.h"
 
 using namespace std;
@@ -29,74 +30,32 @@ void TradeUI::run(bool hasKeyEvents, sf::Event event, std::map<int, int>& invent
     Game::getWindow().draw(bkg2);
 
     sf::Text inventoryTxt;
-    inventoryTxt.setFont(Game::getDefaultFont());
-    inventoryTxt.setCharacterSize(cCharSize);
-
+    UiCommon::initializeText(inventoryTxt);
+    inventoryTxt.setString("1 - Your inventory\n");
     string inventoryStr;
     inventoryStr += "1 - Your inventory\n";
-    int count = 0;
-    for (auto it = inventory.begin(); it != inventory.end();) {
-        if (it->second == 0) {
-            it = inventory.erase(it);
-        } else {
-            const Item* item = ItemTable::getSingleton()->get(it->first);
-            if (m_uiState == eUiState::Inventory) {
-                char idx = ('a' + count);
-                inventoryStr += idx;
-                inventoryStr += " - ";
-                count++;
-                bool remove = false;
-                // fun nesting
-                if (event.type == sf::Event::TextEntered) {
-                    char c = event.text.unicode;
-                    if (c == idx) {
-                        inventory[it->first]--;
-                        container[it->first]++;
-                    }
-                }
-            }
-            inventoryStr += item->getName() + " x" + to_string(it->second) + '\n';
-            it++;
-        }
-    }
-
     inventoryTxt.setString(inventoryStr);
-
     Game::getWindow().draw(inventoryTxt);
+    int id = m_inventoryPage.run(hasKeyEvents, event, inventory, sf::Vector2f(0, cCharSize * 2),
+        m_uiState != eUiState::Inventory, nullptr, false, eItemType::Armor);
+
+    if (id != -1) {
+        inventory[id]--;
+        container[id]++;
+    }
 
     sf::Text containerTxt;
-    containerTxt.setFont(Game::getDefaultFont());
-    containerTxt.setCharacterSize(cCharSize);
+    UiCommon::initializeText(containerTxt);
     containerTxt.setPosition(sf::Vector2f(windowSize.x / 2, 0));
 
-    string containerStr;
-    containerStr += "2 - Container inventory\n";
-    for (auto it = container.begin(); it != container.end();) {
-        if (it->second == 0) {
-            it = container.erase(it);
-        } else {
-            char idx = ('a' + count);
-            const Item* item = ItemTable::getSingleton()->get(it->first);
-            if (m_uiState == eUiState::Container) {
-                char idx = ('a' + count);
-                containerStr += idx;
-                containerStr += " - ";
-                count++;
+    id = m_containerPage.run(hasKeyEvents, event, container, sf::Vector2f(windowSize.x / 2, cCharSize * 2),
+        m_uiState != eUiState::Container, nullptr, false, eItemType::Armor);
 
-                if (hasKeyEvents && event.type == sf::Event::TextEntered) {
-                    char c = event.text.unicode;
-                    if (c == idx) {
-                        inventory[it->first]++;
-                        container[it->first]--;
-                    }
-                }
-            }
-            containerStr += item->getName() + " x" + to_string(it->second) + '\n';
-            it++;
-        }
+    if (id != -1) {
+        inventory[id]++;
+        container[id]--;
     }
-
-    containerTxt.setString(containerStr);
+    containerTxt.setString("2 - Container inventory\n");
 
     Game::getWindow().draw(containerTxt);
 

@@ -5,6 +5,8 @@
 #include <map>
 #include <string>
 
+#include "page.h"
+
 class TradeUI {
 public:
     TradeUI();
@@ -20,4 +22,7 @@ private:
     enum eUiState { Inventory, Container };
 
     eUiState m_uiState;
+
+    Page m_inventoryPage;
+    Page m_containerPage;
 };

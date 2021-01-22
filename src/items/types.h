@@ -113,4 +113,15 @@ enum class eLayer : unsigned { Cloth = 0, Maille = 1, Plate = 2, Surcoat = 3 };
 
 enum class eArmorTypes : unsigned { None = 0, Maille = 1, Plate = 2 };
 
-enum class eItemType { Item, Armor, Weapon, Food, Waterskin, Bedroll, Money, Bandage, Firstaid };
+enum class eItemType {
+    Item,
+    Armor,
+    Weapon,
+    Food,
+    Waterskin,
+    Bedroll,
+    Money,
+    Bandage,
+    Firstaid,
+    Misc // Only used for filtering
+};

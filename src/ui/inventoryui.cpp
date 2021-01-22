@@ -23,6 +23,7 @@ InventoryUI::InventoryUI()
     , m_weaponType(eWeaponDetail::Primary)
     , m_beginCount(0)
     , m_endCount(cMaxDisplay)
+    , m_currentPageIdx(0)
 {
 }
 
@@ -86,13 +87,31 @@ void InventoryUI::doBackpack(bool hasKeyEvents, sf::Event event, PlayerObject* p
     txt.setPosition(sf::Vector2f(cPad / 2 + cBorderWidth, cPad / 2));
     Game::getWindow().draw(txt);
 
-    int id = m_page.run(hasKeyEvents, event, inventory,
-        sf::Vector2f(cPad / 2 + cBorderWidth, cPad / 2 + 5 * cCharSize), false, playerComponent);
-
-    if (id != -1) {
-        m_id = id;
-        m_equipped = false;
-        m_uiState = eUiState::Detailed;
+    for (unsigned i = 0; i < m_pages.size(); ++i) {
+        sf::Text headerTxt;
+        UiCommon::initializeText(headerTxt);
+        const unsigned x = cPad / 2 + cBorderWidth + i * (windowSize.x / 3);
+        headerTxt.setPosition(sf::Vector2f(x, cPad / 2 + 4 * cCharSize));
+        headerTxt.setString("[ 5 - Weapons ]");
+        // temporary magic numbers
+        eItemType filter = eItemType::Weapon;
+        if (i == 1) {
+            filter = eItemType::Armor;
+            headerTxt.setString("[ 6 - Armor ]");
+        }
+        if (i == 2) {
+            filter = eItemType::Misc;
+            headerTxt.setString("[ 7 - Misc Items ]");
+        }
+        Game::getWindow().draw(headerTxt);
+        int id = m_pages[i].run(hasKeyEvents, event, inventory,
+            sf::Vector2f(x, cPad / 2 + 5 * cCharSize), i != m_currentPageIdx, playerComponent, true,
+            filter);
+        if (id != -1) {
+            m_id = id;
+            m_equipped = false;
+            m_uiState = eUiState::Detailed;
+        }
     }
 
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
@@ -108,6 +127,15 @@ void InventoryUI::doBackpack(bool hasKeyEvents, sf::Event event, PlayerObject* p
             break;
         case '4':
             m_uiState = eUiState::Paperdoll;
+            break;
+        case '5':
+            m_currentPageIdx = 0;
+            break;
+        case '6':
+            m_currentPageIdx = 1;
+            break;
+        case '7':
+            m_currentPageIdx = 2;
             break;
         }
     }

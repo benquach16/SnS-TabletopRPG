@@ -4,6 +4,7 @@
 #include "game.h"
 #include "types.h"
 #include "utils.h"
+#include "items/utils.h"
 
 using namespace std;
 
@@ -16,7 +17,7 @@ Page::Page()
 }
 
 int Page::run(bool hasKeyEvents, sf::Event event, std::map<int, int>& inventory,
-    sf::Vector2f position, bool readOnly, Creature* creature)
+    sf::Vector2f position, bool readOnly, Creature* creature, bool useFilter, eItemType filter)
 {
     sf::Text txt;
     txt.setPosition(position);
@@ -24,10 +25,23 @@ int Page::run(bool hasKeyEvents, sf::Event event, std::map<int, int>& inventory,
     string str;
     int count = 0;
     int current = 0;
+
     if (m_begin > 0) {
         str += "<Less>\n";
     }
     for (auto it = inventory.begin(); it != inventory.end();) {
+        const Item* item = ItemTable::getSingleton()->get(it->first);
+        eItemType type = item->getItemType();
+        if (useFilter && type != filter) {
+            // special case to ignore weapons / armor
+            if (filter != eItemType::Misc) {
+                it++;
+                continue;
+            } else if (type == eItemType::Weapon || type == eItemType::Armor) {
+                it++;
+                continue;
+            }
+        }
         if (current >= m_begin && current < m_end) {
             if (it->second <= 0) {
                 it = inventory.erase(it);
@@ -37,8 +51,6 @@ int Page::run(bool hasKeyEvents, sf::Event event, std::map<int, int>& inventory,
                     str += idx;
                     str += " - ";
                 }
-
-                const Item* item = ItemTable::getSingleton()->get(it->first);
                 // str += " - [" + itemTypeToString(item->getItemType()) + "] ";
                 str += item->getName() + " x" + to_string(it->second);
 
@@ -62,7 +74,7 @@ int Page::run(bool hasKeyEvents, sf::Event event, std::map<int, int>& inventory,
 
                 count++;
 
-                if (event.type == sf::Event::TextEntered) {
+                if (readOnly == false && hasKeyEvents && event.type == sf::Event::TextEntered) {
                     char c = event.text.unicode;
                     if (c == idx) {
                         return it->first;
