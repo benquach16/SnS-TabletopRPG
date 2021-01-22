@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "page.h"
 
 class PlayerObject;
 
@@ -31,4 +32,5 @@ private:
     std::map<int, int> m_lowIterator;
     std::map<int, int> m_highIterator;
     sf::RectangleShape m_bkg;
+    Page m_page;
 };

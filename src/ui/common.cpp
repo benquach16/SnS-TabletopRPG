@@ -15,9 +15,13 @@ namespace UiCommon {
 void drawTopPanel()
 {
     auto windowSize = Game::getWindow().getSize();
-
-    static sf::RectangleShape bkg(sf::Vector2f(windowSize.x, cCharSize * cHeight));
+    constexpr unsigned cBorderWidth = 2;
+    static sf::RectangleShape bkg(
+        sf::Vector2f(windowSize.x - (cBorderWidth * 2), cCharSize * cHeight));
     bkg.setFillColor(sf::Color(12, 12, 23));
+    bkg.setOutlineThickness(cBorderWidth);
+    bkg.setOutlineColor(sf::Color(22, 22, 33));
+    bkg.setPosition(sf::Vector2f(cBorderWidth, 0));
     Game::getWindow().draw(bkg);
 }
 

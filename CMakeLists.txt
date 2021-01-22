@@ -65,6 +65,7 @@ set(SOURCES
     ./src/ui/textinput.cpp
     ./src/ui/mainmenuui.cpp
     ./src/ui/createcharui.cpp
+    ./src/ui/page.cpp
     ./src/gfxobjects/gfxlevel.cpp
     ./src/gfxobjects/gfxobject.cpp
     ./src/gfxobjects/gfxqueue.cpp
