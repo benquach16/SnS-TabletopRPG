@@ -2,9 +2,12 @@
 
 #include <iostream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "types.h"
+
+class Creature;
 
 std::string bodyPartToString(eBodyParts part);
 

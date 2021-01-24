@@ -314,10 +314,15 @@ void InventoryUI::doWounds(bool hasKeyEvents, sf::Event event, PlayerObject* pla
     str += "Thirst: " + to_string(player->getThirst()) + '\n';
     str += "Hunger: " + to_string(player->getHunger()) + '\n';
     str += "Exhaustion: " + to_string(player->getExhaustion()) + '\n';
-    str += "Combat Fatigue: " + to_string(player->getFatigue()) + '\n';
-    const std::unordered_map<eBodyParts, int> wounds = creature->getWounds();
+    str += "Combat Fatigue: " + to_string(player->getFatigue()) + "\n\n";
+    str += "[ Wounds ]\n";
+    const std::unordered_map<eBodyParts, std::unordered_map<int, int>> wounds
+        = creature->getWounds();
     for (auto i : wounds) {
-        str += "Level " + to_string(i.second) + " wound at " + bodyPartToString(i.first) + '\n';
+        for (auto levels : i.second) {
+            str += "Level " + to_string(levels.first) + " wound at " + bodyPartToString(i.first)
+                + " causing " + to_string(levels.second) + " pain\n";
+        }
     }
     ap.setString(str);
 

@@ -35,7 +35,7 @@ string drawPaperdoll(const Creature* creature)
 {
     string str;
 
-    vector<eHitLocations> hitlocations = creature->getHitLocations();
+    vector<eHitLocations> hitlocations = creature->getUnmodifiedHitLocations();
     for (auto location : hitlocations) {
 
         vector<eBodyParts> parts = WoundTable::getSingleton()->getUniqueParts(location);

@@ -65,6 +65,8 @@ public:
 
     void setLoadout(eCreatureFaction faction, eRank rank);
 
+    void healWounds(int level) { m_creature->healWounds(level); }
+
 protected:
     CreatureObjectId m_id;
 

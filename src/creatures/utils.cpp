@@ -1,6 +1,7 @@
 #include <assert.h>
 
 #include "utils.h"
+#include "creature.h"
 
 std::string bodyPartToString(eBodyParts part)
 {

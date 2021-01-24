@@ -371,18 +371,28 @@ int getOffensiveManueverCost(eOffensiveManuevers manuever, eGrips grip, eLength 
     return reachCost;
 }
 
-std::map<eHitLocations, int> getHitLocationCost(const Creature* target)
+std::map<eHitLocations, int> getHitLocationCost(
+    const Creature* target, bool feint, eHitLocations originalLocation)
 {
     std::map<eHitLocations, int> ret;
-
-    for (auto location : target->getHitLocations()) {
+    // feint avoids favoring
+    std::vector<eHitLocations> locations = target->getHitLocations();
+    if (feint) {
+        locations = target->getUnmodifiedHitLocations();
+    }
+    for (auto location : locations) {
+        if (feint && originalLocation == location) {
+            continue;
+        }
         switch (location) {
         case eHitLocations::Arm:
         case eHitLocations::Thigh:
             ret[location] = 1;
+            break;
         case eHitLocations::Tail:
         case eHitLocations::Shin:
             ret[location] = 2;
+            break;
         default:
             ret[location] = 0;
         }

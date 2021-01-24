@@ -442,8 +442,9 @@ void Scene::wait(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
             cout << "sleeping" << endl;
         }
     } else {
-        Log::push("You stop resting and recover all fatigue.");
+        Log::push("You recover all fatigue and your minor wounds heal up.");
         playerObject->getCreatureComponent()->resetFatigue();
+        playerObject->getCreatureComponent()->healWounds(1);
         sleepTick = 0;
         m_currentState = eSceneState::Playing;
     }

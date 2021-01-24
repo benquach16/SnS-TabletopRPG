@@ -74,7 +74,7 @@ public:
     int getReflex() const { return (m_agility + m_intuition) / 2; }
     int getMobility() const { return (m_agility + m_strength) / 2; }
 
-    int getConstitution() const { return cBaseConstitution; }
+    virtual int getConstitution() const = 0;
 
     int getBTN() const { return m_BTN; }
     int getAdvantagedBTN() const { return std::max(m_BTN - 1, cMinBTN); }
@@ -114,7 +114,15 @@ public:
 
     void inflictImpact(int impact);
     void inflictWound(Wound* wound);
-    const std::unordered_map<eBodyParts, int>& getWounds() const { return m_wounds; }
+    const std::unordered_map<eBodyParts, std::unordered_map<int, int>>& getWounds() const
+    {
+        return m_wounds;
+    }
+    // does not heal bloodloss
+    void healWound(eBodyParts part, int level);
+
+    // multiple wounds
+    void healWounds(int level);
     int getSuccessRate() const;
 
     void equipArmor(int id);
@@ -149,6 +157,7 @@ public:
     }
     const std::vector<eHitLocations> getHitLocations() const;
     const std::set<eHitLocations>& getFavoredLocations() const { return m_favoredLocations; }
+    const std::vector<eHitLocations> getUnmodifiedHitLocations() const { return m_hitLocations; }
     std::unordered_map<eBodyParts, int> getBleedLevels() const { return m_bleedLevel; }
     std::vector<eBodyParts> getSeveredParts() const { return m_severedParts; }
     // AI functions
@@ -291,8 +300,8 @@ protected:
     std::vector<eBodyParts> m_severedParts;
     std::set<eHitLocations> m_favoredLocations;
     std::map<eBodyParts, ArmorSegment> m_armorValues;
-    // int == wound level
-    std::unordered_map<eBodyParts, int> m_wounds;
+    // <body part, <wound level, pain>>
+    std::unordered_map<eBodyParts, std::unordered_map<int, int>> m_wounds;
     // which body parts are bleeding and how badly
     std::unordered_map<eBodyParts, int> m_bleedLevel;
     std::vector<int> m_armor;
@@ -312,6 +321,7 @@ protected:
     bool m_hasPosition;
     bool m_hasPrecombat;
     bool m_hasPreResolution;
+    bool m_hasFeint;
 
     std::vector<Manuever*> m_secondaryManuevers;
 

@@ -58,7 +58,7 @@ int getDefensiveManueverCost(
     eDefensiveManuevers manuever, eGrips grip, eLength effectiveReach, eLength currentReach);
 
 //<location, cost>
-std::map<eHitLocations, int> getHitLocationCost(const Creature* target);
+std::map<eHitLocations, int> getHitLocationCost(const Creature* target, bool feint, eHitLocations originalLocation);
 
 //<maneuver, cost>
 std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* creature,

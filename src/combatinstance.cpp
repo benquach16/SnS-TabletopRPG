@@ -170,15 +170,21 @@ void CombatInstance::doPreexchangeActions()
         m_currentState = eCombatState::PreexchangeActions;
         return;
     }
-    if (m_side1->getMaxCombatPool() == 0) {
-        m_side1->knockOut();
-        writeMessage(m_side1->getName() + " has passed out from the pain...",
-            Log::eMessageTypes::Announcement, true);
+    auto side1Favoring = m_side1->getFavoredLocations();
+    if (side1Favoring.size() > 0) {
+        string str = m_side1->getName() + " is guarding ";
+        for (auto location : side1Favoring) {
+            str += hitLocationToString(location) + " ";
+        }
+        writeMessage(str);
     }
-    if (m_side2->getMaxCombatPool() == 0) {
-        m_side2->knockOut();
-        writeMessage(m_side2->getName() + " has passed out from the pain...",
-            Log::eMessageTypes::Announcement, true);
+    auto side2Favoring = m_side2->getFavoredLocations();
+    if (side2Favoring.size() > 0) {
+        string str = m_side2->getName() + " is guarding ";
+        for (auto location : side2Favoring) {
+            str += hitLocationToString(location) + " ";
+        }
+        writeMessage(str);
     }
     // check if grip causes combatants to move closer
     eLength length = max(m_side1->getCurrentReach(), m_side2->getCurrentReach());
@@ -436,7 +442,7 @@ void CombatInstance::doStolenOffense()
     reachCost = abs(reachCost);
     outputReachCost(reachCost, defender, true);
     outputOffense(defender);
-    m_currentState = eCombatState::Resolution;
+    m_currentState = eCombatState::PreResolution;
 }
 
 void CombatInstance::doPreResolution()
@@ -450,16 +456,15 @@ void CombatInstance::doPreResolution()
     }
     Offense attack = attacker->getQueuedOffense();
     if (attack.feint) {
-        writeMessage(attacker->getName() + " attempts to feint with " + to_string(attack.feintdie)
+        writeMessage(attacker->getName() + " attempts to feint to a "
+            + offensiveManueverToString(attack.manuever) + " at "
+            + hitLocationToString(attack.target) + " with " + to_string(attack.feintdie)
             + " action points!");
     }
     m_currentState = eCombatState::Resolution;
 }
 
-void CombatInstance::doFeintAttack()
-{
-    m_currentState = eCombatState::Resolution;
-}
+void CombatInstance::doFeintAttack() { m_currentState = eCombatState::Resolution; }
 
 void CombatInstance::doResolution()
 {
@@ -696,10 +701,12 @@ void CombatInstance::doResolution()
                 cout << "Linked hits: " << linkedOffenseMoS << endl;
                 // reset attacker offense to properly deal impact
                 attacker->clearCreatureManuevers();
-                if (linkedOffenseMoS > 0
-                    && inflictWound(defender, linkedOffenseMoS, offense, attacker) == true) {
-                    m_currentState = eCombatState::FinishedCombat;
-                    return;
+                if (linkedOffenseMoS > 0) {
+                    changeReachTo(defender);
+                    if (inflictWound(defender, linkedOffenseMoS, offense, attacker) == true) {
+                        m_currentState = eCombatState::FinishedCombat;
+                        return;
+                    }
                 }
             }
             if (defend.manuever == eDefensiveManuevers::Counter
@@ -860,7 +867,9 @@ void CombatInstance::resolvePosition(Creature* creature)
 {
     Position position = creature->getQueuedPosition();
     if (creature->canStand() == false) {
-        writeMessage(creature->getName() + " tried to stand but they are missing a leg and fall over instead!", Log::Damage);
+        writeMessage(creature->getName()
+                + " tried to stand but they are missing a leg and fall over instead!",
+            Log::Damage);
         return;
     }
     // don't roll, because not being able to stand or pick up weapon is frustrating
@@ -908,7 +917,9 @@ void CombatInstance::startGrapple(Creature* attacker, Creature* defender)
 
 bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, Creature* target)
 {
-    assert(attack.manuever != eOffensiveManuevers::NoOffense);
+    if (attack.manuever == eOffensiveManuevers::NoOffense) {
+        return false;
+    }
     writeMessage(
         attacker->getName() + "'s attack landed with " + to_string(MoS) + " net successes!",
         Log::eMessageTypes::Announcement);

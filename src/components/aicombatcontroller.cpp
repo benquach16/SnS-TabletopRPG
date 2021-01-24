@@ -32,7 +32,7 @@ AICombatController::AICombatController()
 {
     m_hitPriorities[eHitLocations::Head] = 5;
     m_hitPriorities[eHitLocations::Chest] = 4;
-    m_hitPriorities[eHitLocations::Belly] = 3;
+    m_hitPriorities[eHitLocations::Belly] = 4;
     m_hitPriorities[eHitLocations::Arm] = 3;
     m_hitPriorities[eHitLocations::Thigh] = 2;
     m_hitPriorities[eHitLocations::Shin] = 1;
@@ -75,7 +75,7 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
     }
     if (instance->getState() == eCombatState::PreResolution
         && instance->getAttacker()->getId() == creatureId) {
-        doPreresolution(controlledCreature, enemy);
+        doPreresolution(controlledCreature, enemy, instance);
     }
     if (instance->getState() == eCombatState::Offense
         && instance->getAttacker()->getId() == creatureId) {
@@ -129,13 +129,11 @@ void AICombatController::run(const CombatManager* manager, Creature* controlledC
 }
 
 bool AICombatController::setCreatureOffenseManuever(
-    Creature* controlledCreature, eOffensiveManuevers manuever, eLength currentReach, bool payReach)
+    Creature* controlledCreature, eOffensiveManuevers manuever, eLength currentReach, int cost)
 {
     bool usePrimary = controlledCreature->getQueuedOffense().withPrimaryWeapon;
     eLength effectiveReach = usePrimary ? controlledCreature->getCurrentReach()
                                         : controlledCreature->getSecondaryWeaponReach();
-    int cost = getOffensiveManueverCost(
-        manuever, controlledCreature->getGrip(), effectiveReach, currentReach, payReach);
     bool canUse = (cost <= controlledCreature->getCombatPool());
     if (canUse) {
         controlledCreature->setOffenseManuever(manuever);
@@ -145,13 +143,12 @@ bool AICombatController::setCreatureOffenseManuever(
 }
 
 bool AICombatController::setCreatureDefenseManuever(
-    Creature* controlledCreature, eDefensiveManuevers manuever, eLength currentReach)
+    Creature* controlledCreature, eDefensiveManuevers manuever, eLength currentReach, int cost)
 {
     bool usePrimary = controlledCreature->getQueuedOffense().withPrimaryWeapon;
     eLength effectiveReach = usePrimary ? controlledCreature->getCurrentReach()
                                         : controlledCreature->getSecondaryWeaponReach();
-    int cost = getDefensiveManueverCost(
-        manuever, controlledCreature->getGrip(), effectiveReach, currentReach);
+
     bool canUse = (cost <= controlledCreature->getCombatPool() || cost == 0);
     if (canUse) {
         controlledCreature->setDefenseManuever(manuever);
@@ -160,30 +157,28 @@ bool AICombatController::setCreatureDefenseManuever(
     return canUse;
 }
 
-void AICombatController::doOffense(Creature* controlledCreature, const Creature* target,
-    int reachCost, const CombatInstance* instance, bool allin, bool dualRedThrow, bool payCosts)
+void AICombatController::chooseOffenseManuever(Creature* controlledCreature, const Creature* target,
+    const CombatInstance* instance, bool allin, bool payReach, bool feint)
 {
-    if (controlledCreature->getHasOffense()) {
-        cout << "already has offense";
-        return;
-    }
-    cout << "allin : " << allin << endl;
     const Weapon* weapon = nullptr;
-
-    if (target->getCombatPool() <= 0) {
-        allin = true;
-    }
+    eLength creatureReach = controlledCreature->getCurrentReach();
     if (controlledCreature->primaryWeaponDisabled() == false) {
         controlledCreature->setOffenseWeapon(true);
         weapon = controlledCreature->getPrimaryWeapon();
     } else {
         controlledCreature->setOffenseWeapon(false);
         weapon = controlledCreature->getSecondaryWeapon();
+        creatureReach = controlledCreature->getSecondaryWeaponReach();
     }
+
+    int reachCost = calculateReachCost(creatureReach, instance->getCurrentReach());
+
     map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(controlledCreature,
         controlledCreature->getQueuedOffense().withPrimaryWeapon, instance->getCurrentReach(),
-        instance->getInGrapple(), payCosts, false);
+        instance->getInGrapple(), payReach, feint);
 
+    map<eHitLocations, int> locationCosts
+        = getHitLocationCost(target, feint, controlledCreature->getQueuedOffense().target);
     bool targetHasEnoughArmor = target->hasEnoughMetalArmor();
     // algorithm - for each manuever, assign some priority and add to priority queue
     // then iterate through queue and select the best item if we can afford the cost
@@ -213,13 +208,15 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             component = swings[0];
             for (auto swing : swings) {
                 int damage = 0;
-                eHitLocations bestTarget = getBestHitLocation(target, swing, damage);
+                eHitLocations bestTarget = getBestHitLocation(
+                    target, swing, feint, controlledCreature->getQueuedOffense().target, damage);
                 if (damage > bestDamage) {
                     bestDamage = damage;
                     component = swing;
                     toPush.hitLocation = bestTarget;
                 }
             }
+            toPush.cost += locationCosts[toPush.hitLocation];
             if (controlledCreature->getGrip() == eGrips::Staff
                 || controlledCreature->getGrip() == eGrips::HalfSword) {
                 bestDamage--;
@@ -244,7 +241,8 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             // heavily prioritize the thrust as we probably will never want to swing if our best
             // attack is the thrust
             int damage = 0;
-            toPush.hitLocation = getBestHitLocation(target, component, damage);
+            toPush.hitLocation = getBestHitLocation(
+                target, component, feint, controlledCreature->getQueuedOffense().target, damage);
             if (weapon->getBestAttack()->getAttack() == eAttacks::Thrust) {
                 damage += 1;
             }
@@ -255,6 +253,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
                 damage += 1;
             }
             damage = damage + cFuzz;
+            toPush.cost += locationCosts[toPush.hitLocation];
             priority += random_static::get(damage, damage + cFuzz);
         } break;
         case eOffensiveManuevers::PinpointThrust: {
@@ -286,6 +285,7 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
             priority += target->primaryWeaponDisabled() ? 2 : 0;
             priority += (controlledCreature->getCombatPool() - target->getCombatPool()) / 2;
             toPush.hitLocation = location;
+            toPush.cost += locationCosts[toPush.hitLocation];
             toPush.pinpointLocation = part;
         } break;
         case eOffensiveManuevers::Beat: {
@@ -358,14 +358,55 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
         if (current.cost < controlledCreature->getCombatPool() || current.cost == 0) {
             // choose
             setCreatureOffenseManuever(
-                controlledCreature, current.offManuever, instance->getCurrentReach(), payCosts);
-            controlledCreature->setOffenseTarget(current.hitLocation);
+                controlledCreature, current.offManuever, instance->getCurrentReach(), current.cost);
+            int damage;
+            if (m_doFeint && current.component != nullptr) {
+                eHitLocations feintTarget = getBestHitLocation(
+                    target, current.component, true, current.hitLocation, damage);
+                controlledCreature->setOffenseTarget(feintTarget);
+            } else {
+                controlledCreature->setOffenseTarget(current.hitLocation);
+            }
             controlledCreature->setOffenseComponent(current.component);
             controlledCreature->setOffensePinpointTarget(current.pinpointLocation);
+
             break;
         }
         manueverPriorities.pop();
     }
+}
+
+void AICombatController::doOffense(Creature* controlledCreature, const Creature* target,
+    int reachCost, const CombatInstance* instance, bool allin, bool dualRedThrow, bool payCosts)
+{
+    if (controlledCreature->getHasOffense()) {
+        cout << "already has offense";
+        return;
+    }
+    cout << "allin : " << allin << endl;
+    const Weapon* weapon = nullptr;
+
+    if (target->getCombatPool() <= 0) {
+        allin = true;
+    }
+    if (controlledCreature->primaryWeaponDisabled() == false) {
+        controlledCreature->setOffenseWeapon(true);
+        weapon = controlledCreature->getPrimaryWeapon();
+    } else {
+        controlledCreature->setOffenseWeapon(false);
+        weapon = controlledCreature->getSecondaryWeapon();
+    }
+
+    int shrewdDiff = controlledCreature->getShrewdness() - target->getShrewdness();
+    if (allin == false) {
+        if (shrewdDiff > 3 && random_static::get(0, 3) > 2) {
+            m_doFeint = true;
+        }
+    } else {
+        m_doFeint = false;
+    }
+
+    chooseOffenseManuever(controlledCreature, target, instance, allin, true, false);
     // handles dual red initiative steal
     // should be moved out as it causes confusion
     if (dualRedThrow == true && controlledCreature->getCombatPool() > 0) {
@@ -598,7 +639,7 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
         if (current.cost < controlledCreature->getCombatPool() || current.cost == 0) {
             // choose
             setCreatureDefenseManuever(
-                controlledCreature, current.defManuever, instance->getCurrentReach());
+                controlledCreature, current.defManuever, instance->getCurrentReach(), current.cost);
             current.dice = min(current.dice, controlledCreature->getCombatPool());
             current.dice = max(0, current.dice);
             controlledCreature->setDefenseDice(current.dice);
@@ -649,6 +690,40 @@ void AICombatController::doPositionRoll(Creature* controlledCreature, const Crea
 void AICombatController::doPrecombat(
     Creature* controlledCreature, const Creature* opponent, const CombatInstance* instance)
 {
+    // do favoring
+    constexpr int cMinFavorDie = 5;
+    if (controlledCreature->getFavoredLocations().size() == 0 && instance->getLastTempo() == false
+        && controlledCreature->getCombatPool() > cMinFavorDie) {
+        // map is guaranteed to be ordered (smallest first)
+        map<int, eHitLocations> possibleFavorLocations;
+
+        int possibleDamage = opponent->getPrimaryWeapon()->getBestAttack()->getDamage();
+        for (auto location : controlledCreature->getHitLocations()) {
+            ArmorSegment segment = controlledCreature->getMedianArmor(location, false);
+            if (segment.isMetal == false) {
+                int av = segment.AV - possibleDamage;
+
+                // only guard if its an attack we think we can't take
+                if (av < 0) {
+                    auto it = possibleFavorLocations.find(av);
+                    if (it == possibleFavorLocations.end()) {
+                        possibleFavorLocations[av] = location;
+                    } else {
+                        if (m_hitPriorities[location] > m_hitPriorities[it->second]) {
+                            possibleFavorLocations[av] = location;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (possibleFavorLocations.size() > 0) {
+            // todo: replace with const
+            controlledCreature->reduceCombatPool(1);
+            controlledCreature->addFavored(possibleFavorLocations.begin()->second);
+        }
+    }
+
     const Weapon* weapon = controlledCreature->getPrimaryWeapon();
     if (opponent->hasEnoughMetalArmor()) {
         bool hasCrushing = false;
@@ -692,15 +767,23 @@ void AICombatController::doPrecombat(
     controlledCreature->setPrecombatReady();
 }
 
-void AICombatController::doPreresolution(Creature* controlledCreature, const Creature* opponent)
+void AICombatController::doPreresolution(
+    Creature* controlledCreature, const Creature* opponent, const CombatInstance* instance)
 {
     int shrewdDiff = controlledCreature->getShrewdness() - opponent->getShrewdness();
+    int opponentDefenseDie = opponent->getQueuedDefense().dice;
     int die = controlledCreature->getQueuedOffense().dice;
-    if (die < controlledCreature->getMaxCombatPool() / 2 + shrewdDiff) {
-        if (getFeintCost() < controlledCreature->getCombatPool()) {
+    if (m_doFeint || opponentDefenseDie < die) {
+        m_doFeint = false;
+        if (getFeintCost() + 1 < controlledCreature->getCombatPool()) {
             controlledCreature->setCreatureFeint();
             controlledCreature->setOffenseFeintDice(controlledCreature->getCombatPool());
-            controlledCreature->reduceCombatPool(controlledCreature->getCombatPool());
+            chooseOffenseManuever(controlledCreature, opponent, instance, true, false, true);
+
+            if (opponent->getQueuedDefense().manuever != eDefensiveManuevers::StealInitiative
+                && opponent->getQueuedDefense().manuever != eDefensiveManuevers::AttackFromDef) {
+                controlledCreature->reduceCombatPool(controlledCreature->getCombatPool());
+            }
         }
     }
 
@@ -762,16 +845,17 @@ bool AICombatController::stealInitiative(
     return false;
 }
 
-eHitLocations AICombatController::getBestHitLocation(
-    const Creature* target, const Component* component, int& outDamage)
+eHitLocations AICombatController::getBestHitLocation(const Creature* target,
+    const Component* component, bool feint, eHitLocations originalLocation, int& outDamage)
 {
-
-    eHitLocations ret = target->getHitLocations()[0];
+    map<eHitLocations, int> locations = getHitLocationCost(target, feint, originalLocation);
+    assert(locations.size() > 1);
+    eHitLocations ret = locations.begin()->first;
     // lower than anything possible
     int highestDamage = -50;
-    for (auto location : target->getHitLocations()) {
+    for (auto location : locations) {
         ArmorSegment segment
-            = target->getMedianArmor(location, component->getAttack() == eAttacks::Swing);
+            = target->getMedianArmor(location.first, component->getAttack() == eAttacks::Swing);
         if (component->getType() != eDamageTypes::Blunt && segment.isMetal) {
             if ((component->hasPlatePiercing() == false)
                 || (segment.type == eArmorTypes::Maille
@@ -783,14 +867,14 @@ eHitLocations AICombatController::getBestHitLocation(
             }
         }
 
-        int damage = component->getDamage() - segment.AV;
+        int damage = component->getDamage() - segment.AV - (location.second / 2);
         if (component->hasProperty(eWeaponProperties::Crushing)
-            && location == eHitLocations::Head) {
+            && location.first == eHitLocations::Head) {
             damage++;
         }
         if (damage > highestDamage) {
             highestDamage = damage;
-            ret = location;
+            ret = location.first;
         }
     }
     outDamage = highestDamage;

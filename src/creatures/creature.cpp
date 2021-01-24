@@ -37,6 +37,7 @@ Creature::Creature(int naturalWeaponId)
     , m_hasOffense(false)
     , m_hasDefense(false)
     , m_hasPosition(false)
+    , m_hasFeint(false)
     , m_hasPreResolution(false)
     , m_flagInitiative(false)
     , m_hasPrecombat(false)
@@ -231,7 +232,7 @@ void Creature::inflictWound(Wound* wound)
 
     // m_wounds.push_back(wound);
     eBodyParts location = wound->getLocation();
-    m_wounds[location] = wound->getLevel();
+    m_wounds[location][wound->getLevel()] = wound->getPain();
 
     if (wound->causesDeath() == true) {
         m_currentState = eCreatureState::Dead;
@@ -344,6 +345,27 @@ void Creature::inflictWound(Wound* wound)
 
     // m_BTN = max(m_BTN, wound->getBTN());
     m_pain += wound->getPain();
+}
+
+void Creature::healWound(eBodyParts part, int level)
+{
+    int pain = m_wounds[part][level];
+    m_pain -= pain;
+    assert(m_pain >= 0);
+    m_wounds[part].erase(level);
+}
+
+void Creature::healWounds(int level)
+{
+    // <part, map>
+    for (auto part : m_wounds) {
+        // <level, pain>
+        for (auto it : part.second) {
+            if (it.first <= level) {
+                healWound(part.first, it.first);
+            }
+        }
+    }
 }
 
 int Creature::getSuccessRate() const
@@ -704,6 +726,7 @@ void Creature::clearCreatureManuevers(bool skipDisable)
     m_hasOffense = false;
     m_hasDefense = false;
     m_hasPosition = false;
+    m_hasFeint = false;
     m_hasPrecombat = false;
     m_hasPreResolution = false;
     m_flagInitiative = false;
@@ -739,7 +762,7 @@ void Creature::setInitiative(eInitiativeRoll initiative)
 void Creature::clearArmor()
 {
     m_AP = 0;
-    for (auto &it : m_armorValues) {
+    for (auto& it : m_armorValues) {
         it.second.AV = 0;
         it.second.isMetal = false;
         it.second.isRigid = false;

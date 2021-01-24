@@ -333,7 +333,8 @@ void OffenseUI::doDice(bool hasKeyEvents, sf::Event event, Player* player)
     m_numberInput.setPosition(sf::Vector2f(0, cCharSize));
 }
 
-void OffenseUI::doTarget(bool hasKeyEvents, sf::Event event, Player* player, Creature* target, bool payCosts)
+void OffenseUI::doTarget(
+    bool hasKeyEvents, sf::Event event, Player* player, Creature* target, bool payCosts)
 {
     UiCommon::drawTopPanel();
 
@@ -342,26 +343,43 @@ void OffenseUI::doTarget(bool hasKeyEvents, sf::Event event, Player* player, Cre
     text.setFont(Game::getDefaultFont());
 
     std::string str = "Choose target location:\n";
-    const std::vector<eHitLocations> locations = target->getHitLocations();
+    map<eHitLocations, int> locations = getHitLocationCost(target, false, eHitLocations::Head);
 
-    for (int i = 0; i < locations.size(); ++i) {
-        char idx = ('a' + i);
-
+    map<char, std::pair<eHitLocations, int>> indices;
+    char idx = 'a';
+    for (auto location : locations) {
         str += idx;
-        str += " - " + hitLocationToString(locations[i]) + '\n';
+        str += " - ";
+        str += hitLocationToString(location.first);
+        if (location.second > 0) {
+            str += " (" + to_string(location.second) + " AP)";
+        }
+        str += '\n';
+        indices[idx] = pair<eHitLocations, int>(location.first, location.second);
+        idx++;
+    }
 
-        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
-            char c = event.text.unicode;
-            if (c == idx) {
-                player->setOffenseTarget(locations[i]);
-                if (payCosts) {
-                    m_currentState = eUiState::ChooseDice;
-                }
-                else {
-                    player->setOffenseReady();
-                    m_currentState = eUiState::Finished;
-                }
-                
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
+        char c = event.text.unicode;
+        if (c == idx) {
+            m_currentState = eUiState::InspectTarget;
+            return;
+        }
+        auto iter = indices.find(c);
+
+        if (iter != indices.end()) {
+            auto cost = iter->second;
+            if (player->getCombatPool() < cost.second && cost.second > 0) {
+                Log::push(to_string(cost.second) + " AP needed.");
+                return;
+            }
+            player->reduceCombatPool(cost.second);
+            player->setOffenseTarget(cost.first);
+            if (payCosts) {
+                m_currentState = eUiState::ChooseDice;
+            } else {
+                player->setOffenseReady();
+                m_currentState = eUiState::Finished;
             }
             // if player chose pinpoit thrust allow them to pick a specific location
             if (player->getQueuedOffense().manuever == eOffensiveManuevers::PinpointThrust

@@ -1,13 +1,13 @@
 #include <iostream>
 
 #include "combatinstance.h"
+#include "combatui.h"
+#include "common.h"
 #include "creatures/player.h"
 #include "creatures/utils.h"
 #include "game.h"
 #include "items/utils.h"
 #include "items/weapon.h"
-#include "combatui.h"
-#include "common.h"
 #include "types.h"
 
 using namespace std;
@@ -27,7 +27,6 @@ void CombatUI::resetState()
     m_initiativeState = eInitiativeSubState::ChooseInitiative;
     m_stolenOffenseState = eStolenOffenseSubState::ChooseDice;
     m_dualRedState = eDualRedStealSubState::ChooseDice;
-
 }
 
 void CombatUI::initialize()
@@ -37,7 +36,7 @@ void CombatUI::initialize()
     auto window = sfg::Window::Create();
     window->Add(current_number_entry);
     window->SetRequisition(sf::Vector2f(100, 40));
-    //Game::getSingleton()->getDesktop().Add(window);
+    // Game::getSingleton()->getDesktop().Add(window);
 }
 
 void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* manager)
@@ -200,7 +199,7 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
     }
     if (instance->getState() == eCombatState::PreResolution
         && instance->isAttackerPlayer() == true) {
-        m_preresolveUI.run(hasKeyEvents, event, player);
+        m_preresolveUI.run(hasKeyEvents, event, player, target, instance);
         return;
     }
     if (instance->getState() == eCombatState::Resolution) {

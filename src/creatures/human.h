@@ -8,6 +8,7 @@ public:
     Human();
     ~Human() {}
     eCreatureType getCreatureType() override { return eCreatureType::Human; }
+    int getConstitution() const override { return 2; }
     void randomizeStats();
 
 private:
