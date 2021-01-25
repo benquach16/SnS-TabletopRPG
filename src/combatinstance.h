@@ -100,6 +100,7 @@ private:
     void resolvePosition(Creature* creature);
     void doPostResolution();
     void doEndCombat();
+    void resolveStealInit();
     void startGrapple(Creature* attacker, Creature* defender);
     void setSides(Creature*& attacker, Creature*& defender) const;
     bool switchToStaffGrip(Creature* creature);

@@ -518,6 +518,9 @@ int Creature::getMaxCombatPool()
     if (m_currentStance == eCreatureStance::Prone) {
         combatPool = (combatPool + 1) / 2;
     }
+    if (getSecondaryWeapon()->isShield()) {
+        combatPool -= 1;
+    }
     constexpr int minCombatPool = 4;
     combatPool = max(combatPool, minCombatPool);
     return max(combatPool, 0);

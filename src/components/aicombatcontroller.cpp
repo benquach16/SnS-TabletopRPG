@@ -175,7 +175,7 @@ void AICombatController::chooseOffenseManuever(Creature* controlledCreature, con
 
     map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(controlledCreature,
         controlledCreature->getQueuedOffense().withPrimaryWeapon, instance->getCurrentReach(),
-        instance->getInGrapple(), payReach, feint);
+        instance->getInGrapple(), payReach, feint, instance->getLastTempo() == false);
 
     map<eHitLocations, int> locationCosts
         = getHitLocationCost(target, feint, controlledCreature->getQueuedOffense().target);
@@ -750,8 +750,13 @@ void AICombatController::doPrecombat(
     if (controlledCreature->primaryWeaponDisabled()
         && controlledCreature->getGrip() == eGrips::Standard
         && controlledCreature->getSecondaryWeaponId() == controlledCreature->getNaturalWeaponId()) {
-        // unlocks a secondary weapon if we didn't already have one
-        shortenGrip(controlledCreature, instance->getLastTempo());
+        // only do this if we didn't have an overwhelming reach advantage
+        int opponentReachCost
+            = calculateReachCost(opponent->getCurrentReach(), instance->getCurrentReach());
+        if (opponentReachCost < 3) {
+            // unlocks a secondary weapon if we didn't already have one
+            shortenGrip(controlledCreature, instance->getLastTempo());
+        }
     }
     if (instance->getCurrentReach() < controlledCreature->getCurrentReach()
         && controlledCreature->getGrip() == eGrips::Standard) {
