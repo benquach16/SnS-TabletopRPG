@@ -58,6 +58,8 @@ void EquipmentManager::loadLoadout(eCreatureFaction faction, eRank rank, nlohman
     std::vector<int> gloves = values["gloves"];
     std::vector<int> plateGloves = values["plateGloves"];
     std::vector<int> shoes = values["shoes"];
+    std::vector<int> secondary = values["secondaryWeapon"];
+    std::vector<int> quickdraw = values["quickdraw"];
 
     m_loadouts[faction][rank].baseChests = baseChests;
     m_loadouts[faction][rank].helmets = helmets;
@@ -69,6 +71,8 @@ void EquipmentManager::loadLoadout(eCreatureFaction faction, eRank rank, nlohman
     m_loadouts[faction][rank].skirts = skirts;
     m_loadouts[faction][rank].plateLeggings = plateLeggings;
     m_loadouts[faction][rank].weapons = weapons;
+    m_loadouts[faction][rank].secondary = secondary;
+    m_loadouts[faction][rank].quickdraw = quickdraw;
     m_loadouts[faction][rank].plateShoulders = plateShoulders;
     m_loadouts[faction][rank].plateArms = plateArms;
     m_loadouts[faction][rank].gloves = gloves;
@@ -177,4 +181,16 @@ int EquipmentManager::getRandomWeapon(eCreatureFaction faction, eRank rank) cons
 
     std::vector<int> weapons = it->second.at(rank).weapons;
     return weapons[effolkronium::random_static::get(0, static_cast<int>(weapons.size()) - 1)];
+}
+
+int EquipmentManager::getRandomSecondary(eCreatureFaction faction, eRank rank) const
+{
+    auto it = m_loadouts.find(faction);
+    assert(it != m_loadouts.end());
+
+    std::vector<int> secondary = it->second.at(rank).secondary;
+    if (secondary.size()) {
+        return secondary[effolkronium::random_static::get(0, static_cast<int>(secondary.size()) - 1)];
+    }
+    return -1;
 }

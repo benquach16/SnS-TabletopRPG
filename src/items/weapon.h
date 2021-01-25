@@ -13,8 +13,8 @@ class Weapon : public Item {
 public:
     Weapon(const std::string& name, const std::string& description, eLength length,
         std::vector<Component*> components, eWeaponTypes type, int cost, int baseTn, int guardTn,
-        std::set<eWeaponProperties> properties, bool m_secondary, bool naturalWeapon = false,
-        int secondaryWeaponId = -1);
+        std::set<eWeaponProperties> properties, bool m_secondary, bool shield, bool naturalWeapon,
+        int secondaryWeaponId);
     ~Weapon();
     eItemType getItemType() const override { return eItemType::Weapon; }
 
@@ -32,6 +32,8 @@ public:
 
     Component* getPommelStrike() const;
 
+    bool isShield() const { return m_shield; }
+
     int getBaseTN() const { return m_tn; }
 
     int getGuardTN() const { return m_guardTn; }
@@ -41,7 +43,6 @@ public:
         return m_properties.find(eWeaponProperties::Hook) != m_properties.end();
     }
 
-    bool isShield() const { return false; }
 
     bool isCurved() const { return false; }
 
@@ -69,7 +70,7 @@ private:
 
     int m_tn;
     int m_guardTn;
-
+    bool m_shield;
     bool canBeOffhand() const { return m_hands == 1; }
     bool m_naturalWeapon;
     bool m_hook;

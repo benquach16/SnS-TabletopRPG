@@ -4,7 +4,6 @@
         "description": "The queue end of a polearm, equipped with a spike. Typically found on nicer polearms.",
         "length" : "short",
         "type": "polearm",
-        "hands": 1,
         "cost": 0,
         "hook": false,
         "shield": false,
@@ -33,7 +32,6 @@
         "description": "The queue end of a polearm.",
         "length" : "short",
         "type": "polearm",
-        "hands": 1,
         "cost": 0,
         "baseTn": 5,
         "guardTn": 6,
@@ -59,7 +57,6 @@
         "description": "The pommel of a sword",
         "length" : "short",
         "type": "sword",
-        "hands": 1,
         "cost": 0,
         "baseTn": 5,
         "guardTn": 6,
@@ -86,7 +83,6 @@
         "description":"A knightly polearm that consists of a top spike, an axe blade, and a hammer. Particularly effective against plate armor.",
         "length": "verylong",
         "type": "polearm",
-        "hands": 2,
         "cost": 125,
         "properties": [ "hook", "heavy" ],
         "components": [
@@ -118,7 +114,6 @@
         "description": "A type of 1 handed sword, commonly used by knights as a sidearm or with a shield.",
         "length": "medium",
         "type": "sword",
-        "hands": 1,
         "cost": 30,
         "components": [
             {
@@ -141,7 +136,6 @@
         "description": "The most popular weapon in history. A blade attached to an 8 foot pole.",
         "length": "extended",
         "type": "polearm",
-        "hands": 2,
         "cost": 10,
         "components": [
             {
@@ -164,7 +158,6 @@
         "description": "A double edged knife.",
         "length": "close",
         "type": "brawling",
-        "hands": 1,
         "cost": 2,
         "baseTn": 6,
         "guardTn": 8,
@@ -188,7 +181,6 @@
         "description":"A lighter and better balanced version of the knightly pollaxe. One of the best weapons money can buy.",
         "length": "verylong",
         "type": "polearm",
-        "hands": 2,
         "cost": 500,
         "properties": [ "hook", "heavy" ],
         "components": [
@@ -223,7 +215,6 @@
         "description": "A short 1 handed sword.",
         "length": "short",
         "type": "sword",
-        "hands": 1,
         "cost": 25,
         "components": [
             {
@@ -246,7 +237,6 @@
         "description": "A short sword made of soft iron. Very poor penetrative ability.",
         "length": "short",
         "type": "sword",
-        "hands": 1,
         "cost": 5,
         "components": [
             {
@@ -269,7 +259,6 @@
         "description": "The basis of all polearms. Surprisingly effective against armored foes.",
         "length": "verylong",
         "type": "polearm",
-        "hands": 2,
         "cost": 5,
         "components": [
             {
@@ -292,7 +281,6 @@
         "description":"The quintessential infantry weapon. Has a top spike, axe, and an armor piercing beak.",
         "length": "extended",
         "type": "polearm",
-        "hands": 2,
         "cost": 100,
         "properties": [ "hook", "heavy" ],
         "components": [
@@ -324,7 +312,6 @@
         "description":"The longsword is a popular 2 handed sword, commonly used as a sidearm by knights.",
         "length": "long",
         "type": "longsword",
-        "hands": 2,
         "cost": 70,
         "components": [
             {
@@ -347,7 +334,6 @@
         "description":"A pollaxe made from the rarest metal on the planet, seraphim steel. You can feel the power radiating from this weapon.",
         "length": "verylong",
         "type": "polearm",
-        "hands": 2,
         "cost": 2000,
         "properties": [ "hook", "heavy" ],
         "components": [
@@ -379,7 +365,6 @@
         "description": "A sort of proto-polearm, the Dane Axe consists of an axe head mounted on a long shaft.",
         "length": "long",
         "type": "polearm",
-        "hands": 2,
         "cost": 20,
         "properties": [ "hook" ],
         "components": [
@@ -403,7 +388,6 @@
         "description": "A type of dagger that is primarily used for thrusting. Some rondels do not even have edges. They tend to have a square spike design that allows them to penetrate maille.",
         "length": "hand",
         "type": "brawling",
-        "hands": 1,
         "cost": 15,
         "components": [
             {
@@ -426,7 +410,6 @@
         "description": "A long tapered thrusting sword used as a dueling weapon. Despite how it may look, it is quite study and heavy.",
         "length": "long",
         "type": "sword",
-        "hands": 1,
         "baseTn": 5,
         "cost": 85,
         "components": [
@@ -449,7 +432,6 @@
         "description":"The Zweihander is a type of greatsword, almost as tall as a man. A weapon of war used by specialized troops or bodyguards.",
         "length": "verylong",
         "type": "longsword",
-        "hands": 2,
         "cost": 150,
         "components": [
             {
@@ -466,5 +448,53 @@
             }
         ],
         "secondaryId": 1022
+    },
+    "1056": {
+        "name": "Round Shield",
+        "description":"The Round Shield is a type of medium shield.",
+        "length": "short",
+        "type": "brawling",
+        "guardTn": 5,
+        "cost": 150,
+        "shield": true,
+        "size": "medium",
+        "components": [
+            {
+                "name": "Shield Boss",
+                "damage": 0,
+                "type": "blunt",
+                "attack": "thrust"
+            },
+            {
+                "name": "Shield Edge",
+                "damage": 0,
+                "attack": "swing",
+                "type": "blunt"
+            }
+        ]
+    },
+    "1057": {
+        "name": "Kite Shield",
+        "description":"The Kite Shield is a type of large shield.",
+        "length": "short",
+        "type": "brawling",
+        "guardTn": 4,
+        "cost": 150,
+        "shield": true,
+        "size": "large",
+        "components": [
+            {
+                "name": "Shield Boss",
+                "damage": 0,
+                "type": "blunt",
+                "attack": "thrust"
+            },
+            {
+                "name": "Shield Edge",
+                "damage": 0,
+                "attack": "swing",
+                "type": "blunt"
+            }
+        ]
     }
 }

@@ -240,8 +240,24 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
                 // also don't allow quickdraw of certain weapons
             case 'e': {
                 if (playerComponent->getNumEquipped(m_id) < player->getInventory().at(m_id)) {
-                    playerComponent->setPrimaryWeapon(m_id);
-                    Log::push("You equip the " + item->getName());
+                    if (playerComponent->canEquip(m_id)) {
+                        playerComponent->setPrimaryWeapon(m_id);
+                        Log::push("You equip the " + item->getName());
+                    } else {
+                        Log::push("Your hands are too full!");
+                    }
+                } else {
+                    Log::push("This weapon is already equipped!");
+                }
+            } break;
+            case 'w': {
+                if (playerComponent->getNumEquipped(m_id) < player->getInventory().at(m_id)) {
+                    if (playerComponent->canEquip(m_id)) {
+                        playerComponent->setSecondaryWeapon(m_id);
+                        Log::push("You equip the " + item->getName());
+                    } else {
+                        Log::push("Your hands are too full!");
+                    }
                 } else {
                     Log::push("This weapon is already equipped!");
                 }

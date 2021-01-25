@@ -628,6 +628,7 @@ void CombatInstance::doResolution()
 
             int keenDifference = attackerKeen - defenderKeen;
             if (keenDifference > 0) {
+                keenDifference++;
                 writeMessage(attacker->getName() + " successfully feints and weakens "
                     + defender->getName() + "'s defense by " + to_string(keenDifference));
             } else {

@@ -22,7 +22,7 @@ public:
 
     std::vector<int> getRandomArmors(eCreatureFaction faction, eRank rank) const;
     int getRandomWeapon(eCreatureFaction faction, eRank rank) const;
-
+    int getRandomSecondary(eCreatureFaction faction, eRank rank) const;
 private:
     struct Loadout {
         std::vector<int> baseChests;
@@ -40,6 +40,8 @@ private:
         std::vector<int> plateGloves;
         std::vector<int> shoes;
         std::vector<int> weapons;
+        std::vector<int> secondary;
+        std::vector<int> quickdraw;
     };
     EquipmentManager();
     void loadNames();

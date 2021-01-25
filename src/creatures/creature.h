@@ -104,6 +104,7 @@ public:
     void removeSecondaryWeapon() { m_secondaryWeaponId = m_naturalWeaponId; }
     std::vector<int> getDroppedWeapons() const { return m_droppedWeapons; }
     void clearDroppedWeapons();
+    bool canEquip(int id);
     void bleed();
     int getNumEquipped(int id);
 
@@ -158,6 +159,7 @@ public:
     const std::vector<eHitLocations> getHitLocations() const;
     const std::set<eHitLocations>& getFavoredLocations() const { return m_favoredLocations; }
     const std::vector<eHitLocations> getUnmodifiedHitLocations() const { return m_hitLocations; }
+    bool canFavor() const;
     std::unordered_map<eBodyParts, int> getBleedLevels() const { return m_bleedLevel; }
     std::vector<eBodyParts> getSeveredParts() const { return m_severedParts; }
     // AI functions
@@ -212,7 +214,7 @@ public:
     void setPositionReady() { m_hasPosition = true; }
     void setInitiative(eInitiativeRoll initiative);
     eInitiativeRoll getInitiative() { return m_initiative; }
-    void addFavored(eHitLocations location) { m_favoredLocations.insert(location); }
+    void addFavored(eHitLocations location);
     void setPrecombatReady() { m_hasPrecombat = true; }
     void setPreResolutionReady() { m_hasPreResolution = true; }
 

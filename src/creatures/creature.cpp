@@ -502,6 +502,9 @@ void Creature::resetCombatPool()
     int carry = m_combatPool;
     carry = min(0, carry);
     m_combatPool = getMaxCombatPool() + carry;
+
+    // reset favored locations every reset
+    m_favoredLocations.clear();
 }
 
 int Creature::getMaxCombatPool()
@@ -572,6 +575,46 @@ void Creature::disableWeapon()
     }
     m_primaryWeaponDisabled = true;
     m_disarm = cDisableTick;
+
+    // once a weapon is disabled, it cannot guard
+    m_favoredLocations.clear();
+}
+
+bool Creature::canFavor() const
+{
+    return (m_favoredLocations.empty() && primaryWeaponDisabled() == false);
+}
+
+bool Creature::canEquip(int id)
+{
+    int hands = 2;
+    for (auto part : m_severedParts) {
+        if (part == eBodyParts::Hand) {
+            hands--;
+        }
+    }
+    const Weapon* primaryWeapon = getPrimaryWeapon();
+    switch (primaryWeapon->getType()) {
+    case eWeaponTypes::Polearms:
+    case eWeaponTypes::Longswords:
+        hands -= 2;
+        break;
+    }
+
+    assert(hands >= 0);
+    const Weapon* toEquip = WeaponTable::getSingleton()->get(id);
+    if (hands == 0) {
+        return false;
+    }
+    switch (toEquip->getType()) {
+    case eWeaponTypes::Polearms:
+    case eWeaponTypes::Longswords:
+        if (hands < 2) {
+            return false;
+        }
+        break;
+    }
+    return true;
 }
 
 void Creature::dropWeapon()
@@ -581,6 +624,41 @@ void Creature::dropWeapon()
         setGrip(eGrips::Standard);
         m_droppedWeapons.push_back(getPrimaryWeaponId());
         setPrimaryWeapon(m_naturalWeaponId);
+    }
+}
+
+void Creature::addFavored(eHitLocations location)
+{
+    m_favoredLocations.insert(location);
+
+    // shield gets a bunch of free surrounding locations
+    if (getSecondaryWeapon()->isShield()) {
+        switch (location) {
+        case eHitLocations::Arm:
+            m_favoredLocations.insert(eHitLocations::Belly);
+            m_favoredLocations.insert(eHitLocations::Chest);
+            break;
+        case eHitLocations::Head:
+            m_favoredLocations.insert(eHitLocations::Arm);
+            m_favoredLocations.insert(eHitLocations::Chest);
+            break;
+        case eHitLocations::Chest:
+            m_favoredLocations.insert(eHitLocations::Head);
+            m_favoredLocations.insert(eHitLocations::Arm);
+            break;
+        case eHitLocations::Belly:
+            m_favoredLocations.insert(eHitLocations::Chest);
+            m_favoredLocations.insert(eHitLocations::Arm);
+            break;
+        case eHitLocations::Thigh:
+            m_favoredLocations.insert(eHitLocations::Belly);
+            m_favoredLocations.insert(eHitLocations::Arm);
+            break;
+        case eHitLocations::Shin:
+            m_favoredLocations.insert(eHitLocations::Belly);
+            m_favoredLocations.insert(eHitLocations::Thigh);
+            break;
+        }
     }
 }
 
@@ -730,7 +808,6 @@ void Creature::clearCreatureManuevers(bool skipDisable)
     m_hasPrecombat = false;
     m_hasPreResolution = false;
     m_flagInitiative = false;
-    m_favoredLocations.clear();
 
     if (skipDisable == false) {
         if (m_disarm > 0) {

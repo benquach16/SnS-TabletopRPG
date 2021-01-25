@@ -503,7 +503,8 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
     int diceAllocated = attacker->getQueuedOffense().dice;
     eOffensiveManuevers attack = attacker->getQueuedOffense().manuever;
     const Weapon* weapon = controlledCreature->getPrimaryWeapon();
-    if (controlledCreature->primaryWeaponDisabled() == false) {
+    bool hasShield = controlledCreature->getSecondaryWeapon()->isShield();
+    if (controlledCreature->primaryWeaponDisabled() == false && hasShield == false) {
         controlledCreature->setDefenseWeapon(true);
         weapon = controlledCreature->getPrimaryWeapon();
     } else {
@@ -692,7 +693,7 @@ void AICombatController::doPrecombat(
 {
     // do favoring
     constexpr int cMinFavorDie = 5;
-    if (controlledCreature->getFavoredLocations().size() == 0 && instance->getLastTempo() == false
+    if (controlledCreature->canFavor() && instance->getLastTempo() == false
         && controlledCreature->getCombatPool() > cMinFavorDie) {
         // map is guaranteed to be ordered (smallest first)
         map<int, eHitLocations> possibleFavorLocations;

@@ -15,7 +15,9 @@
             "plateArms": [],
             "gloves": [],
             "plateGloves": [],
-            "weapons": [1043, 1045]
+            "weapons": [1043, 1045],
+            "secondaryWeapon": [],
+            "quickdraw": []
         },
        "soldier": {
             "baseChests": [2040],
@@ -32,7 +34,9 @@
             "plateArms": [],
             "gloves": [],
             "plateGloves": [],
-            "weapons": [1043, 1045, 1050]
+            "weapons": [1043, 1045, 1050],
+            "secondaryWeapon": [],
+            "quickdraw": []
         },
        "veteran": {
             "baseChests": [2040],
@@ -49,7 +53,9 @@
             "plateArms": [],
             "gloves": [],
             "plateGloves": [],
-            "weapons": [1045, 1050, 1054]
+            "weapons": [1045, 1050, 1054],
+            "secondaryWeapon": [],
+            "quickdraw": []
         },
        "lord": {
             "baseChests": [2040],
@@ -66,7 +72,9 @@
             "plateArms": [],
             "gloves": [],
             "plateGloves": [],
-            "weapons": [1045, 1050, 1054]
+            "weapons": [1045, 1050, 1054],
+            "secondaryWeapon": [],
+            "quickdraw": []
         }
     },
     "bandit" : {
@@ -85,7 +93,9 @@
             "plateArms": [],
             "gloves": [2047],
             "plateGloves": [],
-            "weapons": [1042, 1045, 1046, 1041, 1052]
+            "weapons": [1042, 1045, 1046, 1041, 1052],
+            "secondaryWeapon": [1056],
+            "quickdraw": []
         },
         "soldier": {
             "baseChests": [2040, 2045],
@@ -102,7 +112,9 @@
             "plateArms": [],
             "gloves": [2047],
             "plateGloves": [],
-            "weapons": [1042, 1045, 1046, 1041, 1052]
+            "weapons": [1042, 1045, 1046, 1041, 1052],
+            "secondaryWeapon": [1056, 1057],
+            "quickdraw": []
         }, 
         "veteran": {
             "baseChests": [2040, 2045],
@@ -119,7 +131,9 @@
             "plateArms": [],
             "gloves": [2047],
             "plateGloves": [],
-            "weapons": [1052, 1050]
+            "weapons": [1052, 1050],
+            "secondaryWeapon": [1056, 1057],
+            "quickdraw": []
         },
         "lord": {
             "baseChests": [2040, 2045],
@@ -136,7 +150,9 @@
             "plateArms": [],
             "gloves": [2047],
             "plateGloves": [],
-            "weapons": [1042, 1045, 1046, 1041, 1052]
+            "weapons": [1042, 1045, 1046, 1041, 1052],
+            "secondaryWeapon": [1056, 1057],
+            "quickdraw": []
         }
     },
     "confederacy": {
@@ -155,7 +171,9 @@
             "plateArms": [],
             "gloves": [],
             "plateGloves": [],
-            "weapons": [1040, 1042, 1048, 1050]    
+            "weapons": [1040, 1042, 1048, 1050],
+            "secondaryWeapon": [],
+            "quickdraw": []
         },
         "soldier": {
             "baseChests": [2040],
@@ -172,7 +190,9 @@
             "plateArms": [],
             "gloves": [2054],
             "plateGloves": [],
-            "weapons": [1040, 1042, 1048, 1050]    
+            "weapons": [1040, 1042, 1048, 1050],
+            "secondaryWeapon": [],
+            "quickdraw": []
         },
         "veteran": {
             "baseChests": [2040],
@@ -189,7 +209,9 @@
             "plateArms": [2065],
             "gloves": [2054],
             "plateGloves": [],
-            "weapons": [1040, 1042, 1048, 1050]    
+            "weapons": [1040, 1042, 1048, 1050],
+            "secondaryWeapon": [],
+            "quickdraw": []
         },
         "lord": {
             "baseChests": [2040],
@@ -206,7 +228,9 @@
             "plateArms": [2065],
             "gloves": [2054],
             "plateGloves": [2066],
-            "weapons": [1040, 1042, 1048, 1050]    
+            "weapons": [1040, 1042, 1048, 1050],
+            "secondaryWeapon": [],
+            "quickdraw": []
         }
     }
 }

@@ -889,11 +889,11 @@
                 "effects":["BL2"]
             },
             "4": {
-                "text":["Punctures diaphragm and intestines. It’s bad. Hemorrhaging internally from multiple sources."],
+                "text":["Punctures diaphragm and intestines. It's bad. Hemorrhaging internally from multiple sources."],
                 "effects":["BL3", "KO2"]
             },
             "5": {
-                "text":["Liver and intestines completely perforated. Blood pours out and it just won’t stop."],
+                "text":["Liver and intestines completely perforated. Blood pours out and it just won't stop."],
                 "effects":["death"]
             }
         },
@@ -1265,7 +1265,7 @@
                 "effects": ["BL1"]
             },
             "4": {
-                "text": ["Swing claves through important organs. Speed ruptured and intestines are bleeding internally."],
+                "text": ["Swing cleaves through important organs. Spleen ruptured and intestines are bleeding internally."],
                 "effects": ["BL2", "KD1"]
             },
             "5": {

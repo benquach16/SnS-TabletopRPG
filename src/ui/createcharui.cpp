@@ -35,13 +35,14 @@ CreateCharUI::CreateCharUI()
         vector<int> armor = values["armor"];
         int weapon = values["weapon"];
         vector<int> quickdraw = values["quickdraw"];
+        vector<int> inventory = values["inventory"];
         StartingLoadouts loadout;
         loadout.name = values["name"];
         loadout.description = description;
         loadout.armor = armor;
         loadout.weapon = weapon;
         loadout.quickdraw = quickdraw;
-
+        loadout.inventory = inventory;
         m_loadouts.push_back(loadout);
     }
 
@@ -110,6 +111,9 @@ void CreateCharUI::initialize(PlayerObject* player)
                 }
                 for (auto item : m_loadouts[i].quickdraw) {
                     player->getCreatureComponent()->addQuickdrawItem(item);
+                    player->addItem(item);
+                }
+                for (auto item : m_loadouts[i].inventory) {
                     player->addItem(item);
                 }
                 hide();

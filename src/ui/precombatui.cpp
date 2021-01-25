@@ -43,7 +43,7 @@ void PrecombatUI::doFavoring(
     const Weapon* weapon = player->getPrimaryWeapon();
     int cost = getGripChangeCost(secondExchange);
     str += "b - Quickdraw Weapon\n";
-    if (player->getFavoredLocations().size() == 0 && secondExchange == false) {
+    if (player->canFavor() && secondExchange == false) {
         str += "c - Guard Location (1 AP)\n";
     }
     if (weapon->getType() == eWeaponTypes::Polearms) {
