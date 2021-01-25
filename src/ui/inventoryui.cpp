@@ -151,7 +151,7 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
 
     string str;
     const Item* item = ItemTable::getSingleton()->get(m_id);
-    str += "Selected Item (E to equip/use, W to equip in left hand, Q to add as quickdraw item, U "
+    str += "Selected Item (E to equip/use, W to equip as secondary weapon, Q to add as quickdraw item, U "
            "to unequip, D "
            "to drop)\n\n";
     str += item->getName() + '\n';

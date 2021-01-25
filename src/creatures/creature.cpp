@@ -518,9 +518,6 @@ int Creature::getMaxCombatPool()
     if (m_currentStance == eCreatureStance::Prone) {
         combatPool = (combatPool + 1) / 2;
     }
-    if (getSecondaryWeapon()->isShield()) {
-        combatPool -= 1;
-    }
     constexpr int minCombatPool = 4;
     combatPool = max(combatPool, minCombatPool);
     return max(combatPool, 0);
@@ -862,5 +859,8 @@ void Creature::applyArmor()
             m_armorValues[it].isRigid = m_armorValues[it].isRigid || armor->isRigid();
             m_armorValues[it].type = max(armor->getType(), m_armorValues[it].type);
         }
+    }
+    if (getSecondaryWeapon()->isShield()) {
+        m_AP += 1;
     }
 }

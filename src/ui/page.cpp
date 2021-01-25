@@ -59,10 +59,10 @@ int Page::run(bool hasKeyEvents, sf::Event event, std::map<int, int>& inventory,
                     if (equipped) {
                         str += " - Equipped";
                         if (creature->getPrimaryWeaponId() == it->first) {
-                            str += " in Right Hand";
+                            str += " as Primary Weapon";
                         }
                         if (creature->getSecondaryWeaponId() == it->first) {
-                            str += " in Left Hand";
+                            str += " as Secondary Weapon";
                         }
                         if (creature->findInQuickdraw(it->first)) {
                             str += " on belt";
