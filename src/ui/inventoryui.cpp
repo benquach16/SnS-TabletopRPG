@@ -64,6 +64,9 @@ void InventoryUI::run(bool hasKeyEvents, sf::Event event, PlayerObject* player)
     case eUiState::Paperdoll:
         doPaperdoll(hasKeyEvents, event, player);
         break;
+    case eUiState::Bandage:
+        doBandage(hasKeyEvents, event, player);
+        break;
     }
 }
 
@@ -151,7 +154,8 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
 
     string str;
     const Item* item = ItemTable::getSingleton()->get(m_id);
-    str += "Selected Item (E to equip/use, W to equip as secondary weapon, Q to add as quickdraw item, U "
+    str += "Selected Item (E to equip/use, W to equip as secondary weapon, Q to add as quickdraw "
+           "item, U "
            "to unequip, D "
            "to drop)\n\n";
     str += item->getName() + '\n';
@@ -297,11 +301,65 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
             player->applyItem(m_id);
             player->removeItem(m_id);
             Log::push("You consume the " + item->getName());
+            m_uiState = eUiState::Backpack;
+        }
+    } else if (item->getItemType() == eItemType::Bandage) {
+        if (event.type == sf::Event::TextEntered && event.text.unicode == 'e') {
+            m_uiState = eUiState::Bandage;
         }
     }
     str += '\n';
     str += "Worth " + to_string(item->getCost()) + " silvers\n";
 
+    insertLineBreaks(str);
+    txt.setString(str);
+    txt.setPosition(sf::Vector2f(cPad / 2 + cBorderWidth, cPad / 2));
+    Game::getWindow().draw(txt);
+
+    if (hasKeyEvents && event.type == sf::Event::KeyReleased
+        && (event.key.code == sf::Keyboard::Enter || event.key.code == sf::Keyboard::Escape)) {
+        m_uiState = eUiState::Backpack;
+    }
+}
+
+void InventoryUI::doBandage(bool hasKeyEvents, sf::Event event, PlayerObject* player)
+{
+    assert(m_id != -1);
+    drawBkg();
+
+    sf::Text txt;
+    UiCommon::initializeText(txt);
+
+    const Item* item = ItemTable::getSingleton()->get(m_id);
+    assert(item->getItemType() == eItemType::Bandage);
+
+    string str = "Bandages left: ";
+    unsigned itemsLeft = player->getInventory().at(m_id);
+    str += to_string(itemsLeft);
+    str += "\n\n\n";
+
+    Creature* creature = player->getCreatureComponent();
+    unsigned count = 0;
+    for (auto it : creature->getBleedLevels()) {
+        char idx = 'a' + count;
+        str += idx;
+        str += " - " + bodyPartToString(it.first) + " is bleeding " + to_string(it.second)
+            + " points\n";
+
+        if (hasKeyEvents && event.type == sf::Event::TextEntered) {
+            char c = event.text.unicode;
+            if (c == idx) {
+                if (itemsLeft > 0) {
+                    creature->healBleed(it.first);
+                    player->removeItem(m_id);
+                    Log::push("You use a bandage on your bleeding " + bodyPartToString(it.first));
+                    return;
+                } else {
+                    Log::push("Out of bandages.");
+                }
+            }
+        }
+    }
     insertLineBreaks(str);
     txt.setString(str);
     txt.setPosition(sf::Vector2f(cPad / 2 + cBorderWidth, cPad / 2));

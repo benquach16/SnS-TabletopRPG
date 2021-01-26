@@ -18,10 +18,10 @@ public:
     void displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject* player);
     void doPaperdoll(bool hasKeyEvents, sf::Event event, PlayerObject* player);
     void doLevelup(bool hasKeyEvents, sf::Event event, PlayerObject* player);
-
+    void doBandage(bool hasKeyEvents, sf::Event event, PlayerObject* player);
 private:
     void drawBkg();
-    enum eUiState { Backpack, Detailed, Wounds, Profile, Paperdoll, Levelup };
+    enum eUiState { Backpack, Detailed, Wounds, Profile, Paperdoll, Levelup, Bandage };
     enum eWeaponDetail { Primary, Secondary, Quickdraw };
     // for equipping and unequipping
     bool m_equipped;

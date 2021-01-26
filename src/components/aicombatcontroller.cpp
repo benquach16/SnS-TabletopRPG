@@ -175,7 +175,7 @@ void AICombatController::chooseOffenseManuever(Creature* controlledCreature, con
 
     map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(controlledCreature,
         controlledCreature->getQueuedOffense().withPrimaryWeapon, instance->getCurrentReach(),
-        instance->getInGrapple(), payReach, feint, instance->getLastTempo() == false);
+        instance->getInGrapple(), payReach, feint, instance->getLastTempo());
 
     map<eHitLocations, int> locationCosts
         = getHitLocationCost(target, feint, controlledCreature->getQueuedOffense().target);
@@ -503,8 +503,9 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
     int diceAllocated = attacker->getQueuedOffense().dice;
     eOffensiveManuevers attack = attacker->getQueuedOffense().manuever;
     const Weapon* weapon = controlledCreature->getPrimaryWeapon();
-    bool hasShield = controlledCreature->getSecondaryWeapon()->isShield();
-    if (controlledCreature->primaryWeaponDisabled() == false && hasShield == false) {
+    const Weapon* secondary = controlledCreature->getSecondaryWeapon();
+    if (controlledCreature->primaryWeaponDisabled() == false
+        && secondary->getGuardTN() >= weapon->getGuardTN()) {
         controlledCreature->setDefenseWeapon(true);
         weapon = controlledCreature->getPrimaryWeapon();
     } else {

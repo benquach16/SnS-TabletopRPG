@@ -1,8 +1,8 @@
 #include <vector>
 
-#include "../creatures/creature.h"
-#include "../creatures/utils.h"
-#include "../game.h"
+#include "creatures/creature.h"
+#include "creatures/utils.h"
+#include "game.h"
 #include "common.h"
 #include "types.h"
 

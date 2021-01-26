@@ -103,12 +103,11 @@ void OffenseUI::doManuever(
     UiCommon::drawTopPanel();
 
     sf::Text text;
-    text.setCharacterSize(cCharSize);
-    text.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(text);
     bool withPrimaryWeapon = player->getQueuedOffense().withPrimaryWeapon;
     map<eOffensiveManuevers, int> manuevers
         = getAvailableOffManuevers(player, withPrimaryWeapon, instance->getCurrentReach(),
-            instance->getInGrapple(), true, false, instance->getLastTempo() == false);
+            instance->getInGrapple(), true, false, instance->getLastTempo());
 
     string str = "Choose attack:\n";
     map<char, std::pair<eOffensiveManuevers, int>> indices;

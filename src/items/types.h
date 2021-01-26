@@ -59,6 +59,8 @@ enum class ePreResolveManuevers : unsigned { Invalid = 0, Stomp, Feint };
 
 enum class eGrips : unsigned { Standard, Staff, HalfSword, Overhand };
 
+enum class eHookTargets : unsigned { Joint, Primary, Secondary };
+
 inline int gripReachDifference(eGrips grip)
 {
     switch (grip) {

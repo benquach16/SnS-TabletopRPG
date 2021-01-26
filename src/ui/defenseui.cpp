@@ -90,7 +90,7 @@ void DefenseUI::doManuever(
     string str = "Choose defense:\n";
 
     map<eDefensiveManuevers, int> manuevers
-        = getAvailableDefManuevers(player, player->getQueuedOffense().withPrimaryWeapon,
+        = getAvailableDefManuevers(player, player->getQueuedDefense().withPrimaryWeapon,
             instance->getLastTempo(), instance->getCurrentReach(), instance->getInGrapple());
     map<char, std::pair<eDefensiveManuevers, int>> indices;
     char idx = 'a';

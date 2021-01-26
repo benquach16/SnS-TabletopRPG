@@ -15,6 +15,7 @@ struct Manuever {
 struct Offense : public Manuever {
     eManueverTypes getType() override { return eManueverTypes::Offense; }
     eOffensiveManuevers manuever;
+    eHookTargets hookTarget;
     bool linked = false;
     bool feint = false;
     bool pinpoint = false;
@@ -31,6 +32,7 @@ struct Offense : public Manuever {
     {
         Manuever::reset();
         manuever = eOffensiveManuevers::NoOffense;
+        hookTarget = eHookTargets::Joint;
         linked = false;
         feint = false;
         pinpoint = false;

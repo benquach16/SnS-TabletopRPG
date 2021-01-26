@@ -161,6 +161,7 @@ public:
     const std::vector<eHitLocations> getUnmodifiedHitLocations() const { return m_hitLocations; }
     bool canFavor() const;
     std::unordered_map<eBodyParts, int> getBleedLevels() const { return m_bleedLevel; }
+    void healBleed(eBodyParts part) { m_bleedLevel.erase(part); }
     std::vector<eBodyParts> getSeveredParts() const { return m_severedParts; }
     // AI functions
     // move these to ai combat controller
