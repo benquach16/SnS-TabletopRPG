@@ -12,7 +12,7 @@ public:
     Consumable(const std::string& name, const std::string& description, int cost, eItemType type,
         std::set<ItemEffect*> effects);
     ~Consumable();
-    void apply(Creature* creature, eBodyParts part = eBodyParts::Face) const;
+    void apply(Creature* creature, eBodyParts part = eBodyParts::Face, int level = 1) const;
 
     const std::set<ItemEffect*>& getEffects() const { return m_effects; }
 

@@ -107,6 +107,7 @@ public:
     bool canEquip(int id);
     void bleed();
     int getNumEquipped(int id);
+    void modifyFatigue(eCreatureFatigue fatigueType, int value);
 
     void setName(const std::string& name) { m_name = name; }
     std::string getName() const { return m_name; }
@@ -121,7 +122,7 @@ public:
     }
     // does not heal bloodloss
     void healWound(eBodyParts part, int level);
-
+    void reduceWound(eBodyParts part, int level, int value);
     // multiple wounds
     void healWounds(int level);
     int getSuccessRate() const;
@@ -249,7 +250,7 @@ public:
     void kill() { m_currentState = eCreatureState::Dead; }
     void knockOut() { m_currentState = eCreatureState::Unconscious; }
 
-    int getFatigue() const;
+    int getFatigue(eCreatureFatigue fatigue) const;
 
     int getPain() const { return std::max(m_pain - getGrit(), 0); }
 
@@ -345,7 +346,7 @@ protected:
     int m_pain;
     float m_AP;
 
-    std::unordered_map<eCreatureFatigue, unsigned> m_fatigue;
+    std::unordered_map<eCreatureFatigue, int> m_fatigue;
 
     // stats
     int m_strength;
@@ -388,6 +389,7 @@ private:
         ar& m_currentState;
         ar& m_currentStance;
 
+        ar& m_fatigue;
         ar& m_severedParts;
         ar& m_bodyParts;
         ar& m_bleedLevel;

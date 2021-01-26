@@ -67,6 +67,9 @@ void InventoryUI::run(bool hasKeyEvents, sf::Event event, PlayerObject* player)
     case eUiState::Bandage:
         doBandage(hasKeyEvents, event, player);
         break;
+    case eUiState::Surgery:
+        doSurgery(hasKeyEvents, event, player);
+        break;
     }
 }
 
@@ -308,6 +311,10 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
         if (event.type == sf::Event::TextEntered && event.text.unicode == 'e') {
             m_uiState = eUiState::Bandage;
         }
+    } else if (item->getItemType() == eItemType::Firstaid) {
+        if (event.type == sf::Event::TextEntered && event.text.unicode == 'e') {
+            m_uiState = eUiState::Surgery;
+        }
     }
     str += '\n';
     str += "Worth " + to_string(item->getCost()) + " silvers\n";
@@ -394,16 +401,18 @@ void InventoryUI::doSurgery(bool hasKeyEvents, sf::Event event, PlayerObject* pl
         for (auto levels : i.second) {
             char idx = 'a' + count;
             str += idx;
-            str += "Level " + to_string(levels.first) + " wound at " + bodyPartToString(i.first)
+            str += " - Level " + to_string(levels.first) + " wound at " + bodyPartToString(i.first)
                 + " causing " + to_string(levels.second) + " pain\n";
 
             if (hasKeyEvents && event.type == sf::Event::TextEntered) {
                 char c = event.text.unicode;
                 if (c == idx) {
                     if (itemsLeft > 0) {
-                        consumable->apply(creature, i.first);
+                        consumable->apply(creature, i.first, levels.first);
                         player->removeItem(m_id);
-                        Log::push("You perform surgery on " + bodyPartToString(i.first));
+                        Log::push("You perform surgery on the level " + to_string(levels.first)
+                            + " wound at " + bodyPartToString(i.first)
+                            + ". You will need to rest to fully recover.");
                         return;
                     } else {
                         Log::push("Out of surgery kits.");
@@ -439,7 +448,6 @@ void InventoryUI::doWounds(bool hasKeyEvents, sf::Event event, PlayerObject* pla
 
     str += "Thirst: " + to_string(player->getThirst()) + '\n';
     str += "Hunger: " + to_string(player->getHunger()) + '\n';
-    str += "Exhaustion: " + to_string(player->getExhaustion()) + '\n';
     str += "Combat Fatigue: " + to_string(player->getFatigue()) + "\n\n";
     str += "[ Wounds ]\n";
     const std::unordered_map<eBodyParts, std::unordered_map<int, int>> wounds

@@ -384,8 +384,9 @@ void CombatUI::showSide1Stats(const CombatInstance* instance)
     ap.setPosition(6, windowSize.y - logHeight - rectHeight + (cCharSize * 2));
     ap.setString("Action Points : " + to_string(creature->getCombatPool()) + " / "
         + to_string(creature->getMaxCombatPool()) + " - Pain: " + to_string(creature->getPain())
-        + " Fatigue: " + to_string(creature->getFatigue()) + '\n' + "Blood loss: "
-        + to_string(creature->getBloodLoss()) + '\n' + stanceToString(creature->getStance()));
+        + " Fatigue: " + to_string(creature->getFatigue(eCreatureFatigue::Stamina)) + '\n'
+        + "Blood loss: " + to_string(creature->getBloodLoss()) + '\n'
+        + stanceToString(creature->getStance()));
 
     Game::getWindow().draw(ap);
 }
@@ -417,8 +418,9 @@ void CombatUI::showSide2Stats(const CombatInstance* instance)
     ap.setPosition(windowSize.x / 2 + 5, windowSize.y - logHeight - rectHeight + (cCharSize * 2));
     ap.setString("Action Points : " + to_string(creature->getCombatPool()) + " / "
         + to_string(creature->getMaxCombatPool()) + " - Pain: " + to_string(creature->getPain())
-        + " Fatigue: " + to_string(creature->getFatigue()) + '\n' + "Blood loss: "
-        + to_string(creature->getBloodLoss()) + '\n' + stanceToString(creature->getStance()));
+        + " Fatigue: " + to_string(creature->getFatigue(eCreatureFatigue::Stamina)) + '\n'
+        + "Blood loss: " + to_string(creature->getBloodLoss()) + '\n'
+        + stanceToString(creature->getStance()));
 
     Game::getWindow().draw(ap);
 }

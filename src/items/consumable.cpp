@@ -15,9 +15,9 @@ Consumable::~Consumable()
     m_effects.clear();
 }
 
-void Consumable::apply(Creature* creature, eBodyParts part) const
+void Consumable::apply(Creature* creature, eBodyParts part, int level) const
 {
     for (auto it : m_effects) {
-        it->apply(creature, part);
+        it->apply(creature, part, level);
     }
 }

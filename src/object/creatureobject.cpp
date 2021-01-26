@@ -13,9 +13,6 @@ CreatureObject::CreatureObject(Creature* creature)
     : m_creature(creature)
     , m_creatureFaction(eCreatureFaction::Civilian)
     , m_experience(0)
-    , m_thirst(0)
-    , m_hunger(0)
-    , m_exhaustion(0)
     , m_inCombat(false)
     , m_manager(new CombatManager(this))
     , m_delete(false)
@@ -55,7 +52,7 @@ void CreatureObject::run(const Level* level)
     }
 }
 
-int CreatureObject::getFatigue() const { return m_creature->getFatigue(); }
+int CreatureObject::getFatigue() const { return m_creature->getFatigue(eCreatureFatigue::Stamina); }
 
 bool CreatureObject::isInCombat() const { return m_manager->isEngaged(); }
 

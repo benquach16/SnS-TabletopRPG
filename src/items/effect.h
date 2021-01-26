@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "creatures/types.h"
 #include "creatures/creature.h"
+#include "creatures/types.h"
 
 enum class eItemEffect { Thirst, Hunger, Stamina, Bandage, Firstaid };
 
@@ -16,9 +16,9 @@ public:
     virtual ~ItemEffect() {}
     virtual eItemEffect getType() const = 0;
     int getValue() const { return m_value; }
-    virtual void apply(Creature* creature, eBodyParts part) const = 0;
+    virtual void apply(Creature* creature, eBodyParts part, int level) const = 0;
 
-private:
+protected:
     int m_value;
 };
 
@@ -30,7 +30,7 @@ public:
     }
     eItemEffect getType() const override { return eItemEffect::Thirst; }
 
-    void apply(Creature* creature, eBodyParts part) const override {}
+    void apply(Creature* creature, eBodyParts part, int level) const override {}
 };
 
 class HungerEffect : public ItemEffect {
@@ -40,7 +40,10 @@ public:
     {
     }
     eItemEffect getType() const override { return eItemEffect::Thirst; }
-    void apply(Creature* creature, eBodyParts part) const override {}
+    void apply(Creature* creature, eBodyParts part, int level) const override
+    {
+        creature->modifyFatigue(eCreatureFatigue::Hunger, -m_value);
+    }
 
 private:
 };
@@ -52,7 +55,7 @@ public:
     {
     }
     eItemEffect getType() const override { return eItemEffect::Stamina; }
-    void apply(Creature* creature, eBodyParts part) const override {}
+    void apply(Creature* creature, eBodyParts part, int level) const override {}
 
 private:
 };
@@ -64,7 +67,7 @@ public:
     {
     }
     eItemEffect getType() const override { return eItemEffect::Bandage; }
-    void apply(Creature* creature, eBodyParts part) const override
+    void apply(Creature* creature, eBodyParts part, int level) const override
     {
         creature->reduceBleed(part, getValue());
     }
@@ -79,7 +82,11 @@ public:
     {
     }
     eItemEffect getType() const override { return eItemEffect::Firstaid; }
-    void apply(Creature* creature, eBodyParts part) const override {}
+    void apply(Creature* creature, eBodyParts part, int level) const override
+    {
+        creature->reduceWound(part, level, getValue());
+        creature->modifyFatigue(eCreatureFatigue::Stamina, getValue());
+    }
 
 private:
 };

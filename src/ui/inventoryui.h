@@ -22,7 +22,7 @@ public:
     void doSurgery(bool hasKeyEvents, sf::Event event, PlayerObject* player);
 private:
     void drawBkg();
-    enum eUiState { Backpack, Detailed, Wounds, Profile, Paperdoll, Levelup, Bandage };
+    enum eUiState { Backpack, Detailed, Wounds, Profile, Paperdoll, Levelup, Bandage, Surgery };
     enum eWeaponDetail { Primary, Secondary, Quickdraw };
     // for equipping and unequipping
     bool m_equipped;

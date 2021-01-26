@@ -16,7 +16,7 @@ PlayerObject::PlayerObject()
 {
     m_inventory[5] = 3;
     m_inventory[1] = 3;
-    m_inventory[6] = 3;
+    m_inventory[6] = 1;
 }
 
 PlayerObject::~PlayerObject() {}

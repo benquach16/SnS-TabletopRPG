@@ -357,6 +357,15 @@ void Creature::healWound(eBodyParts part, int level)
     m_wounds[part].erase(level);
 }
 
+void Creature::reduceWound(eBodyParts part, int level, int value)
+{
+    value += getTap(getGrit());
+    m_wounds[part][level] -= value;
+    if (m_wounds[part][level] <= 0) {
+        m_wounds[part].erase(level);
+    }
+}
+
 void Creature::healWounds(int level)
 {
     // <part, map>
@@ -516,6 +525,8 @@ int Creature::getMaxCombatPool()
     int combatPool = getProficiency(weapon->getType()) + getReflex();
     combatPool -= static_cast<int>(m_AP);
     combatPool -= getPain();
+    combatPool -= m_fatigue[eCreatureFatigue::Hunger];
+    combatPool -= m_fatigue[eCreatureFatigue::Thirst];
     combatPool -= m_fatigue[eCreatureFatigue::Stamina] / cFatigueDivisor;
     if (m_currentStance == eCreatureStance::Prone) {
         combatPool = (combatPool + 1) / 2;
@@ -559,6 +570,15 @@ bool Creature::rollFatigue()
 }
 
 void Creature::resetFatigue() { m_fatigue.at(eCreatureFatigue::Stamina) = 0; }
+
+void Creature::modifyFatigue(eCreatureFatigue fatigue, int value)
+{
+    if (fatigue == eCreatureFatigue::Stamina) {
+        value *= cFatigueDivisor;
+    }
+    m_fatigue[fatigue] += value;
+    m_fatigue[fatigue] = max(0, m_fatigue[fatigue]);
+}
 
 void Creature::reduceBleed(eBodyParts part, unsigned value)
 {
@@ -727,9 +747,15 @@ void Creature::attemptPickup()
     m_hasPosition = true;
 }
 
-int Creature::getFatigue() const
+int Creature::getFatigue(eCreatureFatigue fatigue) const
 {
-    return m_fatigue.at(eCreatureFatigue::Stamina) / cFatigueDivisor;
+    switch (fatigue) {
+    case eCreatureFatigue::Stamina:
+        return m_fatigue.at(eCreatureFatigue::Stamina) / cFatigueDivisor;
+        break;
+    default:
+        return m_fatigue.at(fatigue);
+    }
 }
 
 bool Creature::hasEnoughMetalArmor() const

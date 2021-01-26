@@ -42,11 +42,9 @@ public:
     void addItem(int id) { m_inventory[id]++; }
     void removeItem(int id) { m_inventory[id]--; }
 
-    void applyItem(int id);
 
-    int getThirst() const { return m_thirst; }
-    int getHunger() const { return m_hunger; }
-    int getExhaustion() const { return m_exhaustion; }
+    int getThirst() const { return m_creature->getFatigue(eCreatureFatigue::Thirst); }
+    int getHunger() const { return m_creature->getFatigue(eCreatureFatigue::Hunger); }
     int getFatigue() const;
 
     bool getBleeding() const { return m_creature->getBleeding(); }
@@ -78,10 +76,6 @@ protected:
 
     int m_experience;
 
-    int m_thirst;
-    int m_hunger;
-    int m_exhaustion;
-
     CombatManager* m_manager;
 
     bool m_inCombat;
@@ -94,14 +88,11 @@ protected:
 private:
     template <class Archive> void serialize(Archive& ar, const unsigned int version)
     {
-
         ar& boost::serialization::base_object<Object>(*this);
         ar& m_creature;
         ar& m_creatureFaction;
 
         ar& m_experience;
-        ar& m_thirst;
-        ar& m_hunger;
         ar& m_dialogue;
         ar& m_skills;
 

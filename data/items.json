@@ -40,8 +40,8 @@
     },
     "6": {
         "name": "Surgery Kit",
-        "description": "Contains everything you need to perform surgery on yourself. A very painful process. Heals 3 pain (modified by grit), and heavily increases fatigue. Does not heal level 5 wounds.",
-        "value": 3,
+        "description": "Contains everything you need to perform surgery on yourself. A very painful process. Heals 5 pain (modified by grit), and heavily increases fatigue. Does not heal level 5 wounds.",
+        "value": 5,
         "type": "firstaid",
         "cost": 10
     }
