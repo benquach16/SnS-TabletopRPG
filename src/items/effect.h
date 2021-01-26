@@ -2,7 +2,10 @@
 
 #pragma once
 
-enum class eItemEffect { Thirst, Hunger, Morale, Stamina };
+#include "creatures/types.h"
+#include "creatures/creature.h"
+
+enum class eItemEffect { Thirst, Hunger, Stamina, Bandage, Firstaid };
 
 class ItemEffect {
 public:
@@ -13,6 +16,7 @@ public:
     virtual ~ItemEffect() {}
     virtual eItemEffect getType() const = 0;
     int getValue() const { return m_value; }
+    virtual void apply(Creature* creature, eBodyParts part) const = 0;
 
 private:
     int m_value;
@@ -25,6 +29,8 @@ public:
     {
     }
     eItemEffect getType() const override { return eItemEffect::Thirst; }
+
+    void apply(Creature* creature, eBodyParts part) const override {}
 };
 
 class HungerEffect : public ItemEffect {
@@ -34,10 +40,9 @@ public:
     {
     }
     eItemEffect getType() const override { return eItemEffect::Thirst; }
-    int getHunger() const { return m_hunger; }
+    void apply(Creature* creature, eBodyParts part) const override {}
 
 private:
-    int m_hunger;
 };
 
 class StaminaEffect : public ItemEffect {
@@ -47,7 +52,34 @@ public:
     {
     }
     eItemEffect getType() const override { return eItemEffect::Stamina; }
+    void apply(Creature* creature, eBodyParts part) const override {}
 
 private:
-    int m_stamina;
+};
+
+class BandageEffect : public ItemEffect {
+public:
+    BandageEffect(int bandage)
+        : ItemEffect(bandage)
+    {
+    }
+    eItemEffect getType() const override { return eItemEffect::Bandage; }
+    void apply(Creature* creature, eBodyParts part) const override
+    {
+        creature->reduceBleed(part, getValue());
+    }
+
+private:
+};
+
+class FirstAidEffect : public ItemEffect {
+public:
+    FirstAidEffect(int firstAid)
+        : ItemEffect(firstAid)
+    {
+    }
+    eItemEffect getType() const override { return eItemEffect::Firstaid; }
+    void apply(Creature* creature, eBodyParts part) const override {}
+
+private:
 };

@@ -47,6 +47,8 @@ Creature::Creature(int naturalWeaponId)
     , m_id(ids++)
 {
     m_fatigue[eCreatureFatigue::Stamina] = 0;
+    m_fatigue[eCreatureFatigue::Hunger] = 0;
+    m_fatigue[eCreatureFatigue::Thirst] = 0;
 }
 
 void Creature::createBodyParts()
@@ -557,6 +559,14 @@ bool Creature::rollFatigue()
 }
 
 void Creature::resetFatigue() { m_fatigue.at(eCreatureFatigue::Stamina) = 0; }
+
+void Creature::reduceBleed(eBodyParts part, unsigned value)
+{
+    m_bleedLevel[part] -= value;
+    if (m_bleedLevel[part] <= 0) {
+        m_bleedLevel.erase(part);
+    }
+}
 
 void Creature::disableWeapon()
 {

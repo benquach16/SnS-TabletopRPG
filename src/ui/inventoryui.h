@@ -19,6 +19,7 @@ public:
     void doPaperdoll(bool hasKeyEvents, sf::Event event, PlayerObject* player);
     void doLevelup(bool hasKeyEvents, sf::Event event, PlayerObject* player);
     void doBandage(bool hasKeyEvents, sf::Event event, PlayerObject* player);
+    void doSurgery(bool hasKeyEvents, sf::Event event, PlayerObject* player);
 private:
     void drawBkg();
     enum eUiState { Backpack, Detailed, Wounds, Profile, Paperdoll, Levelup, Bandage };

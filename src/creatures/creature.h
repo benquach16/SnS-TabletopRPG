@@ -162,6 +162,7 @@ public:
     bool canFavor() const;
     std::unordered_map<eBodyParts, int> getBleedLevels() const { return m_bleedLevel; }
     void healBleed(eBodyParts part) { m_bleedLevel.erase(part); }
+    void reduceBleed(eBodyParts part, unsigned value);
     std::vector<eBodyParts> getSeveredParts() const { return m_severedParts; }
     // AI functions
     // move these to ai combat controller

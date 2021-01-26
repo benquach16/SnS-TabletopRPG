@@ -297,8 +297,9 @@ void InventoryUI::displayDetail(bool hasKeyEvents, sf::Event event, PlayerObject
             }
         }
     } else if (item->getItemType() == eItemType::Food) {
+        const Consumable* consumable = static_cast<const Consumable*>(item);
         if (event.type == sf::Event::TextEntered && event.text.unicode == 'e') {
-            player->applyItem(m_id);
+            consumable->apply(playerComponent);
             player->removeItem(m_id);
             Log::push("You consume the " + item->getName());
             m_uiState = eUiState::Backpack;
@@ -332,7 +333,7 @@ void InventoryUI::doBandage(bool hasKeyEvents, sf::Event event, PlayerObject* pl
 
     const Item* item = ItemTable::getSingleton()->get(m_id);
     assert(item->getItemType() == eItemType::Bandage);
-
+    const Consumable* consumable = static_cast<const Consumable*>(item);
     string str = "Bandages left: ";
     unsigned itemsLeft = player->getInventory().at(m_id);
     str += to_string(itemsLeft);
@@ -350,12 +351,63 @@ void InventoryUI::doBandage(bool hasKeyEvents, sf::Event event, PlayerObject* pl
             char c = event.text.unicode;
             if (c == idx) {
                 if (itemsLeft > 0) {
-                    creature->healBleed(it.first);
+                    consumable->apply(creature, it.first);
                     player->removeItem(m_id);
                     Log::push("You use a bandage on your bleeding " + bodyPartToString(it.first));
                     return;
                 } else {
                     Log::push("Out of bandages.");
+                }
+            }
+        }
+    }
+    insertLineBreaks(str);
+    txt.setString(str);
+    txt.setPosition(sf::Vector2f(cPad / 2 + cBorderWidth, cPad / 2));
+    Game::getWindow().draw(txt);
+
+    if (hasKeyEvents && event.type == sf::Event::KeyReleased
+        && (event.key.code == sf::Keyboard::Enter || event.key.code == sf::Keyboard::Escape)) {
+        m_uiState = eUiState::Backpack;
+    }
+}
+
+void InventoryUI::doSurgery(bool hasKeyEvents, sf::Event event, PlayerObject* player)
+{
+    assert(m_id != -1);
+    drawBkg();
+
+    sf::Text txt;
+    UiCommon::initializeText(txt);
+
+    const Item* item = ItemTable::getSingleton()->get(m_id);
+    assert(item->getItemType() == eItemType::Firstaid);
+    const Consumable* consumable = static_cast<const Consumable*>(item);
+    string str = "Surgery kits left: ";
+    unsigned itemsLeft = player->getInventory().at(m_id);
+    str += to_string(itemsLeft);
+    str += "\n\n\n";
+
+    Creature* creature = player->getCreatureComponent();
+    unsigned count = 0;
+    for (auto i : creature->getWounds()) {
+        for (auto levels : i.second) {
+            char idx = 'a' + count;
+            str += idx;
+            str += "Level " + to_string(levels.first) + " wound at " + bodyPartToString(i.first)
+                + " causing " + to_string(levels.second) + " pain\n";
+
+            if (hasKeyEvents && event.type == sf::Event::TextEntered) {
+                char c = event.text.unicode;
+                if (c == idx) {
+                    if (itemsLeft > 0) {
+                        consumable->apply(creature, i.first);
+                        player->removeItem(m_id);
+                        Log::push("You perform surgery on " + bodyPartToString(i.first));
+                        return;
+                    } else {
+                        Log::push("Out of surgery kits.");
+                    }
                 }
             }
         }

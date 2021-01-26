@@ -3,7 +3,7 @@
 #include <iostream>
 #include <unordered_map>
 
-#include "../object/nameable.h"
+#include "object/nameable.h"
 #include "nameable.h"
 #include "types.h"
 

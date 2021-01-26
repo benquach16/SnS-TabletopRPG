@@ -8,15 +8,14 @@
     "1": {
         "name": "Bread",
         "description": "Basic food item that can be found anywhere.",
-        "hunger": 2,
-        "morale": 0,
+        "value": 2,
         "type": "food",
         "cost": 2
     },
     "2": {
         "name": "Waterskin",
         "description": "A container for water.",
-        "thirst": 2,
+        "value": 2,
         "type": "waterskin",
         "cost": 5
     },
@@ -34,13 +33,15 @@
     },
     "5": {
         "name": "Bandages",
-        "description": "Strips of linen used to staunch bleeding. Only heals level 1 wounds.",
+        "description": "Strips of linen used to staunch bleeding. Not the most efficient way of stopping bleeding, but portable.",
+	"value": 1,
         "type": "bandage",
         "cost": 5
     },
     "6": {
         "name": "Surgery Kit",
-        "description": "Contains everything you need to perform surgery on yourself. A very painful process. Heals up to level 4 wounds.",
+        "description": "Contains everything you need to perform surgery on yourself. A very painful process. Heals 3 pain (modified by grit), and heavily increases fatigue. Does not heal level 5 wounds.",
+        "value": 3,
         "type": "firstaid",
         "cost": 10
     }

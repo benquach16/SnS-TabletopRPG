@@ -43,16 +43,30 @@ ItemTable::ItemTable()
 
         switch (type) {
         case eItemType::Food: {
-            int hunger = values["hunger"];
+            int value = values["value"];
             std::set<ItemEffect*> effects;
-            effects.insert(new HungerEffect(hunger));
+            effects.insert(new HungerEffect(value));
             item = new Consumable(name, description, cost, type, effects);
             break;
         }
         case eItemType::Waterskin: {
-            int thirst = values["thirst"];
+            int value = values["value"];
             std::set<ItemEffect*> effects;
-            effects.insert(new ThirstEffect(thirst));
+            effects.insert(new ThirstEffect(value));
+            item = new Consumable(name, description, cost, type, effects);
+            break;
+        }
+        case eItemType::Bandage: {
+            int value = values["value"];
+            std::set<ItemEffect*> effects;
+            effects.insert(new BandageEffect(value));
+            item = new Consumable(name, description, cost, type, effects);
+            break;
+        }
+        case eItemType::Firstaid: {
+            int value = values["value"];
+            std::set<ItemEffect*> effects;
+            effects.insert(new FirstAidEffect(value));
             item = new Consumable(name, description, cost, type, effects);
             break;
         }

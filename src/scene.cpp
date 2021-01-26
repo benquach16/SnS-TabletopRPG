@@ -26,7 +26,7 @@ using namespace std;
 
 constexpr float cMaxZoom = 0.6f;
 constexpr float cMinZoom = 1.4f;
-constexpr float cWaitTick = 0.2;
+constexpr float cWaitTick = 0.1;
 constexpr int cRestTicks = 20;
 
 Scene::Scene()

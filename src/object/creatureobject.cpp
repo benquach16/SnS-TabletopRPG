@@ -55,28 +55,6 @@ void CreatureObject::run(const Level* level)
     }
 }
 
-void CreatureObject::applyItem(int id)
-{
-    const Item* item = ItemTable::getSingleton()->get(id);
-    assert(item->getItemType() != eItemType::Weapon);
-    assert(item->getItemType() != eItemType::Armor);
-    const Consumable* consumable = static_cast<const Consumable*>(item);
-
-    for (auto it : consumable->getEffects()) {
-        switch (it->getType()) {
-        case eItemEffect::Thirst: {
-            m_thirst = max(0, m_thirst - it->getValue());
-            break;
-        }
-        case eItemEffect::Hunger:
-            m_hunger = max(0, m_hunger - it->getValue());
-            break;
-        default:
-            break;
-        }
-    }
-}
-
 int CreatureObject::getFatigue() const { return m_creature->getFatigue(); }
 
 bool CreatureObject::isInCombat() const { return m_manager->isEngaged(); }
