@@ -134,7 +134,8 @@ public:
     ArmorSegment getMedianArmor(eHitLocations location, bool swing) const;
     void removeArmor(int id);
     float getAP() const { return m_AP; }
-
+    eCombatGuard getCurrentGuard() const { return m_currentGuard; }
+    void resetGuard() { m_currentGuard = eCombatGuard::None; }
     // for current weapon
     int getCombatPool() const { return m_combatPool; }
     void resetCombatPool();
@@ -193,19 +194,36 @@ public:
         return ret;
     }
     void resetInitiative() { m_flagInitiative = false; }
-    void setOffenseWeapon(bool isPrimary) { m_currentOffense.withPrimaryWeapon = isPrimary; }
+    void setOffenseWeapon(bool isPrimary)
+    {
+        if (isPrimary) {
+            assert(primaryWeaponDisabled() == false);
+        } else {
+            assert(secondaryWeaponDisabled() == false);
+        }
+        m_currentOffense.withPrimaryWeapon = isPrimary;
+    }
     void setOffenseManuever(eOffensiveManuevers manuever) { m_currentOffense.manuever = manuever; }
     void setOffenseDice(int dice) { m_currentOffense.dice = dice; }
     void setOffenseComponent(const Component* component) { m_currentOffense.component = component; }
     void setOffenseTarget(eHitLocations location) { m_currentOffense.target = location; }
     void setOffensePinpointTarget(eBodyParts part) { m_currentOffense.pinpointTarget = part; }
+    void setOffenseHookTarget(eHookTargets target) { m_currentOffense.hookTarget = target; }
     void setOffensePinpoint() { m_currentOffense.pinpoint = true; }
     void setOffenseLinked() { m_currentOffense.linked = true; }
     void setOffenseFeint() { m_currentOffense.feint = true; }
     void setOffenseFeintDice(int dice) { m_currentOffense.feintdie = dice; }
     void setOffenseHeavyDice(int dice) { m_currentOffense.heavyblow = dice; }
 
-    void setDefenseWeapon(bool isPrimary) { m_currentDefense.withPrimaryWeapon = isPrimary; }
+    void setDefenseWeapon(bool isPrimary)
+    {
+        if (isPrimary) {
+            assert(primaryWeaponDisabled() == false);
+        } else {
+            assert(secondaryWeaponDisabled() == false);
+        }
+        m_currentDefense.withPrimaryWeapon = isPrimary;
+    }
     void setDefenseManuever(eDefensiveManuevers manuever) { m_currentDefense.manuever = manuever; }
     void setDefenseDice(int dice) { m_currentDefense.dice = dice; }
 
@@ -233,6 +251,7 @@ public:
         }
     }
     void disableWeapon();
+    void disableSecondaryWeapon();
     void dropWeapon();
     void dropSecondaryWeapon();
     void enableWeapon();

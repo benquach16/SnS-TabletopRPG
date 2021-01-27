@@ -4,6 +4,7 @@
 #include "creature.h"
 #include "dice.h"
 #include "items/utils.h"
+#include "utils.h"
 
 using namespace std;
 using namespace effolkronium;
@@ -592,7 +593,6 @@ void Creature::disableWeapon()
 {
     // remove all dice from offense and defense pools when this happens
     // so impact gets transferred directly to remainig CP
-    // this only applies if was attacking with primary weapon
     if (m_currentOffense.withPrimaryWeapon == true && getHasOffense()) {
         m_currentOffense.dice = 0;
     }
@@ -604,6 +604,27 @@ void Creature::disableWeapon()
         return;
     }
     m_primaryWeaponDisabled = true;
+    m_disarm = cDisableTick;
+
+    // once a weapon is disabled, it cannot guard
+    m_favoredLocations.clear();
+}
+
+void Creature::disableSecondaryWeapon()
+{
+    // remove all dice from offense and defense pools when this happens
+    // so impact gets transferred directly to remainig CP
+    if (m_currentOffense.withPrimaryWeapon == false && getHasOffense()) {
+        m_currentOffense.dice = 0;
+    }
+    m_currentDefense.dice = 0;
+
+    // do nothing, since we cannot drop fists
+    // or natural weapon
+    if (m_secondaryWeaponId == m_naturalWeaponId) {
+        return;
+    }
+    m_secondaryWeaponDisabled = true;
     m_disarm = cDisableTick;
 
     // once a weapon is disabled, it cannot guard
@@ -657,6 +678,17 @@ void Creature::dropWeapon()
     }
 }
 
+void Creature::dropSecondaryWeapon()
+{
+    if (getSecondaryWeaponId() != m_naturalWeaponId) {
+        // make sure secondary weapons go away
+        setGrip(eGrips::Standard);
+        m_droppedWeapons.push_back(getSecondaryWeaponId());
+        setSecondaryWeapon(m_naturalWeaponId);
+    }
+}
+
+
 void Creature::addFavored(eHitLocations location)
 {
     m_favoredLocations.insert(location);
@@ -690,16 +722,8 @@ void Creature::addFavored(eHitLocations location)
             break;
         }
     }
-}
 
-void Creature::dropSecondaryWeapon()
-{
-    if (getSecondaryWeaponId() != m_naturalWeaponId) {
-        // make sure secondary weapons go away
-        setGrip(eGrips::Standard);
-        m_droppedWeapons.push_back(getSecondaryWeaponId());
-        setSecondaryWeapon(m_naturalWeaponId);
-    }
+    m_currentGuard = getLocationGuard(location);
 }
 
 void Creature::enableWeapon() { m_primaryWeaponDisabled = false; }

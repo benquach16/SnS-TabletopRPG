@@ -1,7 +1,7 @@
 #include "precombatui.h"
-#include "../creatures/utils.h"
-#include "../game.h"
-#include "../items/utils.h"
+#include "creatures/utils.h"
+#include "game.h"
+#include "items/utils.h"
 #include "common.h"
 #include "types.h"
 
@@ -31,8 +31,7 @@ void PrecombatUI::doFavoring(
     UiCommon::drawTopPanel();
 
     sf::Text text;
-    text.setCharacterSize(cCharSize);
-    text.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(text);
     string str;
     if (secondExchange) {
         str += "Second Tempo Actions:\na - Confirm\n";
@@ -139,8 +138,7 @@ void PrecombatUI::doFavorLocation(bool hasKeyEvents, sf::Event event, Player* pl
     UiCommon::drawTopPanel();
 
     sf::Text text;
-    text.setCharacterSize(cCharSize);
-    text.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(text);
 
     std::string str = "Choose location:\n";
 
@@ -169,8 +167,7 @@ void PrecombatUI::doQuickdraw(bool hasKeyEvents, sf::Event event, Player* player
     UiCommon::drawTopPanel();
 
     sf::Text text;
-    text.setCharacterSize(cCharSize);
-    text.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(text);
 
     std::string str = "Quickdraw Weapon (Automatically drops current weapon)\n";
     str += "a - Cancel\n";

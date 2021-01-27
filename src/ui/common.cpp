@@ -29,6 +29,7 @@ void initializeText(sf::Text& text)
 {
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
+    text.setPosition(sf::Vector2f(3, 3));
 }
 
 string drawPaperdoll(const Creature* creature)

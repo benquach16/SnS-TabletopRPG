@@ -74,8 +74,7 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
     int reachCostSecondary
         = calculateReachCost(instance->getCurrentReach(), player->getSecondaryWeaponReach());
     sf::Text reachTxt;
-    reachTxt.setCharacterSize(cCharSize);
-    reachTxt.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(reachTxt);
     reachTxt.setPosition(5, windowSize.y - logHeight - rectHeight - cCharSize - 6);
     if (instance->getInGrapple() == false) {
         string str = "Current reach is " + lengthToString(instance->getCurrentReach())
@@ -111,8 +110,7 @@ void CombatUI::run(bool hasKeyEvents, sf::Event event, const CombatManager* mana
     if (edge->getActive() == false || edge->getCurrent() == false) {
         UiCommon::drawTopPanel();
         sf::Text text;
-        text.setFont(Game::getDefaultFont());
-        text.setCharacterSize(cCharSize);
+        UiCommon::initializeText(text);
         text.setString("Waiting for turn...");
         Game::getWindow().draw(text);
         return;
@@ -223,8 +221,7 @@ void CombatUI::doInitiative(bool hasKeyEvents, sf::Event event, Player* player, 
         UiCommon::drawTopPanel();
 
         sf::Text text;
-        text.setCharacterSize(cCharSize);
-        text.setFont(Game::getDefaultFont());
+        UiCommon::initializeText(text);
         text.setString("Choose initiative:\na - Attack \nb - Defend\nc - Inspect target");
         Game::getWindow().draw(text);
 
@@ -248,8 +245,7 @@ void CombatUI::doInitiative(bool hasKeyEvents, sf::Event event, Player* player, 
         UiCommon::drawTopPanel();
 
         sf::Text text;
-        text.setCharacterSize(cCharSize);
-        text.setFont(Game::getDefaultFont());
+        UiCommon::initializeText(text);
         string str = "They ";
         if (target->getStrength() < player->getStrength()) {
             str += "have less strength than you. ";
@@ -321,7 +317,9 @@ std::string CombatUI::constructStatBoxText(const Creature* creature)
     }
     str += " - " + creature->getSecondaryWeapon()->getName() + " - "
         + lengthToString(creature->getSecondaryWeaponReach());
-
+    if (creature->secondaryWeaponDisabled()) {
+        str += "[D]";
+    }
     return str;
 }
 
@@ -332,8 +330,7 @@ void CombatUI::doDualRedSteal(bool hasKeyEvents, sf::Event event, Player* player
     // TODO :remove this, make everyone steal initiatve on dual red
     if (m_dualRedState == eDualRedStealSubState::ChooseDice) {
         sf::Text text;
-        text.setCharacterSize(cCharSize);
-        text.setFont(Game::getDefaultFont());
+        UiCommon::initializeText(text);
         text.setString("Initiative roll, allocate action points ("
             + std::to_string(player->getCombatPool()) + " action points left):");
 
@@ -372,15 +369,13 @@ void CombatUI::showSide1Stats(const CombatInstance* instance)
     sf::Text side1Info;
 
     side1Info.setString(constructStatBoxText(creature));
-    side1Info.setCharacterSize(cCharSize);
-    side1Info.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(side1Info);
     side1Info.setPosition(6, windowSize.y - logHeight - rectHeight);
 
     Game::getWindow().draw(side1Info);
 
     sf::Text ap;
-    ap.setCharacterSize(cCharSize);
-    ap.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(ap);
     ap.setPosition(6, windowSize.y - logHeight - rectHeight + (cCharSize * 2));
     ap.setString("Action Points : " + to_string(creature->getCombatPool()) + " / "
         + to_string(creature->getMaxCombatPool()) + " - Pain: " + to_string(creature->getPain())
@@ -406,15 +401,13 @@ void CombatUI::showSide2Stats(const CombatInstance* instance)
     Creature* creature = instance->getSide2();
     sf::Text side1Info;
     side1Info.setString(constructStatBoxText(creature));
-    side1Info.setCharacterSize(cCharSize);
-    side1Info.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(side1Info);
     side1Info.setPosition(windowSize.x / 2 + 5, windowSize.y - logHeight - rectHeight);
 
     Game::getWindow().draw(side1Info);
 
     sf::Text ap;
-    ap.setCharacterSize(cCharSize);
-    ap.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(ap);
     ap.setPosition(windowSize.x / 2 + 5, windowSize.y - logHeight - rectHeight + (cCharSize * 2));
     ap.setString("Action Points : " + to_string(creature->getCombatPool()) + " / "
         + to_string(creature->getMaxCombatPool()) + " - Pain: " + to_string(creature->getPain())

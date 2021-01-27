@@ -124,6 +124,20 @@ std::string lengthToString(eLength length)
     }
 }
 
+std::string hookTargetToString(eHookTargets type)
+{
+    switch (type) {
+    case eHookTargets::Joint:
+        return "Joint";
+    case eHookTargets::Primary:
+        return "Primary Weapon";
+    case eHookTargets::Secondary:
+        return "Secondary Weapon";
+    }
+    return "";
+}
+
+
 eLayer stringToArmorLayer(const std::string& str)
 {
     if (str == "surcoat") {

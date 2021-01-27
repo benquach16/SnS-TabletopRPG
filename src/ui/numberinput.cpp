@@ -1,5 +1,6 @@
 #include "numberinput.h"
-#include "../game.h"
+#include "common.h"
+#include "game.h"
 #include "types.h"
 
 using namespace std;
@@ -8,8 +9,7 @@ NumberInput::NumberInput()
     : m_number(0)
     , m_max(-1)
 {
-    m_text.setCharacterSize(cCharSize);
-    m_text.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(m_text);
 }
 
 void NumberInput::run(bool hasKeyEvents, sf::Event event)

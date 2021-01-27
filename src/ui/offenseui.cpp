@@ -38,8 +38,11 @@ void OffenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, Creature
     case eUiState::PinpointThrust:
         doPinpointThrust(hasKeyEvents, event, player);
         break;
-    case eUiState::ChooseHeavyBlow:
-        doHeavyBlow(hasKeyEvents, event, player);
+    case eUiState::ChooseHookTarget:
+        doHookTarget(hasKeyEvents, event, player);
+        break;
+    case eUiState::ChooseBeatTarget:
+        doBeatTarget(hasKeyEvents, event, player);
         break;
     case eUiState::Finished:
         break;
@@ -146,19 +149,21 @@ void OffenseUI::doManuever(
             player->setOffenseManuever(cost.first);
 
             switch (cost.first) {
+            case eOffensiveManuevers::Beat:
+                m_currentState = eUiState::ChooseBeatTarget;
+                break;
+            case eOffensiveManuevers::Hook:
+                m_currentState = eUiState::ChooseHookTarget;
+                break;
             case eOffensiveManuevers::Swing:
             case eOffensiveManuevers::PinpointThrust:
             case eOffensiveManuevers::Thrust:
-            case eOffensiveManuevers::Beat:
-            case eOffensiveManuevers::Hook:
             case eOffensiveManuevers::HeavyBlow:
             case eOffensiveManuevers::Disarm:
             case eOffensiveManuevers::Draw:
             case eOffensiveManuevers::VisorThrust:
             case eOffensiveManuevers::Throw:
             case eOffensiveManuevers::Snap:
-                m_currentState = eUiState::ChooseComponent;
-                break;
             case eOffensiveManuevers::Grab:
                 m_currentState = eUiState::ChooseComponent;
                 break;
@@ -188,8 +193,7 @@ void OffenseUI::doFeint(bool hasKeyEvents, sf::Event event, Player* player)
 {
     UiCommon::drawTopPanel();
     sf::Text text;
-    text.setCharacterSize(cCharSize);
-    text.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(text);
     text.setString("Feint attack? (2AP)\na - No\nb - Yes");
     Game::getWindow().draw(text);
 
@@ -203,6 +207,52 @@ void OffenseUI::doFeint(bool hasKeyEvents, sf::Event event, Player* player)
             player->setOffenseFeint();
             player->reduceCombatPool(2);
             m_currentState = eUiState::ChooseComponent;
+        }
+    }
+}
+
+void OffenseUI::doHookTarget(bool hasKeyEvents, sf::Event event, Player* player)
+{
+    UiCommon::drawTopPanel();
+    sf::Text text;
+    UiCommon::initializeText(text);
+    text.setString("Hook Target:\na - Joint\nb - Primary Weapon\nc - Secondary Weapon");
+    Game::getWindow().draw(text);
+
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
+        char c = event.text.unicode;
+        if (c == 'a') {
+            player->setOffenseHookTarget(eHookTargets::Joint);
+            m_currentState = eUiState::ChooseDice;
+        }
+        if (c == 'b') {
+            player->setOffenseHookTarget(eHookTargets::Primary);
+            m_currentState = eUiState::ChooseDice;
+        }
+        if (c == 'c') {
+            player->setOffenseHookTarget(eHookTargets::Secondary);
+            m_currentState = eUiState::ChooseDice;
+        }
+    }
+}
+
+void OffenseUI::doBeatTarget(bool hasKeyEvents, sf::Event event, Player* player)
+{
+    UiCommon::drawTopPanel();
+    sf::Text text;
+    UiCommon::initializeText(text);
+    text.setString("Beat Target:\na - Primary Weapon\nb - Secondary Weapon");
+    Game::getWindow().draw(text);
+
+    if (hasKeyEvents && event.type == sf::Event::TextEntered) {
+        char c = event.text.unicode;
+        if (c == 'a') {
+            player->setOffenseHookTarget(eHookTargets::Primary);
+            m_currentState = eUiState::ChooseDice;
+        }
+        if (c == 'b') {
+            player->setOffenseHookTarget(eHookTargets::Secondary);
+            m_currentState = eUiState::ChooseDice;
         }
     }
 }
@@ -241,8 +291,8 @@ void OffenseUI::doInspect(bool hasKeyEvents, sf::Event event, Creature* target)
 
     str += UiCommon::drawPaperdoll(target);
     sf::Text text;
-    text.setCharacterSize(cCharSize);
-    text.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(text);
+
     text.setString(str);
     Game::getWindow().draw(text);
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
@@ -264,9 +314,7 @@ void OffenseUI::doComponent(bool hasKeyEvents, sf::Event event, Player* player)
     switch (player->getQueuedOffense().manuever) {
     case eOffensiveManuevers::Swing:
     case eOffensiveManuevers::Draw:
-    case eOffensiveManuevers::HeavyBlow:
-    case eOffensiveManuevers::Beat:
-    case eOffensiveManuevers::Hook: {
+    case eOffensiveManuevers::HeavyBlow: {
         for (int i = 0; i < weapon->getSwingComponents().size(); ++i) {
             char idx = ('a' + i);
 
@@ -310,8 +358,7 @@ void OffenseUI::doDice(bool hasKeyEvents, sf::Event event, Player* player)
     UiCommon::drawTopPanel();
 
     sf::Text text;
-    text.setCharacterSize(cCharSize);
-    text.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(text);
     text.setString("Allocate action points (" + std::to_string(player->getCombatPool())
         + " action points left):");
 
@@ -339,8 +386,7 @@ void OffenseUI::doTarget(
     UiCommon::drawTopPanel();
 
     sf::Text text;
-    text.setCharacterSize(cCharSize);
-    text.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(text);
 
     std::string str = "Choose target location:\n";
     map<eHitLocations, int> locations = getHitLocationCost(target, false, eHitLocations::Head);
@@ -358,6 +404,8 @@ void OffenseUI::doTarget(
         indices[idx] = pair<eHitLocations, int>(location.first, location.second);
         idx++;
     }
+    str += idx;
+    str += " - Inspect Target";
 
     if (hasKeyEvents && event.type == sf::Event::TextEntered) {
         char c = event.text.unicode;
@@ -398,8 +446,7 @@ void OffenseUI::doPinpointThrust(bool hasKeyEvents, sf::Event event, Player* pla
     UiCommon::drawTopPanel();
 
     sf::Text text;
-    text.setCharacterSize(cCharSize);
-    text.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(text);
 
     string str = "Choose body part to pinpoint:\n";
     eHitLocations location = player->getQueuedOffense().target;

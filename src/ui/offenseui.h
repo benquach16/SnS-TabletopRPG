@@ -23,7 +23,8 @@ private:
     void doTarget(bool hasKeyEvents, sf::Event event, Player* player, Creature* target, bool payCosts);
     void doInspect(bool hasKeyEvents, sf::Event event, Creature* target);
     void doPinpointThrust(bool hasKeyEvents, sf::Event event, Player* player);
-
+    void doHookTarget(bool hasKeyEvents, sf::Event event, Player* player);
+    void doBeatTarget(bool hasKeyEvents, sf::Event event, Player* player);
     enum class eUiState : unsigned {
         ChooseWeapon,
         ChooseManuever,
@@ -34,6 +35,8 @@ private:
         ChooseDice,
         ChooseTarget,
         PinpointThrust,
+        ChooseHookTarget,
+        ChooseBeatTarget,
         Finished,
     };
 

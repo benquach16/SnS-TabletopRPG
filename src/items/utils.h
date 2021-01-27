@@ -29,6 +29,8 @@ std::string weaponPropToString(eWeaponProperties prop);
 
 std::string tnToString(int tn);
 
+std::string hookTargetToString(eHookTargets target);
+
 eItemType stringToItemType(const std::string& str);
 
 eGrips stringToGrip(const std::string& str);

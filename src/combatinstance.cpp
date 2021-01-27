@@ -815,7 +815,12 @@ void CombatInstance::doResolution()
                 }
             }
             if (defend.manuever == eDefensiveManuevers::Expulsion) {
-                attacker->disableWeapon();
+                if (attack.withPrimaryWeapon) {
+                    attacker->disableWeapon();
+                } else {
+                    attacker->disableSecondaryWeapon();
+                }
+
                 attacker->inflictImpact(-MoS + 1);
                 Log::push(
                     "Attacker's weapon disabled and " + to_string(-MoS + 1) + " impact inflicted!");
@@ -1068,11 +1073,26 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
         writeMessage(target->getName() + " loses " + to_string(MoS) + " action points from impact",
             Log::eMessageTypes::Alert);
         target->inflictImpact(MoS);
-        if (MoS >= 3) {
-            writeMessage(target->getName() + " has been hooked and thrown prone!",
+        switch (attack.hookTarget) {
+        case eHookTargets::Primary:
+            writeMessage(target->getPrimaryWeapon()->getName() + " has been hooked and disabled!",
                 Log::eMessageTypes::Alert, true);
-            target->setProne();
+            target->disableWeapon();
+            break;
+        case eHookTargets::Secondary:
+            writeMessage(target->getSecondaryWeapon()->getName() + " has been hooked and disabled!",
+                Log::eMessageTypes::Alert, true);
+            target->disableSecondaryWeapon();
+            break;
+        default:
+            if (MoS >= 3) {
+                writeMessage(target->getName() + " has been hooked and thrown prone!",
+                    Log::eMessageTypes::Alert, true);
+                target->setProne();
+            }
+            break;
         }
+
         return false;
     }
     if (attack.manuever == eOffensiveManuevers::Throw) {
@@ -1099,10 +1119,20 @@ bool CombatInstance::inflictWound(Creature* attacker, int MoS, Offense attack, C
 
     if (attack.manuever == eOffensiveManuevers::Beat) {
         const int impact = MoS + 1;
-        writeMessage(target->getName() + "'s weapon has been disabled for 1 tempo and inflicts "
-                + to_string(impact) + " impact!",
-            Log::eMessageTypes::Alert);
-        target->disableWeapon();
+        switch (attack.hookTarget) {
+        case eHookTargets::Secondary:
+            writeMessage(target->getSecondaryWeapon()->getName()
+                    + " has been beaten aside and inflicts " + to_string(impact) + " impact!",
+                Log::eMessageTypes::Alert, true);
+            target->disableSecondaryWeapon();
+            break;
+        default:
+            writeMessage(target->getPrimaryWeapon()->getName()
+                    + " has been beaten aside and inflicts " + to_string(impact) + " impact!",
+                Log::eMessageTypes::Alert, true);
+            target->disableWeapon();
+            break;
+        }
 
         target->inflictImpact(impact);
         return false;
@@ -1425,11 +1455,13 @@ void CombatInstance::outputOffense(const Creature* creature)
         writeMessage(creature->getName() + " does nothing!");
         break;
     case eOffensiveManuevers::Beat:
-        writeMessage(creature->getName() + " attempts a Beat with " + offenseWeapon->getName()
+        writeMessage(creature->getName() + " attempts to Beat at "
+            + hookTargetToString(attack.hookTarget) + " with " + offenseWeapon->getName()
             + " using " + to_string(creature->getQueuedOffense().dice) + " action points");
         break;
     case eOffensiveManuevers::Hook:
-        writeMessage(creature->getName() + " attempts to Hook with " + offenseWeapon->getName()
+        writeMessage(creature->getName() + " attempts to Hook at "
+            + hookTargetToString(attack.hookTarget) + " with " + offenseWeapon->getName()
             + " using " + to_string(creature->getQueuedOffense().dice) + " action points");
         break;
     case eOffensiveManuevers::Grab:

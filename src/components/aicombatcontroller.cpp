@@ -308,6 +308,7 @@ void AICombatController::chooseOffenseManuever(Creature* controlledCreature, con
             if (target->getStance() == eCreatureStance::Prone) {
                 priority = cLowestPriority;
             } else {
+
                 // if we are stealing initiative hook is a really good move
                 if (controlledCreature->getHasDefense()
                     && controlledCreature->getQueuedDefense().manuever
@@ -369,7 +370,12 @@ void AICombatController::chooseOffenseManuever(Creature* controlledCreature, con
             }
             controlledCreature->setOffenseComponent(current.component);
             controlledCreature->setOffensePinpointTarget(current.pinpointLocation);
-
+            if (current.offManuever == eOffensiveManuevers::Beat) {
+                controlledCreature->setOffenseHookTarget(eHookTargets::Primary);
+            }
+            if (current.offManuever == eOffensiveManuevers::Hook) {
+                controlledCreature->setOffenseHookTarget(eHookTargets::Joint);
+            }
             break;
         }
         manueverPriorities.pop();
@@ -504,13 +510,20 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
     eOffensiveManuevers attack = attacker->getQueuedOffense().manuever;
     const Weapon* weapon = controlledCreature->getPrimaryWeapon();
     const Weapon* secondary = controlledCreature->getSecondaryWeapon();
-    if (controlledCreature->primaryWeaponDisabled() == false
-        && secondary->getGuardTN() >= weapon->getGuardTN()) {
+    if (controlledCreature->secondaryWeaponDisabled()) {
         controlledCreature->setDefenseWeapon(true);
         weapon = controlledCreature->getPrimaryWeapon();
-    } else {
+    } else if (controlledCreature->primaryWeaponDisabled()) {
         controlledCreature->setDefenseWeapon(false);
         weapon = controlledCreature->getSecondaryWeapon();
+    } else {
+        if (weapon->getGuardTN() <= secondary->getGuardTN()) {
+            controlledCreature->setDefenseWeapon(true);
+            weapon = controlledCreature->getPrimaryWeapon();
+        } else {
+            controlledCreature->setDefenseWeapon(false);
+            weapon = controlledCreature->getSecondaryWeapon();
+        }
     }
     eLength effectiveReach = controlledCreature->getQueuedDefense().withPrimaryWeapon
         ? controlledCreature->getCurrentReach()
@@ -579,8 +592,10 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
                     priority += 5;
                     toPush.dice = controlledCreature->getCombatPool();
                 } else {
+                    int tnDiff = weapon->getGuardTN() - cBaseBTN;
+
                     int dice = std::min(diceAllocated + random_static::get(0, diceAllocated / 3)
-                            - random_static::get(0, diceAllocated / 4),
+                            - random_static::get(0, diceAllocated / (4 + tnDiff)),
                         controlledCreature->getCombatPool());
                     // if its not too much dice, favor doing this
                     if (dice + random_static::get(cFuzz, cFuzz * 2)

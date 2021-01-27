@@ -1,8 +1,8 @@
 #pragma once
 
+#include "page.h"
 #include <SFML/Graphics.hpp>
 #include <array>
-#include "page.h"
 
 class PlayerObject;
 
@@ -20,6 +20,7 @@ public:
     void doLevelup(bool hasKeyEvents, sf::Event event, PlayerObject* player);
     void doBandage(bool hasKeyEvents, sf::Event event, PlayerObject* player);
     void doSurgery(bool hasKeyEvents, sf::Event event, PlayerObject* player);
+
 private:
     void drawBkg();
     enum eUiState { Backpack, Detailed, Wounds, Profile, Paperdoll, Levelup, Bandage, Surgery };
