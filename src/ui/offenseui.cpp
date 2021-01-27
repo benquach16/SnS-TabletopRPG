@@ -308,8 +308,7 @@ void OffenseUI::doComponent(bool hasKeyEvents, sf::Event event, Player* player)
         ? player->getPrimaryWeapon()
         : player->getSecondaryWeapon();
     sf::Text text;
-    text.setCharacterSize(cCharSize);
-    text.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(text);
     std::string str("Choose weapon component:\n");
     switch (player->getQueuedOffense().manuever) {
     case eOffensiveManuevers::Swing:

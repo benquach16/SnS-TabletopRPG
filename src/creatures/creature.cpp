@@ -860,7 +860,7 @@ void Creature::clearCreatureManuevers(bool skipDisable)
     m_currentOffense.reset();
     m_currentDefense.reset();
     m_currentPosition.reset();
-
+    resetGuard();
     m_hasOffense = false;
     m_hasDefense = false;
     m_hasPosition = false;

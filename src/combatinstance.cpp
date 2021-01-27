@@ -223,7 +223,7 @@ bool CombatInstance::doOffense()
         m_currentState = eCombatState::Offense;
         return false;
     }
-
+    applyAttackGuardBonuses(attacker);
     int reachCost = calcReachCost(attacker, true);
     outputReachCost(reachCost, attacker, true);
     outputOffense(attacker);
@@ -340,6 +340,7 @@ void CombatInstance::doAttackFromDefense()
         m_currentState = eCombatState::AttackFromDefense;
         return;
     }
+    applyAttackGuardBonuses(defender);
     int reachCost = calcReachCost(defender, true);
     outputReachCost(reachCost, defender, true);
     outputOffense(defender);
@@ -369,6 +370,8 @@ void CombatInstance::doDefense()
         m_currentState = eCombatState::AttackFromDefense;
         return;
     }
+
+    applyDefendGuardBonuses(defender);
     const Weapon* defendingWeapon = getDefendingWeapon(defender);
 
     if (defend.manuever == eDefensiveManuevers::ParryLinked) {
@@ -1585,5 +1588,62 @@ void CombatInstance::changeReachTo(const Creature* creature)
         }
     } else {
         m_currentReach = eLength::Hand;
+    }
+}
+
+void CombatInstance::applyAttackGuardBonuses(Creature* attacker)
+{
+    assert(attacker->getHasOffense());
+
+    Offense attack = attacker->getQueuedOffense();
+    switch (attacker->getCurrentGuard()) {
+    case eCombatGuard::HighGuard: {
+        switch (attack.manuever) {
+        case eOffensiveManuevers::Beat: {
+            writeMessage(
+                "Beat gets an attack bonus from being in a high guard.", Log::eMessageTypes::Alert);
+            attacker->setOffenseDice(attack.dice + 2);
+        } break;
+        case eOffensiveManuevers::Swing: {
+            if (attack.target == eHitLocations::Head || attack.target == eHitLocations::Arm) {
+                writeMessage("Swing gets an attack bonus to high targets when in a high guard.",
+                    Log::eMessageTypes::Alert);
+                attacker->setOffenseDice(attack.dice + 2);
+            }
+        } break;
+        }
+    } break;
+    case eCombatGuard::MiddleGuard: {
+        switch (attack.manuever) {
+        case eOffensiveManuevers::Thrust:
+        case eOffensiveManuevers::PinpointThrust:
+            if (attack.target == eHitLocations::Head || attack.target == eHitLocations::Chest) {
+                writeMessage(
+                    "Thrust get an attack bonus to head and chest targets when in a middle guard.",
+                    Log::eMessageTypes::Alert);
+                attacker->setOffenseDice(attack.dice + 2);
+            }
+        }
+        break;
+    } break;
+    }
+}
+
+void CombatInstance::applyDefendGuardBonuses(Creature* defender)
+{
+    assert(defender->getHasDefense());
+
+    Defense defend = defender->getQueuedDefense();
+    switch (defender->getCurrentGuard()) {
+    case eCombatGuard::LowGuard: {
+        switch (defend.manuever) {
+        case eDefensiveManuevers::Parry:
+        case eDefensiveManuevers::Expulsion:
+            writeMessage(defensiveManueverToString(defend.manuever)
+                    + " gets a defensive bonus from being in a low guard",
+                Log::eMessageTypes::Alert);
+            defender->setOffenseDice(defend.dice + 2);
+        }
+    } break;
     }
 }

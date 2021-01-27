@@ -20,8 +20,10 @@ int Page::run(bool hasKeyEvents, sf::Event event, std::map<int, int>& inventory,
     sf::Vector2f position, bool readOnly, Creature* creature, bool useFilter, eItemType filter)
 {
     sf::Text txt;
-    txt.setPosition(position);
+
     UiCommon::initializeText(txt);
+
+    txt.setPosition(position);
     string str;
     int count = 0;
     int current = 0;

@@ -380,8 +380,9 @@ void CombatUI::showSide1Stats(const CombatInstance* instance)
     ap.setString("Action Points : " + to_string(creature->getCombatPool()) + " / "
         + to_string(creature->getMaxCombatPool()) + " - Pain: " + to_string(creature->getPain())
         + " Fatigue: " + to_string(creature->getFatigue(eCreatureFatigue::Stamina)) + '\n'
+        + stanceToString(creature->getStance()) + " - "
         + "Blood loss: " + to_string(creature->getBloodLoss()) + '\n'
-        + stanceToString(creature->getStance()));
+        + "Guard: " + guardToString(creature->getCurrentGuard()));
 
     Game::getWindow().draw(ap);
 }
@@ -412,8 +413,9 @@ void CombatUI::showSide2Stats(const CombatInstance* instance)
     ap.setString("Action Points : " + to_string(creature->getCombatPool()) + " / "
         + to_string(creature->getMaxCombatPool()) + " - Pain: " + to_string(creature->getPain())
         + " Fatigue: " + to_string(creature->getFatigue(eCreatureFatigue::Stamina)) + '\n'
+        + stanceToString(creature->getStance()) + " - "
         + "Blood loss: " + to_string(creature->getBloodLoss()) + '\n'
-        + stanceToString(creature->getStance()));
+        + "Guard: " + guardToString(creature->getCurrentGuard()));
 
     Game::getWindow().draw(ap);
 }

@@ -110,6 +110,8 @@ private:
     void outputOffense(const Creature* creature);
     void outputDefense(const Creature* creature);
     void changeReachTo(const Creature* creature);
+    void applyAttackGuardBonuses(Creature* attacker);
+    void applyDefendGuardBonuses(Creature* defender);
     int getAttackTN(const Creature* creature);
     int getDefendTN(const Creature* creature);
 

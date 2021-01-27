@@ -1,7 +1,7 @@
 #include <assert.h>
 
-#include "utils.h"
 #include "creature.h"
+#include "utils.h"
 
 std::string bodyPartToString(eBodyParts part)
 {
@@ -134,6 +134,24 @@ std::string stanceToString(eCreatureStance stance)
         return "Standing";
     case eCreatureStance::Prone:
         return "Prone";
+    default:
+        assert(true);
+        return "";
+    }
+    return "";
+}
+
+std::string guardToString(eCombatGuard guard)
+{
+    switch (guard) {
+    case eCombatGuard::HighGuard:
+        return "High Guard";
+    case eCombatGuard::MiddleGuard:
+        return "Middle Guard";
+    case eCombatGuard::LowGuard:
+        return "Low Guard";
+    case eCombatGuard::None:
+        return "Free";
     default:
         assert(true);
         return "";

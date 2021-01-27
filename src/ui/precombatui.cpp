@@ -1,8 +1,8 @@
 #include "precombatui.h"
+#include "common.h"
 #include "creatures/utils.h"
 #include "game.h"
 #include "items/utils.h"
-#include "common.h"
 #include "types.h"
 
 using namespace std;
@@ -147,7 +147,8 @@ void PrecombatUI::doFavorLocation(bool hasKeyEvents, sf::Event event, Player* pl
         char idx = ('a' + i);
 
         str += idx;
-        str += " - " + hitLocationToString(locations[i]) + '\n';
+        str += " - " + hitLocationToString(locations[i]) + " - "
+            + guardToString(getLocationGuard(locations[i])) + '\n';
 
         if (hasKeyEvents && event.type == sf::Event::TextEntered) {
             char c = event.text.unicode;

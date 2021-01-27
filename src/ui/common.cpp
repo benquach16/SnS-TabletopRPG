@@ -1,13 +1,13 @@
 #include <vector>
 
+#include "common.h"
 #include "creatures/creature.h"
 #include "creatures/utils.h"
 #include "game.h"
-#include "common.h"
 #include "types.h"
 
 constexpr int cHeight = 14;
-
+constexpr unsigned cBorderWidth = 2;
 using namespace std;
 
 namespace UiCommon {
@@ -29,7 +29,9 @@ void initializeText(sf::Text& text)
 {
     text.setCharacterSize(cCharSize);
     text.setFont(Game::getDefaultFont());
-    text.setPosition(sf::Vector2f(3, 3));
+
+    // temporary
+    text.setPosition(sf::Vector2f(cBorderWidth + 2, cBorderWidth));
 }
 
 string drawPaperdoll(const Creature* creature)
