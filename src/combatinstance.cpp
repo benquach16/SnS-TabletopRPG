@@ -227,7 +227,7 @@ bool CombatInstance::doOffense()
     int reachCost = calcReachCost(attacker, true);
     outputReachCost(reachCost, attacker, true);
     outputOffense(attacker);
-
+    m_originalLocation = attacker->getQueuedOffense().target;
     m_currentState = eCombatState::Defense;
     return true;
 }
@@ -360,7 +360,11 @@ void CombatInstance::doDefense()
     }
     int reachCost = calcReachCost(defender, false);
     outputReachCost(reachCost, defender, false);
+
+    applyDefendGuardBonuses(defender);
     Defense defend = defender->getQueuedDefense();
+
+    const Weapon* defendingWeapon = getDefendingWeapon(defender);
     if (defend.manuever == eDefensiveManuevers::StealInitiative) {
         // need both sides to attempt to allocate dice
         m_currentState = eCombatState::StealInitiative;
@@ -370,9 +374,6 @@ void CombatInstance::doDefense()
         m_currentState = eCombatState::AttackFromDefense;
         return;
     }
-
-    applyDefendGuardBonuses(defender);
-    const Weapon* defendingWeapon = getDefendingWeapon(defender);
 
     if (defend.manuever == eDefensiveManuevers::ParryLinked) {
         writeMessage(defender->getName() + " performs a Masterstrike with "
@@ -459,6 +460,20 @@ void CombatInstance::doPreResolution()
     }
     Offense attack = attacker->getQueuedOffense();
     if (attack.feint) {
+        eHitLocations newLocation = attack.target;
+        if (m_originalLocation == eHitLocations::Head && newLocation == eHitLocations::Shin) {
+            attacker->setOffenseFeintDice(attack.feintdie + 1);
+        }
+        if (m_originalLocation == eHitLocations::Shin && newLocation == eHitLocations::Head) {
+            attacker->setOffenseFeintDice(attack.feintdie + 1);
+        }
+        if (m_originalLocation == eHitLocations::Chest && newLocation == eHitLocations::Shin) {
+            attacker->setOffenseFeintDice(attack.feintdie + 1);
+        }
+        if (m_originalLocation == eHitLocations::Shin && newLocation == eHitLocations::Chest) {
+            attacker->setOffenseFeintDice(attack.feintdie + 1);
+        }
+        attack = attacker->getQueuedOffense();
         writeMessage(attacker->getName() + " attempts to feint to a "
             + offensiveManueverToString(attack.manuever) + " at "
             + hitLocationToString(attack.target) + " with " + to_string(attack.feintdie)
@@ -1059,8 +1074,14 @@ void CombatInstance::startGrapple(Creature* attacker, Creature* defender)
     if (attacker->getPrimaryWeapon()->getLength() > eLength::Hand) {
         attacker->dropWeapon();
     }
+    if (attacker->getSecondaryWeapon()->getLength() > eLength::Hand) {
+        attacker->dropSecondaryWeapon();
+    }
     if (defender->getPrimaryWeapon()->getLength() > eLength::Hand) {
         defender->dropWeapon();
+    }
+    if (defender->getSecondaryWeapon()->getLength() > eLength::Hand) {
+        defender->dropSecondaryWeapon();
     }
 }
 
@@ -1605,8 +1626,8 @@ void CombatInstance::applyAttackGuardBonuses(Creature* attacker)
             attacker->setOffenseDice(attack.dice + 2);
         } break;
         case eOffensiveManuevers::Swing: {
-            if (attack.target == eHitLocations::Head || attack.target == eHitLocations::Arm) {
-                writeMessage("Swing gets an attack bonus to high targets when in a high guard.",
+            if (attack.target == eHitLocations::Head) {
+                writeMessage("Swing gets an attack bonus to head targets when in a high guard.",
                     Log::eMessageTypes::Alert);
                 attacker->setOffenseDice(attack.dice + 2);
             }
@@ -1617,9 +1638,21 @@ void CombatInstance::applyAttackGuardBonuses(Creature* attacker)
         switch (attack.manuever) {
         case eOffensiveManuevers::Thrust:
         case eOffensiveManuevers::PinpointThrust:
-            if (attack.target == eHitLocations::Head || attack.target == eHitLocations::Chest) {
-                writeMessage(
-                    "Thrust get an attack bonus to head and chest targets when in a middle guard.",
+            if (attack.target == eHitLocations::Chest) {
+                writeMessage("Thrust gets an attack bonus to chest targets when in a middle guard.",
+                    Log::eMessageTypes::Alert);
+                attacker->setOffenseDice(attack.dice + 2);
+            }
+        }
+        break;
+    } break;
+    case eCombatGuard::LowGuard: {
+        switch (attack.manuever) {
+        case eOffensiveManuevers::Thrust:
+        case eOffensiveManuevers::Swing:
+            if (attack.target == eHitLocations::Arm) {
+                writeMessage(offensiveManueverToString(attack.manuever)
+                        + " gets an attack bonus to the arm and belly targets in a low guard.",
                     Log::eMessageTypes::Alert);
                 attacker->setOffenseDice(attack.dice + 2);
             }
@@ -1642,8 +1675,16 @@ void CombatInstance::applyDefendGuardBonuses(Creature* defender)
             writeMessage(defensiveManueverToString(defend.manuever)
                     + " gets a defensive bonus from being in a low guard",
                 Log::eMessageTypes::Alert);
-            defender->setOffenseDice(defend.dice + 2);
+            defender->setDefenseDice(defend.dice + 2);
+            break;
+        case eDefensiveManuevers::StealInitiative:
+            writeMessage(defensiveManueverToString(defend.manuever)
+                    + " gets a penalty for being in a low guard",
+                Log::eMessageTypes::Alert);
+            defender->setDefenseDice(defend.dice - 2);
+            break;
         }
+
     } break;
     }
 }

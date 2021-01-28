@@ -362,9 +362,16 @@ void AICombatController::chooseOffenseManuever(Creature* controlledCreature, con
                 controlledCreature, current.offManuever, instance->getCurrentReach(), current.cost);
             int damage;
             if (m_doFeint && current.component != nullptr) {
-                eHitLocations feintTarget = getBestHitLocation(
-                    target, current.component, true, current.hitLocation, damage);
-                controlledCreature->setOffenseTarget(feintTarget);
+                // this needs to not avoid current favoring
+                int cost = 100;
+                for (auto location : locationCosts) {
+                    if (location.first != current.hitLocation) {
+                        if (location.second < cost) {
+                            controlledCreature->setOffenseTarget(location.first);
+                            cost = location.second;
+                        }
+                    }
+                }
             } else {
                 controlledCreature->setOffenseTarget(current.hitLocation);
             }
@@ -508,6 +515,8 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
 {
     int diceAllocated = attacker->getQueuedOffense().dice;
     eOffensiveManuevers attack = attacker->getQueuedOffense().manuever;
+    eHitLocations target = attacker->getQueuedOffense().target;
+    const Component* component = attacker->getQueuedOffense().component;
     const Weapon* weapon = controlledCreature->getPrimaryWeapon();
     const Weapon* secondary = controlledCreature->getSecondaryWeapon();
     if (controlledCreature->secondaryWeaponDisabled()) {
@@ -610,13 +619,22 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
         case eDefensiveManuevers::Counter:
             break;
         case eDefensiveManuevers::AttackFromDef: {
-
+            constexpr unsigned cHighPriority = 25;
             if (isLastTempo == false) {
                 priority = cLowestPriority;
             } else if (controlledCreature->getCombatPool() > reachCost + 3) {
                 // if incoming attack we can take, then just attack
                 if (attack == eOffensiveManuevers::Hook && diceAllocated < 9) {
-                    priority = 25;
+                    priority = cHighPriority;
+                }
+
+                auto segment = controlledCreature->getMedianArmor(target,
+                    (attack == eOffensiveManuevers::Swing
+                        || attack == eOffensiveManuevers::HeavyBlow));
+
+                // this can't hurt us so attack from def
+                if (segment.isMetal && component->getType() != eDamageTypes::Blunt) {
+                    priority = cHighPriority;
                 }
             }
             if (attack == eOffensiveManuevers::NoOffense
@@ -756,8 +774,11 @@ void AICombatController::doPrecombat(
             }
         }
         if (hasCrushing == false) {
-            // shorter grip == better against armor usually
-            shortenGrip(controlledCreature, instance->getLastTempo());
+            if (weapon->getType() == eWeaponTypes::Polearms
+                || weapon->getType() == eWeaponTypes::Longswords) {
+                // shorter grip == better against armor usually
+                shortenGrip(controlledCreature, instance->getLastTempo());
+            }
         }
     } else if (instance->getCurrentReach() > controlledCreature->getCurrentReach()) {
         // switch back to normal grip if its not a problem

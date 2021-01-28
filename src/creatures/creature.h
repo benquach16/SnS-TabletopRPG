@@ -255,6 +255,7 @@ public:
     void dropWeapon();
     void dropSecondaryWeapon();
     void enableWeapon();
+    void enableSecondaryWeapon() { m_secondaryWeaponDisabled = false; }
     void pickupWeapon();
 
     eCreatureStance getStance() const { return m_currentStance; }

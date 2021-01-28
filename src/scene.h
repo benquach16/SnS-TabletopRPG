@@ -24,6 +24,7 @@ public:
 
     Scene();
     ~Scene();
+    void initialize();
     void setupLevel(PlayerObject* playerObject);
     void setupArena(PlayerObject* playerObject);
     void run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject);

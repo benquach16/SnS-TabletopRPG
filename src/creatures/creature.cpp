@@ -362,6 +362,8 @@ void Creature::reduceWound(eBodyParts part, int level, int value)
 {
     value += getTap(getGrit());
     m_wounds[part][level] -= value;
+    m_pain -= value;
+    m_pain = max(0, m_pain);
     if (m_wounds[part][level] <= 0) {
         m_wounds[part].erase(level);
     }
@@ -688,7 +690,6 @@ void Creature::dropSecondaryWeapon()
     }
 }
 
-
 void Creature::addFavored(eHitLocations location)
 {
     m_favoredLocations.insert(location);
@@ -874,6 +875,7 @@ void Creature::clearCreatureManuevers(bool skipDisable)
             m_disarm--;
             if (m_disarm == 0) {
                 enableWeapon();
+                enableSecondaryWeapon();
             }
         }
     }

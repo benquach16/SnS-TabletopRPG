@@ -134,6 +134,7 @@ private:
     eTempo m_currentTempo;
     eCombatState m_currentState;
     eLength m_currentReach;
+    eHitLocations m_originalLocation;
 
     int m_dualWhiteTimes;
     bool m_dualRedThrow;

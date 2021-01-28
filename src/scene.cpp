@@ -45,6 +45,11 @@ Scene::~Scene()
     m_levels.clear();
 }
 
+void Scene::initialize()
+{
+
+}
+
 void Scene::setupLevel(PlayerObject* playerObject)
 {
     m_currentIdx = 0;

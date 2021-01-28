@@ -60,6 +60,7 @@ void Game::load(const std::string& filepath)
     if (m_playerObject != nullptr) {
         delete m_playerObject;
     }
+    Log::initialize();
     m_playerObject = m_scene.getPlayer();
     setState(Game::eApplicationState::Gameplay);
 }

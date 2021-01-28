@@ -426,7 +426,7 @@ int getDefensiveManueverCost(
     }
     switch (manuever) {
     case eDefensiveManuevers::StealInitiative:
-        return 1;
+        return 0;
     case eDefensiveManuevers::AttackFromDef:
     case eDefensiveManuevers::Dodge:
         return 0;
