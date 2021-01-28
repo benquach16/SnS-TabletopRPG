@@ -639,13 +639,9 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
             }
             if (attack == eOffensiveManuevers::NoOffense
                 && controlledCreature->getCombatPool() > 1) {
-                priority = 25;
-            } else {
-                priority = cLowestPriority;
+                priority = cHighPriority;
             }
-        }
-
-        break;
+        } break;
         case eDefensiveManuevers::StealInitiative: {
             int stealDie = 0;
             if (stealInitiative(controlledCreature, attacker, toPush.cost, stealDie)) {
@@ -660,7 +656,23 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
                 }
 
             } else {
-                priority = cLowestPriority;
+                // if we can take it and force initiative roll then do so
+
+                auto segment = controlledCreature->getMedianArmor(target,
+                    (attack == eOffensiveManuevers::Swing
+                        || attack == eOffensiveManuevers::HeavyBlow));
+
+                // this can't hurt us so attack from def
+                if ((segment.isMetal && component->getType() != eDamageTypes::Blunt)
+                    || attack == eOffensiveManuevers::Beat) {
+                    if (attacker->getCombatPool() + reachCost
+                        < controlledCreature->getCombatPool() / 2 - 2) {
+                        priority = 30;
+                    }
+
+                } else {
+                    priority = cLowestPriority;
+                }
             }
         } break;
         }
