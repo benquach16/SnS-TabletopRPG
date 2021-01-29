@@ -83,6 +83,8 @@ private:
     struct Room {
         int x;
         int y;
+
+        bool operator==(const Room& rhs) { return (rhs.x == x && rhs.y == y); }
     };
 
     struct Building {

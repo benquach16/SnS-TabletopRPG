@@ -137,7 +137,6 @@ std::string hookTargetToString(eHookTargets type)
     return "";
 }
 
-
 eLayer stringToArmorLayer(const std::string& str)
 {
     if (str == "surcoat") {
@@ -466,6 +465,10 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* crea
     ret[eOffensiveManuevers::Thrust] = getOffensiveManueverCost(
         eOffensiveManuevers::Thrust, grip, effectiveReach, currentReach, payReach);
 
+    if (weapon->canHook() || grip == eGrips::Staff || grip == eGrips::HalfSword) {
+        ret[eOffensiveManuevers::Hook] = getOffensiveManueverCost(
+            eOffensiveManuevers::Hook, grip, effectiveReach, currentReach, payReach);
+    }
     // only can swing or thrust in a feint
     if (feint) {
         return ret;
@@ -501,10 +504,6 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* crea
         if (type == eWeaponTypes::Mass || type == eWeaponTypes::Polearms) {
             ret[eOffensiveManuevers::HeavyBlow] = getOffensiveManueverCost(
                 eOffensiveManuevers::HeavyBlow, grip, effectiveReach, currentReach, payReach);
-        }
-        if (weapon->canHook() || grip == eGrips::Staff || grip == eGrips::HalfSword) {
-            ret[eOffensiveManuevers::Hook] = getOffensiveManueverCost(
-                eOffensiveManuevers::Hook, grip, effectiveReach, currentReach, payReach);
         }
     } else {
         ret[eOffensiveManuevers::Throw] = getOffensiveManueverCost(

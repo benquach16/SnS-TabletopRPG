@@ -461,6 +461,7 @@ void InventoryUI::doWounds(bool hasKeyEvents, sf::Event event, PlayerObject* pla
     ap.setString(str);
 
     sf::Text bleeding;
+    UiCommon::initializeText(bleeding);
     bleeding.setPosition(sf::Vector2f(windowSize.x / 2, cCharSize * 3));
     string parts;
     for (auto it : creature->getBleedLevels()) {
@@ -471,7 +472,6 @@ void InventoryUI::doWounds(bool hasKeyEvents, sf::Event event, PlayerObject* pla
         parts += bodyPartToString(it) + " is severed!\n";
     }
     bleeding.setString(parts);
-    UiCommon::initializeText(bleeding);
 
     Game::getWindow().draw(bleeding);
     ap.setPosition(sf::Vector2f(cPad / 2 + cBorderWidth, cPad / 2));

@@ -617,6 +617,19 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
             }
         } break;
         case eDefensiveManuevers::Counter:
+            if (diceAllocated > 11) {
+                if (diceAllocated + 3 < controlledCreature->getCombatPool() - 5) {
+                    int tnDiff = weapon->getGuardTN() - cBaseBTN;
+                    int dice = std::min(diceAllocated + random_static::get(0, diceAllocated / 3)
+                            - random_static::get(0, diceAllocated / (4 + tnDiff)),
+                        controlledCreature->getCombatPool());
+                    // if its not too much dice, favor doing this
+                    if (dice + random_static::get(cFuzz, cFuzz * 2)
+                        < controlledCreature->getCombatPool()) {
+                        priority += 10;
+                    }
+                }
+            }
             break;
         case eDefensiveManuevers::AttackFromDef: {
             constexpr unsigned cHighPriority = 25;
@@ -658,22 +671,33 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
             } else {
                 // if we can take it and force initiative roll then do so
 
-                auto segment = controlledCreature->getMedianArmor(target,
-                    (attack == eOffensiveManuevers::Swing
-                        || attack == eOffensiveManuevers::HeavyBlow));
+                if (attack != eOffensiveManuevers::Beat && attack != eOffensiveManuevers::Hook) {
+                    auto segment = controlledCreature->getMedianArmor(target,
+                        (attack == eOffensiveManuevers::Swing
+                            || attack == eOffensiveManuevers::HeavyBlow));
 
-                // this can't hurt us so attack from def
-                if ((segment.isMetal && component->getType() != eDamageTypes::Blunt)
-                    || attack == eOffensiveManuevers::Beat) {
+                    // this can't hurt us so attack from def
+                    if (segment.isMetal && component->getType() != eDamageTypes::Blunt) {
+                        if (attacker->getCombatPool() + reachCost
+                            < controlledCreature->getCombatPool() / 2 - 2) {
+                            priority = 30;
+                            toPush.dice = (controlledCreature->getCombatPool() / 2) - 2;
+                        }
+
+                    } else {
+                        priority = cLowestPriority;
+                    }
+                } else {
                     if (attacker->getCombatPool() + reachCost
                         < controlledCreature->getCombatPool() / 2 - 2) {
                         priority = 30;
+                        toPush.dice = (controlledCreature->getCombatPool() / 2) - 2;
+                    } else {
+                        priority = cLowestPriority;
                     }
-
-                } else {
-                    priority = cLowestPriority;
                 }
             }
+
         } break;
         }
 

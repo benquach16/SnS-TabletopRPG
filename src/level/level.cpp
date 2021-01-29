@@ -82,15 +82,46 @@ void Level::generate()
 
     rooms.push_back(carveRoom(1, 1, 6, 6, 10, 10));
 
-    for (int i = 0; i < 9; ++i) {
+    for (int i = 0; i < 4; ++i) {
         rooms.push_back(carveRoom());
         int idx = rooms.size() - 1;
-        createCorridor(rooms[idx - 1], rooms[idx]);
+        // createCorridor(rooms[idx - 1], rooms[idx]);
     }
-    for (int i = 0; i < 5; ++i) {
+
+    for (int i = 0; i < 16; ++i) {
         rooms.push_back(carveSeperateRoom());
         int idx = rooms.size() - 1;
-        createCorridor(rooms[idx - 1], rooms[idx]);
+        // createCorridor(rooms[idx - 1], rooms[idx]);
+    }
+
+    // BFS
+    set<int> visited;
+    queue<int> queue;
+    queue.push(0);
+    while (queue.empty() == false) {
+        int top = queue.front();
+        queue.pop();
+        assert(visited.find(top) == visited.end());
+        visited.insert(top);
+
+        int minDist = INT_MAX;
+        int idx = -1;
+        for (unsigned i = 0; i < rooms.size(); ++i) {
+            if (visited.find(i) == visited.end()) {
+                int a = rooms[i].x - rooms[top].x;
+                int b = rooms[i].y - rooms[top].y;
+
+                int dist = (a * a) + (b * b);
+                if (dist < minDist) {
+                    minDist = dist;
+                    idx = i;
+                }
+            }
+        }
+        if (idx != -1) {
+            createCorridor(rooms[top], rooms[idx]);
+            queue.push(idx);
+        }
     }
 
     // makeRoom();
@@ -102,7 +133,11 @@ void Level::generate()
             HumanObject* object = new HumanObject;
             object->setPosition(rooms[i].x, rooms[i].y);
             object->setFaction(eCreatureFaction::Bandit);
-            object->setLoadout(eCreatureFaction::Bandit, eRank::Recruit);
+            if (random_static::get(1, 3) == 1) {
+                object->setLoadout(eCreatureFaction::Bandit, eRank::Soldier);
+            } else {
+                object->setLoadout(eCreatureFaction::Bandit, eRank::Recruit);
+            }
             m_objects.push_back(object);
         }
     }
@@ -280,6 +315,11 @@ Level::Room Level::carveRoom(
 
     return { random_static::get(xStart + 1, xlen + xStart - 1),
         random_static::get(yStart + 1, ylen + yStart - 1) };
+}
+
+bool inCircle(int x, int y, int circleX, int circleY, int radius)
+{
+    return ((circleX - x) * (circleX - x) + (circleY - y) * (circleY - y)) < radius * radius;
 }
 
 Level::Room Level::carveSeperateRoom()
