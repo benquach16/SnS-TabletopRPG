@@ -412,7 +412,8 @@ void InventoryUI::doSurgery(bool hasKeyEvents, sf::Event event, PlayerObject* pl
                         player->removeItem(m_id);
                         Log::push("You perform surgery on the level " + to_string(levels.first)
                             + " wound at " + bodyPartToString(i.first)
-                            + ". You will need to rest to fully recover.");
+                            + ". The surgery increase your fatigue significantly, and you will "
+                              "need to rest to fully recover.");
                         return;
                     } else {
                         Log::push("Out of surgery kits.");

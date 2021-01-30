@@ -84,8 +84,7 @@ void DefenseUI::doManuever(
     UiCommon::drawTopPanel();
 
     sf::Text text;
-    text.setCharacterSize(cCharSize);
-    text.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(text);
 
     string str = "Choose defense:\n";
 
@@ -151,8 +150,7 @@ void DefenseUI::doChooseDice(bool hasKeyEvents, sf::Event event, Player* player)
     UiCommon::drawTopPanel();
 
     sf::Text text;
-    text.setCharacterSize(cCharSize);
-    text.setFont(Game::getDefaultFont());
+    UiCommon::initializeText(text);
     text.setString("Allocate action points (" + std::to_string(player->getCombatPool())
         + " action points left):");
     Game::getWindow().draw(text);

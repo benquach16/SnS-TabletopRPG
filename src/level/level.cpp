@@ -239,8 +239,8 @@ Level::Building Level::createBuilding()
     while (canBuild == false) {
         xlen = random_static::get(cMin, cMax);
         ylen = random_static::get(cMin, cMax);
-        xStart = random_static::get(2, m_width - xlen - 1);
-        yStart = random_static::get(2, m_height - ylen - 1);
+        xStart = random_static::get(6, m_width - xlen - 6);
+        yStart = random_static::get(6, m_height - ylen - 6);
         bool foundWall = false;
         for (int x = xStart - 1; x <= xStart + xlen; ++x) {
             for (int y = yStart - 1; y <= yStart + ylen; ++y) {
@@ -319,7 +319,7 @@ Level::Room Level::carveRoom(
 
 bool inCircle(int x, int y, int circleX, int circleY, int radius)
 {
-    return ((circleX - x) * (circleX - x) + (circleY - y) * (circleY - y)) < radius * radius;
+    return (((circleX - x) * (circleX - x)) + ((circleY - y) * (circleY - y))) < radius * radius;
 }
 
 Level::Room Level::carveSeperateRoom()

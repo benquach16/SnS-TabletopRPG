@@ -45,15 +45,12 @@ Scene::~Scene()
     m_levels.clear();
 }
 
-void Scene::initialize()
-{
-
-}
+void Scene::initialize() {}
 
 void Scene::setupLevel(PlayerObject* playerObject)
 {
     m_currentIdx = 0;
-    Level* level = new Level(60, 60);
+    Level* level = new Level(70, 70);
     Level* level2 = new Level(60, 60);
     level2->generateTown();
     level->generate();
@@ -116,34 +113,22 @@ void Scene::changeToLevel(int idx, Object* object, int x, int y)
 void Scene::run(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
 {
     m_gfxlevel.renderBkg(m_levels[m_currentIdx]);
-    // todo: remove all this sfml specific stuff and move to a gfx specific class
-    //------------------
-    sf::View original = Game::getWindow().getView();
-    sf::View v = Game::getWindow().getView();
-    v.setSize(v.getSize().x, v.getSize().y * 2);
-    // v.setCenter(v.getSize() *.5f);
-    sf::Vector2f center(playerObject->getPosition().x, playerObject->getPosition().y);
-    center = coordsToScreen(center);
-    v.setCenter(center.x, center.y + cViewDiff);
-    v.zoom(zoom);
-    Game::getWindow().setView(v);
-    //------------------
-    m_gfxlevel.run(m_levels[m_currentIdx], playerObject->getPosition());
+    m_gfxlevel.run(m_levels[m_currentIdx], playerObject->getPosition(), zoom);
     // temporary until we get graphics queue up and running
     if (m_currentState == eSceneState::AttackMode || m_currentState == eSceneState::SelectionMode
         || m_currentState == eSceneState::DialogueSelect
         || m_currentState == eSceneState::UseMode) {
-        m_gfxSelector.run(&m_selector);
+        m_gfxSelector.run(&m_selector, playerObject->getPosition(), zoom);
     }
-    m_gfxlevel.renderText();
-    Game::getWindow().setView(original);
 
     m_ui.run();
 
-    if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Equal) {
+    if (hasKeyEvents && event.type == sf::Event::KeyReleased
+        && event.key.code == sf::Keyboard::Equal) {
         zoom = max(cMaxZoom, zoom - 0.1f);
     }
-    if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Hyphen) {
+    if (hasKeyEvents && event.type == sf::Event::KeyReleased
+        && event.key.code == sf::Keyboard::Hyphen) {
         zoom = min(cMinZoom, zoom + 0.1f);
     }
     switch (m_currentState) {
@@ -447,7 +432,7 @@ void Scene::wait(bool hasKeyEvents, sf::Event event, PlayerObject* playerObject)
             cout << "sleeping" << endl;
         }
     } else {
-        Log::push("You recover some fatigue and your minor wounds heal up.");
+        Log::push("You recover some fatigue and your minor wounds heal up. You become hungrier.");
         playerObject->getCreatureComponent()->modifyFatigue(eCreatureFatigue::Stamina, -5);
         playerObject->getCreatureComponent()->modifyFatigue(eCreatureFatigue::Hunger, 1);
         playerObject->getCreatureComponent()->healWounds(1);

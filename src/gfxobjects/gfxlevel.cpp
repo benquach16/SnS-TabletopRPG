@@ -1,8 +1,9 @@
 #include "gfxlevel.h"
-#include "../game.h"
-#include "../level/level.h"
-#include "../object/relationmanager.h"
-#include "../ui/types.h"
+#include "game.h"
+#include "gfxobjects/utils.h"
+#include "level/level.h"
+#include "object/relationmanager.h"
+#include "ui/types.h"
 #include "utils.h"
 
 using namespace std;
@@ -200,11 +201,21 @@ void GFXLevel::set(int x, int y, int height, int width, int val)
     m_visibleData[x * height + y] = val;
 }
 
-void GFXLevel::run(const Level* level, vector2d center)
+void GFXLevel::run(const Level* level, vector2d center, float zoom)
 {
     if (level == nullptr) {
         return;
     }
+
+    sf::View original = Game::getWindow().getView();
+    sf::View v = Game::getWindow().getView();
+    v.setSize(v.getSize().x, v.getSize().y * 2);
+    // v.setCenter(v.getSize() *.5f);
+    sf::Vector2f centerScreenSpace = coordsToScreen(sf::Vector2f(center.x, center.y));
+    v.setCenter(centerScreenSpace.x, centerScreenSpace.y + 200);
+    v.zoom(zoom);
+
+    Game::getWindow().setView(v);
 
     if (m_processedLevel != level) {
         regenerate(level);
@@ -345,6 +356,7 @@ void GFXLevel::run(const Level* level, vector2d center)
         // this code is not extensible and eosnt make sense
         if (rLevelObjs[i]->getObjectType() == eObjectTypes::Creature) {
             sf::Vector2f textPos(pos);
+
             sf::Text text;
             CreatureObject* creatureObject = static_cast<CreatureObject*>(rLevelObjs[i]);
 
@@ -359,7 +371,7 @@ void GFXLevel::run(const Level* level, vector2d center)
                 }
             }
             // hardcoded
-            text.setCharacterSize(11);
+            text.setCharacterSize(14);
             text.setFont(Game::getDefaultFont());
             text.setString(static_cast<const CreatureObject*>(rLevelObjs[i])->getName());
             textPos.x -= text.getLocalBounds().width / 2 - 15;
@@ -377,12 +389,16 @@ void GFXLevel::run(const Level* level, vector2d center)
         m_queue.add(GFXObject(sprite, position));
     }
 
+
     m_queue.render();
 
     while (m_top.empty() == false) {
         Game::getWindow().draw(m_top.front());
         m_top.pop();
     }
+
+    renderText();
+    Game::getWindow().setView(original);
 }
 
 void GFXLevel::renderText()

@@ -81,6 +81,7 @@ void Game::initialize()
     m_defaultFont.loadFromFile("data/fonts/MorePerfectDOSVGA.ttf");
     // quite possibly the worst way of doing this, but cannot disable AA on sfml text without this.
     const_cast<sf::Texture&>(m_defaultFont.getTexture(11)).setSmooth(false);
+    // const_cast<sf::Texture&>(m_defaultFont.getTexture(14)).setSmooth(false);
     m_desktop.SetProperty<sf::Color>("*", "BackgroundColor", sf::Color(12, 12, 23));
     m_desktop.SetProperty<sf::Color>("Button", "BackgroundColor", sf::Color(12, 12, 23));
     m_desktop.SetProperty<sf::Color>("Button", "BorderColor", sf::Color(22, 22, 33));
@@ -169,7 +170,6 @@ void Game::run()
         }
         m_gui.Display(m_window);
         m_window.display();
-
 
         float currentTime = clock.restart().asSeconds();
         float fps = 1.f / currentTime;

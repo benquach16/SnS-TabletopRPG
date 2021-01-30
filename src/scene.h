@@ -82,7 +82,7 @@ private:
 
     GFXSelector m_gfxSelector;
 
-    float zoom = 1.0f;
+    float zoom = 0.8f;
 
     template <class Archive> void serialize(Archive& ar, const unsigned int version)
     {

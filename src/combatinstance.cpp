@@ -51,7 +51,7 @@ void CombatInstance::initCombat(Creature* side1, Creature* side2, bool showAllMe
     assert(m_currentState == eCombatState::Uninitialized);
 
     m_sendAllMessages = showAllMessages;
-
+    m_currentReach = max(side1->getCurrentReach(), side2->getCurrentReach());
     m_side1 = side1;
     m_side2 = side2;
 
@@ -484,148 +484,6 @@ void CombatInstance::doPreResolution()
 
 void CombatInstance::doFeintAttack() { m_currentState = eCombatState::Resolution; }
 
-void CombatInstance::resolveStealInit()
-{
-    Creature* attacker = nullptr;
-    Creature* defender = nullptr;
-    setSides(attacker, defender);
-
-    Offense attack = attacker->getQueuedOffense();
-    Defense defend = defender->getQueuedDefense();
-    // original attacker gets advantage
-    // ptr compares bad
-    int side1BTN = (m_side1->getId() == attacker->getId() && m_dualRedThrow == false)
-        ? m_side1->getAdvantagedBTN()
-        : m_side1->getBTN();
-    int side2BTN = (m_side2->getId() == attacker->getId() && m_dualRedThrow == false)
-        ? m_side2->getAdvantagedBTN()
-        : m_side2->getBTN();
-
-    // special case for thrust manuever, get an extra die
-    constexpr unsigned cThrustDie = 1;
-    // divide dice allocation by 2
-    int side1Dice = (m_side1->getQueuedDefense().dice + 1) / 2;
-    if (m_side1->getQueuedOffense().manuever == eOffensiveManuevers::Thrust
-        || m_side1->getQueuedOffense().manuever == eOffensiveManuevers::PinpointThrust) {
-        side1Dice += cThrustDie;
-    }
-    int side2Dice = (m_side2->getQueuedDefense().dice + 1) / 2;
-    if (m_side2->getQueuedOffense().manuever == eOffensiveManuevers::Thrust
-        || m_side2->getQueuedOffense().manuever == eOffensiveManuevers::PinpointThrust) {
-        side2Dice += cThrustDie;
-    }
-    int side1reach = 0;
-    int side2reach = 0;
-    if (m_side1->getCurrentReach() == m_currentReach
-        && m_side2->getCurrentReach() != m_currentReach) {
-        side1reach++;
-    } else if (m_side2->getCurrentReach() == m_currentReach
-        && m_side1->getCurrentReach() != m_currentReach) {
-        side2reach++;
-    }
-
-    int side1InitiativeSuccesses = DiceRoller::rollGetSuccess(
-        side1BTN, side1Dice + getTap(m_side1->getMobility()) + side1reach);
-    int side2InitiativeSuccesses = DiceRoller::rollGetSuccess(
-        side2BTN, side2Dice + getTap(m_side2->getMobility()) + side2reach);
-
-    if (defend.manuever == eDefensiveManuevers::StealInitiative) {
-        // only steal initiative can change initiative
-        if (side1InitiativeSuccesses > side2InitiativeSuccesses) {
-            m_initiative = eInitiative::Side1;
-        } else if (side1InitiativeSuccesses < side2InitiativeSuccesses) {
-            m_initiative = eInitiative::Side2;
-        } else {
-            // tie
-            m_currentState = eCombatState::DualOffenseResolve;
-            return;
-        }
-        setSides(attacker, defender);
-        writeMessage(attacker->getName() + " has taken the initiative!");
-    }
-
-    cout << "attack roll" << endl;
-    int tn = getAttackTN(attacker);
-    int attackerSuccesses = DiceRoller::rollGetSuccess(tn, attacker->getQueuedOffense().dice);
-
-    bool wasStanding = defender->getStance() == eCreatureStance::Standing;
-    bool wasGrappled = false;
-    if (attackerSuccesses > 0) {
-        if (attacker->getQueuedOffense().manuever != eOffensiveManuevers::Grab) {
-            if (inflictWound(attacker, attackerSuccesses, attacker->getQueuedOffense(), defender)
-                == true) {
-                m_currentState = eCombatState::FinishedCombat;
-                return;
-            }
-        } else {
-            // special grab
-            startGrapple(attacker, defender);
-            attacker->setBonusDice(attackerSuccesses + 2);
-            wasGrappled = true;
-        }
-    } else {
-        writeMessage(attacker->getName() + " had no successes");
-    }
-
-    bool becameProne = wasStanding == true && defender->getStance() == eCreatureStance::Prone;
-    changeReachTo(attacker);
-    if (becameProne == true) {
-        // if the attack knocked them prone
-        writeMessage(
-            defender->getName() + " was knocked down by the attack, their attack cannot resolve.");
-        m_currentState = eCombatState::Offense;
-    } else if (wasGrappled == true) {
-        writeMessage(defender->getName() + " was grappled, their attack is interrupted!");
-    } else if (defender->getQueuedOffense().dice <= 0) {
-        // if the attack wiped out their combat pool, do nothing
-        writeMessage(defender->getName()
-            + " had their action points eliminated by impact, their attack "
-              "can no longer resolve.");
-        m_currentState = eCombatState::Offense;
-    } else if ((defender->primaryWeaponDisabled() && defender->getQueuedOffense().withPrimaryWeapon)
-        || defender->droppedWeapon()) {
-        // need to check if secondary weapon part vs secondary weapon for dropped
-
-        // if the attack disabled or caused their weapon to drop
-        // sans secondary attacks
-        writeMessage(defender->getName()
-            + " had their weapon disabled! Their attack can no longer resolve.");
-        m_currentState = eCombatState::Offense;
-
-    } else {
-        int tn = getAttackTN(defender);
-        int defendSuccesses = DiceRoller::rollGetSuccess(tn, defender->getQueuedOffense().dice);
-        if (defendSuccesses > 0) {
-            if (defender->getQueuedOffense().manuever != eOffensiveManuevers::Grab) {
-                if (inflictWound(
-                        defender, defendSuccesses, defender->getQueuedOffense(), attacker)) {
-                    m_currentState = eCombatState::FinishedCombat;
-                    return;
-                }
-            } else {
-                startGrapple(attacker, defender);
-                defender->setBonusDice(defendSuccesses + 2);
-            }
-
-        } else {
-            writeMessage(defender->getName() + " had no successes");
-        }
-        changeReachTo(attacker);
-        if (defend.manuever == eDefensiveManuevers::StealInitiative) {
-            if (defendSuccesses > attackerSuccesses) {
-                changeReachTo(defender);
-                writeMessage(defender->getName() + " had more successes, taking initiative");
-                switchInitiative();
-            }
-        }
-        if (defend.manuever == eDefensiveManuevers::AttackFromDef && defendSuccesses > 0) {
-            changeReachTo(defender);
-            writeMessage(
-                defender->getName() + "'s attack landed after, but does not take initiative");
-        }
-    }
-}
-
 void CombatInstance::doResolution()
 {
     cout << "Resolving combat" << endl;
@@ -698,6 +556,7 @@ void CombatInstance::doResolution()
         bool wasStanding = defender->getStance() == eCreatureStance::Standing;
         bool wasGrappled = false;
         if (attackerSuccesses > 0) {
+            changeReachTo(attacker);
             if (attacker->getQueuedOffense().manuever != eOffensiveManuevers::Grab) {
                 if (inflictWound(
                         attacker, attackerSuccesses, attacker->getQueuedOffense(), defender)
@@ -716,7 +575,7 @@ void CombatInstance::doResolution()
         }
 
         bool becameProne = wasStanding == true && defender->getStance() == eCreatureStance::Prone;
-        changeReachTo(attacker);
+
         if (becameProne == true) {
             // if the attack knocked them prone
             writeMessage(defender->getName()
@@ -759,12 +618,14 @@ void CombatInstance::doResolution()
             } else {
                 writeMessage(defender->getName() + " had no successes");
             }
-            changeReachTo(attacker);
+
             if (defend.manuever == eDefensiveManuevers::StealInitiative) {
                 if (defendSuccesses > attackerSuccesses) {
                     changeReachTo(defender);
                     writeMessage(defender->getName() + " had more successes, taking initiative");
                     switchInitiative();
+                } else {
+                    changeReachTo(attacker);
                 }
             }
             if (defend.manuever == eDefensiveManuevers::AttackFromDef && defendSuccesses > 0) {
@@ -1490,6 +1351,10 @@ void CombatInstance::outputOffense(const Creature* creature)
         break;
     case eOffensiveManuevers::Grab:
         writeMessage(creature->getName() + " attempts to start a grapple using "
+            + to_string(creature->getQueuedOffense().dice) + " action points");
+        break;
+    case eOffensiveManuevers::Disarm:
+        writeMessage(creature->getName() + " attempts to disarm using "
             + to_string(creature->getQueuedOffense().dice) + " action points");
         break;
     case eOffensiveManuevers::Throw:

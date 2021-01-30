@@ -16,7 +16,7 @@ public:
     GFXLevel();
     ~GFXLevel();
     void renderBkg(const Level* level);
-    void run(const Level* level, vector2d center);
+    void run(const Level* level, vector2d center, float zoom);
     void renderText();
     void resize();
     void regenerate(const Level* level);

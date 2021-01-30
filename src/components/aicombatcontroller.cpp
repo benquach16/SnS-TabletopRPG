@@ -633,6 +633,7 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
             break;
         case eDefensiveManuevers::AttackFromDef: {
             constexpr unsigned cHighPriority = 25;
+            priority = cLowestPriority;
             if (isLastTempo == false) {
                 priority = cLowestPriority;
             } else if (controlledCreature->getCombatPool() > reachCost + 3) {
@@ -657,6 +658,7 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
         } break;
         case eDefensiveManuevers::StealInitiative: {
             int stealDie = 0;
+            priority = cLowestPriority;
             if (stealInitiative(controlledCreature, attacker, toPush.cost, stealDie)) {
                 if (stealDie + reachCost < controlledCreature->getCombatPool()) {
                     toPush.dice = stealDie;
