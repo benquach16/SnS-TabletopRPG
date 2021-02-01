@@ -11,14 +11,14 @@ using namespace std;
 using namespace effolkronium;
 
 struct ManueverContainer {
-    int priority;
-    int cost;
+    int priority = 0;
+    int cost = 0;
     eOffensiveManuevers offManuever;
     eDefensiveManuevers defManuever;
-    Component* component;
+    Component* component = nullptr;
     eHitLocations hitLocation;
     eBodyParts pinpointLocation;
-    int dice; // only for defense for now
+    int dice = 0; // only for defense for now
 };
 
 bool operator<(const ManueverContainer& lhs, const ManueverContainer& rhs)

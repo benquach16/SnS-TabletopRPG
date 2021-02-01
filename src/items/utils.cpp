@@ -518,8 +518,7 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* crea
             eOffensiveManuevers::Disarm, grip, effectiveReach, currentReach, payReach);
         eWeaponTypes type = weapon->getType();
         // don't need to do mordhau if doing a pommel strike
-        if ((type == eWeaponTypes::Swords || type == eWeaponTypes::Longswords)
-            && weapon->isSecondary() == false) {
+        if (type == eWeaponTypes::Longswords && weapon->isSecondary() == false) {
             ret[eOffensiveManuevers::Mordhau] = getOffensiveManueverCost(
                 eOffensiveManuevers::Mordhau, grip, effectiveReach, currentReach, payReach);
         }
