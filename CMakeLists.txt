@@ -21,6 +21,9 @@ set(SOURCES
     ./src/components/aicombatcontroller.cpp
     ./src/creatures/creature.cpp
     ./src/creatures/human.cpp
+    ./src/creatures/werewolf.cpp
+    ./src/creatures/vampire.cpp
+    ./src/creatures/goblin.cpp
     ./src/creatures/player.cpp
     ./src/creatures/wound.cpp
     ./src/creatures/utils.cpp

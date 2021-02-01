@@ -8,6 +8,7 @@
 #include "weapon.h"
 
 class Creature;
+class CombatInstance;
 
 std::string offensiveManueverToString(eOffensiveManuevers manuever);
 
@@ -24,6 +25,8 @@ eArmorTypes stringToArmorType(const std::string& str);
 std::string itemTypeToString(eItemType type);
 
 std::string weaponTypeToString(eWeaponTypes type);
+
+bool isTwoHanded(eWeaponTypes type);
 
 std::string weaponPropToString(eWeaponProperties prop);
 
@@ -60,11 +63,13 @@ int getDefensiveManueverCost(
     eDefensiveManuevers manuever, eGrips grip, eLength effectiveReach, eLength currentReach);
 
 //<location, cost>
-std::map<eHitLocations, int> getHitLocationCost(const Creature* target, bool feint, eHitLocations originalLocation);
+std::map<eHitLocations, int> getHitLocationCost(
+    const Creature* target, bool feint, eHitLocations originalLocation);
 
 //<maneuver, cost>
 std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* creature,
-    bool primaryWeapon, eLength currentReach, bool inGrapple, bool payReach, bool feint, bool isLastTempo);
+    bool primaryWeapon, const Creature* target, bool payReach, bool feint,
+    const CombatInstance* instance);
 
 //<maneuver, cost>
 std::map<eDefensiveManuevers, int> getAvailableDefManuevers(const Creature* creature,

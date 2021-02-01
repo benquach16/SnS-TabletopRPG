@@ -16,7 +16,8 @@ private:
     void doManuever(bool hasKeyEvents, sf::Event event, Player* player, const CombatInstance* instance);
     void doTarget(bool hasKeyEvents, sf::Event event, Player* player, const Creature* target);
     void doComponent(bool hasKeyEvents, sf::Event event, Player* player);
-    enum class eUiState : unsigned { ChooseFeint, ChooseDice, ChooseManuever, ChooseTarget, ChooseComponent, Finished };
+    void doWeapon(bool hasKeyEvents, sf::Event event, Player* player);
+    enum class eUiState : unsigned { ChooseFeint, ChooseDice, ChooseManuever, ChooseTarget, ChooseComponent, ChooseWeapon, Finished };
 
     eUiState m_currentState;
     NumberInput m_numberInput;

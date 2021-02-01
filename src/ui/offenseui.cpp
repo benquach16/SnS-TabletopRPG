@@ -18,7 +18,7 @@ void OffenseUI::run(bool hasKeyEvents, sf::Event event, Player* player, Creature
         doChooseWeapon(hasKeyEvents, event, player);
         break;
     case eUiState::ChooseManuever:
-        doManuever(hasKeyEvents, event, player, instance);
+        doManuever(hasKeyEvents, event, player, target, instance);
         break;
     case eUiState::ChooseFeint:
         doFeint(hasKeyEvents, event, player);
@@ -100,8 +100,8 @@ void OffenseUI::doChooseWeapon(bool hasKeyEvents, sf::Event event, Player* playe
     }
 }
 
-void OffenseUI::doManuever(
-    bool hasKeyEvents, sf::Event event, Player* player, const CombatInstance* instance)
+void OffenseUI::doManuever(bool hasKeyEvents, sf::Event event, Player* player,
+    const Creature* target, const CombatInstance* instance)
 {
     UiCommon::drawTopPanel();
 
@@ -109,8 +109,7 @@ void OffenseUI::doManuever(
     UiCommon::initializeText(text);
     bool withPrimaryWeapon = player->getQueuedOffense().withPrimaryWeapon;
     map<eOffensiveManuevers, int> manuevers
-        = getAvailableOffManuevers(player, withPrimaryWeapon, instance->getCurrentReach(),
-            instance->getInGrapple(), true, false, instance->getLastTempo());
+        = getAvailableOffManuevers(player, withPrimaryWeapon, target, true, false, instance);
 
     string str = "Choose attack:\n";
     map<char, std::pair<eOffensiveManuevers, int>> indices;

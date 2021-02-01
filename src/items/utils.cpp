@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "combatinstance.h"
 #include "creatures/creature.h"
 #include <algorithm>
 #include <assert.h>
@@ -300,6 +301,16 @@ std::string gripToString(eGrips grip)
     }
 }
 
+bool isTwoHanded(eWeaponTypes type)
+{
+    switch (type) {
+    case eWeaponTypes::Longswords:
+    case eWeaponTypes::Polearms:
+        return true;
+    }
+    return false;
+}
+
 int calculateReachCost(eLength length1, eLength length2)
 {
     int reachCost = length1 - length2;
@@ -444,9 +455,13 @@ int getDefensiveManueverCost(
 }
 
 std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* creature,
-    bool primaryWeapon, eLength currentReach, bool inGrapple, bool payReach, bool feint,
-    bool isLastTempo)
+    bool primaryWeapon, const Creature* target, bool payReach, bool feint,
+    const CombatInstance* instance)
 {
+    eLength currentReach = instance->getCurrentReach();
+    bool inGrapple = instance->getInGrapple();
+    bool isLastTempo = instance->getLastTempo();
+
     const Weapon* weapon
         = primaryWeapon ? creature->getPrimaryWeapon() : creature->getSecondaryWeapon();
 
@@ -484,9 +499,16 @@ std::map<eOffensiveManuevers, int> getAvailableOffManuevers(const Creature* crea
     }
 
     if (inGrapple == false) {
-        if (weapon->getNaturalWeapon() == false && isLastTempo == false) {
-            ret[eOffensiveManuevers::Beat] = getOffensiveManueverCost(
-                eOffensiveManuevers::Beat, grip, effectiveReach, currentReach, payReach);
+        // beat has a lot of restrictions
+        if (weapon->getNaturalWeapon() == false && isLastTempo == false && target != nullptr) {
+            if (isTwoHanded(target->getPrimaryWeapon()->getType())
+                && target->primaryWeaponDisabled() == false) {
+                ret[eOffensiveManuevers::Beat] = getOffensiveManueverCost(
+                    eOffensiveManuevers::Beat, grip, effectiveReach, currentReach, payReach);
+            } else if (isTwoHanded(target->getPrimaryWeapon()->getType()) == false) {
+                ret[eOffensiveManuevers::Beat] = getOffensiveManueverCost(
+                    eOffensiveManuevers::Beat, grip, effectiveReach, currentReach, payReach);
+            }
         }
 
         ret[eOffensiveManuevers::Grab] = getOffensiveManueverCost(

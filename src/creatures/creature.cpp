@@ -197,11 +197,6 @@ void Creature::inflictImpact(int impact)
     if (m_currentOffense.dice < 0) {
         int diff = abs(m_currentOffense.dice);
         m_currentOffense.dice = 0;
-        m_currentPosition.dice -= diff;
-        if (m_currentPosition.dice < 0) {
-            m_combatPool -= -m_currentPosition.dice;
-            m_currentPosition.dice = 0;
-        }
     }
 }
 

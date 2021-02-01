@@ -91,8 +91,7 @@ void PreresolveUI::doManuever(
     text.setFont(Game::getDefaultFont());
     bool withPrimaryWeapon = player->getQueuedOffense().withPrimaryWeapon;
     map<eOffensiveManuevers, int> manuevers
-        = getAvailableOffManuevers(player, withPrimaryWeapon, instance->getCurrentReach(),
-            instance->getInGrapple(), false, true, instance->getLastTempo());
+        = getAvailableOffManuevers(player, withPrimaryWeapon, nullptr, false, true, instance);
 
     string str = "Choose new attack:\n";
     map<char, std::pair<eOffensiveManuevers, int>> indices;

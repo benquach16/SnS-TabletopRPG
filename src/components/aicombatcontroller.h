@@ -57,6 +57,8 @@ private:
     eHitLocations getBestHitLocation(
         const Creature* target, const Component* component, bool feint, eHitLocations originalLocation, int& outDamage);
 
+    int getDamageAtLocation(const Creature* target, const Component* component, eHitLocations location);
+
     // <hit location, priority>
     std::unordered_map<eHitLocations, int> m_hitPriorities;
 

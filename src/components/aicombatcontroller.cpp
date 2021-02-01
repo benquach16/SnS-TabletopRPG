@@ -174,8 +174,8 @@ void AICombatController::chooseOffenseManuever(Creature* controlledCreature, con
     int reachCost = calculateReachCost(creatureReach, instance->getCurrentReach());
 
     map<eOffensiveManuevers, int> manuevers = getAvailableOffManuevers(controlledCreature,
-        controlledCreature->getQueuedOffense().withPrimaryWeapon, instance->getCurrentReach(),
-        instance->getInGrapple(), payReach, feint, instance->getLastTempo());
+        controlledCreature->getQueuedOffense().withPrimaryWeapon, target, payReach, feint,
+        instance);
 
     map<eHitLocations, int> locationCosts
         = getHitLocationCost(target, feint, controlledCreature->getQueuedOffense().target);
@@ -188,15 +188,16 @@ void AICombatController::chooseOffenseManuever(Creature* controlledCreature, con
     for (auto it : manuevers) {
         // default high enough to avoid weapons wiht negative damage values,
         // as priority is modified by the damage of the weapon
-        int priority = controlledCreature->getCombatPool() - it.second;
-        ManueverContainer toPush;
-        toPush.offManuever = it.first;
-        toPush.cost = it.second;
-        Component* component = nullptr;
+
         switch (it.first) {
-        case eOffensiveManuevers::NoOffense:
-            priority = 0;
-            break;
+        case eOffensiveManuevers::NoOffense: {
+            ManueverContainer manuever;
+            manuever.offManuever = it.first;
+            manuever.cost = it.second;
+            int priority = 0;
+            manuever.priority = priority;
+            manueverPriorities.push(manuever);
+        } break;
         case eOffensiveManuevers::Draw:
         case eOffensiveManuevers::HeavyBlow:
         case eOffensiveManuevers::Swing: {
@@ -204,67 +205,79 @@ void AICombatController::chooseOffenseManuever(Creature* controlledCreature, con
             // what kind of component we use depends on the armor of the opponent
             // base this on the median armor value and properties
             // if more than half the target location is metal armor, then favor blunt
-            int bestDamage = -10;
-            component = swings[0];
+
             for (auto swing : swings) {
                 int damage = 0;
-                eHitLocations bestTarget = getBestHitLocation(
-                    target, swing, feint, controlledCreature->getQueuedOffense().target, damage);
-                if (damage > bestDamage) {
-                    bestDamage = damage;
-                    component = swing;
-                    toPush.hitLocation = bestTarget;
+                for (auto location : locationCosts) {
+                    int priority = controlledCreature->getCombatPool() - it.second;
+
+                    ManueverContainer manuever;
+                    manuever.offManuever = it.first;
+                    manuever.cost = it.second;
+                    manuever.hitLocation = location.first;
+
+                    int damage = getDamageAtLocation(target, swing, location.first);
+                    damage = damage + cFuzz + 1;
+                    if (it.first == eOffensiveManuevers::HeavyBlow) {
+                        // do this if we have a dice advantage
+                        priority
+                            += (controlledCreature->getCombatPool() - target->getCombatPool()) / 2;
+                        priority += target->primaryWeaponDisabled() ? 1 : 0;
+                        priority -= m_doFeint ? 4 : 0;
+                        damage += 1;
+                    }
+                    if (it.first == eOffensiveManuevers::Draw) {
+                        damage -= 1;
+                    }
+                    priority += random_static::get(damage, damage + cFuzz);
+
+                    manuever.component = swing;
+                    manuever.priority = priority;
+                    manueverPriorities.push(manuever);
                 }
             }
-            toPush.cost += locationCosts[toPush.hitLocation];
-            if (controlledCreature->getGrip() == eGrips::Staff
-                || controlledCreature->getGrip() == eGrips::HalfSword) {
-                bestDamage--;
-            }
-            // damage may be negative
-            // cutting does more pain + impact so favor it unless thrust is way better
-            bestDamage = bestDamage + cFuzz + 1;
-            if (it.first == eOffensiveManuevers::HeavyBlow) {
-                // do this if we have a dice advantage
-                priority += (controlledCreature->getCombatPool() - target->getCombatPool()) / 2;
-                priority += target->primaryWeaponDisabled() ? 2 : 0;
-                bestDamage += 2;
-            }
-            if (it.first == eOffensiveManuevers::Draw) {
-                bestDamage -= 1;
-            }
-            priority += random_static::get(bestDamage, bestDamage + cFuzz);
-            assert(component != nullptr);
         } break;
         case eOffensiveManuevers::Thrust: {
-            component = weapon->getBestThrust();
             // heavily prioritize the thrust as we probably will never want to swing if our best
             // attack is the thrust
             int damage = 0;
-            toPush.hitLocation = getBestHitLocation(
-                target, component, feint, controlledCreature->getQueuedOffense().target, damage);
-            if (weapon->getBestAttack()->getAttack() == eAttacks::Thrust) {
-                damage += 1;
+            Component* component = weapon->getBestThrust();
+            for (auto location : locationCosts) {
+                ManueverContainer manuever;
+                manuever.offManuever = it.first;
+                manuever.cost = it.second;
+                manuever.hitLocation = location.first;
+
+                int priority = controlledCreature->getCombatPool() - it.second;
+                int damage = getDamageAtLocation(target, component, location.first);
+                damage = damage + cFuzz + 1;
+                // thrust is better on steal init
+                if (controlledCreature->getHasDefense()
+                    && controlledCreature->getQueuedDefense().manuever
+                        == eDefensiveManuevers::StealInitiative) {
+                    damage += 1;
+                }
+                priority += random_static::get(damage, damage + cFuzz);
+
+                manuever.component = component;
+                manuever.priority = priority;
+                manueverPriorities.push(manuever);
             }
-            // thrust is better on steal init
-            if (controlledCreature->getHasDefense()
-                && controlledCreature->getQueuedDefense().manuever
-                    == eDefensiveManuevers::StealInitiative) {
-                damage += 1;
-            }
-            damage = damage + cFuzz;
-            toPush.cost += locationCosts[toPush.hitLocation];
-            priority += random_static::get(damage, damage + cFuzz);
         } break;
         case eOffensiveManuevers::PinpointThrust: {
             // only used for bypassing armor
+            ManueverContainer manuever;
+            manuever.offManuever = it.first;
+            manuever.cost = it.second;
+            int priority = controlledCreature->getCombatPool() - it.second;
+
             eHitLocations location;
             eBodyParts part;
             bool inAltGrip = controlledCreature->getGrip() == eGrips::Staff
                 || controlledCreature->getGrip() == eGrips::HalfSword
                 || weapon->getLength() == eLength::Hand;
             target->getLowestArmorPart(inAltGrip, &part, &location);
-            component = weapon->getBestThrust();
+            Component* component = weapon->getBestThrust();
             int AV = target->getArmorAtPart(part).AV;
             if (target->getArmorAtPart(part).isMetal
                 && component->getProperties().find(eWeaponProperties::MaillePiercing)
@@ -284,11 +297,24 @@ void AICombatController::chooseOffenseManuever(Creature* controlledCreature, con
             priority += random_static::get(damage, damage + cFuzz);
             priority += target->primaryWeaponDisabled() ? 2 : 0;
             priority += (controlledCreature->getCombatPool() - target->getCombatPool()) / 2;
-            toPush.hitLocation = location;
-            toPush.cost += locationCosts[toPush.hitLocation];
-            toPush.pinpointLocation = part;
+            if (component == weapon->getBestAttack()) {
+                priority += 1;
+            }
+
+            manuever.component = component;
+            manuever.hitLocation = location;
+
+            manuever.priority = priority;
+            manuever.cost += locationCosts[manuever.hitLocation];
+            manuever.pinpointLocation = part;
+            manueverPriorities.push(manuever);
         } break;
         case eOffensiveManuevers::Beat: {
+            ManueverContainer manuever;
+            manuever.offManuever = it.first;
+            manuever.cost = it.second;
+            int priority = controlledCreature->getCombatPool() - it.second;
+
             // big random
             if (target->primaryWeaponDisabled() == false) {
                 // if we are stealing initiative beat is a really good move
@@ -301,9 +327,16 @@ void AICombatController::chooseOffenseManuever(Creature* controlledCreature, con
             } else {
                 priority = cLowestPriority;
             }
-
+            manuever.priority = priority;
+            manuever.component = nullptr;
+            manueverPriorities.push(manuever);
         } break;
         case eOffensiveManuevers::Hook: {
+            ManueverContainer manuever;
+            manuever.offManuever = it.first;
+            manuever.cost = it.second;
+            int priority = controlledCreature->getCombatPool() - it.second;
+
             // really should not do this if they are already prone
             if (target->getStance() == eCreatureStance::Prone) {
                 priority = cLowestPriority;
@@ -327,31 +360,60 @@ void AICombatController::chooseOffenseManuever(Creature* controlledCreature, con
                 }
             }
 
+            manuever.priority = priority;
+            manuever.component = nullptr;
+            manueverPriorities.push(manuever);
         } break;
-        case eOffensiveManuevers::Mordhau:
+        case eOffensiveManuevers::Mordhau: {
+            int priority = controlledCreature->getCombatPool() - it.second;
+
             if (targetHasEnoughArmor == false) {
                 priority = cLowestPriority;
             } else {
             }
-            component = weapon->getPommelStrike();
-            break;
+            Component* component = weapon->getPommelStrike();
+
+            for (auto location : locationCosts) {
+                ManueverContainer manuever;
+                manuever.offManuever = it.first;
+                manuever.cost = it.second;
+                manuever.hitLocation = location.first;
+                int damage = getDamageAtLocation(target, component, location.first);
+                damage = damage + cFuzz + 1;
+                priority += random_static::get(damage, damage + cFuzz);
+                manuever.priority = priority;
+                manueverPriorities.push(manuever);
+            }
+        } break;
         case eOffensiveManuevers::Throw: {
+            ManueverContainer manuever;
+            manuever.offManuever = it.first;
+            manuever.cost = it.second;
+            int priority = controlledCreature->getCombatPool() - it.second;
+
             if (target->getStance() == eCreatureStance::Prone) {
                 priority = cLowestPriority;
             } else {
                 // really important to do this in a grapple if possible
                 priority += 20;
             }
+            manuever.priority = priority;
+            manuever.component = nullptr;
+            manueverPriorities.push(manuever);
         } break;
         case eOffensiveManuevers::Snap: {
+            ManueverContainer manuever;
+            manuever.offManuever = it.first;
+            manuever.cost = it.second;
+            int priority = controlledCreature->getCombatPool() - it.second;
+
             // temporary
             priority += 10;
+            manuever.priority = priority;
+            manuever.component = nullptr;
+            manueverPriorities.push(manuever);
+        } break;
         }
-        }
-
-        toPush.priority = priority;
-        toPush.component = component;
-        manueverPriorities.push(toPush);
     }
     assert(manueverPriorities.empty() == false);
     while (manueverPriorities.empty() == false) {
@@ -462,6 +524,11 @@ void AICombatController::doOffense(Creature* controlledCreature, const Creature*
     }
     if (controlledCreature->getQueuedOffense().manuever == eOffensiveManuevers::NoOffense) {
         dice = 0;
+    }
+
+    if (m_doFeint) {
+        // don't use too much die
+        dice = min(dice, controlledCreature->getCombatPool() / 2 + 2);
     }
     controlledCreature->setOffenseDice(dice);
 
@@ -617,8 +684,8 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
             }
         } break;
         case eDefensiveManuevers::Counter:
-            if (diceAllocated > 11) {
-                if (diceAllocated + 3 < controlledCreature->getCombatPool() - 5) {
+            if (diceAllocated > 9) {
+                if (diceAllocated + 2 < controlledCreature->getCombatPool() - 2) {
                     int tnDiff = weapon->getGuardTN() - cBaseBTN;
                     int dice = std::min(diceAllocated + random_static::get(0, diceAllocated / 3)
                             - random_static::get(0, diceAllocated / (4 + tnDiff)),
@@ -626,7 +693,8 @@ void AICombatController::doDefense(Creature* controlledCreature, const Creature*
                     // if its not too much dice, favor doing this
                     if (dice + random_static::get(cFuzz, cFuzz * 2)
                         < controlledCreature->getCombatPool()) {
-                        priority += 10;
+                        priority += 15;
+                        toPush.dice = dice;
                     }
                 }
             }
@@ -926,6 +994,27 @@ bool AICombatController::stealInitiative(
     return false;
 }
 
+int AICombatController::getDamageAtLocation(
+    const Creature* target, const Component* component, eHitLocations location)
+{
+    ArmorSegment segment
+        = target->getMedianArmor(location, component->getAttack() == eAttacks::Swing);
+    if (component->getType() != eDamageTypes::Blunt && segment.isMetal) {
+        if ((component->hasPlatePiercing() == false)
+            || (segment.type == eArmorTypes::Maille && component->hasMaillePiercing() == false)) {
+            segment.AV *= 2;
+            if (component->getType() == eDamageTypes::Piercing) {
+                segment.AV -= 1;
+            }
+        }
+    }
+    int damage = component->getDamage() - segment.AV;
+    if (component->hasProperty(eWeaponProperties::Crushing) && location == eHitLocations::Head) {
+        damage++;
+    }
+    return damage;
+}
+
 eHitLocations AICombatController::getBestHitLocation(const Creature* target,
     const Component* component, bool feint, eHitLocations originalLocation, int& outDamage)
 {
@@ -935,20 +1024,7 @@ eHitLocations AICombatController::getBestHitLocation(const Creature* target,
     // lower than anything possible
     int highestDamage = -50;
     for (auto location : locations) {
-        ArmorSegment segment
-            = target->getMedianArmor(location.first, component->getAttack() == eAttacks::Swing);
-        if (component->getType() != eDamageTypes::Blunt && segment.isMetal) {
-            if ((component->hasPlatePiercing() == false)
-                || (segment.type == eArmorTypes::Maille
-                    && component->hasMaillePiercing() == false)) {
-                segment.AV *= 2;
-                if (component->getType() == eDamageTypes::Piercing) {
-                    segment.AV -= 2;
-                }
-            }
-        }
-
-        int damage = component->getDamage() - segment.AV - (location.second / 2);
+        int damage = getDamageAtLocation(target, component, location.first) - location.second / 2;
         if (component->hasProperty(eWeaponProperties::Crushing)
             && location.first == eHitLocations::Head) {
             damage++;

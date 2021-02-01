@@ -1351,7 +1351,7 @@
                 "effects": ["BL1", "KD3"]
             },
             "5": {
-                "text": ["Limb torn off at knee. Lots of blood."],
+                "text": ["Limb dismembered at the knee. Blood shoots out from the stump."],
                 "effects": ["KD", "BL2", "severed"]
             }
         },
@@ -1368,11 +1368,11 @@
                 "effects": ["KD2"]
             },
             "4": {
-                "text": ["Bone fractured with blood."],
+                "text": ["Weapon embeds itself in bone, breaking it."],
                 "effects": ["KD", "BL1"]
             },
             "5": {
-                "text": ["Limb cut off with lots of blood."],
+                "text": ["Leg amputated below the knee. Lots of blood."],
                 "effects": ["KD", "BL2", "severed"]
             }
         },
@@ -1389,11 +1389,11 @@
                 "effects": ["KD2"]
             },
             "4": {
-                "text": ["Some toes lost."],
+                "text": ["Severs several toes cleanly."],
                 "effects": ["KD3", "BL1"]
             },
             "5": {
-                "text": ["Foot destroyed."],
+                "text": ["Foot brutally amputated. Bone sticks out from wound."],
                 "effects": ["KD", "BL2", "severed"]
             }
         } 
