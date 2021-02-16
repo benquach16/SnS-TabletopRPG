@@ -378,9 +378,12 @@ void AICombatController::chooseOffenseManuever(Creature* controlledCreature, con
                 manuever.offManuever = it.first;
                 manuever.cost = it.second;
                 manuever.hitLocation = location.first;
+
                 int damage = getDamageAtLocation(target, component, location.first);
                 damage = damage + cFuzz + 1;
                 priority += random_static::get(damage, damage + cFuzz);
+
+                manuever.component = component;
                 manuever.priority = priority;
                 manueverPriorities.push(manuever);
             }

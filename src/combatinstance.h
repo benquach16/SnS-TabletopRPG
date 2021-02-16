@@ -114,6 +114,7 @@ private:
     void applyDefendGuardBonuses(Creature* defender);
     int getAttackTN(const Creature* creature);
     int getDefendTN(const Creature* creature);
+    void alignReach();
 
     void switchInitiative()
     {

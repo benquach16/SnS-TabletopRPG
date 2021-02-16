@@ -194,6 +194,14 @@ void CombatInstance::doPreexchangeActions()
     m_currentState = eCombatState::PositionActions;
 }
 
+void CombatInstance::alignReach()
+{
+    // check if grip causes combatants to move closer
+    eLength length = max(m_side1->getCurrentReach(), m_side2->getCurrentReach());
+    m_side1->getSecondaryWeaponReach();
+    m_side2->getSecondaryWeaponReach();
+}
+
 void CombatInstance::doPosition()
 {
     if (m_side1->isPlayer() == true) {
@@ -700,7 +708,9 @@ void CombatInstance::doResolution()
                     attacker->disableSecondaryWeapon();
                 }
 
-                attacker->inflictImpact(-MoS + 1);
+                // workaround here, impact deals straight to attack die first but attack has
+                // resolved already, while clearCreatureManuevers has not been called yet
+                attacker->inflictImpact(-MoS + 1 + attack.dice);
                 Log::push(
                     "Attacker's weapon disabled and " + to_string(-MoS + 1) + " impact inflicted!");
             }
