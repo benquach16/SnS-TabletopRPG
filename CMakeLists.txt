@@ -17,6 +17,7 @@ set(SOURCES
     ./src/combatmanagerfactory.cpp
     ./src/dice.cpp
     ./src/log.cpp
+    ./src/inputmanager.cpp
     ./src/components/aicontroller.cpp
     ./src/components/aicombatcontroller.cpp
     ./src/creatures/creature.cpp
